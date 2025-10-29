@@ -42,7 +42,7 @@ function Stat({
   return (
     <div
       className={`flex items-center justify-between rounded-xl border border-border p-3 ${
-        strong ? "font-semibold bg-accent/50" : "bg-card"
+        strong ? "font-semibold bg-muted" : "bg-card"
       }`}
     >
       <span className="text-muted-foreground">{label}</span>

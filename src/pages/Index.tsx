@@ -241,7 +241,7 @@ const Index = () => {
         {/* Right sidebar: Wallet + Summary (sticky) */}
         <div className="order-1 lg:order-2 lg:sticky lg:top-6 self-start space-y-4">
           {/* A1 Wallet Info */}
-          <section className="rounded-2xl border border-border bg-accent p-4 shadow-md">
+          <section className="rounded-2xl border border-border bg-card p-4 shadow-md">
             <h2 className="font-semibold mb-3">A1 Wallet stanje</h2>
             <div className="grid gap-3 text-sm">
               <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-card">
@@ -252,7 +252,7 @@ const Index = () => {
                 <span className="text-muted-foreground">Iskorišteno</span>
                 <span className="font-semibold">€{walletUsed.toFixed(2)}</span>
               </div>
-              <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-accent/50 font-semibold">
+              <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-muted font-semibold">
                 <span className="text-muted-foreground">Preostalo</span>
                 <span>€{walletRemaining.toFixed(2)}</span>
               </div>
