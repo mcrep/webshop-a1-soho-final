@@ -5,6 +5,7 @@ import { LineDetailConfig } from "@/components/LineDetailConfig";
 import { Summary } from "@/components/Summary";
 import { LoginPanel } from "@/components/LoginPanel";
 import { DeviceModal } from "@/components/modals/DeviceModal";
+import { DeviceListModal } from "@/components/modals/DeviceListModal";
 import { OTPModal } from "@/components/modals/OTPModal";
 import { LoginModal } from "@/components/modals/LoginModal";
 import { tariffs, devices, addons } from "@/data/catalog";
@@ -30,6 +31,7 @@ const Index = () => {
   ]);
   const [activeLineId, setActiveLineId] = useState<string>(lines[0]?.id || rid());
   const [deviceModalFor, setDeviceModalFor] = useState<string | null>(null);
+  const [deviceListModalFor, setDeviceListModalFor] = useState<string | null>(null);
   const [activePanel, setActivePanel] = useState<"config" | "login">("config");
   const [authUser, setAuthUser] = useState("");
   const [authPass, setAuthPass] = useState("");
@@ -193,6 +195,7 @@ const Index = () => {
                         line={activeLine}
                         onChange={(patch) => updateLine(activeLineId, patch)}
                         onOpenDeviceModal={() => setDeviceModalFor(activeLineId)}
+                        onOpenDeviceListModal={() => setDeviceListModalFor(activeLineId)}
                       />
                     </section>
                   )}
@@ -238,6 +241,17 @@ const Index = () => {
       </div>
 
       {/* Modals */}
+      {deviceListModalFor && (
+        <DeviceListModal
+          onClose={() => setDeviceListModalFor(null)}
+          onSelectDevice={(deviceId) => {
+            updateLine(deviceListModalFor, { deviceId });
+            setDeviceListModalFor(null);
+            setDeviceModalFor(deviceListModalFor);
+          }}
+        />
+      )}
+
       {deviceModalFor && (
         <DeviceModal
           current={lines.find((l) => l.id === deviceModalFor)!}
