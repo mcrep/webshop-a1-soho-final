@@ -111,11 +111,11 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                       />
                       <Label
                         htmlFor="insurance-yes"
-                        className="flex flex-col items-center justify-center rounded-xl border p-4 cursor-pointer transition-all peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-accent/50 hover:bg-muted"
+                        className="flex flex-col items-center justify-center rounded-xl border p-3 cursor-pointer transition-all peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-accent/50 hover:bg-muted"
                       >
-                        <Shield className="h-8 w-8 mb-2 text-primary" />
-                        <span className="text-sm font-medium text-center">Želim osiguranje ekrana</span>
-                        <span className="text-xs text-primary font-semibold mt-2">4,99€/mj</span>
+                        <Shield className="h-6 w-6 mb-2 text-primary" />
+                        <span className="text-xs font-medium text-center">Želim osiguranje ekrana</span>
+                        <span className="text-xs text-primary font-semibold mt-1">4,99€/mj</span>
                       </Label>
                     </div>
                     <div className="relative">
@@ -126,10 +126,10 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                       />
                       <Label
                         htmlFor="insurance-no"
-                        className="flex flex-col items-center justify-center rounded-xl border p-4 cursor-pointer transition-all peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-accent/50 hover:bg-muted"
+                        className="flex flex-col items-center justify-center rounded-xl border p-3 cursor-pointer transition-all peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-accent/50 hover:bg-muted"
                       >
-                        <ShieldOff className="h-8 w-8 mb-2 text-muted-foreground" />
-                        <span className="text-sm font-medium text-center">Ne želim osiguranje ekrana</span>
+                        <ShieldOff className="h-6 w-6 mb-2 text-muted-foreground" />
+                        <span className="text-xs font-medium text-center">Ne želim osiguranje ekrana</span>
                       </Label>
                     </div>
                   </RadioGroup>
