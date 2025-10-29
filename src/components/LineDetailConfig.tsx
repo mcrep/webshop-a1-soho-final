@@ -252,13 +252,13 @@ export function LineDetailConfig({
               <button
                 key={lt.id}
                 onClick={() => onChange({ lineType: lt.id })}
-                className={`flex-shrink-0 w-[280px] rounded-2xl border p-4 text-left transition-all ${
+                className={`flex-shrink-0 w-[180px] rounded-2xl border p-3 text-left transition-all ${
                   line.lineType === lt.id
                     ? "ring-2 ring-primary border-primary bg-accent/50"
                     : "border-border hover:bg-muted"
                 }`}
               >
-                <div className="font-semibold">{lt.name}</div>
+                <div className="font-medium text-sm leading-tight">{lt.name}</div>
               </button>
             ))}
           </div>
