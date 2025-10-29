@@ -10,12 +10,12 @@ type DeviceModalProps = {
 };
 
 export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: DeviceModalProps) {
-  const [sel, setSel] = useState<string>(current.deviceId ?? "");
+  const selectedDevice = devices.find((d) => d.id === current.deviceId);
+  
   const [pay, setPay] = useState<"installments" | "upfront">(
     current.devicePayment ?? "installments"
   );
 
-  const selectedDevice = devices.find((d) => d.id === sel);
   const initialInstall = useMemo(() => selectedDevice?.installment ?? 1, [selectedDevice]);
 
   const [rate, setRate] = useState(current.deviceMonthly ?? initialInstall);
@@ -36,7 +36,7 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
       const bounded = Math.min(Math.max(1, newRate), selectedDevice.installment);
       setRate(bounded);
     }
-  }, [sel, selectedDevice, current.deviceMonthly]);
+  }, [selectedDevice, current.deviceMonthly]);
 
   // Update wallet when device/payment changes
   useEffect(() => {
@@ -61,7 +61,7 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
       <div className="absolute inset-0 grid place-items-center p-4">
         <div className="w-full max-w-2xl rounded-2xl bg-card shadow-xl border border-border overflow-hidden max-h-[90vh] flex flex-col">
           <div className="p-4 flex items-center justify-between border-b border-border">
-            <div className="font-semibold">Odaberi uređaj</div>
+            <div className="font-semibold">Konfiguracija uređaja</div>
             <button
               onClick={onClose}
               className="text-muted-foreground hover:text-foreground transition-colors"
@@ -71,37 +71,21 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
           </div>
           
           <div className="p-4 overflow-auto flex-1">
-            {/* Device selection */}
-            <div className="grid sm:grid-cols-2 gap-3 mb-6">
-              {devices.map((d) => (
-                <label
-                  key={d.id}
-                  className={`rounded-2xl border p-4 cursor-pointer transition-all ${
-                    sel === d.id
-                      ? "ring-2 ring-primary border-primary bg-accent/50"
-                      : "border-border hover:bg-muted"
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="text-3xl">{d.emoji}</div>
-                    <div className="flex-1">
-                      <div className="font-semibold">{d.brand}</div>
-                      <div className="text-sm">{d.name}</div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        Jednokratno: €{d.upfront} / Rate: €{d.installment}/mj
-                      </div>
+            {/* Device info */}
+            {selectedDevice && (
+              <div className="rounded-2xl border border-primary/30 bg-accent/20 p-4 mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="text-4xl">{selectedDevice.emoji}</div>
+                  <div>
+                    <div className="text-xs text-muted-foreground">{selectedDevice.brand}</div>
+                    <div className="font-semibold text-lg">{selectedDevice.name}</div>
+                    <div className="text-sm text-muted-foreground mt-1">
+                      Jednokratno: €{selectedDevice.upfront} • Rate: €{selectedDevice.installment}/mj
                     </div>
-                    <input
-                      type="radio"
-                      name="device"
-                      checked={sel === d.id}
-                      onChange={() => setSel(d.id)}
-                      className="mt-1"
-                    />
                   </div>
-                </label>
-              ))}
-            </div>
+                </div>
+              </div>
+            )}
 
             {selectedDevice && selectedDevice.id !== "no-dev" && (
               <>
@@ -206,8 +190,8 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
               Odustani
             </button>
             <button
-              onClick={() => onSave(sel, pay, rate, walletUse)}
-              disabled={!sel}
+              onClick={() => onSave(current.deviceId!, pay, rate, walletUse)}
+              disabled={!selectedDevice}
               className="rounded-2xl bg-primary text-primary-foreground px-4 py-2 text-sm hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Spremi
