@@ -8,6 +8,9 @@ import { DeviceModal } from "@/components/modals/DeviceModal";
 import { DeviceListModal } from "@/components/modals/DeviceListModal";
 import { OTPModal } from "@/components/modals/OTPModal";
 import { LoginModal } from "@/components/modals/LoginModal";
+import { NumberPortingModal } from "@/components/modals/NumberPortingModal";
+import { PrepaidToPostpaidModal } from "@/components/modals/PrepaidToPostpaidModal";
+import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExtensionModal";
 import { tariffs, devices, addons } from "@/data/catalog";
 import type { Line } from "@/types";
 
@@ -33,6 +36,7 @@ const Index = () => {
   const [activeLineId, setActiveLineId] = useState<string>(lines[0]?.id || rid());
   const [deviceModalFor, setDeviceModalFor] = useState<string | null>(null);
   const [deviceListModalFor, setDeviceListModalFor] = useState<string | null>(null);
+  const [lineTypeModalFor, setLineTypeModalFor] = useState<{ lineId: string; lineType: string } | null>(null);
   const [activePanel, setActivePanel] = useState<"config" | "login">("config");
   const [authUser, setAuthUser] = useState("");
   const [authPass, setAuthPass] = useState("");
@@ -200,6 +204,7 @@ const Index = () => {
                         onChange={(patch) => updateLine(activeLineId, patch)}
                         onOpenDeviceModal={() => setDeviceModalFor(activeLineId)}
                         onOpenDeviceListModal={() => setDeviceListModalFor(activeLineId)}
+                        onOpenLineTypeModal={(lineType) => setLineTypeModalFor({ lineId: activeLineId, lineType })}
                       />
                     </section>
                   )}
@@ -292,6 +297,40 @@ const Index = () => {
           onChangePass={setAuthPass}
           onClose={() => setLoginOpen(false)}
           onSubmit={() => setLoginOpen(false)}
+        />
+      )}
+
+      {/* Line type modals */}
+      {lineTypeModalFor?.lineType === "mnp" && (
+        <NumberPortingModal
+          current={lines.find((l) => l.id === lineTypeModalFor.lineId)!}
+          onClose={() => setLineTypeModalFor(null)}
+          onSave={(data) => {
+            updateLine(lineTypeModalFor.lineId, data);
+            setLineTypeModalFor(null);
+          }}
+        />
+      )}
+
+      {lineTypeModalFor?.lineType === "pre2post" && (
+        <PrepaidToPostpaidModal
+          current={lines.find((l) => l.id === lineTypeModalFor.lineId)!}
+          onClose={() => setLineTypeModalFor(null)}
+          onSave={(data) => {
+            updateLine(lineTypeModalFor.lineId, data);
+            setLineTypeModalFor(null);
+          }}
+        />
+      )}
+
+      {lineTypeModalFor?.lineType === "renew" && (
+        <ExistingLineExtensionModal
+          current={lines.find((l) => l.id === lineTypeModalFor.lineId)!}
+          onClose={() => setLineTypeModalFor(null)}
+          onSave={(data) => {
+            updateLine(lineTypeModalFor.lineId, data);
+            setLineTypeModalFor(null);
+          }}
         />
       )}
     </div>

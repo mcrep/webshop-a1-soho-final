@@ -8,6 +8,7 @@ type LineDetailConfigProps = {
   onChange: (patch: Partial<Line>) => void;
   onOpenDeviceModal: () => void;
   onOpenDeviceListModal: () => void;
+  onOpenLineTypeModal: (lineType: string) => void;
 };
 
 export function LineDetailConfig({
@@ -15,6 +16,7 @@ export function LineDetailConfig({
   onChange,
   onOpenDeviceModal,
   onOpenDeviceListModal,
+  onOpenLineTypeModal,
 }: LineDetailConfigProps) {
   const tariff = tariffs.find((t) => t.id === line.tariffId);
   const device = devices.find((d) => d.id === line.deviceId);
@@ -251,7 +253,13 @@ export function LineDetailConfig({
             {lineTypes.map((lt) => (
               <button
                 key={lt.id}
-                onClick={() => onChange({ lineType: lt.id })}
+                onClick={() => {
+                  onChange({ lineType: lt.id });
+                  // Open modal if needed based on line type
+                  if (lt.id !== "new") {
+                    onOpenLineTypeModal(lt.id);
+                  }
+                }}
                 className={`flex-shrink-0 w-[180px] rounded-2xl border p-3 text-left transition-all ${
                   line.lineType === lt.id
                     ? "ring-2 ring-primary border-primary bg-accent/50"

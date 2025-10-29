@@ -8,6 +8,21 @@ export type Line = {
   lineType: string | null;
   walletUse?: number;
   screenInsurance?: boolean;
+  // Number porting data (mnp)
+  portingNumber?: string;
+  portingNumberType?: "prepaid" | "postpaid";
+  portingCustomerType?: "business" | "private";
+  portingCustomerName?: string;
+  portingOib?: string;
+  portingAddress?: string;
+  portingContactNumber?: string;
+  portingStartDate?: Date;
+  portingFromNetwork?: "ht" | "telemach";
+  portingTime?: "morning" | "afternoon";
+  // Prepaid to postpaid data (pre2post)
+  prepaidNumber?: string;
+  // Existing line extension data (renew)
+  existingLineId?: string;
 };
 
 export type Tariff = {
