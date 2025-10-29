@@ -13,7 +13,7 @@ export function LoginPanel({ onOpenOTP, onOpenLogin }: LoginPanelProps) {
         <p className="text-xs text-muted-foreground">Odaberi način prijave</p>
       </div>
       <div className="border-t border-border p-4 grid gap-4">
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid gap-4">
           {/* Username & password */}
           <button
             onClick={onOpenLogin}
