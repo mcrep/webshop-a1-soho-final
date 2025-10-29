@@ -4,6 +4,7 @@ import { LineTabs } from "@/components/LineTabs";
 import { LineDetailConfig } from "@/components/LineDetailConfig";
 import { Summary } from "@/components/Summary";
 import { LoginPanel } from "@/components/LoginPanel";
+import { OrderSummary } from "@/components/OrderSummary";
 import { DeviceModal } from "@/components/modals/DeviceModal";
 import { DeviceListModal } from "@/components/modals/DeviceListModal";
 import { OTPModal } from "@/components/modals/OTPModal";
@@ -190,7 +191,7 @@ const Index = () => {
                     : "bg-card text-muted-foreground border-border hover:bg-muted"
                 }`}
                 aria-current={activePanel === "login" ? "step" : undefined}
-                title="Korak 2: Prijava u sustav"
+                title="Korak 2: Sažetak narudžbe"
               >
                 2
               </button>
@@ -229,17 +230,20 @@ const Index = () => {
               )}
 
               {activePanel === "login" && (
-                <LoginPanel
-                  onOpenOTP={() => setOtpOpen(true)}
-                  onOpenLogin={() => setLoginOpen(true)}
-                />
+                <OrderSummary lines={lines} getLineLabel={getLineLabel} />
               )}
             </div>
           </div>
         </div>
 
-        {/* Right sidebar: Wallet + Summary (sticky) */}
+        {/* Right sidebar: Login + Wallet + Summary (sticky) */}
         <div className="order-1 lg:order-2 lg:sticky lg:top-6 self-start space-y-4">
+          {/* Login Panel */}
+          <LoginPanel
+            onOpenOTP={() => setOtpOpen(true)}
+            onOpenLogin={() => setLoginOpen(true)}
+          />
+
           {/* A1 Wallet Info */}
           <section className="rounded-2xl border border-border bg-card p-4 shadow-md">
             <h2 className="font-semibold mb-3">A1 Wallet stanje</h2>
