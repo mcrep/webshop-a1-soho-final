@@ -90,6 +90,23 @@ const Index = () => {
   // Get active line data
   const activeLine = lines.find((l) => l.id === activeLineId);
 
+  // Helper function to get line label
+  const getLineLabel = (line: Line, index: number) => {
+    if (line.portingNumber) return line.portingNumber;
+    if (line.prepaidNumber) return line.prepaidNumber;
+    if (line.existingLineId) {
+      // Mock data for existing lines - should match ExistingLineExtensionModal
+      const existingLines = [
+        { id: "line-1", number: "091 234 5678" },
+        { id: "line-2", number: "091 876 5432" },
+        { id: "line-3", number: "091 555 1234" },
+      ];
+      const existing = existingLines.find(l => l.id === line.existingLineId);
+      if (existing) return existing.number;
+    }
+    return `Linija ${index + 1}`;
+  };
+
   // Wallet
   const walletTotal = useMemo(
     () =>
@@ -197,7 +214,7 @@ const Index = () => {
                   {activeLine && (
                     <section className="rounded-2xl border border-border bg-card shadow-sm p-6">
                       <h2 className="text-lg font-semibold mb-6">
-                        Detaljna konfiguracija - Linija {lines.findIndex((l) => l.id === activeLineId) + 1}
+                        Detaljna konfiguracija - {getLineLabel(activeLine, lines.findIndex((l) => l.id === activeLineId))}
                       </h2>
                       <LineDetailConfig
                         line={activeLine}

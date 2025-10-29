@@ -16,6 +16,23 @@ export function LineTabs({
   onAddLine,
   onRemoveLine,
 }: LineTabsProps) {
+  // Helper function to get line label
+  const getLineLabel = (line: Line, index: number) => {
+    if (line.portingNumber) return line.portingNumber;
+    if (line.prepaidNumber) return line.prepaidNumber;
+    if (line.existingLineId) {
+      // Mock data for existing lines - should match ExistingLineExtensionModal
+      const existingLines = [
+        { id: "line-1", number: "091 234 5678" },
+        { id: "line-2", number: "091 876 5432" },
+        { id: "line-3", number: "091 555 1234" },
+      ];
+      const existing = existingLines.find(l => l.id === line.existingLineId);
+      if (existing) return existing.number;
+    }
+    return `Linija ${index + 1}`;
+  };
+
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {lines.map((line, idx) => (
@@ -31,7 +48,7 @@ export function LineTabs({
             onClick={() => onSelectLine(line.id)}
             className="px-4 py-2 pr-8 text-sm font-medium"
           >
-            Linija {idx + 1}
+            {getLineLabel(line, idx)}
           </button>
           {lines.length > 1 && (
             <button
