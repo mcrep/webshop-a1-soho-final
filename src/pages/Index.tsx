@@ -135,7 +135,7 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
 
-      <div className="mx-auto max-w-7xl px-4 py-8 grid lg:grid-cols-[2fr,1fr] gap-6">
+      <div className="mx-auto max-w-[1600px] px-4 py-8 grid lg:grid-cols-[1.5fr,1fr] gap-8">
         {/* Left/main content */}
         <div className="order-2 lg:order-1">
           {/* Steps layout */}
