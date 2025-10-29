@@ -130,6 +130,7 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                       >
                         <ShieldOff className="h-6 w-6 mb-2 text-muted-foreground" />
                         <span className="text-xs font-medium text-center">Ne želim osiguranje ekrana</span>
+                        <span className="text-xs mt-1 opacity-0">placeholder</span>
                       </Label>
                     </div>
                   </RadioGroup>
