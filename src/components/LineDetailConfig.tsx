@@ -55,8 +55,8 @@ export function LineDetailConfig({
     }
   }, []);
 
-  // Top 3 devices
-  const topDevices = devices.slice(0, 3);
+  // Top devices including "No device" option
+  const topDevices = devices.slice(0, 4);
 
   return (
     <div className="space-y-6">
@@ -112,15 +112,17 @@ export function LineDetailConfig({
       {/* Device selection */}
       <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
         <h3 className="text-sm font-semibold mb-3">Uređaj</h3>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-4">
           {topDevices.map((d) => (
             <button
               key={d.id}
               onClick={() => {
                 onChange({ deviceId: d.id });
-                onOpenDeviceModal();
+                if (d.id !== "no-dev") {
+                  onOpenDeviceModal();
+                }
               }}
-              className={`rounded-xl border p-4 text-left transition-all ${
+              className={`rounded-2xl border p-4 text-left transition-all ${
                 line.deviceId === d.id
                   ? "ring-2 ring-primary border-primary bg-accent/50"
                   : "border-border hover:bg-muted"
@@ -128,9 +130,11 @@ export function LineDetailConfig({
             >
               <div className="text-2xl mb-2">{d.emoji}</div>
               <div className="font-semibold text-sm">{d.name}</div>
-              <div className="text-xs text-muted-foreground mt-1">
-                €{d.upfront} / €{d.installment}/mj
-              </div>
+              {d.id !== "no-dev" && (
+                <div className="text-xs text-muted-foreground mt-1">
+                  €{d.upfront} / €{d.installment}/mj
+                </div>
+              )}
             </button>
           ))}
         </div>
