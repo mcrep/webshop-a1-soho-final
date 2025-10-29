@@ -84,7 +84,7 @@ export function LineDetailConfig({
           )}
           <div
             ref={tariffScrollRef}
-            className="flex gap-3 overflow-x-auto scrollbar-hide"
+            className="flex gap-3 overflow-x-auto scrollbar-hide py-1"
           >
             {tariffs.map((t) => (
               <button
