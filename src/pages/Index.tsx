@@ -141,7 +141,7 @@ const Index = () => {
         {/* Left/main content */}
         <div className="lg:col-span-2">
           {/* Steps layout */}
-          <div className="grid grid-cols-[56px,1fr] gap-4">
+          <div className="grid grid-cols-[80px,1fr] gap-4">
             {/* Stepper */}
             <div className="flex flex-col items-center pt-2">
               <button
@@ -156,7 +156,7 @@ const Index = () => {
               >
                 1
               </button>
-              <div className="w-[2px] flex-1 bg-border my-2" />
+              <div className="w-[2px] h-24 bg-border my-2" />
               <button
                 onClick={() => setActivePanel("login")}
                 className={`h-10 w-10 rounded-full grid place-items-center border text-sm font-semibold transition-all ${
