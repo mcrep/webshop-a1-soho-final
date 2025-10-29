@@ -4,10 +4,7 @@ import { LineTabs } from "@/components/LineTabs";
 import { LineDetailConfig } from "@/components/LineDetailConfig";
 import { Summary } from "@/components/Summary";
 import { LoginPanel } from "@/components/LoginPanel";
-import { TariffModal } from "@/components/modals/TariffModal";
 import { DeviceModal } from "@/components/modals/DeviceModal";
-import { AddonsModal } from "@/components/modals/AddonsModal";
-import { ShowcaseModal } from "@/components/modals/ShowcaseModal";
 import { OTPModal } from "@/components/modals/OTPModal";
 import { LoginModal } from "@/components/modals/LoginModal";
 import { tariffs, devices, addons } from "@/data/catalog";
@@ -32,17 +29,13 @@ const Index = () => {
     },
   ]);
   const [activeLineId, setActiveLineId] = useState<string>(lines[0]?.id || rid());
-  const [tariffModalFor, setTariffModalFor] = useState<string | null>(null);
   const [deviceModalFor, setDeviceModalFor] = useState<string | null>(null);
-  const [addonsModalFor, setAddonsModalFor] = useState<string | null>(null);
   const [activePanel, setActivePanel] = useState<"config" | "login">("config");
   const [authUser, setAuthUser] = useState("");
   const [authPass, setAuthPass] = useState("");
   const [otpOpen, setOtpOpen] = useState(false);
   const [otp, setOtp] = useState<string>("");
   const [loginOpen, setLoginOpen] = useState(false);
-  const [startMode, setStartMode] = useState<"device" | "tariff">("device");
-  const [showcaseOpen, setShowcaseOpen] = useState<null | "devices" | "tariffs">(null);
 
   const maskedPhone = "********97";
 
@@ -199,11 +192,7 @@ const Index = () => {
                       <LineDetailConfig
                         line={activeLine}
                         onChange={(patch) => updateLine(activeLineId, patch)}
-                        onOpenTariffModal={() => setTariffModalFor(activeLineId)}
                         onOpenDeviceModal={() => setDeviceModalFor(activeLineId)}
-                        onOpenAddonsModal={() => setAddonsModalFor(activeLineId)}
-                        walletAvailForLine={walletAvailForActiveLine}
-                        walletTotal={walletTotal}
                       />
                     </section>
                   )}
@@ -220,50 +209,51 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Right sidebar: Summary (sticky) */}
-        <div className="lg:col-span-1 lg:sticky lg:top-6 self-start">
+        {/* Right sidebar: Wallet + Summary (sticky) */}
+        <div className="lg:col-span-1 lg:sticky lg:top-6 self-start space-y-4">
+          {/* A1 Wallet Info */}
+          <section className="rounded-2xl border border-primary/20 bg-accent p-4 shadow-md">
+            <h2 className="font-semibold mb-3">A1 Wallet stanje</h2>
+            <div className="grid gap-3 text-sm">
+              <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-card">
+                <span className="text-muted-foreground">Ukupno</span>
+                <span className="font-semibold">€{walletTotal.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-card">
+                <span className="text-muted-foreground">Iskorišteno</span>
+                <span className="font-semibold">€{walletUsed.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-accent/50 font-semibold">
+                <span className="text-muted-foreground">Preostalo</span>
+                <span>€{walletRemaining.toFixed(2)}</span>
+              </div>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Wallet se zbraja po odabranoj tarifi i može se iskoristiti za uređaje.
+            </p>
+          </section>
+
           <Summary monthly={monthly} onetime={onetime} lineCount={lines.length} />
         </div>
       </div>
 
       {/* Modals */}
-      {tariffModalFor && (
-        <TariffModal
-          current={lines.find((l) => l.id === tariffModalFor)!}
-          onClose={() => setTariffModalFor(null)}
-          onSave={(tariffId) => {
-            updateLine(tariffModalFor, { tariffId });
-            setTariffModalFor(null);
-          }}
-        />
-      )}
-
       {deviceModalFor && (
         <DeviceModal
           current={lines.find((l) => l.id === deviceModalFor)!}
           onClose={() => setDeviceModalFor(null)}
-          onSave={(deviceId, pay, rate) => {
+          onSave={(deviceId, pay, rate, walletUse) => {
             updateLine(deviceModalFor, {
               deviceId,
               devicePayment: pay,
               deviceMonthly: pay === "installments" ? rate : null,
+              walletUse,
             });
             setDeviceModalFor(null);
           }}
+          walletAvailForLine={walletAvailForActiveLine}
         />
       )}
-
-      {addonsModalFor && (
-        <AddonsModal
-          current={lines.find((l) => l.id === addonsModalFor)!}
-          onClose={() => setAddonsModalFor(null)}
-          onSave={(ids) => {
-            updateLine(addonsModalFor, { addonIds: ids });
-            setAddonsModalFor(null);
-          }}
-        />
-      )}
-
 
       {otpOpen && (
         <OTPModal
