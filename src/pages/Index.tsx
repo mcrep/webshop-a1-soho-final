@@ -135,9 +135,9 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
 
-      <div className="mx-auto max-w-7xl px-4 py-8 grid lg:grid-cols-3 gap-6">
+      <div className="mx-auto max-w-7xl px-4 py-8 grid lg:grid-cols-[2fr,1fr] gap-6">
         {/* Left/main content */}
-        <div className="lg:col-span-2">
+        <div className="order-2 lg:order-1">
           {/* Steps layout */}
           <div className="grid grid-cols-[80px,1fr] gap-4">
             {/* Stepper */}
@@ -210,7 +210,7 @@ const Index = () => {
         </div>
 
         {/* Right sidebar: Wallet + Summary (sticky) */}
-        <div className="lg:col-span-1 lg:sticky lg:top-6 self-start space-y-4">
+        <div className="order-1 lg:order-2 lg:sticky lg:top-6 self-start space-y-4">
           {/* A1 Wallet Info */}
           <section className="rounded-2xl border border-primary/20 bg-accent p-4 shadow-md">
             <h2 className="font-semibold mb-3">A1 Wallet stanje</h2>
