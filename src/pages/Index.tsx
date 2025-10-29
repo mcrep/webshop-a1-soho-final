@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Header } from "@/components/Header";
-import { StartPicker } from "@/components/StartPicker";
-import { LineConfigurator } from "@/components/LineConfigurator";
+import { LineTabs } from "@/components/LineTabs";
+import { LineDetailConfig } from "@/components/LineDetailConfig";
 import { Summary } from "@/components/Summary";
 import { LoginPanel } from "@/components/LoginPanel";
 import { TariffModal } from "@/components/modals/TariffModal";
@@ -10,7 +10,7 @@ import { AddonsModal } from "@/components/modals/AddonsModal";
 import { ShowcaseModal } from "@/components/modals/ShowcaseModal";
 import { OTPModal } from "@/components/modals/OTPModal";
 import { LoginModal } from "@/components/modals/LoginModal";
-import { tariffs, devices, addons, lineTypes } from "@/data/catalog";
+import { tariffs, devices, addons } from "@/data/catalog";
 import type { Line } from "@/types";
 
 function rid() {
@@ -19,7 +19,19 @@ function rid() {
 
 const Index = () => {
   // State
-  const [lines, setLines] = useState<Line[]>([]);
+  const [lines, setLines] = useState<Line[]>([
+    {
+      id: rid(),
+      tariffId: null,
+      deviceId: null,
+      devicePayment: "installments",
+      deviceMonthly: null,
+      addonIds: [],
+      lineType: null,
+      walletUse: 0,
+    },
+  ]);
+  const [activeLineId, setActiveLineId] = useState<string>(lines[0]?.id || rid());
   const [tariffModalFor, setTariffModalFor] = useState<string | null>(null);
   const [deviceModalFor, setDeviceModalFor] = useState<string | null>(null);
   const [addonsModalFor, setAddonsModalFor] = useState<string | null>(null);
@@ -35,11 +47,12 @@ const Index = () => {
   const maskedPhone = "********97";
 
   // Mutators
-  const addLine = () =>
+  const addLine = () => {
+    const newId = rid();
     setLines((ls) => [
       ...ls,
       {
-        id: rid(),
+        id: newId,
         tariffId: null,
         deviceId: null,
         devicePayment: "installments",
@@ -49,47 +62,51 @@ const Index = () => {
         walletUse: 0,
       },
     ]);
-  const removeLine = (id: string) => setLines((ls) => ls.filter((l) => l.id !== id));
+    setActiveLineId(newId);
+  };
+
+  const removeLine = (id: string) => {
+    setLines((ls) => {
+      const filtered = ls.filter((l) => l.id !== id);
+      // If removing active line, switch to first available
+      if (id === activeLineId && filtered.length > 0) {
+        setActiveLineId(filtered[0].id);
+      }
+      return filtered;
+    });
+  };
+
   const updateLine = (id: string, patch: Partial<Line>) =>
     setLines((ls) => ls.map((l) => (l.id === id ? { ...l, ...patch } : l)));
 
-  // Helpers for start picker
-  const ensureLine = () => {
-    if (lines.length === 0) {
-      const id = rid();
-      setLines((ls) => [
-        ...ls,
-        {
-          id,
-          tariffId: null,
-          deviceId: null,
-          devicePayment: "installments",
-          deviceMonthly: null,
-          addonIds: [],
-          lineType: null,
-          walletUse: 0,
-        },
-      ]);
-      return id;
+  // Ensure activeLineId is always valid
+  useEffect(() => {
+    if (lines.length > 0 && !lines.find((l) => l.id === activeLineId)) {
+      setActiveLineId(lines[0].id);
     }
-    return lines[lines.length - 1].id;
-  };
+  }, [lines, activeLineId]);
 
-  const pickDeviceFromShowcase = (deviceId: string) => {
-    const lid = ensureLine();
-    updateLine(lid, { deviceId });
-    setActivePanel("config");
-    setDeviceModalFor(lid);
-    setShowcaseOpen(null);
-  };
+  // Get active line data
+  const activeLine = lines.find((l) => l.id === activeLineId);
 
-  const pickTariffFromShowcase = (tariffId: string) => {
-    const lid = ensureLine();
-    updateLine(lid, { tariffId });
-    setActivePanel("config");
-    setTariffModalFor(lid);
-    setShowcaseOpen(null);
-  };
+  // Wallet
+  const walletTotal = useMemo(
+    () =>
+      lines.reduce((sum, l) => {
+        const credit = tariffs.find((t) => t.id === l.tariffId)?.walletCredit ?? 0;
+        return sum + credit;
+      }, 0),
+    [lines]
+  );
+  const walletUsed = lines.reduce((sum, l) => sum + (l.walletUse ?? 0), 0);
+  const walletRemaining = Math.max(0, walletTotal - walletUsed);
+
+  // Wallet calculation for active line
+  const sumUsedOthers = lines.reduce(
+    (sum, l) => sum + (l.id === activeLineId ? 0 : l.walletUse ?? 0),
+    0
+  );
+  const walletAvailForActiveLine = Math.max(0, walletTotal - sumUsedOthers);
 
   // Pricing
   const monthly = useMemo(
@@ -120,18 +137,6 @@ const Index = () => {
       }, 0),
     [lines]
   );
-
-  // Wallet
-  const walletTotal = useMemo(
-    () =>
-      lines.reduce((sum, l) => {
-        const credit = tariffs.find((t) => t.id === l.tariffId)?.walletCredit ?? 0;
-        return sum + credit;
-      }, 0),
-    [lines]
-  );
-  const walletUsed = lines.reduce((sum, l) => sum + (l.walletUse ?? 0), 0);
-  const walletRemaining = Math.max(0, walletTotal - walletUsed);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -175,25 +180,33 @@ const Index = () => {
             <div className="space-y-6">
               {activePanel === "config" && (
                 <>
-                  <StartPicker
-                    startMode={startMode}
-                    setStartMode={setStartMode}
-                    onShowMore={(mode) => setShowcaseOpen(mode)}
-                    onPickDevice={pickDeviceFromShowcase}
-                    onPickTariff={pickTariffFromShowcase}
-                  />
+                  <section className="rounded-2xl border border-border bg-card shadow-sm p-4">
+                    <h2 className="text-lg font-semibold mb-4">Konfiguracija linija</h2>
+                    <LineTabs
+                      lines={lines}
+                      activeLineId={activeLineId}
+                      onSelectLine={setActiveLineId}
+                      onAddLine={addLine}
+                      onRemoveLine={removeLine}
+                    />
+                  </section>
 
-                  <LineConfigurator
-                    lines={lines}
-                    onAddLine={addLine}
-                    onRemoveLine={removeLine}
-                    onUpdateLine={updateLine}
-                    onOpenTariffModal={setTariffModalFor}
-                    onOpenDeviceModal={setDeviceModalFor}
-                    onOpenAddonsModal={setAddonsModalFor}
-                    walletTotal={walletTotal}
-                    walletRemaining={walletRemaining}
-                  />
+                  {activeLine && (
+                    <section className="rounded-2xl border border-border bg-card shadow-sm p-6">
+                      <h2 className="text-lg font-semibold mb-6">
+                        Detaljna konfiguracija - Linija {lines.findIndex((l) => l.id === activeLineId) + 1}
+                      </h2>
+                      <LineDetailConfig
+                        line={activeLine}
+                        onChange={(patch) => updateLine(activeLineId, patch)}
+                        onOpenTariffModal={() => setTariffModalFor(activeLineId)}
+                        onOpenDeviceModal={() => setDeviceModalFor(activeLineId)}
+                        onOpenAddonsModal={() => setAddonsModalFor(activeLineId)}
+                        walletAvailForLine={walletAvailForActiveLine}
+                        walletTotal={walletTotal}
+                      />
+                    </section>
+                  )}
                 </>
               )}
 
@@ -251,14 +264,6 @@ const Index = () => {
         />
       )}
 
-      {showcaseOpen && (
-        <ShowcaseModal
-          mode={showcaseOpen}
-          onClose={() => setShowcaseOpen(null)}
-          onPickDevice={pickDeviceFromShowcase}
-          onPickTariff={pickTariffFromShowcase}
-        />
-      )}
 
       {otpOpen && (
         <OTPModal
