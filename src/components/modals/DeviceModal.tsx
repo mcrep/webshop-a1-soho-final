@@ -1,11 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
 import { devices } from "@/data/catalog";
 import type { Line } from "@/types";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Shield, ShieldOff } from "lucide-react";
 
 type DeviceModalProps = {
   current: Line;
   onClose: () => void;
-  onSave: (deviceId: string, pay: "installments" | "upfront", rate: number, walletUse: number) => void;
+  onSave: (deviceId: string, pay: "installments" | "upfront", rate: number, walletUse: number, screenInsurance: boolean) => void;
   walletAvailForLine: number;
 };
 
@@ -30,6 +33,8 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
     Math.min(Math.max(0, current.walletUse ?? 0), maxWallet)
   );
 
+  const [screenInsurance, setScreenInsurance] = useState(current.screenInsurance ?? true);
+
   useEffect(() => {
     if (selectedDevice) {
       const newRate = current.deviceMonthly ?? selectedDevice.installment;
@@ -52,7 +57,8 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
   };
 
   // Cost calculation
-  const monthlyCost = pay === "installments" ? Math.max(0, rate - walletUse) : 0;
+  const screenInsuranceCost = screenInsurance ? 4.99 : 0;
+  const monthlyCost = (pay === "installments" ? Math.max(0, rate - walletUse) : 0) + screenInsuranceCost;
   const onetimeCost = pay === "upfront" ? Math.max(0, (selectedDevice?.upfront ?? 0) - walletUse) : 0;
 
   return (
@@ -89,6 +95,45 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
 
             {selectedDevice && selectedDevice.id !== "no-dev" && (
               <>
+                {/* Screen Insurance */}
+                <div className="rounded-2xl border border-border bg-card p-4 mb-4">
+                  <h4 className="text-sm font-semibold mb-3">Osiguranje ekrana</h4>
+                  <RadioGroup
+                    value={screenInsurance ? "yes" : "no"}
+                    onValueChange={(val) => setScreenInsurance(val === "yes")}
+                    className="grid grid-cols-2 gap-3"
+                  >
+                    <div className="relative">
+                      <RadioGroupItem
+                        value="yes"
+                        id="insurance-yes"
+                        className="peer sr-only"
+                      />
+                      <Label
+                        htmlFor="insurance-yes"
+                        className="flex flex-col items-center justify-center rounded-xl border p-4 cursor-pointer transition-all peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-accent/50 hover:bg-muted"
+                      >
+                        <Shield className="h-8 w-8 mb-2 text-primary" />
+                        <span className="text-sm font-medium text-center">Želim osiguranje ekrana</span>
+                        <span className="text-xs text-primary font-semibold mt-2">4,99€/mj</span>
+                      </Label>
+                    </div>
+                    <div className="relative">
+                      <RadioGroupItem
+                        value="no"
+                        id="insurance-no"
+                        className="peer sr-only"
+                      />
+                      <Label
+                        htmlFor="insurance-no"
+                        className="flex flex-col items-center justify-center rounded-xl border p-4 cursor-pointer transition-all peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-accent/50 hover:bg-muted"
+                      >
+                        <ShieldOff className="h-8 w-8 mb-2 text-muted-foreground" />
+                        <span className="text-sm font-medium text-center">Ne želim osiguranje ekrana</span>
+                      </Label>
+                    </div>
+                  </RadioGroup>
+                </div>
                 {/* Payment method */}
                 <div className="rounded-2xl border border-border bg-card p-4 mb-4">
                   <h4 className="text-sm font-semibold mb-3">Način plaćanja</h4>
@@ -190,7 +235,7 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
               Odustani
             </button>
             <button
-              onClick={() => onSave(current.deviceId!, pay, rate, walletUse)}
+              onClick={() => onSave(current.deviceId!, pay, rate, walletUse, screenInsurance)}
               disabled={!selectedDevice}
               className="rounded-2xl bg-primary text-primary-foreground px-4 py-2 text-sm hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >

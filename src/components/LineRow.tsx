@@ -42,7 +42,8 @@ export function LineRow({
         ? (line.deviceMonthly ?? device?.installment) ?? 0
         : 0) +
       line.addonIds.reduce((s, id) => s + (addons.find((a) => a.id === id)?.monthly ?? 0), 0) -
-      (line.devicePayment === "installments" ? safeWalletUse : 0)
+      (line.devicePayment === "installments" ? safeWalletUse : 0) +
+      (device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0)
   );
 
   const onetime = Math.max(

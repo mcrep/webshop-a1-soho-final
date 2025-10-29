@@ -27,6 +27,7 @@ const Index = () => {
       addonIds: [],
       lineType: null,
       walletUse: 0,
+      screenInsurance: true,
     },
   ]);
   const [activeLineId, setActiveLineId] = useState<string>(lines[0]?.id || rid());
@@ -55,6 +56,7 @@ const Index = () => {
         addonIds: [],
         lineType: null,
         walletUse: 0,
+        screenInsurance: true,
       },
     ]);
     setActiveLineId(newId);
@@ -117,7 +119,9 @@ const Index = () => {
           0
         );
         const applied = l.devicePayment === "installments" ? l.walletUse ?? 0 : 0;
-        return s + Math.max(0, t + devMonthly + add - applied);
+        const device = devices.find((x) => x.id === l.deviceId);
+        const screenInsuranceCost = device && device.id !== "no-dev" && l.screenInsurance ? 4.99 : 0;
+        return s + Math.max(0, t + devMonthly + add - applied + screenInsuranceCost);
       }, 0),
     [lines]
   );
@@ -256,12 +260,13 @@ const Index = () => {
         <DeviceModal
           current={lines.find((l) => l.id === deviceModalFor)!}
           onClose={() => setDeviceModalFor(null)}
-          onSave={(deviceId, pay, rate, walletUse) => {
+          onSave={(deviceId, pay, rate, walletUse, screenInsurance) => {
             updateLine(deviceModalFor, {
               deviceId,
               devicePayment: pay,
               deviceMonthly: pay === "installments" ? rate : null,
               walletUse,
+              screenInsurance,
             });
             setDeviceModalFor(null);
           }}

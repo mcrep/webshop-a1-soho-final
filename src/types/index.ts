@@ -7,6 +7,7 @@ export type Line = {
   addonIds: string[];
   lineType: string | null;
   walletUse?: number;
+  screenInsurance?: boolean;
 };
 
 export type Tariff = {
