@@ -7,6 +7,17 @@ type OrderSummaryProps = {
 };
 
 export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
+  // Calculate Mozaik discount based on number of lines
+  const getMozaikDiscount = () => {
+    const lineCount = lines.length;
+    if (lineCount === 1) return 0;
+    if (lineCount === 2) return 1;
+    if (lineCount === 3) return 2;
+    return 3;
+  };
+
+  const mozaikDiscountPerLine = getMozaikDiscount();
+
   return (
     <section className="rounded-2xl border border-border bg-card shadow-sm p-6">
       <h2 className="text-lg font-semibold mb-6">Detaljni sažetak narudžbe</h2>
@@ -35,7 +46,8 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
               deviceMonthly +
               lineAddons.reduce((sum, addon) => sum + (addon?.monthly ?? 0), 0) +
               screenInsuranceCost -
-              (line.devicePayment === "installments" ? appliedWallet : 0)
+              (line.devicePayment === "installments" ? appliedWallet : 0) -
+              mozaikDiscountPerLine
           );
           
           const totalOnetime = Math.max(
@@ -115,6 +127,14 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
                   <div className="flex items-center justify-between pl-4">
                     <span className="text-muted-foreground text-xs">A1 Wallet popust</span>
                     <span className="text-xs text-primary">-€{appliedWallet.toFixed(2)}</span>
+                  </div>
+                )}
+
+                {/* Mozaik discount */}
+                {mozaikDiscountPerLine > 0 && (
+                  <div className="flex items-center justify-between pl-4">
+                    <span className="text-muted-foreground text-xs">Mozaik popust</span>
+                    <span className="text-xs text-primary">-€{mozaikDiscountPerLine.toFixed(2)}/mj</span>
                   </div>
                 )}
               </div>
