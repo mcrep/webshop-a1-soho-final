@@ -114,6 +114,14 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
                         <span className="text-xs">€{screenInsuranceCost.toFixed(2)}/mj</span>
                       </div>
                     )}
+
+                    {/* Wallet */}
+                    {appliedWallet > 0 && (
+                      <div className="flex items-center justify-between pl-4">
+                        <span className="text-muted-foreground text-xs">A1 Wallet popust</span>
+                        <span className="text-xs text-primary">-€{appliedWallet.toFixed(2)}</span>
+                      </div>
+                    )}
                   </>
                 )}
 
@@ -127,14 +135,6 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
                         <span className="text-xs">€{addon!.monthly.toFixed(2)}/mj</span>
                       </div>
                     ))}
-                  </div>
-                )}
-
-                {/* Wallet */}
-                {appliedWallet > 0 && (
-                  <div className="flex items-center justify-between pl-4">
-                    <span className="text-muted-foreground text-xs">A1 Wallet popust</span>
-                    <span className="text-xs text-primary">-€{appliedWallet.toFixed(2)}</span>
                   </div>
                 )}
               </div>
