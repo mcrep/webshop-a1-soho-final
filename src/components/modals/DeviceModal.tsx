@@ -186,43 +186,71 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                   </div>
                 )}
 
-                {/* Wallet application */}
-                <div className="rounded-2xl border border-border bg-card p-4 mb-4">
-                  <h4 className="text-sm font-semibold mb-3">Primjena A1 Walleta</h4>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-xs text-muted-foreground mb-2 block">
-                        Iznos za primjenu (€)
-                      </label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={1}
-                        value={walletUse}
-                        onChange={(e) => setWalletUseClamped(parseFloat(e.target.value))}
-                        className="w-full rounded-xl border border-border p-3 bg-background outline-none focus:border-primary transition-colors"
-                      />
-                      <div className="mt-2 text-xs text-muted-foreground">
-                        Maksimalno za ovu liniju: €{maxWallet.toFixed(0)}{" "}
-                        {pay === "upfront" ? "(umanjuje jednokratno)" : "(umanjuje mjesečno)"}
+                {/* Combined Cost Preview & Wallet Application */}
+                <div className="rounded-2xl border border-primary/30 bg-accent/30 p-4">
+                  <h4 className="text-sm font-semibold mb-4">Pregled troška</h4>
+                  
+                  {/* Original costs before wallet */}
+                  <div className="space-y-2 mb-4">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground">
+                        {pay === "installments" ? "Rata uređaja" : "Cijena uređaja"}
+                      </span>
+                      <span className="font-medium">
+                        €{pay === "installments" ? rate.toFixed(2) : selectedDevice?.upfront.toFixed(2)}
+                        {pay === "installments" && "/mj"}
+                      </span>
+                    </div>
+                    {screenInsurance && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted-foreground">Osiguranje ekrana</span>
+                        <span className="font-medium">€{screenInsuranceCost.toFixed(2)}/mj</span>
                       </div>
-                    </div>
+                    )}
                   </div>
-                </div>
 
-                {/* Cost preview */}
-                <div className="rounded-xl border border-primary/30 bg-accent/30 p-4">
-                  <div className="text-xs text-muted-foreground mb-2">Pregled troška:</div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Mjesečno</span>
-                    <span className="text-lg font-bold">€{monthlyCost.toFixed(2)}</span>
-                  </div>
-                  {onetimeCost > 0 && (
-                    <div className="flex justify-between items-center mt-2 pt-2 border-t border-border">
-                      <span className="text-sm">Jednokratno</span>
-                      <span className="text-lg font-bold">€{onetimeCost.toFixed(2)}</span>
+                  {/* Wallet input */}
+                  <div className="mb-4 pb-4 border-t border-border pt-4">
+                    <label className="text-xs text-muted-foreground mb-2 block font-medium">
+                      Iznos za primjenu A1 Walleta (€)
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={maxWallet}
+                      step={1}
+                      value={walletUse}
+                      onChange={(e) => {
+                        const val = e.target.value === "" ? 0 : parseFloat(e.target.value);
+                        setWalletUseClamped(val);
+                      }}
+                      className="w-full rounded-xl border border-border p-3 bg-background outline-none focus:border-primary transition-colors"
+                      placeholder="0"
+                    />
+                    <div className="mt-2 text-xs text-muted-foreground">
+                      Maksimalno za ovu liniju: €{maxWallet.toFixed(0)}{" "}
+                      {pay === "upfront" ? "(umanjuje jednokratno)" : "(umanjuje mjesečno)"}
                     </div>
-                  )}
+                  </div>
+
+                  {/* Final costs after wallet */}
+                  <div className="pt-4 border-t border-primary/50 space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-semibold">Ukupno mjesečno</span>
+                      <span className="text-xl font-bold text-primary">€{monthlyCost.toFixed(2)}</span>
+                    </div>
+                    {onetimeCost > 0 && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-semibold">Ukupno jednokratno</span>
+                        <span className="text-xl font-bold text-primary">€{onetimeCost.toFixed(2)}</span>
+                      </div>
+                    )}
+                    {walletUse > 0 && (
+                      <div className="text-xs text-muted-foreground mt-2">
+                        Primijenjeno: €{walletUse.toFixed(2)} A1 Wallet popusta
+                      </div>
+                    )}
+                  </div>
                 </div>
               </>
             )}
