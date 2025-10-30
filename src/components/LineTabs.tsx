@@ -1,4 +1,4 @@
-import { Plus, X } from "lucide-react";
+import { Plus, X, Check } from "lucide-react";
 import type { Line } from "@/types";
 
 type LineTabsProps = {
@@ -33,6 +33,11 @@ export function LineTabs({
     return `Linija ${index + 1}`;
   };
 
+  // Check if line has all required parameters
+  const isLineComplete = (line: Line) => {
+    return !!(line.tariffId && line.deviceId && line.lineType);
+  };
+
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {lines.map((line, idx) => (
@@ -46,9 +51,12 @@ export function LineTabs({
         >
           <button
             onClick={() => onSelectLine(line.id)}
-            className="px-4 py-2 pr-8 text-sm font-medium"
+            className="px-4 py-2 pr-8 text-sm font-medium flex items-center gap-2"
           >
-            {getLineLabel(line, idx)}
+            {isLineComplete(line) && (
+              <Check size={16} className="flex-shrink-0" />
+            )}
+            <span>{getLineLabel(line, idx)}</span>
           </button>
           {lines.length > 1 && (
             <button
