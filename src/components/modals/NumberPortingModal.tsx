@@ -65,8 +65,8 @@ export function NumberPortingModal({ current, onClose, onSave }: NumberPortingMo
     <div className="fixed inset-0 z-50">
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
       <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="relative bg-card border border-border rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between z-10">
+        <div className="relative bg-card border border-border rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+        <div className="bg-card border-b border-border px-6 py-4 flex items-center justify-between rounded-t-2xl flex-shrink-0">
           <h2 className="text-xl font-semibold">Prijenos broja s druge mreže</h2>
           <button
             onClick={onClose}
@@ -77,7 +77,7 @@ export function NumberPortingModal({ current, onClose, onSave }: NumberPortingMo
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-6 overflow-y-auto flex-1">
           {/* Broj koji se prenosi */}
           <div className="space-y-2">
             <Label htmlFor="portingNumber">Broj koji se prenosi</Label>
@@ -221,7 +221,7 @@ export function NumberPortingModal({ current, onClose, onSave }: NumberPortingMo
           </div>
         </div>
 
-        <div className="sticky bottom-0 bg-card border-t border-border px-6 py-4 flex gap-3 justify-end">
+        <div className="bg-card border-t border-border px-6 py-4 flex gap-3 justify-end rounded-b-2xl flex-shrink-0">
           <Button variant="outline" onClick={onClose}>
             Odustani
           </Button>
