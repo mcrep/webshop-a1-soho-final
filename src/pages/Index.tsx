@@ -98,9 +98,9 @@ const Index = () => {
     if (line.existingLineId) {
       // Mock data for existing lines - should match ExistingLineExtensionModal
       const existingLines = [
-        { id: "line-1", number: "091 234 5678" },
-        { id: "line-2", number: "091 876 5432" },
-        { id: "line-3", number: "091 555 1234" },
+        { id: "line-1", number: "385912345678" },
+        { id: "line-2", number: "385918765432" },
+        { id: "line-3", number: "385915551234" },
       ];
       const existing = existingLines.find(l => l.id === line.existingLineId);
       if (existing) return existing.number;
