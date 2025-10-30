@@ -23,8 +23,8 @@ export function PrepaidToPostpaidModal({ current, onClose, onSave }: PrepaidToPo
     <div className="fixed inset-0 z-50">
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
       <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="relative bg-card border border-border rounded-2xl shadow-xl w-full max-w-md">
-        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between z-10">
+        <div className="relative bg-card border border-border rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between z-10 rounded-t-2xl">
           <h2 className="text-xl font-semibold">Prelazak s bonova na pretplatu</h2>
           <button
             onClick={onClose}
@@ -50,7 +50,7 @@ export function PrepaidToPostpaidModal({ current, onClose, onSave }: PrepaidToPo
           </div>
         </div>
 
-        <div className="sticky bottom-0 bg-card border-t border-border px-6 py-4 flex gap-3 justify-end">
+        <div className="sticky bottom-0 bg-card border-t border-border px-6 py-4 flex gap-3 justify-end rounded-b-2xl">
           <Button variant="outline" onClick={onClose}>
             Odustani
           </Button>
