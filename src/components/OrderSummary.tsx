@@ -78,6 +78,14 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
                   <span className="font-medium">{tariff?.name} - €{tariff?.monthly.toFixed(2)}/mj</span>
                 </div>
 
+                {/* Mozaik discount */}
+                {mozaikDiscountPerLine > 0 && (
+                  <div className="flex items-center justify-between pl-4">
+                    <span className="text-muted-foreground text-xs">Mozaik popust</span>
+                    <span className="text-xs text-primary">-€{mozaikDiscountPerLine.toFixed(2)}/mj</span>
+                  </div>
+                )}
+
                 {/* Device */}
                 {device && device.id !== "no-dev" && (
                   <>
@@ -127,14 +135,6 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
                   <div className="flex items-center justify-between pl-4">
                     <span className="text-muted-foreground text-xs">A1 Wallet popust</span>
                     <span className="text-xs text-primary">-€{appliedWallet.toFixed(2)}</span>
-                  </div>
-                )}
-
-                {/* Mozaik discount */}
-                {mozaikDiscountPerLine > 0 && (
-                  <div className="flex items-center justify-between pl-4">
-                    <span className="text-muted-foreground text-xs">Mozaik popust</span>
-                    <span className="text-xs text-primary">-€{mozaikDiscountPerLine.toFixed(2)}/mj</span>
                   </div>
                 )}
               </div>
