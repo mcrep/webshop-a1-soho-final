@@ -256,7 +256,7 @@ const Index = () => {
                 <span className="text-muted-foreground">Iskorišteno</span>
                 <span className="font-semibold">€{walletUsed.toFixed(2)}</span>
               </div>
-              <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-muted font-semibold">
+              <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-card font-semibold">
                 <span className="text-muted-foreground">Preostalo</span>
                 <span>€{walletRemaining.toFixed(2)}</span>
               </div>
