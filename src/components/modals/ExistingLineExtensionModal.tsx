@@ -11,9 +11,9 @@ type ExistingLineExtensionModalProps = {
 
 // Mock data - zamijeni s pravim podacima iz API-ja
 const mockExistingLines = [
-  { id: "line-1", number: "091 234 5678", tariff: "Biz M", expires: "15.12.2025" },
-  { id: "line-2", number: "091 876 5432", tariff: "Biz S", expires: "20.01.2026" },
-  { id: "line-3", number: "091 555 1234", tariff: "Biz L Global", expires: "05.03.2026" },
+  { id: "line-1", number: "385912345678", tariff: "Biz M", expires: "15.12.2025" },
+  { id: "line-2", number: "385918765432", tariff: "Biz S", expires: "20.01.2026" },
+  { id: "line-3", number: "385915551234", tariff: "Biz L Global", expires: "05.03.2026" },
 ];
 
 export function ExistingLineExtensionModal({ current, onClose, onSave }: ExistingLineExtensionModalProps) {
