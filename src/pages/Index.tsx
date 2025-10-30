@@ -244,26 +244,65 @@ const Index = () => {
             onOpenLogin={() => setLoginOpen(true)}
           />
 
-          {/* A1 Wallet Info */}
+          {/* Promocije i popusti */}
           <section className="rounded-2xl border border-border bg-card p-4 shadow-md">
-            <h2 className="font-semibold mb-3">A1 Wallet stanje</h2>
-            <div className="grid gap-3 text-sm">
-              <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-card">
-                <span className="text-muted-foreground">Ukupno</span>
-                <span className="font-semibold">€{walletTotal.toFixed(2)}</span>
+            <h2 className="font-semibold mb-3">Promocije i popusti</h2>
+            
+            {/* Popusti na uređaje (A1 Wallet) */}
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold mb-2">Popusti na uređaje</h3>
+              <div className="grid gap-2 text-sm">
+                <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-card">
+                  <span className="text-muted-foreground">Ukupno</span>
+                  <span className="font-semibold">€{walletTotal.toFixed(2)}</span>
+                </div>
+                <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-card">
+                  <span className="text-muted-foreground">Iskorišteno</span>
+                  <span className="font-semibold">€{walletUsed.toFixed(2)}</span>
+                </div>
+                <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-card font-semibold">
+                  <span className="text-muted-foreground">Preostalo</span>
+                  <span>€{walletRemaining.toFixed(2)}</span>
+                </div>
               </div>
-              <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-card">
-                <span className="text-muted-foreground">Iskorišteno</span>
-                <span className="font-semibold">€{walletUsed.toFixed(2)}</span>
-              </div>
-              <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-card font-semibold">
-                <span className="text-muted-foreground">Preostalo</span>
-                <span>€{walletRemaining.toFixed(2)}</span>
-              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Wallet se zbraja po odabranoj tarifi i može se iskoristiti za uređaje.
+              </p>
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Wallet se zbraja po odabranoj tarifi i može se iskoristiti za uređaje.
-            </p>
+
+            {/* Popusti na tarife (Mozaik popust) */}
+            <div>
+              <h3 className="text-sm font-semibold mb-2">Popusti na tarife</h3>
+              <div className="grid gap-2 text-sm">
+                <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-card">
+                  <span className="text-muted-foreground">Mozaik popust po liniji</span>
+                  <span className="font-semibold">
+                    €{(() => {
+                      const lineCount = lines.length;
+                      if (lineCount === 1) return "0.00";
+                      if (lineCount === 2) return "1.00";
+                      if (lineCount === 3) return "2.00";
+                      return "3.00";
+                    })()}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-xl border border-border p-3 bg-card font-semibold">
+                  <span className="text-muted-foreground">Ukupno mjesečno</span>
+                  <span>
+                    €{(() => {
+                      const lineCount = lines.length;
+                      if (lineCount === 1) return "0.00";
+                      if (lineCount === 2) return (1 * lineCount).toFixed(2);
+                      if (lineCount === 3) return (2 * lineCount).toFixed(2);
+                      return (3 * lineCount).toFixed(2);
+                    })()}
+                  </span>
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Mozaik popust raste s brojem linija: 2 linije = 1€, 3 linije = 2€, 4+ linije = 3€ po liniji.
+              </p>
+            </div>
           </section>
 
           <Summary monthly={monthly} onetime={onetime} lineCount={lines.length} />
