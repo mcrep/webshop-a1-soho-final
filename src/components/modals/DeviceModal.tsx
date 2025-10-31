@@ -295,6 +295,13 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                         )}
                       </div>
                     </div>
+
+                    {/* A1 Wallet availability notice */}
+                    {maxWallet > 0 && (
+                      <div className="text-xs text-muted-foreground mt-2 bg-accent/30 rounded-lg p-2 border border-primary/20">
+                        Imate pravo na umanjenje cijene korištenjem A1 Wallet popusta u iznosu €{maxWallet.toFixed(2)}
+                      </div>
+                    )}
                     
                     {totalWalletUsed > 0 && (
                       <div className="text-xs text-muted-foreground mt-2">
