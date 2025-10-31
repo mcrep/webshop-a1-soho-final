@@ -359,7 +359,7 @@ const Index = () => {
                             <TooltipProvider>
                               <div className="flex gap-6 mt-4 pt-4 border-t border-border">
                                 <div className="flex items-center gap-2">
-                                  <span className="text-sm font-semibold">Mjesečno: €{totalMonthly.toFixed(2)}</span>
+                                  <span className="text-sm font-semibold">Mjesečne naknade: €{totalMonthly.toFixed(2)}</span>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <button className="text-muted-foreground hover:text-foreground transition-colors">
@@ -414,7 +414,7 @@ const Index = () => {
                                 
                                 {totalOnetime > 0 && (
                                   <div className="flex items-center gap-2">
-                                    <span className="text-sm font-semibold">Jednokratno: €{totalOnetime.toFixed(2)}</span>
+                                    <span className="text-sm font-semibold">Jednokratne naknade: €{totalOnetime.toFixed(2)}</span>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <button className="text-muted-foreground hover:text-foreground transition-colors">
