@@ -10,6 +10,7 @@ import { LoginModal } from "@/components/modals/LoginModal";
 import { NumberPortingModal } from "@/components/modals/NumberPortingModal";
 import { PrepaidToPostpaidModal } from "@/components/modals/PrepaidToPostpaidModal";
 import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExtensionModal";
+import { LineTypeSelectionModal } from "@/components/modals/LineTypeSelectionModal";
 import { tariffs, devices, addons } from "@/data/catalog";
 import type { Line } from "@/types";
 import { Edit, ChevronRight } from "lucide-react";
@@ -37,6 +38,7 @@ const Index = () => {
   const [deviceModalFor, setDeviceModalFor] = useState<string | null>(null);
   const [deviceListModalFor, setDeviceListModalFor] = useState<string | null>(null);
   const [lineTypeModalFor, setLineTypeModalFor] = useState<{ lineId: string; lineType: string } | null>(null);
+  const [lineTypeSelectionFor, setLineTypeSelectionFor] = useState<string | null>(null);
   const [activePanel, setActivePanel] = useState<"config" | "login">("config");
   const [authUser, setAuthUser] = useState("");
   const [authPass, setAuthPass] = useState("");
@@ -272,7 +274,13 @@ const Index = () => {
                                 <ChevronRight size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" />
                               </div>
                               
-                              <div className="rounded-xl border border-border bg-background p-4 flex items-center justify-between group hover:bg-muted/50 transition-colors">
+                              <button
+                                onClick={() => {
+                                  // Open line type selection modal
+                                  setLineTypeSelectionFor(line.id);
+                                }}
+                                className="rounded-xl border border-border bg-background p-4 flex items-center justify-between group hover:bg-muted/50 transition-colors w-full text-left"
+                              >
                                 <div>
                                   <div className="text-xs text-muted-foreground mb-1">Vrsta linije</div>
                                   <div className="font-medium">
@@ -280,7 +288,7 @@ const Index = () => {
                                   </div>
                                 </div>
                                 <ChevronRight size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" />
-                              </div>
+                              </button>
                             </div>
                           </div>
                         );
@@ -309,7 +317,6 @@ const Index = () => {
                         onChange={(patch) => updateLine(activeLineId, patch)}
                         onOpenDeviceModal={() => setDeviceModalFor(activeLineId)}
                         onOpenDeviceListModal={() => setDeviceListModalFor(activeLineId)}
-                        onOpenLineTypeModal={(lineType) => setLineTypeModalFor({ lineId: activeLineId, lineType })}
                         onComplete={() => {
                           // Mark line as completed
                           updateLine(activeLineId, { completed: true });
@@ -382,6 +389,22 @@ const Index = () => {
           onChangePass={setAuthPass}
           onClose={() => setLoginOpen(false)}
           onSubmit={() => setLoginOpen(false)}
+        />
+      )}
+
+      {/* Line type selection modal */}
+      {lineTypeSelectionFor && (
+        <LineTypeSelectionModal
+          currentLineType={lines.find((l) => l.id === lineTypeSelectionFor)?.lineType}
+          onClose={() => setLineTypeSelectionFor(null)}
+          onSelect={(lineType) => {
+            updateLine(lineTypeSelectionFor, { lineType });
+            setLineTypeSelectionFor(null);
+            // Open specific modal if needed
+            if (lineType !== "new") {
+              setLineTypeModalFor({ lineId: lineTypeSelectionFor, lineType });
+            }
+          }}
         />
       )}
 
