@@ -96,8 +96,8 @@ const Index = () => {
   };
 
   // Separate completed and active lines
-  const completedLines = lines.filter(l => isLineComplete(l) && l.id !== activeLineId);
-  const activeLineIsComplete = activeLine ? isLineComplete(activeLine) : false;
+  const completedLines = lines.filter(l => l.completed && l.id !== activeLineId);
+  const activeLineIsCompleted = activeLine?.completed ?? false;
 
   // Helper function to get line label
   const getLineLabel = (line: Line, index: number) => {
@@ -229,7 +229,16 @@ const Index = () => {
                             <AccordionItem key={line.id} value={line.id} className="border-none">
                               <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-muted/50 transition-colors">
                                 <div className="flex items-center gap-3">
-                                  <span className="font-semibold">{getLineLabel(line, lineIndex)}</span>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setActiveLineId(line.id);
+                                      updateLine(line.id, { completed: false });
+                                    }}
+                                    className="font-semibold hover:text-primary"
+                                  >
+                                    {getLineLabel(line, lineIndex)}
+                                  </button>
                                   <span className="text-sm text-muted-foreground">
                                     {tariffs.find((t) => t.id === line.tariffId)?.name} • 
                                     {devices.find((d) => d.id === line.deviceId)?.name}
@@ -263,7 +272,7 @@ const Index = () => {
                     />
                   </section>
 
-                  {activeLine && !activeLineIsComplete && (
+                  {activeLine && !activeLineIsCompleted && (
                     <section className="rounded-2xl border border-border bg-card shadow-sm p-6">
                       <h2 className="text-lg font-semibold mb-6">
                         Detaljna konfiguracija - {getLineLabel(activeLine, lines.findIndex((l) => l.id === activeLineId))}
@@ -275,8 +284,10 @@ const Index = () => {
                         onOpenDeviceListModal={() => setDeviceListModalFor(activeLineId)}
                         onOpenLineTypeModal={(lineType) => setLineTypeModalFor({ lineId: activeLineId, lineType })}
                         onComplete={() => {
+                          // Mark line as completed
+                          updateLine(activeLineId, { completed: true });
                           // When completed, if there are more incomplete lines, switch to first incomplete
-                          const nextIncomplete = lines.find(l => l.id !== activeLineId && !isLineComplete(l));
+                          const nextIncomplete = lines.find(l => l.id !== activeLineId && !l.completed);
                           if (nextIncomplete) {
                             setActiveLineId(nextIncomplete.id);
                           }

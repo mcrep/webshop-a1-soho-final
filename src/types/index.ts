@@ -8,6 +8,7 @@ export type Line = {
   lineType: string | null;
   walletUse?: number;
   screenInsurance?: boolean;
+  completed?: boolean;
   // Number porting data (mnp)
   portingNumber?: string;
   portingNumberType?: "prepaid" | "postpaid";
