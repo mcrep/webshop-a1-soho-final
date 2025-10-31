@@ -10,6 +10,7 @@ import { LoginModal } from "@/components/modals/LoginModal";
 import { NumberPortingModal } from "@/components/modals/NumberPortingModal";
 import { PrepaidToPostpaidModal } from "@/components/modals/PrepaidToPostpaidModal";
 import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExtensionModal";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { tariffs, devices, addons } from "@/data/catalog";
 import type { Line } from "@/types";
 
@@ -88,6 +89,15 @@ const Index = () => {
 
   // Get active line data
   const activeLine = lines.find((l) => l.id === activeLineId);
+
+  // Check if line has all required parameters
+  const isLineComplete = (line: Line) => {
+    return !!(line.tariffId && line.deviceId && line.lineType);
+  };
+
+  // Separate completed and active lines
+  const completedLines = lines.filter(l => isLineComplete(l) && l.id !== activeLineId);
+  const activeLineIsComplete = activeLine ? isLineComplete(activeLine) : false;
 
   // Helper function to get line label
   const getLineLabel = (line: Line, index: number) => {
@@ -209,6 +219,39 @@ const Index = () => {
             <div className="space-y-6">
               {activePanel === "config" && (
                 <>
+                  {/* Completed lines accordion */}
+                  {completedLines.length > 0 && (
+                    <section className="rounded-2xl border border-border bg-card shadow-sm">
+                      <Accordion type="single" collapsible className="w-full">
+                        {completedLines.map((line, idx) => {
+                          const lineIndex = lines.findIndex((l) => l.id === line.id);
+                          return (
+                            <AccordionItem key={line.id} value={line.id} className="border-none">
+                              <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-muted/50 transition-colors">
+                                <div className="flex items-center gap-3">
+                                  <span className="font-semibold">{getLineLabel(line, lineIndex)}</span>
+                                  <span className="text-sm text-muted-foreground">
+                                    {tariffs.find((t) => t.id === line.tariffId)?.name} • 
+                                    {devices.find((d) => d.id === line.deviceId)?.name}
+                                  </span>
+                                </div>
+                              </AccordionTrigger>
+                              <AccordionContent className="px-6 pb-6">
+                                <LineDetailConfig
+                                  line={line}
+                                  onChange={(patch) => updateLine(line.id, patch)}
+                                  onOpenDeviceModal={() => setDeviceModalFor(line.id)}
+                                  onOpenDeviceListModal={() => setDeviceListModalFor(line.id)}
+                                  onOpenLineTypeModal={(lineType) => setLineTypeModalFor({ lineId: line.id, lineType })}
+                                />
+                              </AccordionContent>
+                            </AccordionItem>
+                          );
+                        })}
+                      </Accordion>
+                    </section>
+                  )}
+
                   <section className="rounded-2xl border border-border bg-card shadow-sm p-4">
                     <h2 className="text-lg font-semibold mb-4">Konfiguracija linija</h2>
                     <LineTabs
@@ -220,7 +263,7 @@ const Index = () => {
                     />
                   </section>
 
-                  {activeLine && (
+                  {activeLine && !activeLineIsComplete && (
                     <section className="rounded-2xl border border-border bg-card shadow-sm p-6">
                       <h2 className="text-lg font-semibold mb-6">
                         Detaljna konfiguracija - {getLineLabel(activeLine, lines.findIndex((l) => l.id === activeLineId))}
@@ -231,6 +274,14 @@ const Index = () => {
                         onOpenDeviceModal={() => setDeviceModalFor(activeLineId)}
                         onOpenDeviceListModal={() => setDeviceListModalFor(activeLineId)}
                         onOpenLineTypeModal={(lineType) => setLineTypeModalFor({ lineId: activeLineId, lineType })}
+                        onComplete={() => {
+                          // When completed, if there are more incomplete lines, switch to first incomplete
+                          const nextIncomplete = lines.find(l => l.id !== activeLineId && !isLineComplete(l));
+                          if (nextIncomplete) {
+                            setActiveLineId(nextIncomplete.id);
+                          }
+                        }}
+                        showCompleteButton={true}
                       />
                     </section>
                   )}

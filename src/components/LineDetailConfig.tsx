@@ -9,6 +9,8 @@ type LineDetailConfigProps = {
   onOpenDeviceModal: () => void;
   onOpenDeviceListModal: () => void;
   onOpenLineTypeModal: (lineType: string) => void;
+  onComplete?: () => void;
+  showCompleteButton?: boolean;
 };
 
 export function LineDetailConfig({
@@ -17,6 +19,8 @@ export function LineDetailConfig({
   onOpenDeviceModal,
   onOpenDeviceListModal,
   onOpenLineTypeModal,
+  onComplete,
+  showCompleteButton = false,
 }: LineDetailConfigProps) {
   const tariff = tariffs.find((t) => t.id === line.tariffId);
   const device = devices.find((d) => d.id === line.deviceId);
@@ -272,6 +276,19 @@ export function LineDetailConfig({
           </div>
         </div>
       </section>
+
+      {/* Complete button */}
+      {showCompleteButton && (
+        <div className="flex justify-end">
+          <button
+            onClick={onComplete}
+            disabled={!line.tariffId || !line.deviceId || !line.lineType}
+            className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            Gotovo
+          </button>
+        </div>
+      )}
     </div>
   );
 }
