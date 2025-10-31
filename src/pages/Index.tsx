@@ -307,9 +307,9 @@ const Index = () => {
                   )}
 
                   <section className="rounded-2xl border border-border bg-card shadow-sm p-4">
-                    <h2 className="text-lg font-semibold mb-4">Konfiguracija linija</h2>
-                    {lines.every(l => l.completed) && (
-                      <div className="flex justify-center mb-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-lg font-semibold">Konfiguracija linija</h2>
+                      {lines.every(l => l.completed) && (
                         <button
                           onClick={() => {
                             console.log("Završi narudžbu clicked");
@@ -320,8 +320,8 @@ const Index = () => {
                         >
                           Završi narudžbu
                         </button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                     <LineTabs
                       lines={lines.filter(l => !l.completed)}
                       activeLineId={activeLineId}
