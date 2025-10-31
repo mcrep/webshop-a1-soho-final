@@ -10,9 +10,9 @@ import { LoginModal } from "@/components/modals/LoginModal";
 import { NumberPortingModal } from "@/components/modals/NumberPortingModal";
 import { PrepaidToPostpaidModal } from "@/components/modals/PrepaidToPostpaidModal";
 import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExtensionModal";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { tariffs, devices, addons } from "@/data/catalog";
 import type { Line } from "@/types";
+import { Edit, ChevronRight } from "lucide-react";
 
 function rid() {
   return Math.random().toString(36).slice(2, 9);
@@ -217,45 +217,74 @@ const Index = () => {
           <div className="space-y-6">
               {activePanel === "config" && (
                 <>
-                  {/* Completed lines accordion */}
+                  {/* Completed lines summary */}
                   {completedLines.length > 0 && (
-                    <section className="rounded-2xl border border-border bg-card shadow-sm">
-                      <Accordion type="single" collapsible className="w-full">
-                        {completedLines.map((line, idx) => {
-                          const lineIndex = lines.findIndex((l) => l.id === line.id);
-                          return (
-                            <AccordionItem key={line.id} value={line.id} className="border-none">
-                              <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-muted/50 transition-colors">
-                                <div className="flex items-center gap-3">
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setActiveLineId(line.id);
-                                      updateLine(line.id, { completed: false });
-                                    }}
-                                    className="font-semibold hover:text-primary"
-                                  >
-                                    {getLineLabel(line, lineIndex)}
-                                  </button>
-                                  <span className="text-sm text-muted-foreground">
-                                    {tariffs.find((t) => t.id === line.tariffId)?.name} • 
-                                    {devices.find((d) => d.id === line.deviceId)?.name}
-                                  </span>
+                    <section className="space-y-4">
+                      {completedLines.map((line) => {
+                        const lineIndex = lines.findIndex((l) => l.id === line.id);
+                        const tariff = tariffs.find((t) => t.id === line.tariffId);
+                        const device = devices.find((d) => d.id === line.deviceId);
+                        const lineTypeLabels = {
+                          new: "Nova linija",
+                          mnp: "Prijenos broja",
+                          pre2post: "Prepaid u Postpaid",
+                          renew: "Produženje ugovora",
+                        };
+                        
+                        return (
+                          <div
+                            key={line.id}
+                            className="rounded-2xl border border-border bg-card shadow-sm p-6"
+                          >
+                            <div className="flex items-center justify-between mb-4">
+                              <h3 className="text-lg font-semibold">
+                                {getLineLabel(line, lineIndex)}
+                              </h3>
+                              <button
+                                onClick={() => {
+                                  setActiveLineId(line.id);
+                                  updateLine(line.id, { completed: false });
+                                }}
+                                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                title="Uredi liniju"
+                              >
+                                <Edit size={16} />
+                                <span>Uredi</span>
+                              </button>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <div className="rounded-xl border border-border bg-background p-4 flex items-center justify-between group hover:bg-muted/50 transition-colors">
+                                <div>
+                                  <div className="text-xs text-muted-foreground mb-1">Tarifa</div>
+                                  <div className="font-medium">
+                                    {tariff?.name} - €{tariff?.monthly}/mj
+                                  </div>
                                 </div>
-                              </AccordionTrigger>
-                              <AccordionContent className="px-6 pb-6">
-                                <LineDetailConfig
-                                  line={line}
-                                  onChange={(patch) => updateLine(line.id, patch)}
-                                  onOpenDeviceModal={() => setDeviceModalFor(line.id)}
-                                  onOpenDeviceListModal={() => setDeviceListModalFor(line.id)}
-                                  onOpenLineTypeModal={(lineType) => setLineTypeModalFor({ lineId: line.id, lineType })}
-                                />
-                              </AccordionContent>
-                            </AccordionItem>
-                          );
-                        })}
-                      </Accordion>
+                                <ChevronRight size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" />
+                              </div>
+                              
+                              <div className="rounded-xl border border-border bg-background p-4 flex items-center justify-between group hover:bg-muted/50 transition-colors">
+                                <div>
+                                  <div className="text-xs text-muted-foreground mb-1">Uređaj</div>
+                                  <div className="font-medium">{device?.name}</div>
+                                </div>
+                                <ChevronRight size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" />
+                              </div>
+                              
+                              <div className="rounded-xl border border-border bg-background p-4 flex items-center justify-between group hover:bg-muted/50 transition-colors">
+                                <div>
+                                  <div className="text-xs text-muted-foreground mb-1">Vrsta linije</div>
+                                  <div className="font-medium">
+                                    {line.lineType ? lineTypeLabels[line.lineType as keyof typeof lineTypeLabels] : "-"}
+                                  </div>
+                                </div>
+                                <ChevronRight size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </section>
                   )}
 
