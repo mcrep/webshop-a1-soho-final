@@ -307,7 +307,21 @@ const Index = () => {
                   )}
 
                   <section className="rounded-2xl border border-border bg-card shadow-sm p-4">
-                    <h2 className="text-lg font-semibold mb-4">Konfiguracija linija</h2>
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-lg font-semibold">Konfiguracija linija</h2>
+                      {lines.every(l => l.completed) && (
+                        <button
+                          onClick={() => {
+                            console.log("Završi narudžbu clicked");
+                            // TODO: Navigate to next step or process order
+                          }}
+                          disabled={!lines.every(l => l.lineType)}
+                          className="px-6 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                          Završi narudžbu
+                        </button>
+                      )}
+                    </div>
                     <LineTabs
                       lines={lines.filter(l => !l.completed)}
                       activeLineId={activeLineId}
