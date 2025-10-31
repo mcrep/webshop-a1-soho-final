@@ -34,8 +34,12 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
   );
 
   const [screenInsurance, setScreenInsurance] = useState(current.screenInsurance ?? true);
-  const [isEditingPrice, setIsEditingPrice] = useState(false);
-  const [editedPrice, setEditedPrice] = useState("");
+  const [isEditingMonthly, setIsEditingMonthly] = useState(false);
+  const [editedMonthly, setEditedMonthly] = useState("");
+  const [isEditingOnetime, setIsEditingOnetime] = useState(false);
+  const [editedOnetime, setEditedOnetime] = useState("");
+  const [walletForMonthly, setWalletForMonthly] = useState(0);
+  const [walletForOnetime, setWalletForOnetime] = useState(0);
 
   useEffect(() => {
     if (selectedDevice) {
@@ -60,8 +64,27 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
 
   // Cost calculation
   const screenInsuranceCost = screenInsurance ? 4.99 : 0;
-  const monthlyCost = (pay === "installments" ? Math.max(0, rate - walletUse) : 0) + screenInsuranceCost;
-  const onetimeCost = pay === "upfront" ? Math.max(0, (selectedDevice?.upfront ?? 0) - walletUse) : 0;
+  
+  // Initialize wallet distribution
+  useEffect(() => {
+    const totalWallet = walletUse;
+    // Distribute existing wallet usage
+    if (pay === "installments") {
+      setWalletForMonthly(totalWallet);
+      setWalletForOnetime(0);
+    } else {
+      setWalletForMonthly(0);
+      setWalletForOnetime(totalWallet);
+    }
+  }, [pay, walletUse]);
+
+  const monthlyCostOriginal = pay === "installments" ? rate + screenInsuranceCost : (screenInsurance ? screenInsuranceCost : 0);
+  const onetimeCostOriginal = pay === "installments" ? (selectedDevice?.upfront ?? 0) : (selectedDevice?.upfront ?? 0);
+  
+  const monthlyCost = Math.max(0, monthlyCostOriginal - walletForMonthly);
+  const onetimeCost = Math.max(0, onetimeCostOriginal - walletForOnetime);
+  
+  const totalWalletUsed = walletForMonthly + walletForOnetime;
 
   return (
     <div className="fixed inset-0 z-50">
@@ -194,14 +217,17 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                   
                   {/* Original costs */}
                   <div className="space-y-2 mb-4">
+                    {pay === "installments" && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted-foreground">Rata uređaja</span>
+                        <span className="font-medium">€{rate.toFixed(2)}/mj</span>
+                      </div>
+                    )}
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">
-                        {pay === "installments" ? "Rata uređaja" : "Cijena uređaja"}
+                        {pay === "installments" ? "Početni trošak" : "Cijena uređaja"}
                       </span>
-                      <span className="font-medium">
-                        €{pay === "installments" ? rate.toFixed(2) : selectedDevice?.upfront.toFixed(2)}
-                        {pay === "installments" && "/mj"}
-                      </span>
+                      <span className="font-medium">€{selectedDevice?.upfront.toFixed(2)}</span>
                     </div>
                     {screenInsurance && (
                       <div className="flex justify-between items-center text-sm">
@@ -212,17 +238,76 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                   </div>
 
                   {/* Final costs with edit option */}
-                  <div className="pt-4 border-t border-primary/50 space-y-2">
+                  <div className="pt-4 border-t border-primary/50 space-y-3">
+                    {(pay === "installments" || screenInsurance) && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-semibold">Ukupno mjesečno</span>
+                        <div className="flex items-center gap-2">
+                          {!isEditingMonthly ? (
+                            <>
+                              <span className="text-xl font-bold text-primary">€{monthlyCost.toFixed(2)}</span>
+                              <button
+                                onClick={() => {
+                                  setIsEditingMonthly(true);
+                                  setEditedMonthly(monthlyCost.toFixed(2));
+                                }}
+                                className="text-primary hover:text-primary/80 transition-colors p-1"
+                                title="Uredi cijenu"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                            </>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm">€</span>
+                              <input
+                                type="number"
+                                min={0}
+                                max={monthlyCostOriginal}
+                                step={0.01}
+                                value={editedMonthly}
+                                onChange={(e) => setEditedMonthly(e.target.value)}
+                                onBlur={() => {
+                                  const val = parseFloat(editedMonthly) || 0;
+                                  const clampedPrice = Math.min(Math.max(0, val), monthlyCostOriginal);
+                                  const newWalletForMonthly = monthlyCostOriginal - clampedPrice;
+                                  const availableWallet = maxWallet - walletForOnetime;
+                                  setWalletForMonthly(Math.min(newWalletForMonthly, availableWallet));
+                                  setEditedMonthly(clampedPrice.toFixed(2));
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.currentTarget.blur();
+                                    setIsEditingMonthly(false);
+                                  } else if (e.key === 'Escape') {
+                                    setIsEditingMonthly(false);
+                                  }
+                                }}
+                                className="w-24 rounded-lg border border-primary px-2 py-1 text-lg font-bold text-primary bg-background outline-none focus:ring-2 focus:ring-primary"
+                                autoFocus
+                              />
+                              <button
+                                onClick={() => setIsEditingMonthly(false)}
+                                className="text-sm text-primary hover:text-primary/80 px-2 py-1 border border-primary rounded-lg"
+                              >
+                                OK
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-semibold">Ukupno mjesečno</span>
+                      <span className="text-sm font-semibold">Ukupno jednokratno</span>
                       <div className="flex items-center gap-2">
-                        {!isEditingPrice ? (
+                        {!isEditingOnetime ? (
                           <>
-                            <span className="text-xl font-bold text-primary">€{monthlyCost.toFixed(2)}</span>
+                            <span className="text-xl font-bold text-primary">€{onetimeCost.toFixed(2)}</span>
                             <button
                               onClick={() => {
-                                setIsEditingPrice(true);
-                                setEditedPrice(monthlyCost.toFixed(2));
+                                setIsEditingOnetime(true);
+                                setEditedOnetime(onetimeCost.toFixed(2));
                               }}
                               className="text-primary hover:text-primary/80 transition-colors p-1"
                               title="Uredi cijenu"
@@ -236,35 +321,31 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                             <input
                               type="number"
                               min={0}
-                              max={pay === "installments" ? rate + screenInsuranceCost : selectedDevice?.upfront}
+                              max={onetimeCostOriginal}
                               step={0.01}
-                              value={editedPrice}
-                              onChange={(e) => setEditedPrice(e.target.value)}
+                              value={editedOnetime}
+                              onChange={(e) => setEditedOnetime(e.target.value)}
                               onBlur={() => {
-                                const val = parseFloat(editedPrice) || 0;
-                                const originalCost = pay === "installments" ? rate + screenInsuranceCost : selectedDevice?.upfront ?? 0;
-                                const maxDiscount = pay === "installments" ? rate : originalCost;
-                                const minPrice = pay === "installments" ? screenInsuranceCost : 0;
-                                const clampedPrice = Math.min(Math.max(minPrice, val), originalCost);
-                                const newWalletUse = pay === "installments" 
-                                  ? Math.min(rate - (clampedPrice - screenInsuranceCost), maxDiscount)
-                                  : originalCost - clampedPrice;
-                                setWalletUseClamped(Math.max(0, Math.min(newWalletUse, maxWallet)));
-                                setEditedPrice(clampedPrice.toFixed(2));
+                                const val = parseFloat(editedOnetime) || 0;
+                                const clampedPrice = Math.min(Math.max(0, val), onetimeCostOriginal);
+                                const newWalletForOnetime = onetimeCostOriginal - clampedPrice;
+                                const availableWallet = maxWallet - walletForMonthly;
+                                setWalletForOnetime(Math.min(newWalletForOnetime, availableWallet));
+                                setEditedOnetime(clampedPrice.toFixed(2));
                               }}
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                   e.currentTarget.blur();
-                                  setIsEditingPrice(false);
+                                  setIsEditingOnetime(false);
                                 } else if (e.key === 'Escape') {
-                                  setIsEditingPrice(false);
+                                  setIsEditingOnetime(false);
                                 }
                               }}
                               className="w-24 rounded-lg border border-primary px-2 py-1 text-lg font-bold text-primary bg-background outline-none focus:ring-2 focus:ring-primary"
                               autoFocus
                             />
                             <button
-                              onClick={() => setIsEditingPrice(false)}
+                              onClick={() => setIsEditingOnetime(false)}
                               className="text-sm text-primary hover:text-primary/80 px-2 py-1 border border-primary rounded-lg"
                             >
                               OK
@@ -273,15 +354,12 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                         )}
                       </div>
                     </div>
-                    {onetimeCost > 0 && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-semibold">Ukupno jednokratno</span>
-                        <span className="text-xl font-bold text-primary">€{onetimeCost.toFixed(2)}</span>
-                      </div>
-                    )}
-                    {walletUse > 0 && (
+                    
+                    {totalWalletUsed > 0 && (
                       <div className="text-xs text-muted-foreground mt-2">
-                        Primijenjeno: €{walletUse.toFixed(2)} A1 Wallet popusta
+                        Primijenjeno: €{totalWalletUsed.toFixed(2)} A1 Wallet popusta
+                        {walletForMonthly > 0 && ` (€${walletForMonthly.toFixed(2)} mjesečno)`}
+                        {walletForOnetime > 0 && ` (€${walletForOnetime.toFixed(2)} jednokratno)`}
                       </div>
                     )}
                   </div>
@@ -305,7 +383,7 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
               Odustani
             </button>
             <button
-              onClick={() => onSave(current.deviceId!, pay, rate, walletUse, screenInsurance)}
+              onClick={() => onSave(current.deviceId!, pay, rate, totalWalletUsed, screenInsurance)}
               disabled={!selectedDevice}
               className="rounded-2xl bg-primary text-primary-foreground px-4 py-2 text-sm hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
