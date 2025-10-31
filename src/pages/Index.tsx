@@ -96,7 +96,7 @@ const Index = () => {
   };
 
   // Separate completed and active lines
-  const completedLines = lines.filter(l => l.completed && l.id !== activeLineId);
+  const completedLines = lines.filter(l => l.completed);
   const activeLineIsCompleted = activeLine?.completed ?? false;
 
   // Helper function to get line label
