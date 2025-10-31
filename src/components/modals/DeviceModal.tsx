@@ -98,9 +98,15 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                   <div>
                     <div className="text-xs text-muted-foreground">{selectedDevice.brand}</div>
                     <div className="font-semibold text-lg">{selectedDevice.name}</div>
-                    <div className="text-sm text-muted-foreground mt-1">
-                      Jednokratno: €{selectedDevice.upfront} • Rate: €{selectedDevice.installment}/mj
-                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // TODO: Implement device info modal
+                      }}
+                      className="text-sm text-primary hover:text-primary/80 underline underline-offset-2 mt-1 transition-colors"
+                    >
+                      Više informacija o uređaju
+                    </button>
                   </div>
                 </div>
               </div>
