@@ -262,7 +262,7 @@ const Index = () => {
                   <section className="rounded-2xl border border-border bg-card shadow-sm p-4">
                     <h2 className="text-lg font-semibold mb-4">Konfiguracija linija</h2>
                     <LineTabs
-                      lines={lines}
+                      lines={lines.filter(l => !l.completed)}
                       activeLineId={activeLineId}
                       onSelectLine={setActiveLineId}
                       onAddLine={addLine}
