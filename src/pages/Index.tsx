@@ -324,7 +324,7 @@ const Index = () => {
                                 <div>
                                   <div className="text-xs text-muted-foreground mb-1">Tarifa</div>
                                   <div className="font-medium">
-                                    {tariff?.name} - €{tariff?.monthly}/mj
+                                    {tariff?.name}
                                   </div>
                                 </div>
                                 <ChevronRight size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" />
