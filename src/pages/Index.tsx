@@ -5,6 +5,7 @@ import { LineDetailConfig } from "@/components/LineDetailConfig";
 import { OrderSummary } from "@/components/OrderSummary";
 import { DeviceModal } from "@/components/modals/DeviceModal";
 import { DeviceListModal } from "@/components/modals/DeviceListModal";
+import { AddonsModal } from "@/components/modals/AddonsModal";
 import { OTPModal } from "@/components/modals/OTPModal";
 import { LoginModal } from "@/components/modals/LoginModal";
 import { NumberPortingModal } from "@/components/modals/NumberPortingModal";
@@ -37,6 +38,7 @@ const Index = () => {
   const [activeLineId, setActiveLineId] = useState<string>(lines[0]?.id || rid());
   const [deviceModalFor, setDeviceModalFor] = useState<string | null>(null);
   const [deviceListModalFor, setDeviceListModalFor] = useState<string | null>(null);
+  const [addonsModalFor, setAddonsModalFor] = useState<string | null>(null);
   const [lineTypeModalFor, setLineTypeModalFor] = useState<{ lineId: string; lineType: string } | null>(null);
   const [lineTypeSelectionFor, setLineTypeSelectionFor] = useState<string | null>(null);
   const [activePanel, setActivePanel] = useState<"config" | "login">("config");
@@ -355,6 +357,7 @@ const Index = () => {
                         onChange={(patch) => updateLine(activeLineId, patch)}
                         onOpenDeviceModal={() => setDeviceModalFor(activeLineId)}
                         onOpenDeviceListModal={() => setDeviceListModalFor(activeLineId)}
+                        onOpenAddonsModal={() => setAddonsModalFor(activeLineId)}
                         onComplete={() => {
                           // Mark line as completed
                           updateLine(activeLineId, { completed: true });
@@ -406,6 +409,17 @@ const Index = () => {
             setDeviceModalFor(null);
           }}
           walletAvailForLine={walletAvailForActiveLine}
+        />
+      )}
+
+      {addonsModalFor && (
+        <AddonsModal
+          current={lines.find((l) => l.id === addonsModalFor)!}
+          onClose={() => setAddonsModalFor(null)}
+          onSave={(addonIds) => {
+            updateLine(addonsModalFor, { addonIds });
+            setAddonsModalFor(null);
+          }}
         />
       )}
 

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { tariffs, devices, addons } from "@/data/catalog";
 import type { Line } from "@/types";
 
@@ -8,6 +8,7 @@ type LineDetailConfigProps = {
   onChange: (patch: Partial<Line>) => void;
   onOpenDeviceModal: () => void;
   onOpenDeviceListModal: () => void;
+  onOpenAddonsModal: () => void;
   onComplete?: () => void;
   showCompleteButton?: boolean;
 };
@@ -17,6 +18,7 @@ export function LineDetailConfig({
   onChange,
   onOpenDeviceModal,
   onOpenDeviceListModal,
+  onOpenAddonsModal,
   onComplete,
   showCompleteButton = false,
 }: LineDetailConfigProps) {
@@ -64,9 +66,9 @@ export function LineDetailConfig({
 
   return (
     <div className="space-y-6">
-      {/* Tariff selection */}
+      {/* Tariff and addons selection */}
       <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
-        <h3 className="text-sm font-semibold mb-3">Tarifa</h3>
+        <h3 className="text-sm font-semibold mb-3">Tarifa i dodatne opcije</h3>
         <div className="relative group">
           {canScrollLeftTariff && (
             <button
@@ -111,6 +113,49 @@ export function LineDetailConfig({
             ))}
           </div>
         </div>
+
+        {/* Addons button (shown when tariff is selected) */}
+        {line.tariffId && (
+          <div className="mt-4">
+            <button
+              onClick={onOpenAddonsModal}
+              className="w-full rounded-xl border border-primary bg-primary/10 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/20 transition-colors"
+            >
+              Dodatne opcije
+            </button>
+          </div>
+        )}
+
+        {/* Selected addons as cards */}
+        {line.addonIds.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {line.addonIds.map((addonId) => {
+              const addon = addons.find((a) => a.id === addonId);
+              if (!addon) return null;
+              return (
+                <div
+                  key={addonId}
+                  className="flex items-center gap-2 rounded-lg border border-primary/30 bg-accent/30 px-3 py-2 text-sm"
+                >
+                  <span className="font-medium">{addon.name}</span>
+                  <span className="text-xs text-muted-foreground">
+                    €{addon.monthly.toFixed(2)}/mj
+                  </span>
+                  <button
+                    onClick={() => {
+                      const newIds = line.addonIds.filter((id) => id !== addonId);
+                      onChange({ addonIds: newIds });
+                    }}
+                    className="ml-1 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="Ukloni addon"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* Device selection */}
@@ -150,45 +195,6 @@ export function LineDetailConfig({
         </button>
       </section>
 
-      {/* Addons selection */}
-      <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
-        <h3 className="text-sm font-semibold mb-3">Dodatne opcije</h3>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {addons.map((a) => {
-            const isSelected = line.addonIds.includes(a.id);
-            return (
-              <label
-                key={a.id}
-                className={`rounded-xl border p-3 cursor-pointer transition-all ${
-                  isSelected
-                    ? "ring-2 ring-primary border-primary bg-accent/50"
-                    : "border-border hover:bg-muted"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-medium text-sm">{a.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      €{a.monthly.toFixed(2)}/mj
-                    </div>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={(e) => {
-                      const newIds = e.target.checked
-                        ? [...line.addonIds, a.id]
-                        : line.addonIds.filter((id) => id !== a.id);
-                      onChange({ addonIds: newIds });
-                    }}
-                    className="h-5 w-5"
-                  />
-                </div>
-              </label>
-            );
-          })}
-        </div>
-      </section>
 
       {/* Complete button */}
       {showCompleteButton && (
