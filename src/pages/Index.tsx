@@ -188,31 +188,45 @@ const Index = () => {
         <div>
           {/* Stepper - centered horizontally */}
           <div className="flex items-center justify-center gap-4 mb-8">
-            <button
-              onClick={() => setActivePanel("config")}
-              className={`h-12 w-12 rounded-full grid place-items-center border text-sm font-semibold transition-all ${
-                activePanel === "config"
-                  ? "bg-primary text-primary-foreground border-primary shadow-md"
-                  : "bg-card text-muted-foreground border-border hover:bg-muted"
-              }`}
-              aria-current={activePanel === "config" ? "step" : undefined}
-              title="Korak 1: Konfiguracija"
-            >
-              1
-            </button>
-            <div className="h-[2px] w-24 bg-border" />
-            <button
-              onClick={() => setActivePanel("login")}
-              className={`h-12 w-12 rounded-full grid place-items-center border text-sm font-semibold transition-all ${
-                activePanel === "login"
-                  ? "bg-primary text-primary-foreground border-primary shadow-md"
-                  : "bg-card text-muted-foreground border-border hover:bg-muted"
-              }`}
-              aria-current={activePanel === "login" ? "step" : undefined}
-              title="Korak 2: Sažetak narudžbe"
-            >
-              2
-            </button>
+            <div className="flex flex-col items-center gap-2">
+              <button
+                onClick={() => setActivePanel("config")}
+                className={`h-12 w-12 rounded-full grid place-items-center border text-sm font-semibold transition-all ${
+                  activePanel === "config"
+                    ? "bg-primary text-primary-foreground border-primary shadow-md"
+                    : "bg-card text-muted-foreground border-border hover:bg-muted"
+                }`}
+                aria-current={activePanel === "config" ? "step" : undefined}
+                title="Korak 1: Konfiguracija"
+              >
+                1
+              </button>
+              <span className={`text-sm font-medium ${
+                activePanel === "config" ? "text-primary" : "text-muted-foreground"
+              }`}>
+                Konfiguracija
+              </span>
+            </div>
+            <div className="h-[2px] w-24 bg-border mb-6" />
+            <div className="flex flex-col items-center gap-2">
+              <button
+                onClick={() => setActivePanel("login")}
+                className={`h-12 w-12 rounded-full grid place-items-center border text-sm font-semibold transition-all ${
+                  activePanel === "login"
+                    ? "bg-primary text-primary-foreground border-primary shadow-md"
+                    : "bg-card text-muted-foreground border-border hover:bg-muted"
+                }`}
+                aria-current={activePanel === "login" ? "step" : undefined}
+                title="Korak 2: Sažetak narudžbe"
+              >
+                2
+              </button>
+              <span className={`text-sm font-medium ${
+                activePanel === "login" ? "text-primary" : "text-muted-foreground"
+              }`}>
+                Sažetak narudžbe
+              </span>
+            </div>
           </div>
 
           {/* Step content */}
