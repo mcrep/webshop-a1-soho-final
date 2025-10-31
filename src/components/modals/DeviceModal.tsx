@@ -3,7 +3,7 @@ import { devices } from "@/data/catalog";
 import type { Line } from "@/types";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Shield, ShieldOff } from "lucide-react";
+import { Shield, ShieldOff, Pencil } from "lucide-react";
 
 type DeviceModalProps = {
   current: Line;
@@ -34,6 +34,8 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
   );
 
   const [screenInsurance, setScreenInsurance] = useState(current.screenInsurance ?? true);
+  const [isEditingPrice, setIsEditingPrice] = useState(false);
+  const [editedPrice, setEditedPrice] = useState("");
 
   useEffect(() => {
     if (selectedDevice) {
@@ -186,11 +188,11 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                   </div>
                 )}
 
-                {/* Combined Cost Preview & Wallet Application */}
+                {/* Combined Cost Preview */}
                 <div className="rounded-2xl border border-primary/30 bg-accent/30 p-4">
                   <h4 className="text-sm font-semibold mb-4">Pregled troška</h4>
                   
-                  {/* Original costs before wallet */}
+                  {/* Original costs */}
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">
@@ -209,35 +211,67 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                     )}
                   </div>
 
-                  {/* Wallet input */}
-                  <div className="mb-4 pb-4 border-t border-border pt-4">
-                    <label className="text-xs text-muted-foreground mb-2 block font-medium">
-                      Iznos za primjenu A1 Walleta (€)
-                    </label>
-                    <input
-                      type="number"
-                      min={0}
-                      max={maxWallet}
-                      step={1}
-                      value={walletUse}
-                      onChange={(e) => {
-                        const val = e.target.value === "" ? 0 : parseFloat(e.target.value);
-                        setWalletUseClamped(val);
-                      }}
-                      className="w-full rounded-xl border border-border p-3 bg-background outline-none focus:border-primary transition-colors"
-                      placeholder="0"
-                    />
-                    <div className="mt-2 text-xs text-muted-foreground">
-                      Maksimalno za ovu liniju: €{maxWallet.toFixed(0)}{" "}
-                      {pay === "upfront" ? "(umanjuje jednokratno)" : "(umanjuje mjesečno)"}
-                    </div>
-                  </div>
-
-                  {/* Final costs after wallet */}
+                  {/* Final costs with edit option */}
                   <div className="pt-4 border-t border-primary/50 space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-semibold">Ukupno mjesečno</span>
-                      <span className="text-xl font-bold text-primary">€{monthlyCost.toFixed(2)}</span>
+                      <div className="flex items-center gap-2">
+                        {!isEditingPrice ? (
+                          <>
+                            <span className="text-xl font-bold text-primary">€{monthlyCost.toFixed(2)}</span>
+                            <button
+                              onClick={() => {
+                                setIsEditingPrice(true);
+                                setEditedPrice(monthlyCost.toFixed(2));
+                              }}
+                              className="text-primary hover:text-primary/80 transition-colors p-1"
+                              title="Uredi cijenu"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </button>
+                          </>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm">€</span>
+                            <input
+                              type="number"
+                              min={0}
+                              max={pay === "installments" ? rate + screenInsuranceCost : selectedDevice?.upfront}
+                              step={0.01}
+                              value={editedPrice}
+                              onChange={(e) => setEditedPrice(e.target.value)}
+                              onBlur={() => {
+                                const val = parseFloat(editedPrice) || 0;
+                                const originalCost = pay === "installments" ? rate + screenInsuranceCost : selectedDevice?.upfront ?? 0;
+                                const maxDiscount = pay === "installments" ? rate : originalCost;
+                                const minPrice = pay === "installments" ? screenInsuranceCost : 0;
+                                const clampedPrice = Math.min(Math.max(minPrice, val), originalCost);
+                                const newWalletUse = pay === "installments" 
+                                  ? Math.min(rate - (clampedPrice - screenInsuranceCost), maxDiscount)
+                                  : originalCost - clampedPrice;
+                                setWalletUseClamped(Math.max(0, Math.min(newWalletUse, maxWallet)));
+                                setEditedPrice(clampedPrice.toFixed(2));
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.currentTarget.blur();
+                                  setIsEditingPrice(false);
+                                } else if (e.key === 'Escape') {
+                                  setIsEditingPrice(false);
+                                }
+                              }}
+                              className="w-24 rounded-lg border border-primary px-2 py-1 text-lg font-bold text-primary bg-background outline-none focus:ring-2 focus:ring-primary"
+                              autoFocus
+                            />
+                            <button
+                              onClick={() => setIsEditingPrice(false)}
+                              className="text-sm text-primary hover:text-primary/80 px-2 py-1 border border-primary rounded-lg"
+                            >
+                              OK
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     {onetimeCost > 0 && (
                       <div className="flex justify-between items-center">
@@ -250,6 +284,13 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                         Primijenjeno: €{walletUse.toFixed(2)} A1 Wallet popusta
                       </div>
                     )}
+                  </div>
+
+                  {/* Discount note */}
+                  <div className="mt-4 pt-4 border-t border-border">
+                    <p className="text-xs text-muted-foreground italic">
+                      Za više popusta molimo vas da se prijavite ili dodate više mobilnih linija u konfigurator
+                    </p>
                   </div>
                 </div>
               </>
