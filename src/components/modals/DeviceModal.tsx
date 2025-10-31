@@ -34,11 +34,8 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
   );
 
   const [screenInsurance, setScreenInsurance] = useState(current.screenInsurance ?? true);
-  const [isEditingMonthly, setIsEditingMonthly] = useState(false);
-  const [editedMonthly, setEditedMonthly] = useState("");
   const [isEditingOnetime, setIsEditingOnetime] = useState(false);
   const [editedOnetime, setEditedOnetime] = useState("");
-  const [walletForMonthly, setWalletForMonthly] = useState(0);
   const [walletForOnetime, setWalletForOnetime] = useState(0);
 
   useEffect(() => {
@@ -65,26 +62,17 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
   // Cost calculation
   const screenInsuranceCost = screenInsurance ? 4.99 : 0;
   
-  // Initialize wallet distribution
+  // Initialize wallet distribution - only for one-time costs
   useEffect(() => {
     const totalWallet = walletUse;
-    // Distribute existing wallet usage
-    if (pay === "installments") {
-      setWalletForMonthly(totalWallet);
-      setWalletForOnetime(0);
-    } else {
-      setWalletForMonthly(0);
-      setWalletForOnetime(totalWallet);
-    }
-  }, [pay, walletUse]);
+    setWalletForOnetime(totalWallet);
+  }, [walletUse]);
 
-  const monthlyCostOriginal = pay === "installments" ? rate + screenInsuranceCost : (screenInsurance ? screenInsuranceCost : 0);
-  const onetimeCostOriginal = pay === "installments" ? (selectedDevice?.upfront ?? 0) : (selectedDevice?.upfront ?? 0);
-  
-  const monthlyCost = Math.max(0, monthlyCostOriginal - walletForMonthly);
+  const monthlyCost = pay === "installments" ? rate + screenInsuranceCost : (screenInsurance ? screenInsuranceCost : 0);
+  const onetimeCostOriginal = selectedDevice?.upfront ?? 0;
   const onetimeCost = Math.max(0, onetimeCostOriginal - walletForOnetime);
   
-  const totalWalletUsed = walletForMonthly + walletForOnetime;
+  const totalWalletUsed = walletForOnetime;
 
   return (
     <div className="fixed inset-0 z-50">
@@ -242,59 +230,7 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                     {(pay === "installments" || screenInsurance) && (
                       <div className="flex justify-between items-center">
                         <span className="text-sm font-semibold">Ukupno mjesečno</span>
-                        <div className="flex items-center gap-2">
-                          {!isEditingMonthly ? (
-                            <>
-                              <span className="text-xl font-bold text-primary">€{monthlyCost.toFixed(2)}</span>
-                              <button
-                                onClick={() => {
-                                  setIsEditingMonthly(true);
-                                  setEditedMonthly(monthlyCost.toFixed(2));
-                                }}
-                                className="text-primary hover:text-primary/80 transition-colors p-1"
-                                title="Uredi cijenu"
-                              >
-                                <Pencil className="h-4 w-4" />
-                              </button>
-                            </>
-                          ) : (
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm">€</span>
-                              <input
-                                type="number"
-                                min={0}
-                                max={monthlyCostOriginal}
-                                step={0.01}
-                                value={editedMonthly}
-                                onChange={(e) => setEditedMonthly(e.target.value)}
-                                onBlur={() => {
-                                  const val = parseFloat(editedMonthly) || 0;
-                                  const clampedPrice = Math.min(Math.max(0, val), monthlyCostOriginal);
-                                  const newWalletForMonthly = monthlyCostOriginal - clampedPrice;
-                                  const availableWallet = maxWallet - walletForOnetime;
-                                  setWalletForMonthly(Math.min(newWalletForMonthly, availableWallet));
-                                  setEditedMonthly(clampedPrice.toFixed(2));
-                                }}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    e.currentTarget.blur();
-                                    setIsEditingMonthly(false);
-                                  } else if (e.key === 'Escape') {
-                                    setIsEditingMonthly(false);
-                                  }
-                                }}
-                                className="w-24 rounded-lg border border-primary px-2 py-1 text-lg font-bold text-primary bg-background outline-none focus:ring-2 focus:ring-primary"
-                                autoFocus
-                              />
-                              <button
-                                onClick={() => setIsEditingMonthly(false)}
-                                className="text-sm text-primary hover:text-primary/80 px-2 py-1 border border-primary rounded-lg"
-                              >
-                                OK
-                              </button>
-                            </div>
-                          )}
-                        </div>
+                        <span className="text-xl font-bold text-primary">€{monthlyCost.toFixed(2)}</span>
                       </div>
                     )}
                     
@@ -329,8 +265,7 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                                 const val = parseFloat(editedOnetime) || 0;
                                 const clampedPrice = Math.min(Math.max(0, val), onetimeCostOriginal);
                                 const newWalletForOnetime = onetimeCostOriginal - clampedPrice;
-                                const availableWallet = maxWallet - walletForMonthly;
-                                setWalletForOnetime(Math.min(newWalletForOnetime, availableWallet));
+                                setWalletForOnetime(Math.min(newWalletForOnetime, maxWallet));
                                 setEditedOnetime(clampedPrice.toFixed(2));
                               }}
                               onKeyDown={(e) => {
@@ -357,9 +292,7 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                     
                     {totalWalletUsed > 0 && (
                       <div className="text-xs text-muted-foreground mt-2">
-                        Primijenjeno: €{totalWalletUsed.toFixed(2)} A1 Wallet popusta
-                        {walletForMonthly > 0 && ` (€${walletForMonthly.toFixed(2)} mjesečno)`}
-                        {walletForOnetime > 0 && ` (€${walletForOnetime.toFixed(2)} jednokratno)`}
+                        Primijenjeno: €{totalWalletUsed.toFixed(2)} A1 Wallet popusta na jednokratni trošak
                       </div>
                     )}
                   </div>
