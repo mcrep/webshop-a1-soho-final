@@ -21,7 +21,7 @@ export function Header({ onOpenOTP, onOpenLogin, lineCount, monthly, onetime, on
   return (
     <header className="bg-card shadow-sm border-b border-border">
       <div className="mx-auto max-w-[1600px] px-4 py-4">
-        <div className="lg:pl-[96px] flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="h-9 w-9 rounded-2xl bg-foreground text-background grid place-items-center text-sm font-bold">
               A1
