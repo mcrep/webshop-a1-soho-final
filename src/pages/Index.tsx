@@ -2,8 +2,6 @@ import { useMemo, useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { LineTabs } from "@/components/LineTabs";
 import { LineDetailConfig } from "@/components/LineDetailConfig";
-import { Summary } from "@/components/Summary";
-import { LoginPanel } from "@/components/LoginPanel";
 import { OrderSummary } from "@/components/OrderSummary";
 import { DeviceModal } from "@/components/modals/DeviceModal";
 import { DeviceListModal } from "@/components/modals/DeviceListModal";
@@ -164,11 +162,18 @@ const Index = () => {
       <Header 
         onOpenOTP={() => setOtpOpen(true)}
         onOpenLogin={() => setLoginOpen(true)}
+        lineCount={lines.length}
+        monthly={monthly}
+        onetime={onetime}
+        onFinishOrder={() => {
+          // TODO: Implement finish order logic
+          console.log("Završi narudžbu clicked");
+        }}
       />
 
-      <div className="mx-auto max-w-[1600px] px-4 py-8 grid lg:grid-cols-[1.5fr,1fr] gap-8">
-        {/* Left/main content */}
-        <div className="order-2 lg:order-1">
+      <div className="mx-auto max-w-[1600px] px-4 py-8">
+        {/* Main content */}
+        <div>
           {/* Steps layout */}
           <div className="grid grid-cols-[80px,1fr] gap-4">
             {/* Stepper */}
@@ -239,10 +244,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Right sidebar: Summary (sticky) */}
-        <div className="order-1 lg:order-2 lg:sticky lg:top-6 self-start space-y-4">
-          <Summary monthly={monthly} onetime={onetime} lineCount={lines.length} />
-        </div>
       </div>
 
       {/* Modals */}
