@@ -14,7 +14,13 @@ import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExte
 import { LineTypeSelectionModal } from "@/components/modals/LineTypeSelectionModal";
 import { tariffs, devices, addons } from "@/data/catalog";
 import type { Line } from "@/types";
-import { Edit, ChevronRight, Trash2 } from "lucide-react";
+import { Edit, ChevronRight, Trash2, Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 function rid() {
   return Math.random().toString(36).slice(2, 9);
@@ -249,6 +255,38 @@ const Index = () => {
                           renew: "Produženje ugovora",
                         };
                         
+                        // Calculate prices for this line
+                        const lineAddons = line.addonIds.map((id) => addons.find((a) => a.id === id)).filter(Boolean);
+                        const deviceMonthly = line.devicePayment === "installments" ? (line.deviceMonthly ?? device?.installment ?? 0) : 0;
+                        const deviceUpfront = line.devicePayment === "upfront" ? (device?.upfront ?? 0) : 0;
+                        const appliedWallet = line.walletUse ?? 0;
+                        const screenInsuranceCost = device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0;
+                        
+                        // Mozaik discount
+                        const getMozaikDiscount = () => {
+                          const lineCount = lines.length;
+                          if (lineCount === 1) return 0;
+                          if (lineCount === 2) return 1;
+                          if (lineCount === 3) return 2;
+                          return 3;
+                        };
+                        const mozaikDiscountPerLine = getMozaikDiscount();
+                        
+                        const totalMonthly = Math.max(
+                          0,
+                          (tariff?.monthly ?? 0) +
+                            deviceMonthly +
+                            lineAddons.reduce((sum, addon) => sum + (addon?.monthly ?? 0), 0) +
+                            screenInsuranceCost -
+                            (line.devicePayment === "installments" ? appliedWallet : 0) -
+                            mozaikDiscountPerLine
+                        );
+                        
+                        const totalOnetime = Math.max(
+                          0,
+                          deviceUpfront - (line.devicePayment === "upfront" ? appliedWallet : 0)
+                        );
+                        
                         return (
                           <div
                             key={line.id}
@@ -316,6 +354,97 @@ const Index = () => {
                                 <ChevronRight size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" />
                               </button>
                             </div>
+
+                            {/* Price info with tooltips */}
+                            <TooltipProvider>
+                              <div className="flex gap-6 mt-4 pt-4 border-t border-border">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-semibold">Mjesečno: €{totalMonthly.toFixed(2)}</span>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button className="text-muted-foreground hover:text-foreground transition-colors">
+                                        <Info size={16} />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-xs">
+                                      <div className="space-y-1 text-xs">
+                                        <div className="font-semibold mb-2">Detalji mjesečne cijene:</div>
+                                        <div className="flex justify-between">
+                                          <span>Tarifa ({tariff?.name})</span>
+                                          <span>€{tariff?.monthly.toFixed(2)}</span>
+                                        </div>
+                                        {mozaikDiscountPerLine > 0 && (
+                                          <div className="flex justify-between text-primary">
+                                            <span>Mozaik popust</span>
+                                            <span>-€{mozaikDiscountPerLine.toFixed(2)}</span>
+                                          </div>
+                                        )}
+                                        {deviceMonthly > 0 && (
+                                          <div className="flex justify-between">
+                                            <span>Uređaj (rate)</span>
+                                            <span>€{deviceMonthly.toFixed(2)}</span>
+                                          </div>
+                                        )}
+                                        {screenInsuranceCost > 0 && (
+                                          <div className="flex justify-between">
+                                            <span>Osiguranje ekrana</span>
+                                            <span>€{screenInsuranceCost.toFixed(2)}</span>
+                                          </div>
+                                        )}
+                                        {lineAddons.map((addon) => (
+                                          <div key={addon!.id} className="flex justify-between">
+                                            <span>{addon!.name}</span>
+                                            <span>€{addon!.monthly.toFixed(2)}</span>
+                                          </div>
+                                        ))}
+                                        {line.devicePayment === "installments" && appliedWallet > 0 && (
+                                          <div className="flex justify-between text-primary">
+                                            <span>A1 Wallet popust</span>
+                                            <span>-€{appliedWallet.toFixed(2)}</span>
+                                          </div>
+                                        )}
+                                        <div className="flex justify-between font-semibold pt-1 mt-1 border-t border-border">
+                                          <span>Ukupno</span>
+                                          <span>€{totalMonthly.toFixed(2)}</span>
+                                        </div>
+                                      </div>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
+                                
+                                {totalOnetime > 0 && (
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm font-semibold">Jednokratno: €{totalOnetime.toFixed(2)}</span>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button className="text-muted-foreground hover:text-foreground transition-colors">
+                                          <Info size={16} />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent className="max-w-xs">
+                                        <div className="space-y-1 text-xs">
+                                          <div className="font-semibold mb-2">Detalji jednokratne cijene:</div>
+                                          <div className="flex justify-between">
+                                            <span>Uređaj ({device?.name})</span>
+                                            <span>€{deviceUpfront.toFixed(2)}</span>
+                                          </div>
+                                          {line.devicePayment === "upfront" && appliedWallet > 0 && (
+                                            <div className="flex justify-between text-primary">
+                                              <span>A1 Wallet popust</span>
+                                              <span>-€{appliedWallet.toFixed(2)}</span>
+                                            </div>
+                                          )}
+                                          <div className="flex justify-between font-semibold pt-1 mt-1 border-t border-border">
+                                            <span>Ukupno</span>
+                                            <span>€{totalOnetime.toFixed(2)}</span>
+                                          </div>
+                                        </div>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </div>
+                                )}
+                              </div>
+                            </TooltipProvider>
                           </div>
                         );
                       })}
