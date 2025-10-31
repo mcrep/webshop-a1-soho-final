@@ -13,7 +13,7 @@ import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExte
 import { LineTypeSelectionModal } from "@/components/modals/LineTypeSelectionModal";
 import { tariffs, devices, addons } from "@/data/catalog";
 import type { Line } from "@/types";
-import { Edit, ChevronRight } from "lucide-react";
+import { Edit, ChevronRight, Trash2 } from "lucide-react";
 
 function rid() {
   return Math.random().toString(36).slice(2, 9);
@@ -242,17 +242,27 @@ const Index = () => {
                               <h3 className="text-lg font-semibold">
                                 {getLineLabel(line, lineIndex)}
                               </h3>
-                              <button
-                                onClick={() => {
-                                  setActiveLineId(line.id);
-                                  updateLine(line.id, { completed: false });
-                                }}
-                                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                                title="Uredi liniju"
-                              >
-                                <Edit size={16} />
-                                <span>Uredi</span>
-                              </button>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => {
+                                    setActiveLineId(line.id);
+                                    updateLine(line.id, { completed: false });
+                                  }}
+                                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                  title="Uredi liniju"
+                                >
+                                  <Edit size={16} />
+                                  <span>Uredi</span>
+                                </button>
+                                <button
+                                  onClick={() => removeLine(line.id)}
+                                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors"
+                                  title="Izbriši liniju"
+                                >
+                                  <Trash2 size={16} />
+                                  <span>Izbriši</span>
+                                </button>
+                              </div>
                             </div>
                             
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
