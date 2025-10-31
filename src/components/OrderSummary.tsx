@@ -1,5 +1,12 @@
 import { tariffs, devices, addons } from "@/data/catalog";
 import type { Line } from "@/types";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type OrderSummaryProps = {
   lines: Line[];
@@ -71,7 +78,120 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
                 )}
               </div>
 
-              <div className="space-y-2 text-sm">
+              {/* Basic info row */}
+              <div className="grid grid-cols-3 gap-2 text-sm">
+                <div>
+                  <div className="text-xs text-muted-foreground mb-1">Tarifa</div>
+                  <div className="font-medium">{tariff?.name}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground mb-1">Uređaj</div>
+                  <div className="font-medium">{device?.name || "-"}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground mb-1">Vrsta linije</div>
+                  <div className="font-medium">
+                    {line.lineType === "new" && "Nova"}
+                    {line.lineType === "mnp" && "Prijenos"}
+                    {line.lineType === "pre2post" && "Pre→Post"}
+                    {line.lineType === "renew" && "Produljenje"}
+                    {!line.lineType && "-"}
+                  </div>
+                </div>
+              </div>
+
+              {/* Price info with tooltips */}
+              <TooltipProvider>
+                <div className="flex gap-6 text-sm pt-2 border-t border-border">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">Mjesečno: €{totalMonthly.toFixed(2)}</span>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button className="text-muted-foreground hover:text-foreground transition-colors">
+                          <Info size={16} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <div className="space-y-1 text-xs">
+                          <div className="font-semibold mb-2">Detalji mjesečne cijene:</div>
+                          <div className="flex justify-between">
+                            <span>Tarifa ({tariff?.name})</span>
+                            <span>€{tariff?.monthly.toFixed(2)}</span>
+                          </div>
+                          {mozaikDiscountPerLine > 0 && (
+                            <div className="flex justify-between text-primary">
+                              <span>Mozaik popust</span>
+                              <span>-€{mozaikDiscountPerLine.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {deviceMonthly > 0 && (
+                            <div className="flex justify-between">
+                              <span>Uređaj (rate)</span>
+                              <span>€{deviceMonthly.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {screenInsuranceCost > 0 && (
+                            <div className="flex justify-between">
+                              <span>Osiguranje ekrana</span>
+                              <span>€{screenInsuranceCost.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {lineAddons.map((addon) => (
+                            <div key={addon!.id} className="flex justify-between">
+                              <span>{addon!.name}</span>
+                              <span>€{addon!.monthly.toFixed(2)}</span>
+                            </div>
+                          ))}
+                          {line.devicePayment === "installments" && appliedWallet > 0 && (
+                            <div className="flex justify-between text-primary">
+                              <span>A1 Wallet popust</span>
+                              <span>-€{appliedWallet.toFixed(2)}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between font-semibold pt-1 mt-1 border-t border-border">
+                            <span>Ukupno</span>
+                            <span>€{totalMonthly.toFixed(2)}</span>
+                          </div>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  
+                  {totalOnetime > 0 && (
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold">Jednokratno: €{totalOnetime.toFixed(2)}</span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button className="text-muted-foreground hover:text-foreground transition-colors">
+                            <Info size={16} />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <div className="space-y-1 text-xs">
+                            <div className="font-semibold mb-2">Detalji jednokratne cijene:</div>
+                            <div className="flex justify-between">
+                              <span>Uređaj ({device?.name})</span>
+                              <span>€{deviceUpfront.toFixed(2)}</span>
+                            </div>
+                            {line.devicePayment === "upfront" && appliedWallet > 0 && (
+                              <div className="flex justify-between text-primary">
+                                <span>A1 Wallet popust</span>
+                                <span>-€{appliedWallet.toFixed(2)}</span>
+                              </div>
+                            )}
+                            <div className="flex justify-between font-semibold pt-1 mt-1 border-t border-border">
+                              <span>Ukupno</span>
+                              <span>€{totalOnetime.toFixed(2)}</span>
+                            </div>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  )}
+                </div>
+              </TooltipProvider>
+
+              <div className="space-y-2 text-sm pt-2 border-t border-border">
                 {/* Tariff */}
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Tarifa</span>
