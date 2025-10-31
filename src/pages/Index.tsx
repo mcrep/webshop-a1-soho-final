@@ -161,7 +161,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Header />
+      <Header 
+        onOpenOTP={() => setOtpOpen(true)}
+        onOpenLogin={() => setLoginOpen(true)}
+      />
 
       <div className="mx-auto max-w-[1600px] px-4 py-8 grid lg:grid-cols-[1.5fr,1fr] gap-8">
         {/* Left/main content */}
@@ -236,14 +239,8 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Right sidebar: Login + Wallet + Summary (sticky) */}
+        {/* Right sidebar: Wallet + Summary (sticky) */}
         <div className="order-1 lg:order-2 lg:sticky lg:top-6 self-start space-y-4">
-          {/* Login Panel */}
-          <LoginPanel
-            onOpenOTP={() => setOtpOpen(true)}
-            onOpenLogin={() => setLoginOpen(true)}
-          />
-
           {/* Promocije i popusti */}
           <section className="rounded-2xl border border-border bg-card p-4 shadow-md">
             <h2 className="font-semibold mb-3">Promocije i popusti</h2>
