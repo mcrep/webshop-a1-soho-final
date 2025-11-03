@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import a1Logo from "@/assets/a1-logo.png";
 
 type HeaderProps = {
   onOpenOTP: () => void;
@@ -23,9 +24,7 @@ export function Header({ onOpenOTP, onOpenLogin, lineCount, monthly, onetime, on
       <div className="mx-auto max-w-[1600px] px-4 py-4">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-2xl bg-foreground text-background grid place-items-center text-sm font-bold">
-              A1
-            </div>
+            <img src={a1Logo} alt="A1 Logo" className="h-9 w-auto" />
             <div>
               <h1 className="text-lg font-semibold">Business Webshop</h1>
               <p className="text-xs text-muted-foreground">
