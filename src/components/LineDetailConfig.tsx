@@ -103,7 +103,7 @@ export function LineDetailConfig({
                 }`}
               >
                 <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                  +{t.walletCredit}€ popusta na uređaj
+                  +{t.walletCredit}€ HW popusta
                 </div>
                 <div className="font-semibold text-lg">{t.name}</div>
                 <div className="text-sm text-muted-foreground mt-2">
