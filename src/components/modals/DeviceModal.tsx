@@ -227,6 +227,12 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                       </span>
                       <span className="font-medium">€{selectedDevice?.upfront.toFixed(2)}</span>
                     </div>
+                    {walletForOnetime > 0 && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted-foreground">Popust (A1 Wallet)</span>
+                        <span className="font-medium text-green-600">-€{walletForOnetime.toFixed(2)}</span>
+                      </div>
+                    )}
                     {screenInsurance && (
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-muted-foreground">Osiguranje ekrana</span>
@@ -300,11 +306,6 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                       </div>
                     </div>
 
-                    {totalWalletUsed > 0 && (
-                      <div className="text-xs text-muted-foreground mt-2">
-                        Primijenjeno: €{totalWalletUsed.toFixed(2)} A1 Wallet popusta na jednokratni trošak
-                      </div>
-                    )}
                   </div>
                 </div>
               </>
