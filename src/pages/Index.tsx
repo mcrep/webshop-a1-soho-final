@@ -460,7 +460,7 @@ const Index = () => {
                       <div className="flex items-center justify-between mb-4">
                         <button
                           onClick={addLine}
-                          className="rounded-xl border border-dashed border-border bg-card hover:bg-muted transition-colors px-4 py-2 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+                          className="rounded-xl border-2 border-dashed border-red-500 bg-card hover:bg-muted transition-colors px-4 py-2 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
                         >
                           <span>Želim još jednu liniju</span>
                         </button>
