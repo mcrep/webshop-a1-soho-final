@@ -12,7 +12,7 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
   const [searchTerm, setSearchTerm] = useState("");
   const [brandFilter, setBrandFilter] = useState<string>("all");
   const [priceSort, setPriceSort] = useState<"none" | "asc" | "desc">("none");
-  const [filtersOpen, setFiltersOpen] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Get unique brands
   const brands = Array.from(new Set(devices.map((d) => d.brand))).filter(
