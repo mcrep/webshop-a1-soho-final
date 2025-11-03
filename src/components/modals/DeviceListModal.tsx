@@ -59,28 +59,18 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
 
           {/* Content */}
           <div className="flex-1 overflow-auto flex flex-col">
-            {/* Top - Collapsible Filters */}
-            <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
-              <div className="border-b border-border">
-                <CollapsibleTrigger className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+            {/* Top - Search and Collapsible Filters */}
+            <div className="border-b border-border">
+              {/* Collapsible Trigger */}
+              <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+                <CollapsibleTrigger className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors border-b border-border">
                   <h3 className="text-sm font-semibold">Filtri i pretraga</h3>
                   <ChevronDown 
                     className={`h-4 w-4 transition-transform ${filtersOpen ? "rotate-180" : ""}`} 
                   />
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                  <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <h3 className="text-sm font-semibold mb-3">Pretraživanje</h3>
-                      <input
-                        type="text"
-                        placeholder="Traži uređaj..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full rounded-xl border border-border p-3 bg-background text-sm outline-none focus:border-primary transition-colors"
-                      />
-                    </div>
-
+                  <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <h3 className="text-sm font-semibold mb-3">Proizvođač</h3>
                       <div className="space-y-2">
@@ -146,8 +136,19 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
                     </div>
                   </div>
                 </CollapsibleContent>
+              </Collapsible>
+
+              {/* Search Bar - Always visible */}
+              <div className="p-4">
+                <input
+                  type="text"
+                  placeholder="Traži uređaj..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full rounded-xl border border-border p-3 bg-background text-sm outline-none focus:border-primary transition-colors"
+                />
               </div>
-            </Collapsible>
+            </div>
 
             {/* Bottom - Device grid */}
             <div className="flex-1 p-4 overflow-auto">
