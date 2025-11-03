@@ -71,10 +71,14 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
     : mpcPrice;
   
   // Initialize wallet distribution - only for one-time costs
+  // Ukupno jednokratno mora biti minimalno 1€
   useEffect(() => {
-    const totalWallet = walletUse;
-    setWalletForOnetime(totalWallet);
-  }, [walletUse]);
+    const availableWallet = walletUse;
+    // Maksimalni wallet = onetimeCostOriginal - 1 (da ostane minimalno 1€)
+    const maxApplicable = Math.max(0, onetimeCostOriginal - 1);
+    const applicableWallet = Math.min(availableWallet, maxApplicable);
+    setWalletForOnetime(applicableWallet);
+  }, [walletUse, onetimeCostOriginal]);
 
   const monthlyCost = pay === "installments" ? rate + screenInsuranceCost : (screenInsurance ? screenInsuranceCost : 0);
   const onetimeCost = Math.max(0, onetimeCostOriginal - walletForOnetime);
