@@ -453,7 +453,7 @@ const Index = () => {
 
                   <section className="rounded-2xl border border-border bg-card shadow-sm p-4">
                     {lines.every(l => l.completed) && (
-                      <div className="flex items-center justify-end gap-3 mb-4">
+                      <div className="flex items-center justify-between mb-4">
                         <button
                           onClick={addLine}
                           className="rounded-xl border border-dashed border-border bg-card hover:bg-muted transition-colors px-4 py-2 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
