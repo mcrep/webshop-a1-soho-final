@@ -96,7 +96,7 @@ export function LineDetailConfig({
               <button
                 key={t.id}
                 onClick={() => onChange({ tariffId: t.id })}
-                className={`relative flex-shrink-0 w-[280px] min-h-[200px] rounded-2xl border p-6 text-left transition-all flex flex-col justify-start ${
+                className={`relative flex-shrink-0 w-[280px] min-h-[200px] rounded-2xl border p-6 pb-16 text-left transition-all flex flex-col justify-start ${
                   line.tariffId === t.id
                     ? "ring-2 ring-primary border-primary bg-accent/50"
                     : "border-border hover:bg-muted"
