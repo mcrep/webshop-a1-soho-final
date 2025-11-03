@@ -12,7 +12,7 @@ export const tariffs: Tariff[] = [
     voice: "200 min i SMS",
     roaming: "HR",
     desc: "200 minuta i SMS poruka • 1 GB podatkovnog prometa",
-    walletCredit: 40,
+    walletCredit: 10,
   },
   {
     id: "easy-biz",
@@ -22,7 +22,7 @@ export const tariffs: Tariff[] = [
     voice: "Neograničene min i SMS",
     roaming: "HR",
     desc: "Neograničene minute i SMS poruke • 5 GB podatkovnog prometa",
-    walletCredit: 60,
+    walletCredit: 35,
   },
   {
     id: "connect-biz",
