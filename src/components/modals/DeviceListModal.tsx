@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { devices } from "@/data/catalog";
-import { X } from "lucide-react";
+import { X, ChevronDown } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 type DeviceListModalProps = {
   onClose: () => void;
@@ -11,6 +12,7 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
   const [searchTerm, setSearchTerm] = useState("");
   const [brandFilter, setBrandFilter] = useState<string>("all");
   const [priceSort, setPriceSort] = useState<"none" | "asc" | "desc">("none");
+  const [filtersOpen, setFiltersOpen] = useState(true);
 
   // Get unique brands
   const brands = Array.from(new Set(devices.map((d) => d.brand))).filter(
@@ -56,88 +58,100 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-hidden flex">
-            {/* Left sidebar - Filters */}
-            <div className="w-64 border-r border-border p-4 space-y-4 overflow-auto">
-              <div>
-                <h3 className="text-sm font-semibold mb-3">Pretraživanje</h3>
-                <input
-                  type="text"
-                  placeholder="Traži uređaj..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded-xl border border-border p-3 bg-background text-sm outline-none focus:border-primary transition-colors"
-                />
-              </div>
-
-              <div>
-                <h3 className="text-sm font-semibold mb-3">Proizvođač</h3>
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="brand"
-                      checked={brandFilter === "all"}
-                      onChange={() => setBrandFilter("all")}
-                      className="accent-primary"
-                    />
-                    <span className="text-sm">Svi</span>
-                  </label>
-                  {brands.map((brand) => (
-                    <label key={brand} className="flex items-center gap-2 cursor-pointer">
+          <div className="flex-1 overflow-auto flex flex-col">
+            {/* Top - Collapsible Filters */}
+            <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+              <div className="border-b border-border">
+                <CollapsibleTrigger className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                  <h3 className="text-sm font-semibold">Filtri i pretraga</h3>
+                  <ChevronDown 
+                    className={`h-4 w-4 transition-transform ${filtersOpen ? "rotate-180" : ""}`} 
+                  />
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <h3 className="text-sm font-semibold mb-3">Pretraživanje</h3>
                       <input
-                        type="radio"
-                        name="brand"
-                        checked={brandFilter === brand}
-                        onChange={() => setBrandFilter(brand)}
-                        className="accent-primary"
+                        type="text"
+                        placeholder="Traži uređaj..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full rounded-xl border border-border p-3 bg-background text-sm outline-none focus:border-primary transition-colors"
                       />
-                      <span className="text-sm">{brand}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
+                    </div>
 
-              <div>
-                <h3 className="text-sm font-semibold mb-3">Sortiraj po cijeni</h3>
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="price"
-                      checked={priceSort === "none"}
-                      onChange={() => setPriceSort("none")}
-                      className="accent-primary"
-                    />
-                    <span className="text-sm">Bez sortiranja</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="price"
-                      checked={priceSort === "asc"}
-                      onChange={() => setPriceSort("asc")}
-                      className="accent-primary"
-                    />
-                    <span className="text-sm">Najjeftiniji prvo</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="price"
-                      checked={priceSort === "desc"}
-                      onChange={() => setPriceSort("desc")}
-                      className="accent-primary"
-                    />
-                    <span className="text-sm">Najskuplji prvo</span>
-                  </label>
-                </div>
-              </div>
-            </div>
+                    <div>
+                      <h3 className="text-sm font-semibold mb-3">Proizvođač</h3>
+                      <div className="space-y-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="brand"
+                            checked={brandFilter === "all"}
+                            onChange={() => setBrandFilter("all")}
+                            className="accent-primary"
+                          />
+                          <span className="text-sm">Svi</span>
+                        </label>
+                        {brands.map((brand) => (
+                          <label key={brand} className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="radio"
+                              name="brand"
+                              checked={brandFilter === brand}
+                              onChange={() => setBrandFilter(brand)}
+                              className="accent-primary"
+                            />
+                            <span className="text-sm">{brand}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
 
-            {/* Right content - Device grid */}
+                    <div>
+                      <h3 className="text-sm font-semibold mb-3">Sortiraj po cijeni</h3>
+                      <div className="space-y-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="price"
+                            checked={priceSort === "none"}
+                            onChange={() => setPriceSort("none")}
+                            className="accent-primary"
+                          />
+                          <span className="text-sm">Bez sortiranja</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="price"
+                            checked={priceSort === "asc"}
+                            onChange={() => setPriceSort("asc")}
+                            className="accent-primary"
+                          />
+                          <span className="text-sm">Najjeftiniji prvo</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="price"
+                            checked={priceSort === "desc"}
+                            onChange={() => setPriceSort("desc")}
+                            className="accent-primary"
+                          />
+                          <span className="text-sm">Najskuplji prvo</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </div>
+            </Collapsible>
+
+            {/* Bottom - Device grid */}
             <div className="flex-1 p-4 overflow-auto">
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {filteredDevices.map((d) => (
                   <button
                     key={d.id}
