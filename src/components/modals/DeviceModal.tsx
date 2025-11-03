@@ -63,11 +63,12 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
   // MPC cijena uređaja
   const mpcPrice = selectedDevice?.upfront ?? 0;
   
-  // Izračun upfront cijene prema formuli: MIN(INT(MPC/24), 25)
-  const calculatedUpfront = mpcPrice > 0 ? Math.floor(Math.min(mpcPrice / 24, 25)) : 0;
-  
   // Onetimecost ovisi o načinu plaćanja
-  const onetimeCostOriginal = pay === "installments" ? calculatedUpfront : mpcPrice;
+  // Za rate: Početni trošak = MPC - (rata × 24)
+  // Za jednokratno: MPC cijena
+  const onetimeCostOriginal = pay === "installments" 
+    ? Math.max(0, mpcPrice - (rate * 24))
+    : mpcPrice;
   
   // Initialize wallet distribution - only for one-time costs
   useEffect(() => {
