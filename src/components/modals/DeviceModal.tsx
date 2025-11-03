@@ -23,14 +23,6 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
 
   const [rate, setRate] = useState(current.deviceMonthly ?? initialInstall);
   
-  // Wallet state - automatically apply full wallet discount
-  const deviceCap =
-    pay === "upfront"
-      ? selectedDevice?.upfront ?? 0
-      : rate;
-  const maxWallet = Math.max(0, Math.min(deviceCap, walletAvailForLine + (current.walletUse ?? 0)));
-  const [walletUse, setWalletUse] = useState(maxWallet);
-
   const [screenInsurance, setScreenInsurance] = useState(current.screenInsurance ?? true);
   const [isEditingOnetime, setIsEditingOnetime] = useState(false);
   const [editedOnetime, setEditedOnetime] = useState("");
@@ -46,16 +38,16 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
 
   // Update wallet when device/payment changes
   useEffect(() => {
-    const newCap = pay === "upfront" ? (selectedDevice?.upfront ?? 0) : rate;
-    const newMax = Math.max(0, Math.min(newCap, walletAvailForLine + (current.walletUse ?? 0)));
-    setWalletUse((prev) => Math.min(prev, newMax));
+    // Recalculate onetimeCostOriginal
+    const mpc = selectedDevice?.upfront ?? 0;
+    const onetime = pay === "installments" ? Math.max(0, mpc - (rate * 24)) : mpc;
+    const newMax = Math.max(0, Math.min(onetime, walletAvailForLine + (current.walletUse ?? 0)));
+    
+    // Maksimalni wallet = onetimeCostOriginal - 1 (da ostane minimalno 1€)
+    const maxApplicable = Math.max(0, onetime - 1);
+    const applicableWallet = Math.min(newMax, maxApplicable);
+    setWalletForOnetime(applicableWallet);
   }, [pay, rate, selectedDevice, walletAvailForLine, current.walletUse]);
-
-  const setWalletUseClamped = (val: number) => {
-    const v = Number.isFinite(val) ? val : 0;
-    const clamped = Math.min(Math.max(0, v), maxWallet);
-    setWalletUse(clamped);
-  };
 
   // Cost calculation
   const screenInsuranceCost = screenInsurance ? 4.99 : 0;
@@ -70,15 +62,17 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
     ? Math.max(0, mpcPrice - (rate * 24))
     : mpcPrice;
   
+  // Wallet može biti primjenjen maksimalno na onetimeCostOriginal (jednokratni trošak)
+  const maxWallet = Math.max(0, Math.min(onetimeCostOriginal, walletAvailForLine + (current.walletUse ?? 0)));
+  
   // Initialize wallet distribution - only for one-time costs
   // Ukupno jednokratno mora biti minimalno 1€
   useEffect(() => {
-    const availableWallet = walletUse;
     // Maksimalni wallet = onetimeCostOriginal - 1 (da ostane minimalno 1€)
     const maxApplicable = Math.max(0, onetimeCostOriginal - 1);
-    const applicableWallet = Math.min(availableWallet, maxApplicable);
+    const applicableWallet = Math.min(maxWallet, maxApplicable);
     setWalletForOnetime(applicableWallet);
-  }, [walletUse, onetimeCostOriginal]);
+  }, [maxWallet, onetimeCostOriginal]);
 
   const monthlyCost = pay === "installments" ? rate + screenInsuranceCost : (screenInsurance ? screenInsuranceCost : 0);
   const onetimeCost = Math.max(0, onetimeCostOriginal - walletForOnetime);
