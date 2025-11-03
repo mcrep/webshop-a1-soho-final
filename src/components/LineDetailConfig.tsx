@@ -178,9 +178,9 @@ export function LineDetailConfig({
               }`}
             >
               {d.image ? (
-                <img src={d.image} alt={d.name} className="w-12 h-12 object-contain mb-2" />
+                <img src={d.image} alt={d.name} className="w-24 h-24 object-contain mb-2" />
               ) : (
-                <div className="text-2xl mb-2">{d.emoji}</div>
+                <div className="text-4xl mb-2">{d.emoji}</div>
               )}
               <div className="font-semibold text-sm">{d.name}</div>
               {d.id !== "no-dev" && (
