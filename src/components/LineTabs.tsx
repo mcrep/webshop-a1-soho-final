@@ -82,7 +82,7 @@ export function LineTabs({
         title="Dodaj novu liniju"
       >
         <Plus size={16} />
-        <span>Dodaj liniju</span>
+        <span>Želim još jednu liniju</span>
       </button>
     </div>
   );

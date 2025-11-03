@@ -27,18 +27,12 @@ export function LineConfigurator({
 }: LineConfiguratorProps) {
   return (
     <section className="rounded-2xl border border-border bg-card shadow-sm">
-      <div className="p-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold">Konfigurator linija</h2>
-          <p className="text-xs text-muted-foreground">
-            Dodaj linije i konfiguriraj svaku posebno.
-          </p>
-        </div>
+      <div className="p-4 flex items-center justify-end">
         <button
           onClick={onAddLine}
           className="rounded-2xl bg-primary text-primary-foreground px-4 py-2 text-sm hover:bg-primary/90 transition-colors shadow-sm"
         >
-          Dodaj liniju
+          Želim još jednu liniju
         </button>
       </div>
 
@@ -63,7 +57,7 @@ export function LineConfigurator({
       <div className="border-t border-border divide-y divide-border">
         {lines.length === 0 ? (
           <div className="p-6 text-sm text-muted-foreground text-center">
-            Još nema linija. Klikni <span className="font-medium">Dodaj liniju</span>.
+            Još nema linija. Klikni <span className="font-medium">Želim još jednu liniju</span>.
           </div>
         ) : (
           lines.map((line, idx) => {
