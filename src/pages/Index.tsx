@@ -225,14 +225,14 @@ const Index = () => {
                     : "bg-card text-muted-foreground border-border hover:bg-muted"
                 }`}
                 aria-current={activePanel === "login" ? "step" : undefined}
-                title="Korak 2: Sažetak narudžbe"
+                title="Korak 2: Plaćanje i isporuka"
               >
                 2
               </button>
               <span className={`text-sm font-medium ${
                 activePanel === "login" ? "text-primary" : "text-muted-foreground"
               }`}>
-                Sažetak narudžbe
+                Plaćanje i isporuka
               </span>
             </div>
           </div>
