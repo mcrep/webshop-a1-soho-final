@@ -112,7 +112,9 @@ export function LineRow({
         <div className="flex flex-col gap-1">
           <label className="text-xs text-muted-foreground">Vrsta linije</label>
           <select
-            className="rounded-xl border border-border p-2 text-sm bg-card hover:bg-muted transition-colors"
+            className={`rounded-xl border p-2 text-sm bg-card hover:bg-muted transition-colors ${
+              !line.lineType ? "border-red-500" : "border-border"
+            }`}
             value={line.lineType ?? ""}
             onChange={(e) => onChange({ lineType: e.target.value || null })}
           >

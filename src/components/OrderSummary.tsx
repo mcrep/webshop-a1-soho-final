@@ -65,11 +65,7 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
           return (
             <div
               key={line.id}
-              className={`rounded-xl border p-4 space-y-3 ${
-                !line.lineType 
-                  ? "border-red-500 bg-red-50/10" 
-                  : "border-border bg-muted/30"
-              }`}
+              className="rounded-xl border border-border bg-muted/30 p-4 space-y-3"
             >
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-base">{getLineLabel(line, index)}</h3>
