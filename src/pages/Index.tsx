@@ -31,7 +31,7 @@ const Index = () => {
   const [lines, setLines] = useState<Line[]>([
     {
       id: rid(),
-      tariffId: "biz-m",
+      tariffId: "perfect-biz",
       deviceId: null,
       devicePayment: "installments",
       deviceMonthly: null,
@@ -63,7 +63,7 @@ const Index = () => {
       ...ls,
       {
         id: newId,
-        tariffId: "biz-m",
+        tariffId: "perfect-biz",
         deviceId: null,
         devicePayment: "installments",
         deviceMonthly: null,

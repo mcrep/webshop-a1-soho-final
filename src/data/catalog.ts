@@ -5,6 +5,26 @@ import pixel8 from "@/assets/devices/pixel-8.png";
 
 export const tariffs: Tariff[] = [
   {
+    id: "entry-biz",
+    name: "Entry Biz",
+    monthly: 14.20,
+    data: "1 GB",
+    voice: "200 min i SMS",
+    roaming: "HR",
+    desc: "200 minuta i SMS poruka • 1 GB podatkovnog prometa",
+    walletCredit: 40,
+  },
+  {
+    id: "easy-biz",
+    name: "Easy Biz",
+    monthly: 17.51,
+    data: "5 GB",
+    voice: "Neograničene min i SMS",
+    roaming: "HR",
+    desc: "Neograničene minute i SMS poruke • 5 GB podatkovnog prometa",
+    walletCredit: 60,
+  },
+  {
     id: "connect-biz",
     name: "Connect Biz",
     monthly: 26.31,
