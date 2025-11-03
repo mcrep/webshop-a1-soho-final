@@ -12,7 +12,7 @@ export const tariffs: Tariff[] = [
     voice: "Neograničene min i SMS",
     roaming: "EU",
     desc: "20GB internet prometa • Neograničene min i SMS",
-    walletCredit: 50,
+    walletCredit: 75,
   },
   {
     id: "perfect-biz",
@@ -22,7 +22,7 @@ export const tariffs: Tariff[] = [
     voice: "Neograničeni pozivi i SMS",
     roaming: "EU",
     desc: "Neograničeni internet • Neograničeni pozivi i SMS • A1 Net Protect",
-    walletCredit: 80,
+    walletCredit: 170,
   },
   {
     id: "ideal-biz",
@@ -32,7 +32,7 @@ export const tariffs: Tariff[] = [
     voice: "Neograničene min i SMS",
     roaming: "EU + Regija (3GB)",
     desc: "Neograničeni internet • Neograničene min i SMS • 3 GB u roamingu u zemljama regije • MultiSIM za samo 3,61 €/mj. • A1 Net Protect",
-    walletCredit: 120,
+    walletCredit: 285,
   },
   {
     id: "master-biz",
@@ -42,7 +42,7 @@ export const tariffs: Tariff[] = [
     voice: "Neograničeni pozivi i SMS",
     roaming: "EU + Regija (3GB) + Svijet (250MB)",
     desc: "Neograničeni internet • Neograničeni pozivi i SMS • 3 GB u roamingu u zemljama regije i 250MB roaminga u svijetu • MultiSIM • A1 Net Protect",
-    walletCredit: 150,
+    walletCredit: 360,
   },
 ];
 

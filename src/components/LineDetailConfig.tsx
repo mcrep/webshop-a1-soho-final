@@ -96,18 +96,18 @@ export function LineDetailConfig({
               <button
                 key={t.id}
                 onClick={() => onChange({ tariffId: t.id })}
-                className={`flex-shrink-0 w-[280px] min-h-[200px] rounded-2xl border p-6 text-left transition-all ${
+                className={`relative flex-shrink-0 w-[280px] min-h-[200px] rounded-2xl border p-6 text-left transition-all ${
                   line.tariffId === t.id
                     ? "ring-2 ring-primary border-primary bg-accent/50"
                     : "border-border hover:bg-muted"
                 }`}
               >
+                <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-sm font-bold shadow-lg">
+                  +€{t.walletCredit}
+                </div>
                 <div className="font-semibold text-lg">{t.name}</div>
                 <div className="text-sm text-muted-foreground mt-2">
                   €{t.monthly}/mjesečno
-                </div>
-                <div className="text-sm text-muted-foreground mt-1">
-                  +€{t.walletCredit} Wallet
                 </div>
                 <div className="text-xs text-muted-foreground mt-3 leading-relaxed">
                   {t.desc}
