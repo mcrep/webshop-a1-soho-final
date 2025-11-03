@@ -343,7 +343,11 @@ const Index = () => {
                                   // Open line type selection modal
                                   setLineTypeSelectionFor(line.id);
                                 }}
-                                className="rounded-xl border border-border bg-background p-4 flex items-center justify-between group hover:bg-muted/50 transition-colors w-full text-left"
+                                className={`rounded-xl border p-4 flex items-center justify-between group hover:bg-muted/50 transition-colors w-full text-left ${
+                                  !line.lineType 
+                                    ? "border-red-500 bg-background" 
+                                    : "border-border bg-background"
+                                }`}
                               >
                                 <div>
                                   <div className="text-xs text-muted-foreground mb-1">Vrsta linije</div>
