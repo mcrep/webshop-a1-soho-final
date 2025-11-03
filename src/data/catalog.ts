@@ -71,8 +71,8 @@ export const devices: Device[] = [
     id: "iph-15",
     brand: "Apple",
     name: "iPhone 15",
-    upfront: 799,
-    installment: 33,
+    upfront: 799, // MPC cijena
+    installment: 25, // Max rata
     emoji: "📱",
     image: iphone15,
   },
@@ -80,8 +80,8 @@ export const devices: Device[] = [
     id: "sgs-24",
     brand: "Samsung",
     name: "Galaxy S24",
-    upfront: 699,
-    installment: 29,
+    upfront: 699, // MPC cijena
+    installment: 25, // Max rata
     emoji: "📱",
     image: galaxyS24,
   },
@@ -89,8 +89,8 @@ export const devices: Device[] = [
     id: "pix-8",
     brand: "Google",
     name: "Pixel 8",
-    upfront: 649,
-    installment: 27,
+    upfront: 649, // MPC cijena
+    installment: 25, // Max rata
     emoji: "📱",
     image: pixel8,
   },

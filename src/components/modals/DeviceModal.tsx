@@ -60,6 +60,15 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
   // Cost calculation
   const screenInsuranceCost = screenInsurance ? 4.99 : 0;
   
+  // MPC cijena uređaja
+  const mpcPrice = selectedDevice?.upfront ?? 0;
+  
+  // Izračun upfront cijene prema formuli: MIN(INT(MPC/24), 25)
+  const calculatedUpfront = mpcPrice > 0 ? Math.floor(Math.min(mpcPrice / 24, 25)) : 0;
+  
+  // Onetimecost ovisi o načinu plaćanja
+  const onetimeCostOriginal = pay === "installments" ? calculatedUpfront : mpcPrice;
+  
   // Initialize wallet distribution - only for one-time costs
   useEffect(() => {
     const totalWallet = walletUse;
@@ -67,7 +76,6 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
   }, [walletUse]);
 
   const monthlyCost = pay === "installments" ? rate + screenInsuranceCost : (screenInsurance ? screenInsuranceCost : 0);
-  const onetimeCostOriginal = selectedDevice?.upfront ?? 0;
   const onetimeCost = Math.max(0, onetimeCostOriginal - walletForOnetime);
   
   const totalWalletUsed = walletForOnetime;
@@ -221,9 +229,9 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
                     )}
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">
-                        {pay === "installments" ? "Početni trošak" : "Cijena uređaja"}
+                        {pay === "installments" ? "Početni trošak" : "MPC cijena"}
                       </span>
-                      <span className="font-medium">€{selectedDevice?.upfront.toFixed(2)}</span>
+                      <span className="font-medium">€{onetimeCostOriginal.toFixed(2)}</span>
                     </div>
                     {walletForOnetime > 0 && (
                       <div className="flex justify-between items-center text-sm">
