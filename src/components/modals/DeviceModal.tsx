@@ -23,15 +23,13 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
 
   const [rate, setRate] = useState(current.deviceMonthly ?? initialInstall);
   
-  // Wallet state
+  // Wallet state - automatically apply full wallet discount
   const deviceCap =
     pay === "upfront"
       ? selectedDevice?.upfront ?? 0
       : rate;
   const maxWallet = Math.max(0, Math.min(deviceCap, walletAvailForLine + (current.walletUse ?? 0)));
-  const [walletUse, setWalletUse] = useState(
-    Math.min(Math.max(0, current.walletUse ?? 0), maxWallet)
-  );
+  const [walletUse, setWalletUse] = useState(maxWallet);
 
   const [screenInsurance, setScreenInsurance] = useState(current.screenInsurance ?? true);
   const [isEditingOnetime, setIsEditingOnetime] = useState(false);
