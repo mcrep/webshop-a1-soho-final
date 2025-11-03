@@ -174,14 +174,14 @@ export function LineDetailConfig({
                   onOpenDeviceModal();
                 }
               }}
-              className={`rounded-2xl border p-4 text-left transition-all ${
+              className={`rounded-2xl border p-4 text-center transition-all ${
                 line.deviceId === d.id
                   ? "ring-2 ring-primary border-primary bg-accent/50"
                   : "border-border hover:bg-muted"
               }`}
             >
               {d.image ? (
-                <img src={d.image} alt={d.name} className="w-24 h-24 object-contain mb-2" />
+                <img src={d.image} alt={d.name} className="w-24 h-24 object-contain mb-2 mx-auto" />
               ) : (
                 <div className="text-4xl mb-2">{d.emoji}</div>
               )}

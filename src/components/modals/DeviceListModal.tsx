@@ -157,10 +157,10 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
                   <button
                     key={d.id}
                     onClick={() => onSelectDevice(d.id)}
-                    className="rounded-2xl border border-border p-4 text-left hover:bg-muted hover:border-primary/50 transition-all group"
+                    className="rounded-2xl border border-border p-4 text-center hover:bg-muted hover:border-primary/50 transition-all group"
                   >
                     {d.image ? (
-                      <img src={d.image} alt={d.name} className="w-20 h-20 object-contain mb-3" />
+                      <img src={d.image} alt={d.name} className="w-20 h-20 object-contain mb-3 mx-auto" />
                     ) : (
                       <div className="text-4xl mb-3">{d.emoji}</div>
                     )}
