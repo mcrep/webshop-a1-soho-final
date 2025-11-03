@@ -44,6 +44,7 @@ export type Device = {
   upfront: number;
   installment: number;
   emoji: string;
+  image?: string;
 };
 
 export type Addon = {

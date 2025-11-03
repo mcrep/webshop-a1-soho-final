@@ -177,7 +177,11 @@ export function LineDetailConfig({
                   : "border-border hover:bg-muted"
               }`}
             >
-              <div className="text-2xl mb-2">{d.emoji}</div>
+              {d.image ? (
+                <img src={d.image} alt={d.name} className="w-12 h-12 object-contain mb-2" />
+              ) : (
+                <div className="text-2xl mb-2">{d.emoji}</div>
+              )}
               <div className="font-semibold text-sm">{d.name}</div>
               {d.id !== "no-dev" && (
                 <div className="text-xs text-muted-foreground mt-1">

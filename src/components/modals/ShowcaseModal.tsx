@@ -35,7 +35,11 @@ export function ShowcaseModal({
                   .filter((d) => d.id !== "no-dev")
                   .map((d) => (
                     <div key={d.id} className="rounded-2xl border border-border p-3 bg-card hover:shadow-md transition-shadow">
-                      <div className="text-4xl">{d.emoji}</div>
+                      {d.image ? (
+                        <img src={d.image} alt={d.name} className="w-16 h-16 object-contain" />
+                      ) : (
+                        <div className="text-4xl">{d.emoji}</div>
+                      )}
                       <div className="text-xs text-muted-foreground">{d.brand}</div>
                       <div className="font-medium">{d.name}</div>
                       <div className="text-xs text-muted-foreground">

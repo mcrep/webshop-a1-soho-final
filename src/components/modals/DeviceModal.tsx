@@ -94,7 +94,11 @@ export function DeviceModal({ current, onClose, onSave, walletAvailForLine }: De
             {selectedDevice && (
               <div className="rounded-2xl border border-primary/30 bg-accent/20 p-4 mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="text-4xl">{selectedDevice.emoji}</div>
+                  {selectedDevice.image ? (
+                    <img src={selectedDevice.image} alt={selectedDevice.name} className="w-16 h-16 object-contain" />
+                  ) : (
+                    <div className="text-4xl">{selectedDevice.emoji}</div>
+                  )}
                   <div>
                     <div className="text-xs text-muted-foreground">{selectedDevice.brand}</div>
                     <div className="font-semibold text-lg">{selectedDevice.name}</div>

@@ -110,7 +110,11 @@ export function StartPicker({
                     key={d.id}
                     className="min-w-[220px] rounded-2xl border border-border p-3 shrink-0 bg-card hover:shadow-md transition-shadow"
                   >
-                    <div className="text-4xl">{d.emoji}</div>
+                    {d.image ? (
+                      <img src={d.image} alt={d.name} className="w-16 h-16 object-contain" />
+                    ) : (
+                      <div className="text-4xl">{d.emoji}</div>
+                    )}
                     <div className="text-xs text-muted-foreground">{d.brand}</div>
                     <div className="font-medium">{d.name}</div>
                     <div className="text-xs text-muted-foreground">

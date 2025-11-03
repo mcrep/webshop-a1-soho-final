@@ -1,4 +1,7 @@
 import type { Tariff, Device, Addon, LineTypeOpt } from "@/types";
+import iphone15 from "@/assets/devices/iphone-15.png";
+import galaxyS24 from "@/assets/devices/galaxy-s24.png";
+import pixel8 from "@/assets/devices/pixel-8.png";
 
 export const tariffs: Tariff[] = [
   {
@@ -41,6 +44,7 @@ export const devices: Device[] = [
     upfront: 799,
     installment: 33,
     emoji: "📱",
+    image: iphone15,
   },
   {
     id: "sgs-24",
@@ -49,6 +53,7 @@ export const devices: Device[] = [
     upfront: 699,
     installment: 29,
     emoji: "📱",
+    image: galaxyS24,
   },
   {
     id: "pix-8",
@@ -57,6 +62,7 @@ export const devices: Device[] = [
     upfront: 649,
     installment: 27,
     emoji: "📱",
+    image: pixel8,
   },
   {
     id: "no-dev",
