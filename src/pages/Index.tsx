@@ -394,7 +394,7 @@ const Index = () => {
                                 return (
                                   <tr key={line.id} className="border-b border-border hover:bg-muted/50 transition-colors">
                                     {/* Broj */}
-                                    <td className="py-3 px-2 text-sm font-medium">{lineIndex + 1}</td>
+                                    <td className="py-3 px-2 text-sm font-medium">{getLineLabel(line, lineIndex)}</td>
                                     
                                     {/* Tarifa group columns */}
                                     {tariffGroupExpanded ? (
