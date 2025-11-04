@@ -298,9 +298,9 @@ const Index = () => {
                                     <span>UREĐAJ</span>
                                   </div>
                                 </th>
-                                <th rowSpan={2} className="text-right py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Popust A1 Wallet</th>
-                                <th rowSpan={2} className="text-right py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Ukupna cijena</th>
-                                <th rowSpan={2} className="text-left py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Vrsta linije</th>
+                                <th rowSpan={2} className="text-center py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Popust A1 Wallet</th>
+                                <th rowSpan={2} className="text-center py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Ukupna cijena</th>
+                                <th rowSpan={2} className="text-center py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Vrsta linije</th>
                                 <th rowSpan={2} className="text-right py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Akcije</th>
                               </tr>
                               
@@ -309,8 +309,8 @@ const Index = () => {
                                 {tariffGroupExpanded ? (
                                   <>
                                     <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Tarifa</th>
-                                    <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground">Cijena tarife</th>
-                                    <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground">Popust na tarifu</th>
+                                    <th className="text-center py-3 px-2 text-xs font-semibold text-muted-foreground">Cijena tarife</th>
+                                    <th className="text-center py-3 px-2 text-xs font-semibold text-muted-foreground">Popust na tarifu</th>
                                   </>
                                 ) : (
                                   <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Tarifa</th>
@@ -319,8 +319,8 @@ const Index = () => {
                                 {deviceGroupExpanded ? (
                                   <>
                                     <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Uređaj</th>
-                                    <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground">MPC cijena</th>
-                                    <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground">Mjesečna rata</th>
+                                    <th className="text-center py-3 px-2 text-xs font-semibold text-muted-foreground">MPC cijena</th>
+                                    <th className="text-center py-3 px-2 text-xs font-semibold text-muted-foreground">Mjesečna rata</th>
                                   </>
                                 ) : (
                                   <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Uređaj</th>
@@ -400,8 +400,8 @@ const Index = () => {
                                     {tariffGroupExpanded ? (
                                       <>
                                         <td className="py-3 px-2 text-sm align-middle">{tariff?.name}</td>
-                                        <td className="py-3 px-2 text-sm text-right align-middle">€{(tariff?.monthly ?? 0).toFixed(2)}</td>
-                                        <td className="py-3 px-2 text-sm text-right align-middle">€{mozaikDiscountPerLine.toFixed(2)}</td>
+                                        <td className="py-3 px-2 text-sm text-center align-middle">€{(tariff?.monthly ?? 0).toFixed(2)}</td>
+                                        <td className="py-3 px-2 text-sm text-center align-middle">€{mozaikDiscountPerLine.toFixed(2)}</td>
                                       </>
                                     ) : (
                                       <td className="py-3 px-2 text-sm align-middle">{tariff?.name}</td>
@@ -411,10 +411,10 @@ const Index = () => {
                                     {deviceGroupExpanded ? (
                                       <>
                                         <td className="py-3 px-2 text-sm align-middle">{device?.name}</td>
-                                        <td className="py-3 px-2 text-sm text-right align-middle">
+                                        <td className="py-3 px-2 text-sm text-center align-middle">
                                           {device && device.id !== "no-dev" ? `€${mpcPrice.toFixed(2)}` : "-"}
                                         </td>
-                                        <td className="py-3 px-2 text-sm text-right align-middle">
+                                        <td className="py-3 px-2 text-sm text-center align-middle">
                                           {device && device.id !== "no-dev" ? `€${rate.toFixed(2)}` : "-"}
                                         </td>
                                       </>
@@ -423,7 +423,7 @@ const Index = () => {
                                     )}
                                     
                                     {/* Popust A1 Wallet - always visible */}
-                                    <td className="py-3 px-2 text-sm text-right align-middle">
+                                    <td className="py-3 px-2 text-sm text-center align-middle">
                                       {device && device.id !== "no-dev" ? (
                                         <input
                                           type="number"
@@ -436,18 +436,18 @@ const Index = () => {
                                             const clamped = Math.min(Math.max(0, val), maxWalletForDevice);
                                             updateLine(line.id, { walletUse: clamped });
                                           }}
-                                          className="w-20 bg-background border border-input rounded px-2 py-1 text-sm text-right focus:outline-none focus:ring-2 focus:ring-primary"
+                                          className="w-20 bg-background border border-input rounded px-2 py-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-primary"
                                         />
                                       ) : "-"}
                                     </td>
                                     
                                     {/* Ukupna cijena - always visible */}
-                                    <td className="py-3 px-2 text-sm text-right font-medium align-middle">
+                                    <td className="py-3 px-2 text-sm text-center font-medium align-middle">
                                       {device && device.id !== "no-dev" ? `€${totalDevicePrice.toFixed(2)}` : "-"}
                                     </td>
                                     
                                     {/* Vrsta linije */}
-                                    <td className="py-3 px-2 text-sm align-middle">
+                                    <td className="py-3 px-2 text-sm text-center align-middle">
                                       {!line.lineType ? (
                                         <button
                                           onClick={() => setLineTypeSelectionFor(line.id)}
@@ -456,7 +456,7 @@ const Index = () => {
                                           Odaberi vrstu linije
                                         </button>
                                       ) : (
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center justify-center gap-2">
                                           <span>{lineTypeLabels[line.lineType as keyof typeof lineTypeLabels]}</span>
                                           <button
                                             onClick={() => setLineTypeSelectionFor(line.id)}
