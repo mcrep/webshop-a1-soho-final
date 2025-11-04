@@ -415,7 +415,7 @@ const Index = () => {
                                           {device && device.id !== "no-dev" ? `€${mpcPrice.toFixed(2)}` : "-"}
                                         </td>
                                         <td className="py-3 px-2 text-sm text-center align-middle">
-                                          {device && device.id !== "no-dev" ? `€${rate.toFixed(2)}` : "-"}
+                                          {device && device.id !== "no-dev" && line.devicePayment === "installments" ? `€${rate.toFixed(2)}` : "-"}
                                         </td>
                                       </>
                                     ) : (
