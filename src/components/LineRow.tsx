@@ -135,8 +135,13 @@ export function LineRow({
               type="number"
               min={0}
               step={1}
-              value={safeWalletUse}
-              onChange={(e) => setWalletUseClamped(parseFloat(e.target.value))}
+              value={Math.round(safeWalletUse)}
+              onChange={(e) => setWalletUseClamped(Math.round(parseFloat(e.target.value) || 0))}
+              onKeyDown={(e) => {
+                if (e.key === '.' || e.key === ',') {
+                  e.preventDefault();
+                }
+              }}
               className="w-full outline-none bg-transparent"
             />
             <div className="mt-1 text-[11px] text-muted-foreground">
