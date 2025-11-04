@@ -319,95 +319,114 @@ const Index = () => {
                               </div>
                             </div>
                             
-                            <div className="space-y-3">
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                <div className="rounded-xl border border-border bg-background p-3">
-                                  <div className="text-xs text-muted-foreground mb-1">Tarifa</div>
-                                  <div className="font-medium">
-                                    {tariff?.name}
-                                  </div>
-                                </div>
-                                
-                                <div className="rounded-xl border border-border bg-background p-3">
-                                  <div className="text-xs text-muted-foreground mb-1">Uređaj</div>
-                                  <div className="font-medium">{device?.name}</div>
-                                </div>
-                                
-                                <button
-                                  onClick={() => {
-                                    // Open line type selection modal
-                                    setLineTypeSelectionFor(line.id);
-                                  }}
-                                  className={`rounded-xl border p-3 flex items-center justify-between group hover:bg-muted/50 transition-colors w-full text-left ${
-                                    !line.lineType 
-                                      ? "border-red-500 bg-background" 
-                                      : "border-border bg-background"
-                                  }`}
-                                >
-                                  <div>
-                                    <div className="text-xs text-muted-foreground mb-1">Vrsta linije</div>
-                                    <div className="font-medium">
-                                      {line.lineType ? lineTypeLabels[line.lineType as keyof typeof lineTypeLabels] : "-"}
-                                    </div>
-                                  </div>
-                                  <ChevronRight size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" />
-                                </button>
-                              </div>
+                            {/* All fields in one row */}
+                            {(() => {
+                              const mpcPrice = device?.upfront ?? 0;
+                              const rate = line.deviceMonthly ?? device?.installment ?? 0;
+                              const onetimeCostOriginal = line.devicePayment === "installments" 
+                                ? Math.max(0, mpcPrice - (rate * 24))
+                                : mpcPrice;
                               
-                              {/* Device pricing details */}
-                              {device && device.id !== "no-dev" && (() => {
-                                const mpcPrice = device.upfront ?? 0;
-                                const rate = line.deviceMonthly ?? device.installment ?? 0;
-                                const onetimeCostOriginal = line.devicePayment === "installments" 
-                                  ? Math.max(0, mpcPrice - (rate * 24))
-                                  : mpcPrice;
-                                
-                                // Calculate available wallet for this line
-                                const otherLinesWallet = lines.reduce(
-                                  (sum, l) => sum + (l.id === line.id ? 0 : l.walletUse ?? 0),
-                                  0
-                                );
-                                const availableWallet = Math.max(0, walletTotal - otherLinesWallet);
-                                const maxWalletForDevice = Math.min(availableWallet, Math.max(0, onetimeCostOriginal - 1));
-                                
-                                const currentWallet = line.walletUse ?? 0;
-                                const totalDevicePrice = Math.max(1, onetimeCostOriginal - currentWallet);
-                                
-                                return (
-                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                    <div className="rounded-xl border border-border bg-background p-3">
-                                      <div className="text-xs text-muted-foreground mb-1">MPC cijena uređaja</div>
-                                      <div className="font-medium">€{mpcPrice.toFixed(2)}</div>
-                                    </div>
-                                    
-                                    <div className="rounded-xl border border-border bg-background p-3">
-                                      <div className="text-xs text-muted-foreground mb-1">Popust na uređaj (A1 Wallet)</div>
-                                      <div className="flex items-center gap-2">
-                                        <input
-                                          type="number"
-                                          min="0"
-                                          max={maxWalletForDevice}
-                                          step="0.01"
-                                          value={currentWallet.toFixed(2)}
-                                          onChange={(e) => {
-                                            const val = parseFloat(e.target.value) || 0;
-                                            const clamped = Math.min(Math.max(0, val), maxWalletForDevice);
-                                            updateLine(line.id, { walletUse: clamped });
-                                          }}
-                                          className="w-full bg-background border border-input rounded px-2 py-1 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary"
-                                        />
-                                        <span className="text-xs text-muted-foreground">€</span>
-                                      </div>
-                                    </div>
-                                    
-                                    <div className="rounded-xl border border-border bg-background p-3">
-                                      <div className="text-xs text-muted-foreground mb-1">Ukupna cijena uređaja</div>
-                                      <div className="font-medium">€{totalDevicePrice.toFixed(2)}</div>
+                              // Calculate available wallet for this line
+                              const otherLinesWallet = lines.reduce(
+                                (sum, l) => sum + (l.id === line.id ? 0 : l.walletUse ?? 0),
+                                0
+                              );
+                              const availableWallet = Math.max(0, walletTotal - otherLinesWallet);
+                              const maxWalletForDevice = device && device.id !== "no-dev" 
+                                ? Math.min(availableWallet, Math.max(0, onetimeCostOriginal - 1))
+                                : 0;
+                              
+                              const currentWallet = line.walletUse ?? 0;
+                              const totalDevicePrice = device && device.id !== "no-dev" 
+                                ? Math.max(1, onetimeCostOriginal - currentWallet)
+                                : 0;
+                              
+                              return (
+                                <div className="grid grid-cols-2 md:grid-cols-6 gap-2">
+                                  <div className="rounded-xl border border-border bg-background p-3">
+                                    <div className="text-xs text-muted-foreground mb-1">Tarifa</div>
+                                    <div className="font-medium text-sm">
+                                      {tariff?.name}
                                     </div>
                                   </div>
-                                );
-                              })()}
-                            </div>
+                                  
+                                  <div className="rounded-xl border border-border bg-background p-3">
+                                    <div className="text-xs text-muted-foreground mb-1">Uređaj</div>
+                                    <div className="font-medium text-sm">{device?.name}</div>
+                                  </div>
+                                  
+                                  <button
+                                    onClick={() => {
+                                      setLineTypeSelectionFor(line.id);
+                                    }}
+                                    className={`rounded-xl border p-3 flex flex-col justify-between group hover:bg-muted/50 transition-colors w-full text-left ${
+                                      !line.lineType 
+                                        ? "border-red-500 bg-background" 
+                                        : "border-border bg-background"
+                                    }`}
+                                  >
+                                    <div className="text-xs text-muted-foreground mb-1">Vrsta linije</div>
+                                    <div className="flex items-center justify-between">
+                                      <div className="font-medium text-sm">
+                                        {line.lineType ? lineTypeLabels[line.lineType as keyof typeof lineTypeLabels] : "-"}
+                                      </div>
+                                      <ChevronRight size={16} className="text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
+                                    </div>
+                                  </button>
+                                  
+                                  {device && device.id !== "no-dev" ? (
+                                    <>
+                                      <div className="rounded-xl border border-border bg-background p-3">
+                                        <div className="text-xs text-muted-foreground mb-1">MPC cijena</div>
+                                        <div className="font-medium text-sm">€{mpcPrice.toFixed(2)}</div>
+                                      </div>
+                                      
+                                      <div className="rounded-xl border border-border bg-background p-3">
+                                        <div className="text-xs text-muted-foreground mb-1">Popust (A1 Wallet)</div>
+                                        <div className="flex items-center gap-1">
+                                          <input
+                                            type="number"
+                                            min="0"
+                                            max={maxWalletForDevice}
+                                            step="0.01"
+                                            value={currentWallet.toFixed(2)}
+                                            onChange={(e) => {
+                                              const val = parseFloat(e.target.value) || 0;
+                                              const clamped = Math.min(Math.max(0, val), maxWalletForDevice);
+                                              updateLine(line.id, { walletUse: clamped });
+                                            }}
+                                            className="w-full bg-background border border-input rounded px-2 py-1 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary"
+                                          />
+                                        </div>
+                                      </div>
+                                      
+                                      <div className="rounded-xl border border-border bg-background p-3">
+                                        <div className="text-xs text-muted-foreground mb-1">Ukupno</div>
+                                        <div className="font-medium text-sm">€{totalDevicePrice.toFixed(2)}</div>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div className="rounded-xl border border-border bg-background/50 p-3">
+                                        <div className="text-xs text-muted-foreground mb-1">MPC cijena</div>
+                                        <div className="font-medium text-sm">-</div>
+                                      </div>
+                                      
+                                      <div className="rounded-xl border border-border bg-background/50 p-3">
+                                        <div className="text-xs text-muted-foreground mb-1">Popust (A1 Wallet)</div>
+                                        <div className="font-medium text-sm">-</div>
+                                      </div>
+                                      
+                                      <div className="rounded-xl border border-border bg-background/50 p-3">
+                                        <div className="text-xs text-muted-foreground mb-1">Ukupno</div>
+                                        <div className="font-medium text-sm">-</div>
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              );
+                            })()}
 
                             {/* Price info with tooltips */}
                             <TooltipProvider>
