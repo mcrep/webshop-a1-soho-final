@@ -14,7 +14,7 @@ import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExte
 import { LineTypeSelectionModal } from "@/components/modals/LineTypeSelectionModal";
 import { tariffs, devices, addons } from "@/data/catalog";
 import type { Line } from "@/types";
-import { Edit, ChevronRight, Trash2, Info } from "lucide-react";
+import { Edit, ChevronRight, Trash2, Info, ChevronDown, ChevronUp } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -53,6 +53,8 @@ const Index = () => {
   const [otpOpen, setOtpOpen] = useState(false);
   const [otp, setOtp] = useState<string>("");
   const [loginOpen, setLoginOpen] = useState(false);
+  const [tariffGroupExpanded, setTariffGroupExpanded] = useState(true);
+  const [deviceGroupExpanded, setDeviceGroupExpanded] = useState(true);
 
   const maskedPhone = "********97";
 
@@ -267,14 +269,58 @@ const Index = () => {
                         <div className="overflow-x-auto">
                           <table className="w-full">
                             <thead>
+                              {/* Group headers */}
+                              <tr className="border-b border-border bg-muted/30">
+                                <th 
+                                  colSpan={tariffGroupExpanded ? 3 : 1} 
+                                  className="text-left py-2 px-2 text-sm font-bold cursor-pointer hover:bg-muted/50 transition-colors"
+                                  onClick={() => setTariffGroupExpanded(!tariffGroupExpanded)}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    {tariffGroupExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                                    <span>TARIFA</span>
+                                  </div>
+                                </th>
+                                <th 
+                                  colSpan={deviceGroupExpanded ? 5 : 1} 
+                                  className="text-left py-2 px-2 text-sm font-bold cursor-pointer hover:bg-muted/50 transition-colors"
+                                  onClick={() => setDeviceGroupExpanded(!deviceGroupExpanded)}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    {deviceGroupExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                                    <span>UREĐAJ</span>
+                                  </div>
+                                </th>
+                                <th className="text-left py-2 px-2 text-sm font-semibold text-muted-foreground">Vrsta linije</th>
+                                <th className="text-right py-2 px-2 text-sm font-semibold text-muted-foreground">Akcije</th>
+                              </tr>
+                              
+                              {/* Column headers */}
                               <tr className="border-b border-border">
-                                <th className="text-left py-3 px-2 text-sm font-semibold text-muted-foreground">Tarifa</th>
-                                <th className="text-left py-3 px-2 text-sm font-semibold text-muted-foreground">Uređaj</th>
-                                <th className="text-right py-3 px-2 text-sm font-semibold text-muted-foreground">MPC cijena</th>
-                                <th className="text-right py-3 px-2 text-sm font-semibold text-muted-foreground">Popust A1 Wallet</th>
-                                <th className="text-right py-3 px-2 text-sm font-semibold text-muted-foreground">Ukupna cijena</th>
-                                <th className="text-left py-3 px-2 text-sm font-semibold text-muted-foreground">Vrsta linije</th>
-                                <th className="text-right py-3 px-2 text-sm font-semibold text-muted-foreground">Akcije</th>
+                                {tariffGroupExpanded ? (
+                                  <>
+                                    <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Tarifa</th>
+                                    <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground">Cijena tarife</th>
+                                    <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground">Popust na tarifu</th>
+                                  </>
+                                ) : (
+                                  <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Tarifa</th>
+                                )}
+                                
+                                {deviceGroupExpanded ? (
+                                  <>
+                                    <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Uređaj</th>
+                                    <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground">MPC cijena</th>
+                                    <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground">Popust A1 Wallet</th>
+                                    <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground">Ukupna cijena</th>
+                                    <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground">Mjesečna rata</th>
+                                  </>
+                                ) : (
+                                  <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Uređaj</th>
+                                )}
+                                
+                                <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground"></th>
+                                <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground"></th>
                               </tr>
                             </thead>
                             <tbody>
@@ -343,34 +389,58 @@ const Index = () => {
                                 
                                 return (
                                   <tr key={line.id} className="border-b border-border hover:bg-muted/50 transition-colors">
-                                    <td className="py-3 px-2 text-sm">{tariff?.name}</td>
-                                    <td className="py-3 px-2 text-sm">{device?.name}</td>
-                                    <td className="py-3 px-2 text-sm text-right">
-                                      {device && device.id !== "no-dev" ? `€${mpcPrice.toFixed(2)}` : "-"}
-                                    </td>
-                                    <td className="py-3 px-2 text-sm text-right">
-                                      {device && device.id !== "no-dev" ? (
-                                        <input
-                                          type="number"
-                                          min="0"
-                                          max={maxWalletForDevice}
-                                          step="0.01"
-                                          value={currentWallet.toFixed(2)}
-                                          onChange={(e) => {
-                                            const val = parseFloat(e.target.value) || 0;
-                                            const clamped = Math.min(Math.max(0, val), maxWalletForDevice);
-                                            updateLine(line.id, { walletUse: clamped });
-                                          }}
-                                          className="w-20 bg-background border border-input rounded px-2 py-1 text-sm text-right focus:outline-none focus:ring-2 focus:ring-primary"
-                                        />
-                                      ) : "-"}
-                                    </td>
-                                    <td className="py-3 px-2 text-sm text-right font-medium">
-                                      {device && device.id !== "no-dev" ? `€${totalDevicePrice.toFixed(2)}` : "-"}
-                                    </td>
+                                    {/* Tarifa group columns */}
+                                    {tariffGroupExpanded ? (
+                                      <>
+                                        <td className="py-3 px-2 text-sm">{tariff?.name}</td>
+                                        <td className="py-3 px-2 text-sm text-right">€{(tariff?.monthly ?? 0).toFixed(2)}</td>
+                                        <td className="py-3 px-2 text-sm text-right">€{mozaikDiscountPerLine.toFixed(2)}</td>
+                                      </>
+                                    ) : (
+                                      <td className="py-3 px-2 text-sm">{tariff?.name}</td>
+                                    )}
+                                    
+                                    {/* Uređaj group columns */}
+                                    {deviceGroupExpanded ? (
+                                      <>
+                                        <td className="py-3 px-2 text-sm">{device?.name}</td>
+                                        <td className="py-3 px-2 text-sm text-right">
+                                          {device && device.id !== "no-dev" ? `€${mpcPrice.toFixed(2)}` : "-"}
+                                        </td>
+                                        <td className="py-3 px-2 text-sm text-right">
+                                          {device && device.id !== "no-dev" ? (
+                                            <input
+                                              type="number"
+                                              min="0"
+                                              max={maxWalletForDevice}
+                                              step="0.01"
+                                              value={currentWallet.toFixed(2)}
+                                              onChange={(e) => {
+                                                const val = parseFloat(e.target.value) || 0;
+                                                const clamped = Math.min(Math.max(0, val), maxWalletForDevice);
+                                                updateLine(line.id, { walletUse: clamped });
+                                              }}
+                                              className="w-20 bg-background border border-input rounded px-2 py-1 text-sm text-right focus:outline-none focus:ring-2 focus:ring-primary"
+                                            />
+                                          ) : "-"}
+                                        </td>
+                                        <td className="py-3 px-2 text-sm text-right font-medium">
+                                          {device && device.id !== "no-dev" ? `€${totalDevicePrice.toFixed(2)}` : "-"}
+                                        </td>
+                                        <td className="py-3 px-2 text-sm text-right">
+                                          {device && device.id !== "no-dev" ? `€${rate.toFixed(2)}` : "-"}
+                                        </td>
+                                      </>
+                                    ) : (
+                                      <td className="py-3 px-2 text-sm">{device?.name}</td>
+                                    )}
+                                    
+                                    {/* Vrsta linije */}
                                     <td className="py-3 px-2 text-sm">
                                       {line.lineType ? lineTypeLabels[line.lineType as keyof typeof lineTypeLabels] : "-"}
                                     </td>
+                                    
+                                    {/* Akcije */}
                                     <td className="py-3 px-2 text-sm text-right">
                                       <div className="flex items-center justify-end gap-2">
                                         <button
