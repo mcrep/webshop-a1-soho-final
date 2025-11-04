@@ -256,7 +256,12 @@ const Index = () => {
                     
                     return (
                       <section className="rounded-2xl border border-border bg-card shadow-sm p-6">
-                        <h2 className="text-xl font-semibold mb-4">Konfigurirane linije</h2>
+                        <div className="flex items-center justify-between mb-4">
+                          <h2 className="text-xl font-semibold">Konfigurirane linije</h2>
+                          <div className="text-sm font-medium">
+                            Dostupan iznos A1 Walleta: <span className="text-primary">€{walletRemaining.toFixed(2)}</span>
+                          </div>
+                        </div>
                         
                         {/* Table */}
                         <div className="overflow-x-auto">
