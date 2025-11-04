@@ -448,19 +448,25 @@ const Index = () => {
                                     
                                     {/* Vrsta linije */}
                                     <td className="py-3 px-2 text-sm">
-                                      <div className="space-y-2">
-                                        <div>{line.lineType ? lineTypeLabels[line.lineType as keyof typeof lineTypeLabels] : "-"}</div>
+                                      {!line.lineType ? (
                                         <button
                                           onClick={() => setLineTypeSelectionFor(line.id)}
-                                          className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
-                                            !line.lineType 
-                                              ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                              : "bg-primary text-primary-foreground hover:bg-primary/90"
-                                          }`}
+                                          className="text-xs px-3 py-1.5 rounded-lg bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
                                         >
                                           Odaberi vrstu linije
                                         </button>
-                                      </div>
+                                      ) : (
+                                        <div className="flex items-center gap-2">
+                                          <span>{lineTypeLabels[line.lineType as keyof typeof lineTypeLabels]}</span>
+                                          <button
+                                            onClick={() => setLineTypeSelectionFor(line.id)}
+                                            className="p-1 hover:bg-muted rounded transition-colors"
+                                            title="Uredi vrstu linije"
+                                          >
+                                            <Edit size={16} />
+                                          </button>
+                                        </div>
+                                      )}
                                     </td>
                                     
                                     {/* Akcije */}
