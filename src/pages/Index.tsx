@@ -204,10 +204,10 @@ const Index = () => {
         <div>
           {/* Stepper - centered horizontally */}
           <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1">
               <button
                 onClick={() => setActivePanel("config")}
-                className={`h-12 w-12 rounded-full grid place-items-center border text-sm font-semibold transition-all ${
+                className={`h-6 w-6 rounded-full grid place-items-center border text-xs font-semibold transition-all ${
                   activePanel === "config"
                     ? "bg-primary text-primary-foreground border-primary shadow-md"
                     : "bg-card text-muted-foreground border-border hover:bg-muted"
@@ -217,17 +217,17 @@ const Index = () => {
               >
                 1
               </button>
-              <span className={`text-sm font-medium ${
+              <span className={`text-xs font-medium ${
                 activePanel === "config" ? "text-primary" : "text-muted-foreground"
               }`}>
                 Konfiguracija
               </span>
             </div>
-            <div className="h-[2px] w-24 bg-border mb-6" />
-            <div className="flex flex-col items-center gap-2">
+            <div className="h-[2px] w-24 bg-border mb-3" />
+            <div className="flex flex-col items-center gap-1">
               <button
                 onClick={() => setActivePanel("login")}
-                className={`h-12 w-12 rounded-full grid place-items-center border text-sm font-semibold transition-all ${
+                className={`h-6 w-6 rounded-full grid place-items-center border text-xs font-semibold transition-all ${
                   activePanel === "login"
                     ? "bg-primary text-primary-foreground border-primary shadow-md"
                     : "bg-card text-muted-foreground border-border hover:bg-muted"
@@ -237,7 +237,7 @@ const Index = () => {
               >
                 2
               </button>
-              <span className={`text-sm font-medium ${
+              <span className={`text-xs font-medium ${
                 activePanel === "login" ? "text-primary" : "text-muted-foreground"
               }`}>
                 Plaćanje i isporuka
