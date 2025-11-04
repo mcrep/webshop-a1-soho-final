@@ -269,9 +269,9 @@ const Index = () => {
                         <div className="overflow-x-auto">
                           <table className="w-full">
                             <thead>
-                              {/* Group headers */}
+                              {/* Group headers - first row */}
                               <tr className="border-b border-border bg-muted/30">
-                                <th className="text-left py-2 px-2 text-sm font-semibold text-muted-foreground">Broj</th>
+                                <th rowSpan={2} className="text-left py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Broj</th>
                                 <th 
                                   colSpan={tariffGroupExpanded ? 3 : 1} 
                                   className="text-left py-2 px-2 text-sm font-bold cursor-pointer hover:bg-muted/50 transition-colors"
@@ -292,16 +292,14 @@ const Index = () => {
                                     <span>UREĐAJ</span>
                                   </div>
                                 </th>
-                                <th className="text-right py-2 px-2 text-sm font-semibold text-muted-foreground">Popust A1 Wallet</th>
-                                <th className="text-right py-2 px-2 text-sm font-semibold text-muted-foreground">Ukupna cijena</th>
-                                <th className="text-left py-2 px-2 text-sm font-semibold text-muted-foreground">Vrsta linije</th>
-                                <th className="text-right py-2 px-2 text-sm font-semibold text-muted-foreground">Akcije</th>
+                                <th rowSpan={2} className="text-right py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Popust A1 Wallet</th>
+                                <th rowSpan={2} className="text-right py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Ukupna cijena</th>
+                                <th rowSpan={2} className="text-left py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Vrsta linije</th>
+                                <th rowSpan={2} className="text-right py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Akcije</th>
                               </tr>
                               
-                              {/* Column headers */}
+                              {/* Column headers - second row */}
                               <tr className="border-b border-border">
-                                <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground"></th>
-                                
                                 {tariffGroupExpanded ? (
                                   <>
                                     <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Tarifa</th>
@@ -321,11 +319,6 @@ const Index = () => {
                                 ) : (
                                   <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Uređaj</th>
                                 )}
-                                
-                                <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground"></th>
-                                <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground"></th>
-                                <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground"></th>
-                                <th className="text-right py-3 px-2 text-xs font-semibold text-muted-foreground"></th>
                               </tr>
                             </thead>
                             <tbody>
