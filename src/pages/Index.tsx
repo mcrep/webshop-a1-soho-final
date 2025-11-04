@@ -319,23 +319,17 @@ const Index = () => {
                               </div>
                             </div>
                             
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                              <div className="rounded-xl border border-border bg-background p-4 flex items-center justify-between group hover:bg-muted/50 transition-colors">
-                                <div>
-                                  <div className="text-xs text-muted-foreground mb-1">Tarifa</div>
-                                  <div className="font-medium">
-                                    {tariff?.name}
-                                  </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                              <div className="rounded-xl border border-border bg-background p-3">
+                                <div className="text-xs text-muted-foreground mb-1">Tarifa</div>
+                                <div className="font-medium">
+                                  {tariff?.name}
                                 </div>
-                                <ChevronRight size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" />
                               </div>
                               
-                              <div className="rounded-xl border border-border bg-background p-4 flex items-center justify-between group hover:bg-muted/50 transition-colors">
-                                <div>
-                                  <div className="text-xs text-muted-foreground mb-1">Uređaj</div>
-                                  <div className="font-medium">{device?.name}</div>
-                                </div>
-                                <ChevronRight size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" />
+                              <div className="rounded-xl border border-border bg-background p-3">
+                                <div className="text-xs text-muted-foreground mb-1">Uređaj</div>
+                                <div className="font-medium">{device?.name}</div>
                               </div>
                               
                               <button
@@ -343,7 +337,7 @@ const Index = () => {
                                   // Open line type selection modal
                                   setLineTypeSelectionFor(line.id);
                                 }}
-                                className={`rounded-xl border p-4 flex items-center justify-between group hover:bg-muted/50 transition-colors w-full text-left ${
+                                className={`rounded-xl border p-3 flex items-center justify-between group hover:bg-muted/50 transition-colors w-full text-left ${
                                   !line.lineType 
                                     ? "border-red-500 bg-background" 
                                     : "border-border bg-background"
