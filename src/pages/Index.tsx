@@ -242,287 +242,172 @@ const Index = () => {
               {activePanel === "config" && (
                 <>
                   {/* Completed lines summary */}
-                  {completedLines.length > 0 && (
-                    <section className="space-y-4">
-                      {completedLines.map((line) => {
-                        const lineIndex = lines.findIndex((l) => l.id === line.id);
-                        const tariff = tariffs.find((t) => t.id === line.tariffId);
-                        const device = devices.find((d) => d.id === line.deviceId);
-                        const lineTypeLabels = {
-                          new: "Nova linija",
-                          mnp: "Prijenos broja",
-                          pre2post: "Prepaid u Postpaid",
-                          renew: "Produženje ugovora",
-                        };
+                  {completedLines.length > 0 && (() => {
+                    const lineTypeLabels = {
+                      new: "Nova linija",
+                      mnp: "Prijenos broja",
+                      pre2post: "Prepaid u Postpaid",
+                      renew: "Produženje ugovora",
+                    };
+                    
+                    // Calculate totals
+                    let totalMonthlyAll = 0;
+                    let totalOnetimeAll = 0;
+                    
+                    return (
+                      <section className="rounded-2xl border border-border bg-card shadow-sm p-6">
+                        <h2 className="text-xl font-semibold mb-4">Konfigurirane linije</h2>
                         
-                        // Calculate prices for this line
-                        const lineAddons = line.addonIds.map((id) => addons.find((a) => a.id === id)).filter(Boolean);
-                        const deviceMonthly = line.devicePayment === "installments" ? (line.deviceMonthly ?? device?.installment ?? 0) : 0;
-                        const deviceUpfront = line.devicePayment === "upfront" ? (device?.upfront ?? 0) : 0;
-                        const appliedWallet = line.walletUse ?? 0;
-                        const screenInsuranceCost = device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0;
-                        
-                        // Mozaik discount
-                        const getMozaikDiscount = () => {
-                          const lineCount = lines.length;
-                          if (lineCount === 1) return 0;
-                          if (lineCount === 2) return 1;
-                          if (lineCount === 3) return 2;
-                          return 3;
-                        };
-                        const mozaikDiscountPerLine = getMozaikDiscount();
-                        
-                        const totalMonthly = Math.max(
-                          0,
-                          (tariff?.monthly ?? 0) +
-                            deviceMonthly +
-                            lineAddons.reduce((sum, addon) => sum + (addon?.monthly ?? 0), 0) +
-                            screenInsuranceCost -
-                            (line.devicePayment === "installments" ? appliedWallet : 0) -
-                            mozaikDiscountPerLine
-                        );
-                        
-                        const totalOnetime = Math.max(
-                          0,
-                          deviceUpfront - (line.devicePayment === "upfront" ? appliedWallet : 0)
-                        );
-                        
-                        return (
-                          <div
-                            key={line.id}
-                            className="rounded-2xl border border-border bg-card shadow-sm p-6"
-                          >
-                            <div className="flex items-center justify-between mb-4">
-                              <h3 className="text-lg font-semibold">
-                                {getLineLabel(line, lineIndex)}
-                              </h3>
-                              <div className="flex items-center gap-2">
-                                <button
-                                  onClick={() => {
-                                    setActiveLineId(line.id);
-                                    updateLine(line.id, { completed: false });
-                                  }}
-                                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                                  title="Uredi liniju"
-                                >
-                                  <Edit size={16} />
-                                  <span>Uredi</span>
-                                </button>
-                                <button
-                                  onClick={() => removeLine(line.id)}
-                                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors"
-                                  title="Izbriši liniju"
-                                >
-                                  <Trash2 size={16} />
-                                  <span>Izbriši</span>
-                                </button>
-                              </div>
-                            </div>
-                            
-                            {/* All fields in one row */}
-                            {(() => {
-                              const mpcPrice = device?.upfront ?? 0;
-                              const rate = line.deviceMonthly ?? device?.installment ?? 0;
-                              const onetimeCostOriginal = line.devicePayment === "installments" 
-                                ? Math.max(0, mpcPrice - (rate * 24))
-                                : mpcPrice;
-                              
-                              // Calculate available wallet for this line
-                              const otherLinesWallet = lines.reduce(
-                                (sum, l) => sum + (l.id === line.id ? 0 : l.walletUse ?? 0),
-                                0
-                              );
-                              const availableWallet = Math.max(0, walletTotal - otherLinesWallet);
-                              const maxWalletForDevice = device && device.id !== "no-dev" 
-                                ? Math.min(availableWallet, Math.max(0, onetimeCostOriginal - 1))
-                                : 0;
-                              
-                              const currentWallet = line.walletUse ?? 0;
-                              const totalDevicePrice = device && device.id !== "no-dev" 
-                                ? Math.max(1, onetimeCostOriginal - currentWallet)
-                                : 0;
-                              
-                              return (
-                                <div className="grid grid-cols-2 md:grid-cols-6 gap-2">
-                                  <div className="rounded-xl border border-border bg-background p-3">
-                                    <div className="text-xs text-muted-foreground mb-1">Tarifa</div>
-                                    <div className="font-medium text-sm">
-                                      {tariff?.name}
-                                    </div>
-                                  </div>
-                                  
-                                  <div className="rounded-xl border border-border bg-background p-3">
-                                    <div className="text-xs text-muted-foreground mb-1">Uređaj</div>
-                                    <div className="font-medium text-sm">{device?.name}</div>
-                                  </div>
-                                  
-                                  <button
-                                    onClick={() => {
-                                      setLineTypeSelectionFor(line.id);
-                                    }}
-                                    className={`rounded-xl border p-3 flex flex-col justify-between group hover:bg-muted/50 transition-colors w-full text-left ${
-                                      !line.lineType 
-                                        ? "border-red-500 bg-background" 
-                                        : "border-border bg-background"
-                                    }`}
-                                  >
-                                    <div className="text-xs text-muted-foreground mb-1">Vrsta linije</div>
-                                    <div className="flex items-center justify-between">
-                                      <div className="font-medium text-sm">
-                                        {line.lineType ? lineTypeLabels[line.lineType as keyof typeof lineTypeLabels] : "-"}
-                                      </div>
-                                      <ChevronRight size={16} className="text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
-                                    </div>
-                                  </button>
-                                  
-                                  {device && device.id !== "no-dev" ? (
-                                    <>
-                                      <div className="rounded-xl border border-border bg-background p-3">
-                                        <div className="text-xs text-muted-foreground mb-1">MPC cijena</div>
-                                        <div className="font-medium text-sm">€{mpcPrice.toFixed(2)}</div>
-                                      </div>
-                                      
-                                      <div className="rounded-xl border border-border bg-background p-3">
-                                        <div className="text-xs text-muted-foreground mb-1">Popust (A1 Wallet)</div>
-                                        <div className="flex items-center gap-1">
-                                          <input
-                                            type="number"
-                                            min="0"
-                                            max={maxWalletForDevice}
-                                            step="0.01"
-                                            value={currentWallet.toFixed(2)}
-                                            onChange={(e) => {
-                                              const val = parseFloat(e.target.value) || 0;
-                                              const clamped = Math.min(Math.max(0, val), maxWalletForDevice);
-                                              updateLine(line.id, { walletUse: clamped });
-                                            }}
-                                            className="w-full bg-background border border-input rounded px-2 py-1 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary"
-                                          />
-                                        </div>
-                                      </div>
-                                      
-                                      <div className="rounded-xl border border-border bg-background p-3">
-                                        <div className="text-xs text-muted-foreground mb-1">Ukupno</div>
-                                        <div className="font-medium text-sm">€{totalDevicePrice.toFixed(2)}</div>
-                                      </div>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <div className="rounded-xl border border-border bg-background/50 p-3">
-                                        <div className="text-xs text-muted-foreground mb-1">MPC cijena</div>
-                                        <div className="font-medium text-sm">-</div>
-                                      </div>
-                                      
-                                      <div className="rounded-xl border border-border bg-background/50 p-3">
-                                        <div className="text-xs text-muted-foreground mb-1">Popust (A1 Wallet)</div>
-                                        <div className="font-medium text-sm">-</div>
-                                      </div>
-                                      
-                                      <div className="rounded-xl border border-border bg-background/50 p-3">
-                                        <div className="text-xs text-muted-foreground mb-1">Ukupno</div>
-                                        <div className="font-medium text-sm">-</div>
-                                      </div>
-                                    </>
-                                  )}
-                                </div>
-                              );
-                            })()}
-
-                            {/* Price info with tooltips */}
-                            <TooltipProvider>
-                              <div className="flex gap-6 mt-4 pt-4 border-t border-border">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm font-semibold">Mjesečne naknade: €{totalMonthly.toFixed(2)}</span>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <button className="text-muted-foreground hover:text-foreground transition-colors">
-                                        <Info size={16} />
-                                      </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent className="max-w-xs">
-                                      <div className="space-y-1 text-xs">
-                                        <div className="font-semibold mb-2">Detalji mjesečne cijene:</div>
-                                        <div className="flex justify-between">
-                                          <span>Tarifa ({tariff?.name})</span>
-                                          <span>€{tariff?.monthly.toFixed(2)}</span>
-                                        </div>
-                                        {mozaikDiscountPerLine > 0 && (
-                                          <div className="flex justify-between text-primary">
-                                            <span>Mozaik popust</span>
-                                            <span>-€{mozaikDiscountPerLine.toFixed(2)}</span>
-                                          </div>
-                                        )}
-                                        {deviceMonthly > 0 && (
-                                          <div className="flex justify-between">
-                                            <span>Uređaj (rate)</span>
-                                            <span>€{deviceMonthly.toFixed(2)}</span>
-                                          </div>
-                                        )}
-                                        {screenInsuranceCost > 0 && (
-                                          <div className="flex justify-between">
-                                            <span>Osiguranje ekrana</span>
-                                            <span>€{screenInsuranceCost.toFixed(2)}</span>
-                                          </div>
-                                        )}
-                                        {lineAddons.map((addon) => (
-                                          <div key={addon!.id} className="flex justify-between">
-                                            <span>{addon!.name}</span>
-                                            <span>€{addon!.monthly.toFixed(2)}</span>
-                                          </div>
-                                        ))}
-                                        {line.devicePayment === "installments" && appliedWallet > 0 && (
-                                          <div className="flex justify-between text-primary">
-                                            <span>A1 Wallet popust</span>
-                                            <span>-€{appliedWallet.toFixed(2)}</span>
-                                          </div>
-                                        )}
-                                        <div className="flex justify-between font-semibold pt-1 mt-1 border-t border-border">
-                                          <span>Ukupno</span>
-                                          <span>€{totalMonthly.toFixed(2)}</span>
-                                        </div>
-                                      </div>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </div>
+                        {/* Table */}
+                        <div className="overflow-x-auto">
+                          <table className="w-full">
+                            <thead>
+                              <tr className="border-b border-border">
+                                <th className="text-left py-3 px-2 text-sm font-semibold text-muted-foreground">Tarifa</th>
+                                <th className="text-left py-3 px-2 text-sm font-semibold text-muted-foreground">Uređaj</th>
+                                <th className="text-right py-3 px-2 text-sm font-semibold text-muted-foreground">MPC cijena</th>
+                                <th className="text-right py-3 px-2 text-sm font-semibold text-muted-foreground">Popust A1 Wallet</th>
+                                <th className="text-right py-3 px-2 text-sm font-semibold text-muted-foreground">Ukupna cijena</th>
+                                <th className="text-left py-3 px-2 text-sm font-semibold text-muted-foreground">Vrsta linije</th>
+                                <th className="text-right py-3 px-2 text-sm font-semibold text-muted-foreground">Akcije</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {completedLines.map((line) => {
+                                const lineIndex = lines.findIndex((l) => l.id === line.id);
+                                const tariff = tariffs.find((t) => t.id === line.tariffId);
+                                const device = devices.find((d) => d.id === line.deviceId);
                                 
-                                {totalOnetime > 0 && (
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-sm font-semibold">Jednokratne naknade: €{totalOnetime.toFixed(2)}</span>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <button className="text-muted-foreground hover:text-foreground transition-colors">
-                                          <Info size={16} />
+                                // Calculate prices for this line
+                                const lineAddons = line.addonIds.map((id) => addons.find((a) => a.id === id)).filter(Boolean);
+                                const deviceMonthly = line.devicePayment === "installments" ? (line.deviceMonthly ?? device?.installment ?? 0) : 0;
+                                const deviceUpfront = line.devicePayment === "upfront" ? (device?.upfront ?? 0) : 0;
+                                const appliedWallet = line.walletUse ?? 0;
+                                const screenInsuranceCost = device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0;
+                                
+                                // Mozaik discount
+                                const getMozaikDiscount = () => {
+                                  const lineCount = lines.length;
+                                  if (lineCount === 1) return 0;
+                                  if (lineCount === 2) return 1;
+                                  if (lineCount === 3) return 2;
+                                  return 3;
+                                };
+                                const mozaikDiscountPerLine = getMozaikDiscount();
+                                
+                                const totalMonthly = Math.max(
+                                  0,
+                                  (tariff?.monthly ?? 0) +
+                                    deviceMonthly +
+                                    lineAddons.reduce((sum, addon) => sum + (addon?.monthly ?? 0), 0) +
+                                    screenInsuranceCost -
+                                    (line.devicePayment === "installments" ? appliedWallet : 0) -
+                                    mozaikDiscountPerLine
+                                );
+                                
+                                const totalOnetime = Math.max(
+                                  0,
+                                  deviceUpfront - (line.devicePayment === "upfront" ? appliedWallet : 0)
+                                );
+                                
+                                // Add to totals
+                                totalMonthlyAll += totalMonthly;
+                                totalOnetimeAll += totalOnetime;
+                                
+                                // Device pricing
+                                const mpcPrice = device?.upfront ?? 0;
+                                const rate = line.deviceMonthly ?? device?.installment ?? 0;
+                                const onetimeCostOriginal = line.devicePayment === "installments" 
+                                  ? Math.max(0, mpcPrice - (rate * 24))
+                                  : mpcPrice;
+                                
+                                // Calculate available wallet for this line
+                                const otherLinesWallet = lines.reduce(
+                                  (sum, l) => sum + (l.id === line.id ? 0 : l.walletUse ?? 0),
+                                  0
+                                );
+                                const availableWallet = Math.max(0, walletTotal - otherLinesWallet);
+                                const maxWalletForDevice = device && device.id !== "no-dev" 
+                                  ? Math.min(availableWallet, Math.max(0, onetimeCostOriginal - 1))
+                                  : 0;
+                                
+                                const currentWallet = line.walletUse ?? 0;
+                                const totalDevicePrice = device && device.id !== "no-dev" 
+                                  ? Math.max(1, onetimeCostOriginal - currentWallet)
+                                  : 0;
+                                
+                                return (
+                                  <tr key={line.id} className="border-b border-border hover:bg-muted/50 transition-colors">
+                                    <td className="py-3 px-2 text-sm">{tariff?.name}</td>
+                                    <td className="py-3 px-2 text-sm">{device?.name}</td>
+                                    <td className="py-3 px-2 text-sm text-right">
+                                      {device && device.id !== "no-dev" ? `€${mpcPrice.toFixed(2)}` : "-"}
+                                    </td>
+                                    <td className="py-3 px-2 text-sm text-right">
+                                      {device && device.id !== "no-dev" ? (
+                                        <input
+                                          type="number"
+                                          min="0"
+                                          max={maxWalletForDevice}
+                                          step="0.01"
+                                          value={currentWallet.toFixed(2)}
+                                          onChange={(e) => {
+                                            const val = parseFloat(e.target.value) || 0;
+                                            const clamped = Math.min(Math.max(0, val), maxWalletForDevice);
+                                            updateLine(line.id, { walletUse: clamped });
+                                          }}
+                                          className="w-20 bg-background border border-input rounded px-2 py-1 text-sm text-right focus:outline-none focus:ring-2 focus:ring-primary"
+                                        />
+                                      ) : "-"}
+                                    </td>
+                                    <td className="py-3 px-2 text-sm text-right font-medium">
+                                      {device && device.id !== "no-dev" ? `€${totalDevicePrice.toFixed(2)}` : "-"}
+                                    </td>
+                                    <td className="py-3 px-2 text-sm">
+                                      {line.lineType ? lineTypeLabels[line.lineType as keyof typeof lineTypeLabels] : "-"}
+                                    </td>
+                                    <td className="py-3 px-2 text-sm text-right">
+                                      <div className="flex items-center justify-end gap-2">
+                                        <button
+                                          onClick={() => {
+                                            setActiveLineId(line.id);
+                                            updateLine(line.id, { completed: false });
+                                          }}
+                                          className="text-muted-foreground hover:text-foreground transition-colors"
+                                          title="Uredi liniju"
+                                        >
+                                          <Edit size={16} />
                                         </button>
-                                      </TooltipTrigger>
-                                      <TooltipContent className="max-w-xs">
-                                        <div className="space-y-1 text-xs">
-                                          <div className="font-semibold mb-2">Detalji jednokratne cijene:</div>
-                                          <div className="flex justify-between">
-                                            <span>Uređaj ({device?.name})</span>
-                                            <span>€{deviceUpfront.toFixed(2)}</span>
-                                          </div>
-                                          {line.devicePayment === "upfront" && appliedWallet > 0 && (
-                                            <div className="flex justify-between text-primary">
-                                              <span>A1 Wallet popust</span>
-                                              <span>-€{appliedWallet.toFixed(2)}</span>
-                                            </div>
-                                          )}
-                                          <div className="flex justify-between font-semibold pt-1 mt-1 border-t border-border">
-                                            <span>Ukupno</span>
-                                            <span>€{totalOnetime.toFixed(2)}</span>
-                                          </div>
-                                        </div>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </div>
-                                )}
-                              </div>
-                            </TooltipProvider>
+                                        <button
+                                          onClick={() => removeLine(line.id)}
+                                          className="text-muted-foreground hover:text-destructive transition-colors"
+                                          title="Izbriši liniju"
+                                        >
+                                          <Trash2 size={16} />
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                        
+                        {/* Totals */}
+                        <div className="mt-6 pt-4 border-t border-border flex justify-end gap-8">
+                          <div className="text-right">
+                            <div className="text-sm text-muted-foreground mb-1">Ukupno mjesečno</div>
+                            <div className="text-xl font-bold">€{totalMonthlyAll.toFixed(2)}</div>
                           </div>
-                        );
-                      })}
-                    </section>
-                  )}
+                          <div className="text-right">
+                            <div className="text-sm text-muted-foreground mb-1">Ukupno jednokratno</div>
+                            <div className="text-xl font-bold">€{totalOnetimeAll.toFixed(2)}</div>
+                          </div>
+                        </div>
+                      </section>
+                    );
+                  })()}
 
                   <section className="rounded-2xl border border-border bg-card shadow-sm p-4">
                     {lines.every(l => l.completed) && (
