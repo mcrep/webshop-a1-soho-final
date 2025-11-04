@@ -429,12 +429,17 @@ const Index = () => {
                                           type="number"
                                           min="0"
                                           max={maxWalletForDevice}
-                                          step="0.01"
-                                          value={currentWallet.toFixed(2)}
+                                          step="1"
+                                          value={Math.round(currentWallet)}
                                           onChange={(e) => {
-                                            const val = parseFloat(e.target.value) || 0;
+                                            const val = Math.round(parseFloat(e.target.value) || 0);
                                             const clamped = Math.min(Math.max(0, val), maxWalletForDevice);
                                             updateLine(line.id, { walletUse: clamped });
+                                          }}
+                                          onKeyDown={(e) => {
+                                            if (e.key === '.' || e.key === ',') {
+                                              e.preventDefault();
+                                            }
                                           }}
                                           className="w-20 bg-background border border-input rounded px-2 py-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-primary"
                                         />
