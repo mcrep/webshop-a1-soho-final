@@ -319,38 +319,94 @@ const Index = () => {
                               </div>
                             </div>
                             
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                              <div className="rounded-xl border border-border bg-background p-3">
-                                <div className="text-xs text-muted-foreground mb-1">Tarifa</div>
-                                <div className="font-medium">
-                                  {tariff?.name}
-                                </div>
-                              </div>
-                              
-                              <div className="rounded-xl border border-border bg-background p-3">
-                                <div className="text-xs text-muted-foreground mb-1">Uređaj</div>
-                                <div className="font-medium">{device?.name}</div>
-                              </div>
-                              
-                              <button
-                                onClick={() => {
-                                  // Open line type selection modal
-                                  setLineTypeSelectionFor(line.id);
-                                }}
-                                className={`rounded-xl border p-3 flex items-center justify-between group hover:bg-muted/50 transition-colors w-full text-left ${
-                                  !line.lineType 
-                                    ? "border-red-500 bg-background" 
-                                    : "border-border bg-background"
-                                }`}
-                              >
-                                <div>
-                                  <div className="text-xs text-muted-foreground mb-1">Vrsta linije</div>
+                            <div className="space-y-3">
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div className="rounded-xl border border-border bg-background p-3">
+                                  <div className="text-xs text-muted-foreground mb-1">Tarifa</div>
                                   <div className="font-medium">
-                                    {line.lineType ? lineTypeLabels[line.lineType as keyof typeof lineTypeLabels] : "-"}
+                                    {tariff?.name}
                                   </div>
                                 </div>
-                                <ChevronRight size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" />
-                              </button>
+                                
+                                <div className="rounded-xl border border-border bg-background p-3">
+                                  <div className="text-xs text-muted-foreground mb-1">Uređaj</div>
+                                  <div className="font-medium">{device?.name}</div>
+                                </div>
+                                
+                                <button
+                                  onClick={() => {
+                                    // Open line type selection modal
+                                    setLineTypeSelectionFor(line.id);
+                                  }}
+                                  className={`rounded-xl border p-3 flex items-center justify-between group hover:bg-muted/50 transition-colors w-full text-left ${
+                                    !line.lineType 
+                                      ? "border-red-500 bg-background" 
+                                      : "border-border bg-background"
+                                  }`}
+                                >
+                                  <div>
+                                    <div className="text-xs text-muted-foreground mb-1">Vrsta linije</div>
+                                    <div className="font-medium">
+                                      {line.lineType ? lineTypeLabels[line.lineType as keyof typeof lineTypeLabels] : "-"}
+                                    </div>
+                                  </div>
+                                  <ChevronRight size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" />
+                                </button>
+                              </div>
+                              
+                              {/* Device pricing details */}
+                              {device && device.id !== "no-dev" && (() => {
+                                const mpcPrice = device.upfront ?? 0;
+                                const rate = line.deviceMonthly ?? device.installment ?? 0;
+                                const onetimeCostOriginal = line.devicePayment === "installments" 
+                                  ? Math.max(0, mpcPrice - (rate * 24))
+                                  : mpcPrice;
+                                
+                                // Calculate available wallet for this line
+                                const otherLinesWallet = lines.reduce(
+                                  (sum, l) => sum + (l.id === line.id ? 0 : l.walletUse ?? 0),
+                                  0
+                                );
+                                const availableWallet = Math.max(0, walletTotal - otherLinesWallet);
+                                const maxWalletForDevice = Math.min(availableWallet, Math.max(0, onetimeCostOriginal - 1));
+                                
+                                const currentWallet = line.walletUse ?? 0;
+                                const totalDevicePrice = Math.max(1, onetimeCostOriginal - currentWallet);
+                                
+                                return (
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    <div className="rounded-xl border border-border bg-background p-3">
+                                      <div className="text-xs text-muted-foreground mb-1">MPC cijena uređaja</div>
+                                      <div className="font-medium">€{mpcPrice.toFixed(2)}</div>
+                                    </div>
+                                    
+                                    <div className="rounded-xl border border-border bg-background p-3">
+                                      <div className="text-xs text-muted-foreground mb-1">Popust na uređaj (A1 Wallet)</div>
+                                      <div className="flex items-center gap-2">
+                                        <input
+                                          type="number"
+                                          min="0"
+                                          max={maxWalletForDevice}
+                                          step="0.01"
+                                          value={currentWallet.toFixed(2)}
+                                          onChange={(e) => {
+                                            const val = parseFloat(e.target.value) || 0;
+                                            const clamped = Math.min(Math.max(0, val), maxWalletForDevice);
+                                            updateLine(line.id, { walletUse: clamped });
+                                          }}
+                                          className="w-full bg-background border border-input rounded px-2 py-1 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary"
+                                        />
+                                        <span className="text-xs text-muted-foreground">€</span>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="rounded-xl border border-border bg-background p-3">
+                                      <div className="text-xs text-muted-foreground mb-1">Ukupna cijena uređaja</div>
+                                      <div className="font-medium">€{totalDevicePrice.toFixed(2)}</div>
+                                    </div>
+                                  </div>
+                                );
+                              })()}
                             </div>
 
                             {/* Price info with tooltips */}
