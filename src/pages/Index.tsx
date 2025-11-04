@@ -305,7 +305,7 @@ const Index = () => {
                               </tr>
                               
                               {/* Column headers - second row */}
-                              <tr className="border-b border-border">
+                              <tr className="border-b border-border bg-muted/30">
                                 {tariffGroupExpanded ? (
                                   <>
                                     <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Tarifa</th>
@@ -394,36 +394,36 @@ const Index = () => {
                                 return (
                                   <tr key={line.id} className="border-b border-border hover:bg-muted/50 transition-colors">
                                     {/* Broj */}
-                                    <td className="py-3 px-2 text-sm font-medium">{getLineLabel(line, lineIndex)}</td>
+                                    <td className="py-3 px-2 text-sm font-medium align-middle">{getLineLabel(line, lineIndex)}</td>
                                     
                                     {/* Tarifa group columns */}
                                     {tariffGroupExpanded ? (
                                       <>
-                                        <td className="py-3 px-2 text-sm">{tariff?.name}</td>
-                                        <td className="py-3 px-2 text-sm text-right">€{(tariff?.monthly ?? 0).toFixed(2)}</td>
-                                        <td className="py-3 px-2 text-sm text-right">€{mozaikDiscountPerLine.toFixed(2)}</td>
+                                        <td className="py-3 px-2 text-sm align-middle">{tariff?.name}</td>
+                                        <td className="py-3 px-2 text-sm text-right align-middle">€{(tariff?.monthly ?? 0).toFixed(2)}</td>
+                                        <td className="py-3 px-2 text-sm text-right align-middle">€{mozaikDiscountPerLine.toFixed(2)}</td>
                                       </>
                                     ) : (
-                                      <td className="py-3 px-2 text-sm">{tariff?.name}</td>
+                                      <td className="py-3 px-2 text-sm align-middle">{tariff?.name}</td>
                                     )}
                                     
                                     {/* Uređaj group columns */}
                                     {deviceGroupExpanded ? (
                                       <>
-                                        <td className="py-3 px-2 text-sm">{device?.name}</td>
-                                        <td className="py-3 px-2 text-sm text-right">
+                                        <td className="py-3 px-2 text-sm align-middle">{device?.name}</td>
+                                        <td className="py-3 px-2 text-sm text-right align-middle">
                                           {device && device.id !== "no-dev" ? `€${mpcPrice.toFixed(2)}` : "-"}
                                         </td>
-                                        <td className="py-3 px-2 text-sm text-right">
+                                        <td className="py-3 px-2 text-sm text-right align-middle">
                                           {device && device.id !== "no-dev" ? `€${rate.toFixed(2)}` : "-"}
                                         </td>
                                       </>
                                     ) : (
-                                      <td className="py-3 px-2 text-sm">{device?.name}</td>
+                                      <td className="py-3 px-2 text-sm align-middle">{device?.name}</td>
                                     )}
                                     
                                     {/* Popust A1 Wallet - always visible */}
-                                    <td className="py-3 px-2 text-sm text-right">
+                                    <td className="py-3 px-2 text-sm text-right align-middle">
                                       {device && device.id !== "no-dev" ? (
                                         <input
                                           type="number"
@@ -442,12 +442,12 @@ const Index = () => {
                                     </td>
                                     
                                     {/* Ukupna cijena - always visible */}
-                                    <td className="py-3 px-2 text-sm text-right font-medium">
+                                    <td className="py-3 px-2 text-sm text-right font-medium align-middle">
                                       {device && device.id !== "no-dev" ? `€${totalDevicePrice.toFixed(2)}` : "-"}
                                     </td>
                                     
                                     {/* Vrsta linije */}
-                                    <td className="py-3 px-2 text-sm">
+                                    <td className="py-3 px-2 text-sm align-middle">
                                       {!line.lineType ? (
                                         <button
                                           onClick={() => setLineTypeSelectionFor(line.id)}
@@ -470,7 +470,7 @@ const Index = () => {
                                     </td>
                                     
                                     {/* Akcije */}
-                                    <td className="py-3 px-2 text-sm text-right">
+                                    <td className="py-3 px-2 text-sm text-right align-middle">
                                       <div className="flex items-center justify-end gap-2">
                                         <button
                                           onClick={() => {
