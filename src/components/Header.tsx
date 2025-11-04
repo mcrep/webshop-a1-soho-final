@@ -15,10 +15,11 @@ type HeaderProps = {
   lineCount: number;
   monthly: number;
   onetime: number;
+  allLinesConfigured: boolean;
   onFinishOrder: () => void;
 };
 
-export function Header({ onOpenOTP, onOpenLogin, lineCount, monthly, onetime, onFinishOrder }: HeaderProps) {
+export function Header({ onOpenOTP, onOpenLogin, lineCount, monthly, onetime, allLinesConfigured, onFinishOrder }: HeaderProps) {
   return (
     <header className="bg-card shadow-sm border-b border-border">
       <div className="mx-auto max-w-[1600px] px-4 py-4">
@@ -72,13 +73,15 @@ export function Header({ onOpenOTP, onOpenLogin, lineCount, monthly, onetime, on
                         </div>
                       </div>
 
-                      <Button 
-                        onClick={onFinishOrder}
-                        className="w-full mt-4"
-                        size="lg"
-                      >
-                        Završi narudžbu
-                      </Button>
+                      {allLinesConfigured && (
+                        <Button 
+                          onClick={onFinishOrder}
+                          className="w-full mt-4"
+                          size="lg"
+                        >
+                          Završi narudžbu
+                        </Button>
+                      )}
                     </div>
                   )}
                 </div>

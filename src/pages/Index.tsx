@@ -56,6 +56,11 @@ const Index = () => {
   const [tariffGroupExpanded, setTariffGroupExpanded] = useState(false);
   const [deviceGroupExpanded, setDeviceGroupExpanded] = useState(false);
 
+  // Check if all lines have lineType selected
+  const allLinesConfigured = useMemo(() => {
+    return lines.every(line => line.lineType !== null);
+  }, [lines]);
+
   const maskedPhone = "********97";
 
   // Mutators
@@ -187,6 +192,7 @@ const Index = () => {
         lineCount={lines.length}
         monthly={monthly}
         onetime={onetime}
+        allLinesConfigured={allLinesConfigured}
         onFinishOrder={() => {
           // TODO: Implement finish order logic
           console.log("Završi narudžbu clicked");
@@ -442,7 +448,19 @@ const Index = () => {
                                     
                                     {/* Vrsta linije */}
                                     <td className="py-3 px-2 text-sm">
-                                      {line.lineType ? lineTypeLabels[line.lineType as keyof typeof lineTypeLabels] : "-"}
+                                      <div className="space-y-2">
+                                        <div>{line.lineType ? lineTypeLabels[line.lineType as keyof typeof lineTypeLabels] : "-"}</div>
+                                        <button
+                                          onClick={() => setLineTypeSelectionFor(line.id)}
+                                          className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
+                                            !line.lineType 
+                                              ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                              : "bg-primary text-primary-foreground hover:bg-primary/90"
+                                          }`}
+                                        >
+                                          Odaberi vrstu linije
+                                        </button>
+                                      </div>
                                     </td>
                                     
                                     {/* Akcije */}
