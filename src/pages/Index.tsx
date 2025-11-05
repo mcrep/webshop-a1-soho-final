@@ -1,139 +1,89 @@
-import { useMemo, useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
-import { LineTabs } from "@/components/LineTabs";
-import { LineDetailConfig } from "@/components/LineDetailConfig";
-import { OrderSummary } from "@/components/OrderSummary";
-import { DeviceModal } from "@/components/modals/DeviceModal";
+import { StepIndicator } from "@/components/StepIndicator";
+import { Step1TariffSelection } from "@/components/steps/Step1TariffSelection";
+import { Step2WalletSummary } from "@/components/steps/Step2WalletSummary";
+import { Step3DeviceConfiguration } from "@/components/steps/Step3DeviceConfiguration";
+import { Step4Summary } from "@/components/steps/Step4Summary";
 import { DeviceListModal } from "@/components/modals/DeviceListModal";
-import { AddonsModal } from "@/components/modals/AddonsModal";
-import { OTPModal } from "@/components/modals/OTPModal";
-import { LoginModal } from "@/components/modals/LoginModal";
+import { LineTypeSelectionModal } from "@/components/modals/LineTypeSelectionModal";
 import { NumberPortingModal } from "@/components/modals/NumberPortingModal";
 import { PrepaidToPostpaidModal } from "@/components/modals/PrepaidToPostpaidModal";
 import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExtensionModal";
-import { LineTypeSelectionModal } from "@/components/modals/LineTypeSelectionModal";
-import { tariffs, devices, addons } from "@/data/catalog";
+import { tariffs, devices } from "@/data/catalog";
 import type { Line } from "@/types";
-import { Edit, ChevronRight, Trash2, Info, ChevronDown, ChevronUp } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 function rid() {
   return Math.random().toString(36).slice(2, 9);
 }
 
+type TariffQuantity = {
+  tariffId: string;
+  quantity: number;
+};
+
 const Index = () => {
-  // State
-  const [lines, setLines] = useState<Line[]>([
-    {
-      id: rid(),
-      tariffId: "perfect-biz",
-      deviceId: null,
-      devicePayment: "installments",
-      deviceMonthly: null,
-      addonIds: [],
-      lineType: null,
-      walletUse: 0,
-      screenInsurance: true,
-    },
-  ]);
-  const [activeLineId, setActiveLineId] = useState<string>(lines[0]?.id || rid());
-  const [deviceModalFor, setDeviceModalFor] = useState<string | null>(null);
+  // Stepper state
+  const [currentStep, setCurrentStep] = useState(1);
+  
+  // Step 1: Tariff quantities
+  const [tariffQuantities, setTariffQuantities] = useState<TariffQuantity[]>(
+    tariffs.map((t) => ({ tariffId: t.id, quantity: 0 }))
+  );
+
+  // Step 3+: Lines generated from tariff quantities
+  const [lines, setLines] = useState<Line[]>([]);
+
+  // Modals
   const [deviceListModalFor, setDeviceListModalFor] = useState<string | null>(null);
-  const [addonsModalFor, setAddonsModalFor] = useState<string | null>(null);
-  const [lineTypeModalFor, setLineTypeModalFor] = useState<{ lineId: string; lineType: string } | null>(null);
   const [lineTypeSelectionFor, setLineTypeSelectionFor] = useState<string | null>(null);
-  const [activePanel, setActivePanel] = useState<"config" | "login">("config");
-  const [authUser, setAuthUser] = useState("");
-  const [authPass, setAuthPass] = useState("");
-  const [otpOpen, setOtpOpen] = useState(false);
-  const [otp, setOtp] = useState<string>("");
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [tariffGroupExpanded, setTariffGroupExpanded] = useState(false);
-  const [deviceGroupExpanded, setDeviceGroupExpanded] = useState(false);
+  const [lineTypeModalFor, setLineTypeModalFor] = useState<{ lineId: string; lineType: string } | null>(null);
 
-  // Check if all lines have lineType selected
-  const allLinesConfigured = useMemo(() => {
-    return lines.every(line => line.lineType !== null);
-  }, [lines]);
+  // Steps configuration
+  const steps = [
+    { number: 1, name: "Tarife" },
+    { number: 2, name: "A1 Wallet" },
+    { number: 3, name: "Uređaji" },
+    { number: 4, name: "Sažetak" },
+  ];
 
-  const maskedPhone = "********97";
-
-  // Mutators
-  const addLine = () => {
-    const newId = rid();
-    setLines((ls) => [
-      ...ls,
-      {
-        id: newId,
-        tariffId: "perfect-biz",
-        deviceId: null,
-        devicePayment: "installments",
-        deviceMonthly: null,
-        addonIds: [],
-        lineType: null,
-        walletUse: 0,
-        screenInsurance: true,
-      },
-    ]);
-    setActiveLineId(newId);
+  // Update tariff quantity
+  const updateQuantity = (tariffId: string, delta: number) => {
+    setTariffQuantities((prev) =>
+      prev.map((tq) =>
+        tq.tariffId === tariffId
+          ? { ...tq, quantity: Math.max(0, tq.quantity + delta) }
+          : tq
+      )
+    );
   };
 
-  const removeLine = (id: string) => {
-    setLines((ls) => {
-      const filtered = ls.filter((l) => l.id !== id);
-      // If removing active line, switch to first available
-      if (id === activeLineId && filtered.length > 0) {
-        setActiveLineId(filtered[0].id);
+  // Generate lines from tariff quantities (called when moving from step 1 to step 2)
+  const generateLinesFromQuantities = () => {
+    const newLines: Line[] = [];
+    tariffQuantities.forEach((tq) => {
+      for (let i = 0; i < tq.quantity; i++) {
+        newLines.push({
+          id: rid(),
+          tariffId: tq.tariffId,
+          deviceId: null,
+          devicePayment: "installments",
+          deviceMonthly: null,
+          addonIds: [],
+          lineType: null,
+          walletUse: 0,
+          screenInsurance: true,
+        });
       }
-      return filtered;
     });
+    setLines(newLines);
   };
 
+  // Update line
   const updateLine = (id: string, patch: Partial<Line>) =>
     setLines((ls) => ls.map((l) => (l.id === id ? { ...l, ...patch } : l)));
 
-  // Ensure activeLineId is always valid
-  useEffect(() => {
-    if (lines.length > 0 && !lines.find((l) => l.id === activeLineId)) {
-      setActiveLineId(lines[0].id);
-    }
-  }, [lines, activeLineId]);
-
-  // Get active line data
-  const activeLine = lines.find((l) => l.id === activeLineId);
-
-  // Check if line has all required parameters
-  const isLineComplete = (line: Line) => {
-    return !!(line.tariffId && line.deviceId && line.lineType);
-  };
-
-  // Separate completed and active lines
-  const completedLines = lines.filter(l => l.completed);
-  const activeLineIsCompleted = activeLine?.completed ?? false;
-
-  // Helper function to get line label
-  const getLineLabel = (line: Line, index: number) => {
-    if (line.portingNumber) return line.portingNumber;
-    if (line.prepaidNumber) return line.prepaidNumber;
-    if (line.existingLineId) {
-      // Mock data for existing lines - should match ExistingLineExtensionModal
-      const existingLines = [
-        { id: "line-1", number: "385912345678" },
-        { id: "line-2", number: "385918765432" },
-        { id: "line-3", number: "385915551234" },
-      ];
-      const existing = existingLines.find(l => l.id === line.existingLineId);
-      if (existing) return existing.number;
-    }
-    return `Linija ${index + 1}`;
-  };
-
-  // Wallet
+  // Calculate wallet
   const walletTotal = useMemo(
     () =>
       lines.reduce((sum, l) => {
@@ -143,17 +93,9 @@ const Index = () => {
     [lines]
   );
   const walletUsed = lines.reduce((sum, l) => sum + (l.walletUse ?? 0), 0);
-  const walletRemaining = Math.max(0, walletTotal - walletUsed);
 
-  // Wallet calculation for active line
-  const sumUsedOthers = lines.reduce(
-    (sum, l) => sum + (l.id === activeLineId ? 0 : l.walletUse ?? 0),
-    0
-  );
-  const walletAvailForActiveLine = Math.max(0, walletTotal - sumUsedOthers);
-
-  // Pricing
-  const monthly = useMemo(
+  // Calculate pricing
+  const totalMonthly = useMemo(
     () =>
       lines.reduce((s, l) => {
         const t = tariffs.find((x) => x.id === l.tariffId)?.monthly ?? 0;
@@ -161,19 +103,15 @@ const Index = () => {
           l.devicePayment === "installments"
             ? (l.deviceMonthly ?? devices.find((x) => x.id === l.deviceId)?.installment) ?? 0
             : 0;
-        const add = l.addonIds.reduce(
-          (sum, id) => sum + (addons.find((x) => x.id === id)?.monthly ?? 0),
-          0
-        );
         const applied = l.devicePayment === "installments" ? l.walletUse ?? 0 : 0;
         const device = devices.find((x) => x.id === l.deviceId);
         const screenInsuranceCost = device && device.id !== "no-dev" && l.screenInsurance ? 4.99 : 0;
-        return s + Math.max(0, t + devMonthly + add - applied + screenInsuranceCost);
+        return s + Math.max(0, t + devMonthly + screenInsuranceCost - applied);
       }, 0),
     [lines]
   );
 
-  const onetime = useMemo(
+  const totalOnetime = useMemo(
     () =>
       lines.reduce((s, l) => {
         const upfront =
@@ -184,405 +122,95 @@ const Index = () => {
     [lines]
   );
 
+  // Step navigation
+  const handleStepClick = (step: number) => {
+    if (step === 1) {
+      setCurrentStep(1);
+    } else if (step === 2 && currentStep >= 2) {
+      setCurrentStep(2);
+    } else if (step === 3 && currentStep >= 3) {
+      setCurrentStep(3);
+    } else if (step === 4 && currentStep >= 4) {
+      setCurrentStep(4);
+    }
+  };
+
+  const handleStep1Next = () => {
+    generateLinesFromQuantities();
+    setCurrentStep(2);
+  };
+
+  const handleStep2Next = () => {
+    setCurrentStep(3);
+  };
+
+  const handleStep3Next = () => {
+    setCurrentStep(4);
+  };
+
+  const handleFinish = () => {
+    console.log("Narudžba završena!", { lines, totalMonthly, totalOnetime });
+    // TODO: Implement finish order logic
+  };
+
+  // Line count for header
+  const lineCount = lines.length;
+  const allLinesConfigured = lines.every(line => line.lineType !== null);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header 
-        onOpenOTP={() => setOtpOpen(true)}
-        onOpenLogin={() => setLoginOpen(true)}
-        lineCount={lines.length}
-        monthly={monthly}
-        onetime={onetime}
+        onOpenOTP={() => {}}
+        onOpenLogin={() => {}}
+        lineCount={lineCount}
+        monthly={totalMonthly}
+        onetime={totalOnetime}
         allLinesConfigured={allLinesConfigured}
-        onFinishOrder={() => {
-          // TODO: Implement finish order logic
-          console.log("Završi narudžbu clicked");
-        }}
+        onFinishOrder={handleFinish}
       />
 
       <div className="mx-auto max-w-[1600px] px-4 py-8">
-        {/* Main content */}
-        <div>
-          {/* Stepper - centered horizontally */}
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="flex flex-col items-center gap-1">
-              <button
-                onClick={() => setActivePanel("config")}
-                className={`h-6 w-6 rounded-full grid place-items-center border text-xs font-semibold transition-all ${
-                  activePanel === "config"
-                    ? "bg-primary text-primary-foreground border-primary shadow-md"
-                    : "bg-card text-muted-foreground border-border hover:bg-muted"
-                }`}
-                aria-current={activePanel === "config" ? "step" : undefined}
-                title="Korak 1: Konfiguracija"
-              >
-                1
-              </button>
-              <span className={`text-xs font-medium ${
-                activePanel === "config" ? "text-primary" : "text-muted-foreground"
-              }`}>
-                Konfiguracija
-              </span>
-            </div>
-            <div className="h-[2px] w-24 bg-border mb-3" />
-            <div className="flex flex-col items-center gap-1">
-              <button
-                onClick={() => setActivePanel("login")}
-                className={`h-6 w-6 rounded-full grid place-items-center border text-xs font-semibold transition-all ${
-                  activePanel === "login"
-                    ? "bg-primary text-primary-foreground border-primary shadow-md"
-                    : "bg-card text-muted-foreground border-border hover:bg-muted"
-                }`}
-                aria-current={activePanel === "login" ? "step" : undefined}
-                title="Korak 2: Plaćanje i isporuka"
-              >
-                2
-              </button>
-              <span className={`text-xs font-medium ${
-                activePanel === "login" ? "text-primary" : "text-muted-foreground"
-              }`}>
-                Plaćanje i isporuka
-              </span>
-            </div>
-          </div>
+        <StepIndicator currentStep={currentStep} onStepClick={handleStepClick} steps={steps} />
 
-          {/* Step content */}
-          <div className="space-y-6">
-              {activePanel === "config" && (
-                <>
-                  {/* Completed lines summary */}
-                  {completedLines.length > 0 && (() => {
-                    const lineTypeLabels = {
-                      new: "Nova linija",
-                      mnp: "Prijenos broja",
-                      pre2post: "Prepaid u Postpaid",
-                      renew: "Produženje ugovora",
-                    };
-                    
-                    // Calculate totals
-                    let totalMonthlyAll = 0;
-                    let totalOnetimeAll = 0;
-                    
-                    return (
-                      <section className="rounded-2xl border border-border bg-card shadow-sm p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <h2 className="text-xl font-semibold">Konfigurirane linije</h2>
-                          <div className="text-sm font-medium">
-                            Dostupan iznos A1 Walleta: <span className="text-primary">€{walletRemaining.toFixed(2)}</span>
-                          </div>
-                        </div>
-                        
-                        {/* Table */}
-                        <div className="overflow-x-auto">
-                          <table className="w-full">
-                            <thead>
-                              {/* Group headers - first row */}
-                              <tr className="border-b border-border bg-muted/30">
-                                <th rowSpan={2} className="text-left py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Broj</th>
-                                <th 
-                                  colSpan={tariffGroupExpanded ? 3 : 1} 
-                                  className="text-left py-2 px-2 text-sm font-bold cursor-pointer hover:bg-muted/50 transition-colors"
-                                  onClick={() => setTariffGroupExpanded(!tariffGroupExpanded)}
-                                >
-                                  <div className="flex items-center gap-2">
-                                    {tariffGroupExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                                    <span>TARIFA</span>
-                                  </div>
-                                </th>
-                                <th 
-                                  colSpan={deviceGroupExpanded ? 3 : 1} 
-                                  className="text-left py-2 px-2 text-sm font-bold cursor-pointer hover:bg-muted/50 transition-colors"
-                                  onClick={() => setDeviceGroupExpanded(!deviceGroupExpanded)}
-                                >
-                                  <div className="flex items-center gap-2">
-                                    {deviceGroupExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                                    <span>UREĐAJ</span>
-                                  </div>
-                                </th>
-                                <th rowSpan={2} className="text-center py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Popust A1 Wallet</th>
-                                <th rowSpan={2} className="text-center py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Ukupna cijena</th>
-                                <th rowSpan={2} className="text-center py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Vrsta linije</th>
-                                <th rowSpan={2} className="text-right py-2 px-2 text-xs font-semibold text-muted-foreground align-bottom">Akcije</th>
-                              </tr>
-                              
-                              {/* Column headers - second row */}
-                              <tr className="border-b border-border bg-muted/30">
-                                {tariffGroupExpanded ? (
-                                  <>
-                                    <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Tarifa</th>
-                                    <th className="text-center py-3 px-2 text-xs font-semibold text-muted-foreground">Cijena tarife</th>
-                                    <th className="text-center py-3 px-2 text-xs font-semibold text-muted-foreground">Popust na tarifu</th>
-                                  </>
-                                ) : (
-                                  <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Tarifa</th>
-                                )}
-                                
-                                {deviceGroupExpanded ? (
-                                  <>
-                                    <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Uređaj</th>
-                                    <th className="text-center py-3 px-2 text-xs font-semibold text-muted-foreground">MPC cijena</th>
-                                    <th className="text-center py-3 px-2 text-xs font-semibold text-muted-foreground">Mjesečna rata</th>
-                                  </>
-                                ) : (
-                                  <th className="text-left py-3 px-2 text-xs font-semibold text-muted-foreground">Uređaj</th>
-                                )}
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {completedLines.map((line) => {
-                                const lineIndex = lines.findIndex((l) => l.id === line.id);
-                                const tariff = tariffs.find((t) => t.id === line.tariffId);
-                                const device = devices.find((d) => d.id === line.deviceId);
-                                
-                                // Calculate prices for this line
-                                const lineAddons = line.addonIds.map((id) => addons.find((a) => a.id === id)).filter(Boolean);
-                                const deviceMonthly = line.devicePayment === "installments" ? (line.deviceMonthly ?? device?.installment ?? 0) : 0;
-                                const deviceUpfront = line.devicePayment === "upfront" ? (device?.upfront ?? 0) : 0;
-                                const appliedWallet = line.walletUse ?? 0;
-                                const screenInsuranceCost = device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0;
-                                
-                                // Mozaik discount
-                                const getMozaikDiscount = () => {
-                                  const lineCount = lines.length;
-                                  if (lineCount === 1) return 0;
-                                  if (lineCount === 2) return 1;
-                                  if (lineCount === 3) return 2;
-                                  return 3;
-                                };
-                                const mozaikDiscountPerLine = getMozaikDiscount();
-                                
-                                const totalMonthly = Math.max(
-                                  0,
-                                  (tariff?.monthly ?? 0) +
-                                    deviceMonthly +
-                                    lineAddons.reduce((sum, addon) => sum + (addon?.monthly ?? 0), 0) +
-                                    screenInsuranceCost -
-                                    (line.devicePayment === "installments" ? appliedWallet : 0) -
-                                    mozaikDiscountPerLine
-                                );
-                                
-                                const totalOnetime = Math.max(
-                                  0,
-                                  deviceUpfront - (line.devicePayment === "upfront" ? appliedWallet : 0)
-                                );
-                                
-                                // Add to totals
-                                totalMonthlyAll += totalMonthly;
-                                totalOnetimeAll += totalOnetime;
-                                
-                                // Device pricing
-                                const mpcPrice = device?.upfront ?? 0;
-                                const rate = line.deviceMonthly ?? device?.installment ?? 0;
-                                const onetimeCostOriginal = line.devicePayment === "installments" 
-                                  ? Math.max(0, mpcPrice - (rate * 24))
-                                  : mpcPrice;
-                                
-                                // Calculate available wallet for this line
-                                const otherLinesWallet = lines.reduce(
-                                  (sum, l) => sum + (l.id === line.id ? 0 : l.walletUse ?? 0),
-                                  0
-                                );
-                                const availableWallet = Math.max(0, walletTotal - otherLinesWallet);
-                                const maxWalletForDevice = device && device.id !== "no-dev" 
-                                  ? Math.min(availableWallet, Math.max(0, onetimeCostOriginal - 1))
-                                  : 0;
-                                
-                                const currentWallet = line.walletUse ?? 0;
-                                const totalDevicePrice = device && device.id !== "no-dev" 
-                                  ? Math.max(1, onetimeCostOriginal - currentWallet)
-                                  : 0;
-                                
-                                return (
-                                  <tr key={line.id} className="border-b border-border hover:bg-muted/50 transition-colors">
-                                    {/* Broj */}
-                                    <td className="py-3 px-2 text-sm font-medium align-middle">{getLineLabel(line, lineIndex)}</td>
-                                    
-                                    {/* Tarifa group columns */}
-                                    {tariffGroupExpanded ? (
-                                      <>
-                                        <td className="py-3 px-2 text-sm align-middle">{tariff?.name}</td>
-                                        <td className="py-3 px-2 text-sm text-center align-middle">€{(tariff?.monthly ?? 0).toFixed(2)}</td>
-                                        <td className="py-3 px-2 text-sm text-center align-middle">€{mozaikDiscountPerLine.toFixed(2)}</td>
-                                      </>
-                                    ) : (
-                                      <td className="py-3 px-2 text-sm align-middle">{tariff?.name}</td>
-                                    )}
-                                    
-                                    {/* Uređaj group columns */}
-                                    {deviceGroupExpanded ? (
-                                      <>
-                                        <td className="py-3 px-2 text-sm align-middle">{device?.name}</td>
-                                        <td className="py-3 px-2 text-sm text-center align-middle">
-                                          {device && device.id !== "no-dev" ? `€${mpcPrice.toFixed(2)}` : "-"}
-                                        </td>
-                                        <td className="py-3 px-2 text-sm text-center align-middle">
-                                          {device && device.id !== "no-dev" && line.devicePayment === "installments" ? `€${rate.toFixed(2)}` : "-"}
-                                        </td>
-                                      </>
-                                    ) : (
-                                      <td className="py-3 px-2 text-sm align-middle">{device?.name}</td>
-                                    )}
-                                    
-                                    {/* Popust A1 Wallet - always visible */}
-                                    <td className="py-3 px-2 text-sm text-center align-middle">
-                                      {device && device.id !== "no-dev" ? (
-                                        <input
-                                          type="number"
-                                          min="0"
-                                          max={maxWalletForDevice}
-                                          step="1"
-                                          value={Math.round(currentWallet)}
-                                          onChange={(e) => {
-                                            const val = Math.round(parseFloat(e.target.value) || 0);
-                                            const clamped = Math.min(Math.max(0, val), maxWalletForDevice);
-                                            updateLine(line.id, { walletUse: clamped });
-                                          }}
-                                          onKeyDown={(e) => {
-                                            if (e.key === '.' || e.key === ',') {
-                                              e.preventDefault();
-                                            }
-                                          }}
-                                          className="w-20 bg-background border border-input rounded px-2 py-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-primary"
-                                        />
-                                      ) : "-"}
-                                    </td>
-                                    
-                                    {/* Ukupna cijena - always visible */}
-                                    <td className="py-3 px-2 text-sm text-center font-medium align-middle">
-                                      {device && device.id !== "no-dev" ? `€${totalDevicePrice.toFixed(2)}` : "-"}
-                                    </td>
-                                    
-                                    {/* Vrsta linije */}
-                                    <td className="py-3 px-2 text-sm text-center align-middle">
-                                      {!line.lineType ? (
-                                        <button
-                                          onClick={() => setLineTypeSelectionFor(line.id)}
-                                          className="text-xs px-3 py-1.5 rounded-lg bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
-                                        >
-                                          Odaberi vrstu linije
-                                        </button>
-                                      ) : (
-                                        <div className="flex items-center justify-center gap-2">
-                                          <span>{lineTypeLabels[line.lineType as keyof typeof lineTypeLabels]}</span>
-                                          <button
-                                            onClick={() => setLineTypeSelectionFor(line.id)}
-                                            className="p-1 hover:bg-muted rounded transition-colors"
-                                            title="Uredi vrstu linije"
-                                          >
-                                            <Edit size={16} />
-                                          </button>
-                                        </div>
-                                      )}
-                                    </td>
-                                    
-                                    {/* Akcije */}
-                                    <td className="py-3 px-2 text-sm text-right align-middle">
-                                      <div className="flex items-center justify-end gap-2">
-                                        <button
-                                          onClick={() => {
-                                            setActiveLineId(line.id);
-                                            updateLine(line.id, { completed: false });
-                                          }}
-                                          className="text-muted-foreground hover:text-foreground transition-colors"
-                                          title="Uredi liniju"
-                                        >
-                                          <Edit size={16} />
-                                        </button>
-                                        <button
-                                          onClick={() => removeLine(line.id)}
-                                          className="text-muted-foreground hover:text-destructive transition-colors"
-                                          title="Izbriši liniju"
-                                        >
-                                          <Trash2 size={16} />
-                                        </button>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                            </tbody>
-                          </table>
-                        </div>
-                        
-                        {/* Totals */}
-                        <div className="mt-6 pt-4 border-t border-border flex justify-end gap-8">
-                          <div className="text-right">
-                            <div className="text-sm text-muted-foreground mb-1">Ukupno mjesečno</div>
-                            <div className="text-xl font-bold">€{totalMonthlyAll.toFixed(2)}</div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-sm text-muted-foreground mb-1">Ukupno jednokratno</div>
-                            <div className="text-xl font-bold">€{totalOnetimeAll.toFixed(2)}</div>
-                          </div>
-                        </div>
-                      </section>
-                    );
-                  })()}
+        {currentStep === 1 && (
+          <Step1TariffSelection
+            tariffQuantities={tariffQuantities}
+            onUpdateQuantity={updateQuantity}
+            onNext={handleStep1Next}
+          />
+        )}
 
-                  <section className="rounded-2xl border border-border bg-card shadow-sm p-4">
-                    {lines.every(l => l.completed) && (
-                      <div className="flex items-center justify-between mb-4">
-                        <button
-                          onClick={addLine}
-                          className="rounded-xl border border-dashed border-red-500 bg-card hover:bg-muted transition-colors px-4 py-2 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-                        >
-                          <span>Želim još jednu liniju</span>
-                        </button>
-                        <button
-                          onClick={() => {
-                            console.log("Završi narudžbu clicked");
-                            // TODO: Navigate to next step or process order
-                          }}
-                          disabled={!lines.every(l => l.lineType)}
-                          className="px-6 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        >
-                          Završi narudžbu
-                        </button>
-                      </div>
-                    )}
-                    {!lines.every(l => l.completed) && (
-                      <LineTabs
-                        lines={lines.filter(l => !l.completed)}
-                        activeLineId={activeLineId}
-                        onSelectLine={setActiveLineId}
-                        onAddLine={addLine}
-                        onRemoveLine={removeLine}
-                      />
-                    )}
-                  </section>
+        {currentStep === 2 && (
+          <Step2WalletSummary
+            totalWallet={walletTotal}
+            onNext={handleStep2Next}
+            onBack={() => setCurrentStep(1)}
+          />
+        )}
 
-                  {activeLine && !activeLineIsCompleted && (
-                    <section className="rounded-2xl border border-border bg-card shadow-sm p-6">
-                      <h2 className="text-lg font-semibold mb-6">
-                        Detaljna konfiguracija - {getLineLabel(activeLine, lines.findIndex((l) => l.id === activeLineId))}
-                      </h2>
-                      <LineDetailConfig
-                        line={activeLine}
-                        onChange={(patch) => updateLine(activeLineId, patch)}
-                        onOpenDeviceModal={() => setDeviceModalFor(activeLineId)}
-                        onOpenDeviceListModal={() => setDeviceListModalFor(activeLineId)}
-                        onOpenAddonsModal={() => setAddonsModalFor(activeLineId)}
-                        onComplete={() => {
-                          // Mark line as completed
-                          updateLine(activeLineId, { completed: true });
-                          // When completed, if there are more incomplete lines, switch to first incomplete
-                          const nextIncomplete = lines.find(l => l.id !== activeLineId && !l.completed);
-                          if (nextIncomplete) {
-                            setActiveLineId(nextIncomplete.id);
-                          }
-                        }}
-                        showCompleteButton={true}
-                      />
-                    </section>
-                  )}
-                </>
-              )}
+        {currentStep === 3 && (
+          <Step3DeviceConfiguration
+            lines={lines}
+            totalWallet={walletTotal}
+            walletUsed={walletUsed}
+            onUpdateLine={updateLine}
+            onNext={handleStep3Next}
+            onBack={() => setCurrentStep(2)}
+            onOpenDeviceModal={(lineId) => setDeviceListModalFor(lineId)}
+          />
+        )}
 
-            {activePanel === "login" && (
-              <OrderSummary lines={lines} getLineLabel={getLineLabel} />
-            )}
-          </div>
-        </div>
-
+        {currentStep === 4 && (
+          <Step4Summary
+            lines={lines}
+            totalMonthly={totalMonthly}
+            totalOnetime={totalOnetime}
+            onUpdateLine={updateLine}
+            onBack={() => setCurrentStep(3)}
+            onFinish={handleFinish}
+            onOpenLineTypeModal={(lineId) => setLineTypeSelectionFor(lineId)}
+          />
+        )}
       </div>
 
       {/* Modals */}
@@ -592,110 +220,80 @@ const Index = () => {
           onSelectDevice={(deviceId) => {
             updateLine(deviceListModalFor, { deviceId });
             setDeviceListModalFor(null);
-            setDeviceModalFor(deviceListModalFor);
           }}
         />
       )}
 
-      {deviceModalFor && (
-        <DeviceModal
-          current={lines.find((l) => l.id === deviceModalFor)!}
-          onClose={() => setDeviceModalFor(null)}
-          onSave={(deviceId, pay, rate, walletUse, screenInsurance) => {
-            updateLine(deviceModalFor, {
-              deviceId,
-              devicePayment: pay,
-              deviceMonthly: pay === "installments" ? rate : null,
-              walletUse,
-              screenInsurance,
-            });
-            setDeviceModalFor(null);
-          }}
-          walletAvailForLine={walletAvailForActiveLine}
-        />
-      )}
-
-      {addonsModalFor && (
-        <AddonsModal
-          current={lines.find((l) => l.id === addonsModalFor)!}
-          onClose={() => setAddonsModalFor(null)}
-          onSave={(addonIds) => {
-            updateLine(addonsModalFor, { addonIds });
-            setAddonsModalFor(null);
-          }}
-        />
-      )}
-
-      {otpOpen && (
-        <OTPModal
-          maskedTarget={maskedPhone}
-          code={otp}
-          setCode={setOtp}
-          onClose={() => setOtpOpen(false)}
-          onSubmit={() => setOtpOpen(false)}
-        />
-      )}
-
-      {loginOpen && (
-        <LoginModal
-          user={authUser}
-          pass={authPass}
-          onChangeUser={setAuthUser}
-          onChangePass={setAuthPass}
-          onClose={() => setLoginOpen(false)}
-          onSubmit={() => setLoginOpen(false)}
-        />
-      )}
-
-      {/* Line type selection modal */}
       {lineTypeSelectionFor && (
         <LineTypeSelectionModal
-          currentLineType={lines.find((l) => l.id === lineTypeSelectionFor)?.lineType}
           onClose={() => setLineTypeSelectionFor(null)}
           onSelect={(lineType) => {
-            updateLine(lineTypeSelectionFor, { lineType });
-            setLineTypeSelectionFor(null);
-            // Open specific modal if needed
-            if (lineType !== "new") {
+            if (lineType === "new") {
+              // For new line, just set the type directly
+              updateLine(lineTypeSelectionFor, { lineType: "new" });
+              setLineTypeSelectionFor(null);
+            } else {
+              // For other types, open the appropriate modal
               setLineTypeModalFor({ lineId: lineTypeSelectionFor, lineType });
+              setLineTypeSelectionFor(null);
             }
           }}
         />
       )}
 
-      {/* Line type modals */}
-      {lineTypeModalFor?.lineType === "mnp" && (
-        <NumberPortingModal
-          current={lines.find((l) => l.id === lineTypeModalFor.lineId)!}
-          onClose={() => setLineTypeModalFor(null)}
-          onSave={(data) => {
-            updateLine(lineTypeModalFor.lineId, data);
-            setLineTypeModalFor(null);
-          }}
-        />
-      )}
+      {lineTypeModalFor?.lineType === "mnp" && (() => {
+        const line = lines.find(l => l.id === lineTypeModalFor.lineId);
+        if (!line) return null;
+        return (
+          <NumberPortingModal
+            current={line}
+            onClose={() => setLineTypeModalFor(null)}
+            onSave={(data) => {
+              updateLine(lineTypeModalFor.lineId, {
+                lineType: "mnp",
+                ...data,
+              });
+              setLineTypeModalFor(null);
+            }}
+          />
+        );
+      })()}
 
-      {lineTypeModalFor?.lineType === "pre2post" && (
-        <PrepaidToPostpaidModal
-          current={lines.find((l) => l.id === lineTypeModalFor.lineId)!}
-          onClose={() => setLineTypeModalFor(null)}
-          onSave={(data) => {
-            updateLine(lineTypeModalFor.lineId, data);
-            setLineTypeModalFor(null);
-          }}
-        />
-      )}
+      {lineTypeModalFor?.lineType === "pre2post" && (() => {
+        const line = lines.find(l => l.id === lineTypeModalFor.lineId);
+        if (!line) return null;
+        return (
+          <PrepaidToPostpaidModal
+            current={line}
+            onClose={() => setLineTypeModalFor(null)}
+            onSave={(data) => {
+              updateLine(lineTypeModalFor.lineId, {
+                lineType: "pre2post",
+                ...data,
+              });
+              setLineTypeModalFor(null);
+            }}
+          />
+        );
+      })()}
 
-      {lineTypeModalFor?.lineType === "renew" && (
-        <ExistingLineExtensionModal
-          current={lines.find((l) => l.id === lineTypeModalFor.lineId)!}
-          onClose={() => setLineTypeModalFor(null)}
-          onSave={(data) => {
-            updateLine(lineTypeModalFor.lineId, data);
-            setLineTypeModalFor(null);
-          }}
-        />
-      )}
+      {lineTypeModalFor?.lineType === "renew" && (() => {
+        const line = lines.find(l => l.id === lineTypeModalFor.lineId);
+        if (!line) return null;
+        return (
+          <ExistingLineExtensionModal
+            current={line}
+            onClose={() => setLineTypeModalFor(null)}
+            onSave={(data) => {
+              updateLine(lineTypeModalFor.lineId, {
+                lineType: "renew",
+                ...data,
+              });
+              setLineTypeModalFor(null);
+            }}
+          />
+        );
+      })()}
     </div>
   );
 };
