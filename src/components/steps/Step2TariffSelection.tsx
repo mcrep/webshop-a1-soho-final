@@ -1,33 +1,47 @@
 import { Minus, Plus } from "lucide-react";
 import { tariffs } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 type TariffQuantity = {
   tariffId: string;
   quantity: number;
 };
 
-type Step1Props = {
+type Step2Props = {
   tariffQuantities: TariffQuantity[];
+  maxLines: number;
   onUpdateQuantity: (tariffId: string, delta: number) => void;
   onNext: () => void;
+  onBack: () => void;
 };
 
-export function Step1TariffSelection({ tariffQuantities, onUpdateQuantity, onNext }: Step1Props) {
+export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuantity, onNext, onBack }: Step2Props) {
   const totalLines = tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0);
   const canProceed = totalLines > 0;
+  const canAddMore = totalLines < maxLines;
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">Odaberite tarife</h1>
-        <p className="text-muted-foreground">Korak 1 od 4 - Odaberite koliko linija želite za svaku tarifu</p>
+        <p className="text-muted-foreground">Korak 2 od 5 - Odaberite tarife za {maxLines} linija</p>
+      </div>
+
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-sm mb-6">
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">Odabrane linije:</span>
+          <span className="text-xl font-bold">
+            {totalLines} / {maxLines}
+          </span>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {tariffs.map((tariff) => {
           const tq = tariffQuantities.find((t) => t.tariffId === tariff.id);
           const quantity = tq?.quantity ?? 0;
+          const canIncrease = canAddMore || quantity > 0;
 
           return (
             <div
@@ -73,6 +87,7 @@ export function Step1TariffSelection({ tariffQuantities, onUpdateQuantity, onNex
                   variant="outline"
                   size="icon"
                   onClick={() => onUpdateQuantity(tariff.id, 1)}
+                  disabled={!canIncrease}
                   className="h-10 w-10"
                 >
                   <Plus size={18} />
@@ -84,12 +99,13 @@ export function Step1TariffSelection({ tariffQuantities, onUpdateQuantity, onNex
       </div>
 
       <div className="flex items-center justify-between pt-6 border-t">
-        <div className="text-lg">
-          <span className="text-muted-foreground">Ukupno linija:</span>{" "}
-          <span className="font-bold text-xl">{totalLines}</span>
-        </div>
+        <Button onClick={onBack} variant="outline" size="lg">
+          <ArrowLeft className="mr-2" size={18} />
+          Natrag
+        </Button>
         <Button onClick={onNext} disabled={!canProceed} size="lg">
           Nastavi na A1 Wallet
+          <ArrowRight className="ml-2" size={18} />
         </Button>
       </div>
     </div>

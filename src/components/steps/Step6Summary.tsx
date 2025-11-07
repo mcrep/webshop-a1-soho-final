@@ -1,0 +1,157 @@
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Check } from "lucide-react";
+import { tariffs, devices } from "@/data/catalog";
+import type { Line } from "@/types";
+
+type Step6Props = {
+  lines: Line[];
+  totalMonthly: number;
+  totalOnetime: number;
+  onUpdateLine: (id: string, patch: Partial<Line>) => void;
+  onBack: () => void;
+  onFinish: () => void;
+  onOpenLineTypeModal: (lineId: string) => void;
+};
+
+export function Step6Summary({
+  lines,
+  totalMonthly,
+  totalOnetime,
+  onUpdateLine,
+  onBack,
+  onFinish,
+  onOpenLineTypeModal,
+}: Step6Props) {
+  const allLinesConfigured = lines.every((line) => line.lineType !== null);
+
+  return (
+    <div className="max-w-6xl mx-auto space-y-6">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold mb-2">Sažetak narudžbe</h1>
+        <p className="text-muted-foreground">Korak 6 od 6 - Pregled i finalizacija</p>
+      </div>
+
+      <div className="overflow-x-auto rounded-2xl border border-border shadow-sm">
+        <table className="w-full bg-card">
+          <thead>
+            <tr className="border-b border-border bg-muted/30">
+              <th className="text-left p-4 font-semibold">Linija</th>
+              <th className="text-left p-4 font-semibold">Tarifa</th>
+              <th className="text-left p-4 font-semibold">Uređaj</th>
+              <th className="text-left p-4 font-semibold">Plaćanje</th>
+              <th className="text-left p-4 font-semibold">Popust</th>
+              <th className="text-right p-4 font-semibold">Mjesečno</th>
+              <th className="text-right p-4 font-semibold">Jednokratno</th>
+              <th className="text-left p-4 font-semibold">Vrsta linije</th>
+            </tr>
+          </thead>
+          <tbody>
+            {lines.map((line, index) => {
+              const tariff = tariffs.find((t) => t.id === line.tariffId);
+              const device = devices.find((d) => d.id === line.deviceId);
+              
+              const tariffMonthly = tariff?.monthly ?? 0;
+              const deviceMonthly =
+                line.devicePayment === "installments"
+                  ? device?.installment ?? 0
+                  : 0;
+              const screenInsuranceCost = device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0;
+              const walletDiscount = line.devicePayment === "installments" ? line.walletUse ?? 0 : 0;
+              const lineMonthly = Math.max(0, tariffMonthly + deviceMonthly + screenInsuranceCost - walletDiscount);
+
+              const deviceUpfront = line.devicePayment === "upfront" ? device?.upfront ?? 0 : 0;
+              const walletDiscountOnetime = line.devicePayment === "upfront" ? line.walletUse ?? 0 : 0;
+              const lineOnetime = Math.max(0, deviceUpfront - walletDiscountOnetime);
+
+              const lineTypeName = line.lineType === "new" ? "Nova linija" :
+                line.lineType === "mnp" ? "Prijenos broja" :
+                line.lineType === "pre2post" ? "S bonova na pretplatu" :
+                line.lineType === "renew" ? "Produljenje linije" : null;
+
+              return (
+                <tr key={line.id} className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors">
+                  <td className="p-4 font-medium">Linija {index + 1}</td>
+                  <td className="p-4">
+                    <div className="font-semibold">{tariff?.name}</div>
+                    <div className="text-xs text-muted-foreground">{tariff?.data}</div>
+                  </td>
+                  <td className="p-4">
+                    <div className="font-semibold">{device?.name}</div>
+                    {device && device.id !== "no-dev" && (
+                      <div className="text-xs text-muted-foreground">
+                        {line.screenInsurance && "Zaštita ekrana"}
+                      </div>
+                    )}
+                  </td>
+                  <td className="p-4 text-sm">
+                    {device?.id !== "no-dev" ? (
+                      line.devicePayment === "installments" ? "Rate (24 mj)" : "Jednokratno"
+                    ) : "—"}
+                  </td>
+                  <td className="p-4">
+                    {line.walletUse ? (
+                      <span className="text-primary font-semibold">-€{line.walletUse.toFixed(2)}</span>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
+                  </td>
+                  <td className="p-4 text-right font-semibold">
+                    €{lineMonthly.toFixed(2)}
+                  </td>
+                  <td className="p-4 text-right font-semibold">
+                    {lineOnetime > 0 ? `€${lineOnetime.toFixed(2)}` : "—"}
+                  </td>
+                  <td className="p-4">
+                    <Button
+                      variant={line.lineType ? "outline" : "default"}
+                      size="sm"
+                      onClick={() => onOpenLineTypeModal(line.id)}
+                      className="w-full justify-start"
+                    >
+                      {line.lineType ? (
+                        <div className="flex items-center gap-2">
+                          <Check size={16} className="text-primary" />
+                          <span className="text-xs">{lineTypeName}</span>
+                        </div>
+                      ) : (
+                        <span className="text-xs">Odaberi vrstu</span>
+                      )}
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+          <tfoot>
+            <tr className="border-t-2 border-border bg-muted/30">
+              <td colSpan={5} className="p-4 text-right font-bold text-lg">
+                UKUPNO:
+              </td>
+              <td className="p-4 text-right font-bold text-xl text-primary">
+                €{totalMonthly.toFixed(2)}/mj
+              </td>
+              <td className="p-4 text-right font-bold text-xl text-primary">
+                {totalOnetime > 0 ? `€${totalOnetime.toFixed(2)}` : "—"}
+              </td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div className="text-sm text-muted-foreground text-center">
+        *Sve cijene su bez PDV-a
+      </div>
+
+      <div className="flex items-center justify-between pt-6 border-t">
+        <Button onClick={onBack} variant="outline" size="lg">
+          <ArrowLeft className="mr-2" size={18} />
+          Natrag
+        </Button>
+        <Button onClick={onFinish} disabled={!allLinesConfigured} size="lg">
+          Završi narudžbu
+        </Button>
+      </div>
+    </div>
+  );
+}

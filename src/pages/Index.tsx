@@ -1,10 +1,12 @@
 import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
 import { StepIndicator } from "@/components/StepIndicator";
-import { Step1TariffSelection } from "@/components/steps/Step1TariffSelection";
-import { Step2WalletSummary } from "@/components/steps/Step2WalletSummary";
-import { Step3DeviceConfiguration } from "@/components/steps/Step3DeviceConfiguration";
-import { Step4Summary } from "@/components/steps/Step4Summary";
+import { Step1CustomerInfo } from "@/components/steps/Step1CustomerInfo";
+import { Step2TariffSelection } from "@/components/steps/Step2TariffSelection";
+import { Step3WalletSummary } from "@/components/steps/Step3WalletSummary";
+import { Step4DeviceSelection } from "@/components/steps/Step4DeviceSelection";
+import { Step5WalletDistribution } from "@/components/steps/Step5WalletDistribution";
+import { Step6Summary } from "@/components/steps/Step6Summary";
 import { DeviceListModal } from "@/components/modals/DeviceListModal";
 import { LineTypeSelectionModal } from "@/components/modals/LineTypeSelectionModal";
 import { NumberPortingModal } from "@/components/modals/NumberPortingModal";
@@ -22,16 +24,30 @@ type TariffQuantity = {
   quantity: number;
 };
 
+type DeviceSlot = {
+  id: string;
+  deviceId: string | null;
+  walletUse: number;
+};
+
 const Index = () => {
   // Stepper state
   const [currentStep, setCurrentStep] = useState(1);
   
-  // Step 1: Tariff quantities
+  // Step 1: Customer info
+  const [customerType, setCustomerType] = useState<"new" | "existing" | null>(null);
+  const [numberOfLines, setNumberOfLines] = useState(0);
+  const [numberOfDevices, setNumberOfDevices] = useState(0);
+
+  // Step 2: Tariff quantities
   const [tariffQuantities, setTariffQuantities] = useState<TariffQuantity[]>(
     tariffs.map((t) => ({ tariffId: t.id, quantity: 0 }))
   );
 
-  // Step 3+: Lines generated from tariff quantities
+  // Step 4: Device slots
+  const [deviceSlots, setDeviceSlots] = useState<DeviceSlot[]>([]);
+
+  // Step 6: Lines generated from tariffs
   const [lines, setLines] = useState<Line[]>([]);
 
   // Modals
@@ -41,10 +57,12 @@ const Index = () => {
 
   // Steps configuration
   const steps = [
-    { number: 1, name: "Tarife" },
-    { number: 2, name: "A1 Wallet" },
-    { number: 3, name: "Uređaji" },
-    { number: 4, name: "Sažetak" },
+    { number: 1, name: "Početak" },
+    { number: 2, name: "Tarife" },
+    { number: 3, name: "A1 Wallet" },
+    { number: 4, name: "Uređaji" },
+    { number: 5, name: "Wallet raspodjela" },
+    { number: 6, name: "Sažetak" },
   ];
 
   // Update tariff quantity
@@ -58,20 +76,37 @@ const Index = () => {
     );
   };
 
-  // Generate lines from tariff quantities (called when moving from step 1 to step 2)
-  const generateLinesFromQuantities = () => {
+  // Generate device slots (called when moving from step 1 to step 2)
+  const generateDeviceSlots = () => {
+    const slots: DeviceSlot[] = [];
+    for (let i = 0; i < numberOfDevices; i++) {
+      slots.push({
+        id: rid(),
+        deviceId: null,
+        walletUse: 0,
+      });
+    }
+    setDeviceSlots(slots);
+  };
+
+  // Generate lines from tariff quantities and device slots (called when moving from step 5 to step 6)
+  const generateLinesFromConfiguration = () => {
     const newLines: Line[] = [];
     tariffQuantities.forEach((tq) => {
       for (let i = 0; i < tq.quantity; i++) {
+        // Find a device slot with wallet usage
+        const deviceSlotIndex = newLines.length;
+        const deviceSlot = deviceSlots[deviceSlotIndex] || { deviceId: "no-dev", walletUse: 0 };
+        
         newLines.push({
           id: rid(),
           tariffId: tq.tariffId,
-          deviceId: null,
+          deviceId: deviceSlot.deviceId || "no-dev",
           devicePayment: "installments",
           deviceMonthly: null,
           addonIds: [],
           lineType: null,
-          walletUse: 0,
+          walletUse: deviceSlot.walletUse,
           screenInsurance: true,
         });
       }
@@ -132,11 +167,15 @@ const Index = () => {
       setCurrentStep(3);
     } else if (step === 4 && currentStep >= 4) {
       setCurrentStep(4);
+    } else if (step === 5 && currentStep >= 5) {
+      setCurrentStep(5);
+    } else if (step === 6 && currentStep >= 6) {
+      setCurrentStep(6);
     }
   };
 
   const handleStep1Next = () => {
-    generateLinesFromQuantities();
+    generateDeviceSlots();
     setCurrentStep(2);
   };
 
@@ -146,6 +185,15 @@ const Index = () => {
 
   const handleStep3Next = () => {
     setCurrentStep(4);
+  };
+
+  const handleStep4Next = () => {
+    setCurrentStep(5);
+  };
+
+  const handleStep5Next = () => {
+    generateLinesFromConfiguration();
+    setCurrentStep(6);
   };
 
   const handleFinish = () => {
@@ -173,40 +221,63 @@ const Index = () => {
         <StepIndicator currentStep={currentStep} onStepClick={handleStepClick} steps={steps} />
 
         {currentStep === 1 && (
-          <Step1TariffSelection
-            tariffQuantities={tariffQuantities}
-            onUpdateQuantity={updateQuantity}
+          <Step1CustomerInfo
+            customerType={customerType}
+            numberOfLines={numberOfLines}
+            numberOfDevices={numberOfDevices}
+            onUpdateCustomerType={setCustomerType}
+            onUpdateNumberOfLines={setNumberOfLines}
+            onUpdateNumberOfDevices={setNumberOfDevices}
             onNext={handleStep1Next}
           />
         )}
 
         {currentStep === 2 && (
-          <Step2WalletSummary
-            totalWallet={walletTotal}
+          <Step2TariffSelection
+            tariffQuantities={tariffQuantities}
+            maxLines={numberOfLines}
+            onUpdateQuantity={updateQuantity}
             onNext={handleStep2Next}
             onBack={() => setCurrentStep(1)}
           />
         )}
 
         {currentStep === 3 && (
-          <Step3DeviceConfiguration
-            lines={lines}
+          <Step3WalletSummary
             totalWallet={walletTotal}
-            walletUsed={walletUsed}
-            onUpdateLine={updateLine}
             onNext={handleStep3Next}
             onBack={() => setCurrentStep(2)}
-            onOpenDeviceModal={(lineId) => setDeviceListModalFor(lineId)}
           />
         )}
 
         {currentStep === 4 && (
-          <Step4Summary
+          <Step4DeviceSelection
+            deviceSlots={deviceSlots}
+            onOpenDeviceModal={(slotId) => setDeviceListModalFor(slotId)}
+            onNext={handleStep4Next}
+            onBack={() => setCurrentStep(3)}
+          />
+        )}
+
+        {currentStep === 5 && (
+          <Step5WalletDistribution
+            deviceSlots={deviceSlots}
+            totalWallet={walletTotal}
+            onUpdateWalletUse={(slotId, amount) => {
+              setDeviceSlots(slots => slots.map(s => s.id === slotId ? { ...s, walletUse: amount } : s));
+            }}
+            onNext={handleStep5Next}
+            onBack={() => setCurrentStep(4)}
+          />
+        )}
+
+        {currentStep === 6 && (
+          <Step6Summary
             lines={lines}
             totalMonthly={totalMonthly}
             totalOnetime={totalOnetime}
             onUpdateLine={updateLine}
-            onBack={() => setCurrentStep(3)}
+            onBack={() => setCurrentStep(5)}
             onFinish={handleFinish}
             onOpenLineTypeModal={(lineId) => setLineTypeSelectionFor(lineId)}
           />
@@ -218,7 +289,12 @@ const Index = () => {
         <DeviceListModal
           onClose={() => setDeviceListModalFor(null)}
           onSelectDevice={(deviceId) => {
-            updateLine(deviceListModalFor, { deviceId });
+            // Update device slot or line depending on current step
+            if (currentStep === 4) {
+              setDeviceSlots(slots => slots.map(s => s.id === deviceListModalFor ? { ...s, deviceId } : s));
+            } else {
+              updateLine(deviceListModalFor, { deviceId });
+            }
             setDeviceListModalFor(null);
           }}
         />
