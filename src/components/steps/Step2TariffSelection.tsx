@@ -46,8 +46,11 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
           return (
             <div
               key={tariff.id}
-              className="rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-md transition-shadow relative"
             >
+              <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
+                +€{tariff.walletCredit} A1 Wallet
+              </div>
               <h3 className="text-xl font-bold mb-2">{tariff.name}</h3>
               <div className="text-2xl font-bold text-primary mb-3">
                 €{tariff.monthly.toFixed(2)}<span className="text-sm text-muted-foreground">/mj</span>
