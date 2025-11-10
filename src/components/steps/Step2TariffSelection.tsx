@@ -18,14 +18,14 @@ type Step2Props = {
 
 export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuantity, onNext, onBack }: Step2Props) {
   const totalLines = tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0);
-  const canProceed = totalLines > 0;
+  const canProceed = totalLines === maxLines;
   const canAddMore = totalLines < maxLines;
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">Odaberite tarife</h1>
-        <p className="text-muted-foreground">Korak 2 od 5 - Odaberite tarife za {maxLines} linija</p>
+        <p className="text-muted-foreground">Korak 2 od 4 - Odaberite točno {maxLines} {maxLines === 1 ? 'liniju' : 'linija'}</p>
       </div>
 
       <div className="rounded-2xl border border-border bg-card p-4 shadow-sm mb-6">
@@ -104,7 +104,7 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
           Natrag
         </Button>
         <Button onClick={onNext} disabled={!canProceed} size="lg">
-          Nastavi na A1 Wallet
+          Nastavi na uređaje
           <ArrowRight className="ml-2" size={18} />
         </Button>
       </div>
