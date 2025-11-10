@@ -41,7 +41,7 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
         {tariffs.map((tariff) => {
           const tq = tariffQuantities.find((t) => t.tariffId === tariff.id);
           const quantity = tq?.quantity ?? 0;
-          const canIncrease = canAddMore || quantity > 0;
+          const canIncrease = totalLines < maxLines;
 
           return (
             <div
