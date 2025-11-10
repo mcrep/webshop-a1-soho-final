@@ -3,10 +3,8 @@ import { Header } from "@/components/Header";
 import { StepIndicator } from "@/components/StepIndicator";
 import { Step1CustomerInfo } from "@/components/steps/Step1CustomerInfo";
 import { Step2TariffSelection } from "@/components/steps/Step2TariffSelection";
-import { Step3WalletSummary } from "@/components/steps/Step3WalletSummary";
-import { Step4DeviceSelection } from "@/components/steps/Step4DeviceSelection";
-import { Step5WalletDistribution } from "@/components/steps/Step5WalletDistribution";
-import { Step6Summary } from "@/components/steps/Step6Summary";
+import { Step3DeviceSelection } from "@/components/steps/Step3DeviceSelection";
+import { Step4Summary } from "@/components/steps/Step4Summary";
 import { DeviceListModal } from "@/components/modals/DeviceListModal";
 import { LineTypeSelectionModal } from "@/components/modals/LineTypeSelectionModal";
 import { NumberPortingModal } from "@/components/modals/NumberPortingModal";
@@ -59,10 +57,8 @@ const Index = () => {
   const steps = [
     { number: 1, name: "Početak" },
     { number: 2, name: "Tarife" },
-    { number: 3, name: "A1 Wallet" },
-    { number: 4, name: "Uređaji" },
-    { number: 5, name: "Wallet raspodjela" },
-    { number: 6, name: "Sažetak" },
+    { number: 3, name: "Uređaji" },
+    { number: 4, name: "Sažetak" },
   ];
 
   // Update tariff quantity
@@ -118,14 +114,14 @@ const Index = () => {
   const updateLine = (id: string, patch: Partial<Line>) =>
     setLines((ls) => ls.map((l) => (l.id === id ? { ...l, ...patch } : l)));
 
-  // Calculate wallet
+  // Calculate wallet from tariff quantities (available after step 2)
   const walletTotal = useMemo(
     () =>
-      lines.reduce((sum, l) => {
-        const credit = tariffs.find((t) => t.id === l.tariffId)?.walletCredit ?? 0;
-        return sum + credit;
+      tariffQuantities.reduce((sum, tq) => {
+        const credit = tariffs.find((t) => t.id === tq.tariffId)?.walletCredit ?? 0;
+        return sum + (credit * tq.quantity);
       }, 0),
-    [lines]
+    [tariffQuantities]
   );
   const walletUsed = lines.reduce((sum, l) => sum + (l.walletUse ?? 0), 0);
 
@@ -167,10 +163,6 @@ const Index = () => {
       setCurrentStep(3);
     } else if (step === 4 && currentStep >= 4) {
       setCurrentStep(4);
-    } else if (step === 5 && currentStep >= 5) {
-      setCurrentStep(5);
-    } else if (step === 6 && currentStep >= 6) {
-      setCurrentStep(6);
     }
   };
 
@@ -184,16 +176,8 @@ const Index = () => {
   };
 
   const handleStep3Next = () => {
-    setCurrentStep(4);
-  };
-
-  const handleStep4Next = () => {
-    setCurrentStep(5);
-  };
-
-  const handleStep5Next = () => {
     generateLinesFromConfiguration();
-    setCurrentStep(6);
+    setCurrentStep(4);
   };
 
   const handleFinish = () => {
@@ -243,41 +227,25 @@ const Index = () => {
         )}
 
         {currentStep === 3 && (
-          <Step3WalletSummary
+          <Step3DeviceSelection
+            deviceSlots={deviceSlots}
             totalWallet={walletTotal}
+            onOpenDeviceModal={(slotId) => setDeviceListModalFor(slotId)}
+            onUpdateWalletUse={(slotId, amount) => {
+              setDeviceSlots(slots => slots.map(s => s.id === slotId ? { ...s, walletUse: amount } : s));
+            }}
             onNext={handleStep3Next}
             onBack={() => setCurrentStep(2)}
           />
         )}
 
         {currentStep === 4 && (
-          <Step4DeviceSelection
-            deviceSlots={deviceSlots}
-            onOpenDeviceModal={(slotId) => setDeviceListModalFor(slotId)}
-            onNext={handleStep4Next}
-            onBack={() => setCurrentStep(3)}
-          />
-        )}
-
-        {currentStep === 5 && (
-          <Step5WalletDistribution
-            deviceSlots={deviceSlots}
-            totalWallet={walletTotal}
-            onUpdateWalletUse={(slotId, amount) => {
-              setDeviceSlots(slots => slots.map(s => s.id === slotId ? { ...s, walletUse: amount } : s));
-            }}
-            onNext={handleStep5Next}
-            onBack={() => setCurrentStep(4)}
-          />
-        )}
-
-        {currentStep === 6 && (
-          <Step6Summary
+          <Step4Summary
             lines={lines}
             totalMonthly={totalMonthly}
             totalOnetime={totalOnetime}
             onUpdateLine={updateLine}
-            onBack={() => setCurrentStep(5)}
+            onBack={() => setCurrentStep(3)}
             onFinish={handleFinish}
             onOpenLineTypeModal={(lineId) => setLineTypeSelectionFor(lineId)}
           />
@@ -290,7 +258,7 @@ const Index = () => {
           onClose={() => setDeviceListModalFor(null)}
           onSelectDevice={(deviceId) => {
             // Update device slot or line depending on current step
-            if (currentStep === 4) {
+            if (currentStep === 3) {
               setDeviceSlots(slots => slots.map(s => s.id === deviceListModalFor ? { ...s, deviceId } : s));
             } else {
               updateLine(deviceListModalFor, { deviceId });

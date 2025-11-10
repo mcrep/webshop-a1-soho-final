@@ -3,7 +3,7 @@ import { ArrowLeft, Check } from "lucide-react";
 import { tariffs, devices } from "@/data/catalog";
 import type { Line } from "@/types";
 
-type Step6Props = {
+type Step4Props = {
   lines: Line[];
   totalMonthly: number;
   totalOnetime: number;
@@ -13,7 +13,7 @@ type Step6Props = {
   onOpenLineTypeModal: (lineId: string) => void;
 };
 
-export function Step6Summary({
+export function Step4Summary({
   lines,
   totalMonthly,
   totalOnetime,
@@ -21,14 +21,14 @@ export function Step6Summary({
   onBack,
   onFinish,
   onOpenLineTypeModal,
-}: Step6Props) {
+}: Step4Props) {
   const allLinesConfigured = lines.every((line) => line.lineType !== null);
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">Sažetak narudžbe</h1>
-        <p className="text-muted-foreground">Korak 6 od 6 - Pregled i finalizacija</p>
+        <p className="text-muted-foreground">Korak 4 od 4 - Pregled i finalizacija</p>
       </div>
 
       <div className="overflow-x-auto rounded-2xl border border-border shadow-sm">
