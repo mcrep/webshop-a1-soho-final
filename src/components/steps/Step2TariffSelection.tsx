@@ -69,10 +69,6 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
                   <span className="text-muted-foreground">Roaming:</span>
                   <span className="font-medium">{tariff.roaming}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">A1 Wallet:</span>
-                  <span className="font-medium text-primary">€{tariff.walletCredit}</span>
-                </div>
               </div>
 
               <div className="flex items-center justify-between gap-3 mt-6">
