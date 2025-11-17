@@ -25,26 +25,31 @@ export function LineRow({
   const tariff = tariffs.find((t) => t.id === line.tariffId);
   const device = devices.find((d) => d.id === line.deviceId);
 
+  let deviceMonthly = 0;
+  if (line.devicePayment === "installments" && device && device.id !== "no-dev") {
+    const walletDiscount = line.walletUse ?? 0;
+    const priceAfterWallet = Math.max(0, device.upfront - walletDiscount);
+    const months = line.deviceMonthly ?? 24; // deviceMonthly now stores installment months
+    deviceMonthly = priceAfterWallet / months;
+  }
+
+  const monthly = Math.max(
+    0,
+    (tariff?.monthly ?? 0) +
+      deviceMonthly +
+      line.addonIds.reduce((s, id) => s + (addons.find((a) => a.id === id)?.monthly ?? 0), 0) +
+      (device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0)
+  );
+
   const deviceCap =
     line.devicePayment === "upfront"
       ? device?.upfront ?? 0
-      : (line.deviceMonthly ?? device?.installment) ?? 0;
+      : device?.upfront ?? 0; // For installments, wallet can reduce full upfront price
   const maxForLine = Math.max(
     0,
     Math.min(deviceCap, walletAvailForLine + (line.walletUse ?? 0))
   );
   const safeWalletUse = Math.min(Math.max(0, line.walletUse ?? 0), maxForLine);
-
-  const monthly = Math.max(
-    0,
-    (tariff?.monthly ?? 0) +
-      (line.devicePayment === "installments"
-        ? (line.deviceMonthly ?? device?.installment) ?? 0
-        : 0) +
-      line.addonIds.reduce((s, id) => s + (addons.find((a) => a.id === id)?.monthly ?? 0), 0) -
-      (line.devicePayment === "installments" ? safeWalletUse : 0) +
-      (device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0)
-  );
 
   const onetime = Math.max(
     0,

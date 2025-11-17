@@ -35,10 +35,13 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
           const device = devices.find((d) => d.id === line.deviceId);
           const lineAddons = line.addonIds.map((id) => addons.find((a) => a.id === id)).filter(Boolean);
           
-          const deviceMonthly =
-            line.devicePayment === "installments"
-              ? (line.deviceMonthly ?? device?.installment ?? 0)
-              : 0;
+          let deviceMonthly = 0;
+          if (line.devicePayment === "installments" && device && device.id !== "no-dev") {
+            const walletDiscount = line.walletUse ?? 0;
+            const priceAfterWallet = Math.max(0, device.upfront - walletDiscount);
+            const months = line.deviceMonthly ?? 24; // deviceMonthly now stores installment months
+            deviceMonthly = priceAfterWallet / months;
+          }
           
           const deviceUpfront =
             line.devicePayment === "upfront" ? (device?.upfront ?? 0) : 0;
@@ -53,7 +56,6 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
               deviceMonthly +
               lineAddons.reduce((sum, addon) => sum + (addon?.monthly ?? 0), 0) +
               screenInsuranceCost -
-              (line.devicePayment === "installments" ? appliedWallet : 0) -
               mozaikDiscountPerLine
           );
           
