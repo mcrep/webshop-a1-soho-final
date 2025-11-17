@@ -97,8 +97,11 @@ const Index = () => {
       const activeCount = prev.filter((s) => s.isActive).length;
       const slot = prev.find((s) => s.id === slotId);
       if (!slot) return prev;
+      
+      // Can't turn on if already at max numberOfDevices
       if (!slot.isActive && activeCount >= numberOfDevices) return prev;
-      if (slot.isActive && activeCount <= numberOfDevices) return prev;
+      
+      // Can always turn off, can turn on only if under limit
       return prev.map((s) => (s.id === slotId ? { ...s, isActive: !s.isActive, deviceId: null, walletUse: 0 } : s));
     });
   };
