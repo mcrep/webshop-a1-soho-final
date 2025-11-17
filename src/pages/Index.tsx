@@ -179,7 +179,6 @@ const Index = () => {
   };
 
   const handleStep1Next = () => {
-    generateDeviceSlots();
     const nextStepNumber = customerType === "existing" ? 2 : getStepNumberForScreen("Tarife");
     setCurrentStep(nextStepNumber);
   };
@@ -189,6 +188,9 @@ const Index = () => {
   };
 
   const handleTariffNext = () => {
+    // Generate device slots AFTER tariffs are selected
+    generateDeviceSlots();
+    
     const nextStepNumber = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Sažetak");
     if (numberOfDevices === 0) {
       generateLinesFromConfiguration();
