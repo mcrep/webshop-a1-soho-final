@@ -1,32 +1,48 @@
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, ArrowRight, Smartphone, Wallet } from "lucide-react";
-import { devices } from "@/data/catalog";
+import { devices, tariffs } from "@/data/catalog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 type DeviceSlot = {
   id: string;
   deviceId: string | null;
   walletUse: number;
+  tariffId: string;
+  isActive: boolean;
+  paymentMethod: "upfront" | "installments";
+  screenInsurance: boolean;
 };
 
 type Step3Props = {
   deviceSlots: DeviceSlot[];
   totalWallet: number;
+  numberOfDevices: number;
   onOpenDeviceModal: (slotId: string) => void;
+  onToggleSlot: (slotId: string) => void;
+  onUpdatePaymentMethod: (slotId: string, method: "upfront" | "installments") => void;
   onUpdateWalletUse: (slotId: string, amount: number) => void;
+  onUpdateInsurance: (slotId: string, insurance: boolean) => void;
   onNext: () => void;
   onBack: () => void;
 };
 
-export function Step3DeviceSelection({ 
-  deviceSlots, 
+export function Step3DeviceSelection({
+  deviceSlots,
   totalWallet,
-  onOpenDeviceModal, 
+  numberOfDevices,
+  onOpenDeviceModal,
+  onToggleSlot,
+  onUpdatePaymentMethod,
   onUpdateWalletUse,
-  onNext, 
-  onBack 
+  onUpdateInsurance,
+  onNext,
+  onBack,
 }: Step3Props) {
-  const allDevicesSelected = deviceSlots.every((slot) => slot.deviceId !== null);
+  const activeSlots = deviceSlots.filter((slot) => slot.isActive);
+  const allActiveDevicesSelected = activeSlots.every((slot) => slot.deviceId !== null);
   const walletUsed = deviceSlots.reduce((sum, slot) => sum + slot.walletUse, 0);
   const walletRemaining = totalWallet - walletUsed;
 
@@ -57,29 +73,61 @@ export function Step3DeviceSelection({
 
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">Odabir uređaja i raspodjela walleta</h1>
-        <p className="text-muted-foreground">Korak 3 od 4 - Odaberite {deviceSlots.length} uređaja i raspodijelite wallet kredit</p>
+        <p className="text-muted-foreground">
+          Odaberite {numberOfDevices} uređaja od {deviceSlots.length} dostupnih linija
+        </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {deviceSlots.map((slot, index) => {
           const device = devices.find((d) => d.id === slot.deviceId);
+          const tariff = tariffs.find((t) => t.id === slot.tariffId);
           
           // Calculate max wallet for this device
-          const deviceCost = device ? device.upfront : 0;
+          const deviceCost = device && slot.paymentMethod === "upfront" ? device.upfront : 0;
           const otherUsage = deviceSlots.reduce(
             (sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse),
             0
           );
           const maxWalletForDevice = Math.min(deviceCost, totalWallet - otherUsage);
 
+          const activeCount = deviceSlots.filter(s => s.isActive).length;
+          const canToggleOff = slot.isActive && activeCount > numberOfDevices;
+          const canToggleOn = !slot.isActive && activeCount < numberOfDevices;
+
           return (
             <div
               key={slot.id}
-              className="rounded-2xl border-2 border-border bg-card p-6 shadow-sm hover:shadow-md transition-all flex flex-col"
+              className={`rounded-2xl border-2 bg-card p-6 shadow-sm transition-all flex flex-col ${
+                slot.isActive ? "border-primary" : "border-border opacity-60"
+              }`}
             >
+              {/* Tariff name */}
+              <div className="mb-3 pb-3 border-b border-border">
+                <div className="text-sm text-muted-foreground">Tarifa:</div>
+                <div className="font-bold text-lg">{tariff?.name || "Unknown"}</div>
+              </div>
+
+              {/* Toggle activation */}
+              <div className="flex items-center justify-between mb-4 pb-4 border-b border-border">
+                <Label htmlFor={`toggle-${slot.id}`} className="text-sm font-medium">
+                  {slot.isActive ? "Aktivno" : "Bez uređaja"}
+                </Label>
+                <Switch
+                  id={`toggle-${slot.id}`}
+                  checked={slot.isActive}
+                  onCheckedChange={() => onToggleSlot(slot.id)}
+                  disabled={!canToggleOn && !canToggleOff}
+                />
+              </div>
+
+              {/* Device selection */}
               <button
-                onClick={() => onOpenDeviceModal(slot.id)}
-                className="flex flex-col items-center gap-4 mb-4 group"
+                onClick={() => slot.isActive && onOpenDeviceModal(slot.id)}
+                disabled={!slot.isActive}
+                className={`flex flex-col items-center gap-4 mb-4 group ${
+                  !slot.isActive ? "cursor-not-allowed" : ""
+                }`}
               >
                 {device ? (
                   <>
@@ -97,42 +145,120 @@ export function Step3DeviceSelection({
                         Rata: €{device.installment}/mj
                       </div>
                     </div>
-                    <div className="text-xs text-primary font-medium mt-2 group-hover:underline">
-                      Klikni za promjenu
-                    </div>
+                    {slot.isActive && (
+                      <div className="text-xs text-primary font-medium mt-2 group-hover:underline">
+                        Klikni za promjenu
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>
-                    <div className="w-32 h-32 rounded-3xl bg-muted border-2 border-dashed border-border flex items-center justify-center group-hover:border-primary/50 transition-colors">
-                      <Smartphone className="w-16 h-16 text-muted-foreground/40 group-hover:text-primary/40 transition-colors" />
+                    <div
+                      className={`w-32 h-32 rounded-3xl bg-muted border-2 border-dashed flex items-center justify-center transition-colors ${
+                        slot.isActive
+                          ? "border-border group-hover:border-primary/50"
+                          : "border-border/50"
+                      }`}
+                    >
+                      <Smartphone
+                        className={`w-16 h-16 transition-colors ${
+                          slot.isActive
+                            ? "text-muted-foreground/40 group-hover:text-primary/40"
+                            : "text-muted-foreground/20"
+                        }`}
+                      />
                     </div>
                     <div className="text-center">
-                      <div className="font-semibold text-muted-foreground mb-1">Uređaj {index + 1}</div>
-                      <div className="text-sm text-primary font-medium">
-                        Klikni za konfiguraciju uređaja
+                      <div className="font-semibold text-muted-foreground mb-1">
+                        {slot.isActive ? "Odaberi uređaj" : "Bez uređaja"}
                       </div>
+                      {slot.isActive && (
+                        <div className="text-sm text-primary font-medium">
+                          Klikni za konfiguraciju
+                        </div>
+                      )}
                     </div>
                   </>
                 )}
               </button>
 
-              {device && (
-                <div className="mt-auto pt-4 border-t border-border space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Wallet popust:</span>
-                    <span className="text-lg font-bold text-primary">€{slot.walletUse.toFixed(2)}</span>
+              {/* Configuration - only show when active and device selected */}
+              {slot.isActive && device && (
+                <div className="mt-auto pt-4 border-t border-border space-y-4">
+                  {/* Payment method */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Način plaćanja:</Label>
+                    <RadioGroup
+                      value={slot.paymentMethod}
+                      onValueChange={(value) =>
+                        onUpdatePaymentMethod(slot.id, value as "upfront" | "installments")
+                      }
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="upfront" id={`upfront-${slot.id}`} />
+                        <Label htmlFor={`upfront-${slot.id}`} className="cursor-pointer">
+                          Jednokratno
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="installments" id={`installments-${slot.id}`} />
+                        <Label htmlFor={`installments-${slot.id}`} className="cursor-pointer">
+                          Rate (€{device.installment}/mj)
+                        </Label>
+                      </div>
+                    </RadioGroup>
                   </div>
-                  <Slider
-                    value={[slot.walletUse]}
-                    min={0}
-                    max={maxWalletForDevice}
-                    step={1}
-                    onValueChange={(value) => onUpdateWalletUse(slot.id, value[0])}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>€0</span>
-                    <span>Maks: €{maxWalletForDevice.toFixed(2)}</span>
+
+                  {/* Wallet usage - only show for upfront payment */}
+                  {slot.paymentMethod === "upfront" && (
+                    <div className="space-y-2">
+                      <Label htmlFor={`wallet-${slot.id}`} className="text-sm font-medium">
+                        A1 Wallet popust (€):
+                      </Label>
+                      <Input
+                        id={`wallet-${slot.id}`}
+                        type="number"
+                        min={0}
+                        max={maxWalletForDevice}
+                        value={slot.walletUse}
+                        onChange={(e) => {
+                          const value = Math.min(
+                            Math.max(0, parseFloat(e.target.value) || 0),
+                            maxWalletForDevice
+                          );
+                          onUpdateWalletUse(slot.id, value);
+                        }}
+                        className="w-full"
+                      />
+                      <div className="text-xs text-muted-foreground">
+                        Maks: €{maxWalletForDevice.toFixed(2)}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Screen insurance */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Osiguranje ekrana:</Label>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant={slot.screenInsurance ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => onUpdateInsurance(slot.id, true)}
+                        className="flex-1"
+                      >
+                        Želim
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={!slot.screenInsurance ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => onUpdateInsurance(slot.id, false)}
+                        className="flex-1"
+                      >
+                        Ne želim
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -146,7 +272,7 @@ export function Step3DeviceSelection({
           <ArrowLeft className="mr-2" size={18} />
           Natrag
         </Button>
-        <Button onClick={onNext} disabled={!allDevicesSelected} size="lg">
+        <Button onClick={onNext} disabled={!allActiveDevicesSelected} size="lg">
           Nastavi na sažetak
           <ArrowRight className="ml-2" size={18} />
         </Button>

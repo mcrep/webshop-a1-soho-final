@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
 import { StepIndicator } from "@/components/StepIndicator";
 import { Step1CustomerInfo } from "@/components/steps/Step1CustomerInfo";
+import { Step2Login } from "@/components/steps/Step2Login";
 import { Step2TariffSelection } from "@/components/steps/Step2TariffSelection";
 import { Step3DeviceSelection } from "@/components/steps/Step3DeviceSelection";
 import { Step4Summary } from "@/components/steps/Step4Summary";
@@ -26,114 +27,128 @@ type DeviceSlot = {
   id: string;
   deviceId: string | null;
   walletUse: number;
+  tariffId: string;
+  isActive: boolean;
+  paymentMethod: "upfront" | "installments";
+  screenInsurance: boolean;
 };
 
 const Index = () => {
-  // Stepper state
   const [currentStep, setCurrentStep] = useState(1);
-  
-  // Step 1: Customer info
   const [customerType, setCustomerType] = useState<"new" | "existing" | null>(null);
   const [numberOfLines, setNumberOfLines] = useState(0);
   const [numberOfDevices, setNumberOfDevices] = useState(0);
-
-  // Step 2: Tariff quantities
   const [tariffQuantities, setTariffQuantities] = useState<TariffQuantity[]>(
     tariffs.map((t) => ({ tariffId: t.id, quantity: 0 }))
   );
-
-  // Step 4: Device slots
   const [deviceSlots, setDeviceSlots] = useState<DeviceSlot[]>([]);
-
-  // Step 6: Lines generated from tariffs
   const [lines, setLines] = useState<Line[]>([]);
-
-  // Modals
   const [deviceListModalFor, setDeviceListModalFor] = useState<string | null>(null);
   const [lineTypeSelectionFor, setLineTypeSelectionFor] = useState<string | null>(null);
   const [lineTypeModalFor, setLineTypeModalFor] = useState<{ lineId: string; lineType: string } | null>(null);
 
-  // Steps configuration
-  const steps = [
-    { number: 1, name: "Početak" },
-    { number: 2, name: "Tarife" },
-    { number: 3, name: "Uređaji" },
-    { number: 4, name: "Sažetak" },
-  ];
+  const steps = useMemo(() => {
+    const dynamicSteps = [{ number: 1, name: "Početak" }];
+    let stepNumber = 2;
+    if (customerType === "existing") {
+      dynamicSteps.push({ number: stepNumber, name: "Prijava" });
+      stepNumber++;
+    }
+    dynamicSteps.push({ number: stepNumber, name: "Tarife" });
+    stepNumber++;
+    if (numberOfDevices > 0) {
+      dynamicSteps.push({ number: stepNumber, name: "Uređaji" });
+      stepNumber++;
+    }
+    dynamicSteps.push({ number: stepNumber, name: "Sažetak" });
+    return dynamicSteps;
+  }, [customerType, numberOfDevices]);
 
-  // Update tariff quantity
   const updateQuantity = (tariffId: string, delta: number) => {
     setTariffQuantities((prev) =>
       prev.map((tq) =>
-        tq.tariffId === tariffId
-          ? { ...tq, quantity: Math.max(0, tq.quantity + delta) }
-          : tq
+        tq.tariffId === tariffId ? { ...tq, quantity: Math.max(0, tq.quantity + delta) } : tq
       )
     );
   };
 
-  // Generate device slots (called when moving from step 1 to step 2)
   const generateDeviceSlots = () => {
     const slots: DeviceSlot[] = [];
-    for (let i = 0; i < numberOfDevices; i++) {
-      slots.push({
-        id: rid(),
-        deviceId: null,
-        walletUse: 0,
-      });
-    }
+    let slotIndex = 0;
+    tariffQuantities.forEach((tq) => {
+      for (let i = 0; i < tq.quantity; i++) {
+        slots.push({
+          id: rid(),
+          deviceId: null,
+          walletUse: 0,
+          tariffId: tq.tariffId,
+          isActive: slotIndex < numberOfDevices,
+          paymentMethod: "installments",
+          screenInsurance: false,
+        });
+        slotIndex++;
+      }
+    });
     setDeviceSlots(slots);
   };
 
-  // Generate lines from tariff quantities and device slots (called when moving from step 5 to step 6)
-  const generateLinesFromConfiguration = () => {
-    const newLines: Line[] = [];
-    tariffQuantities.forEach((tq) => {
-      for (let i = 0; i < tq.quantity; i++) {
-        // Find a device slot with wallet usage
-        const deviceSlotIndex = newLines.length;
-        const deviceSlot = deviceSlots[deviceSlotIndex] || { deviceId: "no-dev", walletUse: 0 };
-        
-        newLines.push({
-          id: rid(),
-          tariffId: tq.tariffId,
-          deviceId: deviceSlot.deviceId || "no-dev",
-          devicePayment: "installments",
-          deviceMonthly: null,
-          addonIds: [],
-          lineType: null,
-          walletUse: deviceSlot.walletUse,
-          screenInsurance: true,
-        });
-      }
+  const handleToggleSlot = (slotId: string) => {
+    setDeviceSlots((prev) => {
+      const activeCount = prev.filter((s) => s.isActive).length;
+      const slot = prev.find((s) => s.id === slotId);
+      if (!slot) return prev;
+      if (!slot.isActive && activeCount >= numberOfDevices) return prev;
+      if (slot.isActive && activeCount <= numberOfDevices) return prev;
+      return prev.map((s) => (s.id === slotId ? { ...s, isActive: !s.isActive, deviceId: null, walletUse: 0 } : s));
     });
+  };
+
+  const handleUpdatePaymentMethod = (slotId: string, method: "upfront" | "installments") => {
+    setDeviceSlots((prev) =>
+      prev.map((s) => (s.id === slotId ? { ...s, paymentMethod: method, walletUse: method === "installments" ? 0 : s.walletUse } : s))
+    );
+  };
+
+  const handleUpdateWalletUse = (slotId: string, amount: number) => {
+    setDeviceSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, walletUse: amount } : s)));
+  };
+
+  const handleUpdateInsurance = (slotId: string, insurance: boolean) => {
+    setDeviceSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, screenInsurance: insurance } : s)));
+  };
+
+  const generateLinesFromConfiguration = () => {
+    const newLines: Line[] = deviceSlots.map((slot) => ({
+      id: rid(),
+      tariffId: slot.tariffId,
+      deviceId: slot.isActive && slot.deviceId ? slot.deviceId : "no-dev",
+      devicePayment: slot.paymentMethod,
+      deviceMonthly: null,
+      addonIds: [],
+      lineType: null,
+      walletUse: slot.walletUse,
+      screenInsurance: slot.screenInsurance,
+    }));
     setLines(newLines);
   };
 
-  // Update line
   const updateLine = (id: string, patch: Partial<Line>) =>
-    setLines((ls) => ls.map((l) => (l.id === id ? { ...l, ...patch } : l)));
+    setLines((prev) => prev.map((l) => (l.id === id ? { ...l, ...patch } : l)));
 
-  // Calculate wallet from tariff quantities (available after step 2)
   const walletTotal = useMemo(
     () =>
       tariffQuantities.reduce((sum, tq) => {
         const credit = tariffs.find((t) => t.id === tq.tariffId)?.walletCredit ?? 0;
-        return sum + (credit * tq.quantity);
+        return sum + credit * tq.quantity;
       }, 0),
     [tariffQuantities]
   );
-  const walletUsed = lines.reduce((sum, l) => sum + (l.walletUse ?? 0), 0);
 
-  // Calculate pricing
   const totalMonthly = useMemo(
     () =>
       lines.reduce((s, l) => {
         const t = tariffs.find((x) => x.id === l.tariffId)?.monthly ?? 0;
-        const devMonthly =
-          l.devicePayment === "installments"
-            ? (l.deviceMonthly ?? devices.find((x) => x.id === l.deviceId)?.installment) ?? 0
-            : 0;
+        const devMonthly = l.devicePayment === "installments" ? (l.deviceMonthly ?? devices.find((x) => x.id === l.deviceId)?.installment) ?? 0 : 0;
         const applied = l.devicePayment === "installments" ? l.walletUse ?? 0 : 0;
         const device = devices.find((x) => x.id === l.deviceId);
         const screenInsuranceCost = device && device.id !== "no-dev" && l.screenInsurance ? 4.99 : 0;
@@ -145,53 +160,58 @@ const Index = () => {
   const totalOnetime = useMemo(
     () =>
       lines.reduce((s, l) => {
-        const upfront =
-          l.devicePayment === "upfront" ? devices.find((x) => x.id === l.deviceId)?.upfront ?? 0 : 0;
+        const upfront = l.devicePayment === "upfront" ? devices.find((x) => x.id === l.deviceId)?.upfront ?? 0 : 0;
         const applied = l.devicePayment === "upfront" ? l.walletUse ?? 0 : 0;
         return s + Math.max(0, upfront - applied);
       }, 0),
     [lines]
   );
 
-  // Step navigation
-  const handleStepClick = (step: number) => {
-    if (step === 1) {
-      setCurrentStep(1);
-    } else if (step === 2 && currentStep >= 2) {
-      setCurrentStep(2);
-    } else if (step === 3 && currentStep >= 3) {
-      setCurrentStep(3);
-    } else if (step === 4 && currentStep >= 4) {
-      setCurrentStep(4);
+  const getStepNumberForScreen = (screenName: string): number => {
+    const step = steps.find((s) => s.name === screenName);
+    return step?.number ?? 1;
+  };
+
+  const handleStepClick = (stepNumber: number) => {
+    if (stepNumber <= currentStep) {
+      setCurrentStep(stepNumber);
     }
   };
 
   const handleStep1Next = () => {
     generateDeviceSlots();
-    setCurrentStep(2);
+    const nextStepNumber = customerType === "existing" ? 2 : getStepNumberForScreen("Tarife");
+    setCurrentStep(nextStepNumber);
   };
 
-  const handleStep2Next = () => {
-    setCurrentStep(3);
+  const handleLoginNext = () => {
+    setCurrentStep(getStepNumberForScreen("Tarife"));
   };
 
-  const handleStep3Next = () => {
+  const handleTariffNext = () => {
+    const nextStepNumber = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Sažetak");
+    if (numberOfDevices === 0) {
+      generateLinesFromConfiguration();
+    }
+    setCurrentStep(nextStepNumber);
+  };
+
+  const handleDeviceNext = () => {
     generateLinesFromConfiguration();
-    setCurrentStep(4);
+    setCurrentStep(getStepNumberForScreen("Sažetak"));
   };
 
   const handleFinish = () => {
     console.log("Narudžba završena!", { lines, totalMonthly, totalOnetime });
-    // TODO: Implement finish order logic
   };
 
-  // Line count for header
   const lineCount = lines.length;
-  const allLinesConfigured = lines.every(line => line.lineType !== null);
+  const allLinesConfigured = lines.every((line) => line.lineType !== null);
+  const currentScreen = steps.find((s) => s.number === currentStep)?.name ?? "Početak";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Header 
+      <Header
         onOpenOTP={() => {}}
         onOpenLogin={() => {}}
         lineCount={lineCount}
@@ -200,11 +220,9 @@ const Index = () => {
         allLinesConfigured={allLinesConfigured}
         onFinishOrder={handleFinish}
       />
-
       <div className="mx-auto max-w-[1600px] px-4 py-8">
-        <StepIndicator currentStep={currentStep} onStepClick={handleStepClick} steps={steps} />
-
-        {currentStep === 1 && (
+        {currentStep > 1 && <StepIndicator currentStep={currentStep} onStepClick={handleStepClick} steps={steps} />}
+        {currentScreen === "Početak" && (
           <Step1CustomerInfo
             customerType={customerType}
             numberOfLines={numberOfLines}
@@ -215,129 +233,96 @@ const Index = () => {
             onNext={handleStep1Next}
           />
         )}
-
-        {currentStep === 2 && (
+        {currentScreen === "Prijava" && <Step2Login onNext={handleLoginNext} onBack={() => setCurrentStep(1)} />}
+        {currentScreen === "Tarife" && (
           <Step2TariffSelection
             tariffQuantities={tariffQuantities}
             maxLines={numberOfLines}
             onUpdateQuantity={updateQuantity}
-            onNext={handleStep2Next}
-            onBack={() => setCurrentStep(1)}
+            onNext={handleTariffNext}
+            onBack={() => {
+              const prevStep = customerType === "existing" ? getStepNumberForScreen("Prijava") : 1;
+              setCurrentStep(prevStep);
+            }}
           />
         )}
-
-        {currentStep === 3 && (
+        {currentScreen === "Uređaji" && (
           <Step3DeviceSelection
             deviceSlots={deviceSlots}
             totalWallet={walletTotal}
-            onOpenDeviceModal={(slotId) => setDeviceListModalFor(slotId)}
-            onUpdateWalletUse={(slotId, amount) => {
-              setDeviceSlots(slots => slots.map(s => s.id === slotId ? { ...s, walletUse: amount } : s));
-            }}
-            onNext={handleStep3Next}
-            onBack={() => setCurrentStep(2)}
+            numberOfDevices={numberOfDevices}
+            onOpenDeviceModal={setDeviceListModalFor}
+            onToggleSlot={handleToggleSlot}
+            onUpdatePaymentMethod={handleUpdatePaymentMethod}
+            onUpdateWalletUse={handleUpdateWalletUse}
+            onUpdateInsurance={handleUpdateInsurance}
+            onNext={handleDeviceNext}
+            onBack={() => setCurrentStep(getStepNumberForScreen("Tarife"))}
           />
         )}
-
-        {currentStep === 4 && (
+        {currentScreen === "Sažetak" && (
           <Step4Summary
             lines={lines}
             totalMonthly={totalMonthly}
             totalOnetime={totalOnetime}
             onUpdateLine={updateLine}
-            onBack={() => setCurrentStep(3)}
+            onBack={() => {
+              const prevStep = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
+              setCurrentStep(prevStep);
+            }}
             onFinish={handleFinish}
-            onOpenLineTypeModal={(lineId) => setLineTypeSelectionFor(lineId)}
+            onOpenLineTypeModal={setLineTypeSelectionFor}
           />
         )}
       </div>
-
-      {/* Modals */}
       {deviceListModalFor && (
         <DeviceListModal
           onClose={() => setDeviceListModalFor(null)}
           onSelectDevice={(deviceId) => {
-            // Update device slot or line depending on current step
-            if (currentStep === 3) {
-              setDeviceSlots(slots => slots.map(s => s.id === deviceListModalFor ? { ...s, deviceId } : s));
-            } else {
-              updateLine(deviceListModalFor, { deviceId });
-            }
+            setDeviceSlots((prev) => prev.map((s) => (s.id === deviceListModalFor ? { ...s, deviceId } : s)));
             setDeviceListModalFor(null);
           }}
         />
       )}
-
       {lineTypeSelectionFor && (
         <LineTypeSelectionModal
           onClose={() => setLineTypeSelectionFor(null)}
           onSelect={(lineType) => {
-            if (lineType === "new") {
-              // For new line, just set the type directly
-              updateLine(lineTypeSelectionFor, { lineType: "new" });
-              setLineTypeSelectionFor(null);
-            } else {
-              // For other types, open the appropriate modal
-              setLineTypeModalFor({ lineId: lineTypeSelectionFor, lineType });
-              setLineTypeSelectionFor(null);
-            }
+            setLineTypeModalFor({ lineId: lineTypeSelectionFor, lineType });
+            setLineTypeSelectionFor(null);
           }}
         />
       )}
-
-      {lineTypeModalFor?.lineType === "mnp" && (() => {
-        const line = lines.find(l => l.id === lineTypeModalFor.lineId);
-        if (!line) return null;
-        return (
-          <NumberPortingModal
-            current={line}
-            onClose={() => setLineTypeModalFor(null)}
-            onSave={(data) => {
-              updateLine(lineTypeModalFor.lineId, {
-                lineType: "mnp",
-                ...data,
-              });
-              setLineTypeModalFor(null);
-            }}
-          />
-        );
-      })()}
-
-      {lineTypeModalFor?.lineType === "pre2post" && (() => {
-        const line = lines.find(l => l.id === lineTypeModalFor.lineId);
-        if (!line) return null;
-        return (
-          <PrepaidToPostpaidModal
-            current={line}
-            onClose={() => setLineTypeModalFor(null)}
-            onSave={(data) => {
-              updateLine(lineTypeModalFor.lineId, {
-                lineType: "pre2post",
-                ...data,
-              });
-              setLineTypeModalFor(null);
-            }}
-          />
-        );
-      })()}
-
-      {lineTypeModalFor?.lineType === "renew" && (() => {
-        const line = lines.find(l => l.id === lineTypeModalFor.lineId);
-        if (!line) return null;
-        return (
-          <ExistingLineExtensionModal
-            current={line}
-            onClose={() => setLineTypeModalFor(null)}
-            onSave={(data) => {
-              updateLine(lineTypeModalFor.lineId, {
-                lineType: "renew",
-                ...data,
-              });
-              setLineTypeModalFor(null);
-            }}
-          />
-        );
-      })()}
+      {lineTypeModalFor && lineTypeModalFor.lineType === "mnp" && (
+        <NumberPortingModal
+          current={lines.find(l => l.id === lineTypeModalFor.lineId)!}
+          onClose={() => setLineTypeModalFor(null)}
+          onSave={(data) => {
+            updateLine(lineTypeModalFor.lineId, { lineType: "mnp", ...data });
+            setLineTypeModalFor(null);
+          }}
+        />
+      )}
+      {lineTypeModalFor && lineTypeModalFor.lineType === "pre2post" && (
+        <PrepaidToPostpaidModal
+          current={lines.find(l => l.id === lineTypeModalFor.lineId)!}
+          onClose={() => setLineTypeModalFor(null)}
+          onSave={(data) => {
+            updateLine(lineTypeModalFor.lineId, { lineType: "pre2post", ...data });
+            setLineTypeModalFor(null);
+          }}
+        />
+      )}
+      {lineTypeModalFor && lineTypeModalFor.lineType === "renew" && (
+        <ExistingLineExtensionModal
+          current={lines.find(l => l.id === lineTypeModalFor.lineId)!}
+          onClose={() => setLineTypeModalFor(null)}
+          onSave={(data) => {
+            updateLine(lineTypeModalFor.lineId, { lineType: "renew", ...data });
+            setLineTypeModalFor(null);
+          }}
+        />
+      )}
     </div>
   );
 };
