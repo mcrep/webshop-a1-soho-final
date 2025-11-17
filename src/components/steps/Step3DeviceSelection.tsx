@@ -42,7 +42,9 @@ export function Step3DeviceSelection({
   onBack,
 }: Step3Props) {
   const activeSlots = deviceSlots.filter((slot) => slot.isActive);
+  const correctNumberOfDevices = activeSlots.length === numberOfDevices;
   const allActiveDevicesSelected = activeSlots.every((slot) => slot.deviceId !== null);
+  const canProceed = correctNumberOfDevices && allActiveDevicesSelected;
   const walletUsed = deviceSlots.reduce((sum, slot) => sum + slot.walletUse, 0);
   const walletRemaining = totalWallet - walletUsed;
 
@@ -76,6 +78,16 @@ export function Step3DeviceSelection({
         <p className="text-muted-foreground">
           Odaberite {numberOfDevices} uređaja od {deviceSlots.length} dostupnih linija
         </p>
+        {!correctNumberOfDevices && (
+          <p className="text-sm text-destructive mt-2">
+            Morate uključiti točno {numberOfDevices} uređaja ({activeSlots.length}/{numberOfDevices})
+          </p>
+        )}
+        {correctNumberOfDevices && !allActiveDevicesSelected && (
+          <p className="text-sm text-destructive mt-2">
+            Svi aktivni uređaji moraju biti konfigurirani
+          </p>
+        )}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -272,7 +284,7 @@ export function Step3DeviceSelection({
           <ArrowLeft className="mr-2" size={18} />
           Natrag
         </Button>
-        <Button onClick={onNext} disabled={!allActiveDevicesSelected} size="lg">
+        <Button onClick={onNext} disabled={!canProceed} size="lg">
           Nastavi na sažetak
           <ArrowRight className="ml-2" size={18} />
         </Button>
