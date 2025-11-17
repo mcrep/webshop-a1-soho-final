@@ -37,14 +37,22 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
           
           let deviceMonthly = 0;
           if (line.devicePayment === "installments" && device && device.id !== "no-dev") {
-            const walletDiscount = line.walletUse ?? 0;
-            const priceAfterWallet = Math.max(0, device.upfront - walletDiscount);
-            const months = line.deviceMonthly ?? 24; // deviceMonthly now stores installment months
-            deviceMonthly = priceAfterWallet / months;
+            // deviceMonthly now stores the monthly installment amount
+            deviceMonthly = line.deviceMonthly ?? 0;
           }
           
-          const deviceUpfront =
-            line.devicePayment === "upfront" ? (device?.upfront ?? 0) : 0;
+          // Calculate upfront
+          let deviceUpfront = 0;
+          if (device && device.id !== "no-dev") {
+            if (line.devicePayment === "upfront") {
+              deviceUpfront = device.upfront;
+            } else {
+              // For installments: upfront = device price - total installments
+              const monthlyRate = line.deviceMonthly ?? 0;
+              const totalInstallments = monthlyRate * 24;
+              deviceUpfront = Math.max(0, device.upfront - totalInstallments);
+            }
+          }
           
           const appliedWallet = line.walletUse ?? 0;
           
@@ -59,10 +67,7 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
               mozaikDiscountPerLine
           );
           
-          const totalOnetime = Math.max(
-            0,
-            deviceUpfront - (line.devicePayment === "upfront" ? appliedWallet : 0)
-          );
+          const totalOnetime = Math.max(0, deviceUpfront - appliedWallet);
 
           return (
             <div

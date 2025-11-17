@@ -14,7 +14,7 @@ type DeviceSlot = {
   isActive: boolean;
   paymentMethod: "upfront" | "installments";
   screenInsurance: boolean;
-  installmentMonths: number;
+  monthlyInstallment: number;
 };
 
 type Step3Props = {
@@ -26,7 +26,7 @@ type Step3Props = {
   onUpdatePaymentMethod: (slotId: string, method: "upfront" | "installments") => void;
   onUpdateWalletUse: (slotId: string, amount: number) => void;
   onUpdateInsurance: (slotId: string, insurance: boolean) => void;
-  onUpdateInstallmentMonths: (slotId: string, months: number) => void;
+  onUpdateMonthlyInstallment: (slotId: string, amount: number) => void;
   onNext: () => void;
   onBack: () => void;
 };
@@ -40,7 +40,7 @@ export function Step3DeviceSelection({
   onUpdatePaymentMethod,
   onUpdateWalletUse,
   onUpdateInsurance,
-  onUpdateInstallmentMonths,
+  onUpdateMonthlyInstallment,
   onNext,
   onBack,
 }: Step3Props) {
@@ -255,40 +255,57 @@ export function Step3DeviceSelection({
                   {/* Installments configuration */}
                   {slot.paymentMethod === "installments" && (
                     <>
-                      {/* Installment months slider */}
+                      {/* Monthly installment amount slider */}
                       <div className="space-y-2">
                         <Label className="text-sm font-medium">
-                          Broj rata: {slot.installmentMonths} mjeseci
+                          Iznos rate: €{slot.monthlyInstallment}/mj
                         </Label>
                         <Slider
-                          value={[slot.installmentMonths]}
-                          onValueChange={(value) => onUpdateInstallmentMonths(slot.id, value[0])}
-                          min={6}
-                          max={36}
-                          step={6}
+                          value={[slot.monthlyInstallment]}
+                          onValueChange={(value) => onUpdateMonthlyInstallment(slot.id, value[0])}
+                          min={1}
+                          max={Math.min(30, device.installment)}
+                          step={1}
                           className="w-full"
                         />
                         <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>6 mj</span>
-                          <span>12 mj</span>
-                          <span>24 mj</span>
-                          <span>36 mj</span>
+                          <span>€1</span>
+                          <span>€{Math.min(30, device.installment)}</span>
                         </div>
                       </div>
 
-                      {/* Wallet usage for installments */}
+                      {/* Installment calculation info */}
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Ukupno rata (24 mj):</span>
+                          <span className="font-semibold">€{(slot.monthlyInstallment * 24).toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Upfront cijena:</span>
+                          <span className="font-semibold">€{Math.max(0, device.upfront - (slot.monthlyInstallment * 24)).toFixed(2)}</span>
+                        </div>
+                      </div>
+
+                      {/* Wallet usage for upfront only */}
                       <div className="space-y-2">
                         <Label htmlFor={`wallet-inst-${slot.id}`} className="text-sm font-medium">
-                          A1 Wallet popust (€):
+                          A1 Wallet popust na upfront (€):
                         </Label>
                         <Input
                           id={`wallet-inst-${slot.id}`}
                           type="number"
                           min={0}
-                          max={Math.min(device.upfront, totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0))}
+                          max={Math.min(
+                            Math.max(0, device.upfront - (slot.monthlyInstallment * 24)),
+                            totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
+                          )}
                           value={slot.walletUse}
                           onChange={(e) => {
-                            const maxWallet = Math.min(device.upfront, totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0));
+                            const upfrontCost = Math.max(0, device.upfront - (slot.monthlyInstallment * 24));
+                            const maxWallet = Math.min(
+                              upfrontCost,
+                              totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
+                            );
                             const value = Math.min(
                               Math.max(0, parseFloat(e.target.value) || 0),
                               maxWallet
@@ -298,7 +315,7 @@ export function Step3DeviceSelection({
                           className="w-full"
                         />
                         <div className="text-xs text-muted-foreground">
-                          Mjesečna rata nakon popusta: €{((device.upfront - slot.walletUse) / slot.installmentMonths).toFixed(2)}
+                          Upfront nakon popusta: €{Math.max(0, device.upfront - (slot.monthlyInstallment * 24) - slot.walletUse).toFixed(2)}
                         </div>
                       </div>
                     </>
