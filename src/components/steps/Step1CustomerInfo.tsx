@@ -22,7 +22,7 @@ export function Step1CustomerInfo({
   onUpdateNumberOfDevices,
   onNext,
 }: Step1Props) {
-  const canProceed = customerType !== null && numberOfLines > 0 && numberOfDevices > 0 && numberOfDevices <= numberOfLines;
+  const canProceed = customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= numberOfLines;
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
