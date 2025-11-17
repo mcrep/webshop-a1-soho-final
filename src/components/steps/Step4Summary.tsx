@@ -53,17 +53,25 @@ export function Step4Summary({
               const tariffMonthly = tariff?.monthly ?? 0;
               let deviceMonthly = 0;
               if (line.devicePayment === "installments" && device && device.id !== "no-dev") {
-                const walletDiscount = line.walletUse ?? 0;
-                const priceAfterWallet = Math.max(0, device.upfront - walletDiscount);
-                const months = line.deviceMonthly ?? 24; // deviceMonthly now stores installment months
-                deviceMonthly = priceAfterWallet / months;
+                // deviceMonthly now stores the monthly installment amount
+                deviceMonthly = line.deviceMonthly ?? 0;
               }
               const screenInsuranceCost = device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0;
               const lineMonthly = tariffMonthly + deviceMonthly + screenInsuranceCost;
 
-              const deviceUpfront = line.devicePayment === "upfront" ? device?.upfront ?? 0 : 0;
-              const walletDiscountOnetime = line.devicePayment === "upfront" ? line.walletUse ?? 0 : 0;
-              const lineOnetime = Math.max(0, deviceUpfront - walletDiscountOnetime);
+              // For upfront: show device upfront - wallet
+              // For installments: show upfront = device.upfront - (monthlyRate × 24) - wallet
+              let lineOnetime = 0;
+              if (device && device.id !== "no-dev") {
+                if (line.devicePayment === "upfront") {
+                  lineOnetime = Math.max(0, (device.upfront ?? 0) - (line.walletUse ?? 0));
+                } else {
+                  // Installments: upfront = device price - total installments - wallet
+                  const monthlyRate = line.deviceMonthly ?? 0;
+                  const totalInstallments = monthlyRate * 24;
+                  lineOnetime = Math.max(0, device.upfront - totalInstallments - (line.walletUse ?? 0));
+                }
+              }
 
               const lineTypeName = line.lineType === "new" ? "Nova linija" :
                 line.lineType === "mnp" ? "Prijenos broja" :
@@ -87,7 +95,7 @@ export function Step4Summary({
                   </td>
                   <td className="p-4 text-sm">
                     {device?.id !== "no-dev" ? (
-                      line.devicePayment === "installments" ? `Rate (${line.deviceMonthly ?? 24} mj)` : "Jednokratno"
+                      line.devicePayment === "installments" ? `Rate (24 mj × €${line.deviceMonthly?.toFixed(2) ?? "0.00"})` : "Jednokratno"
                     ) : "—"}
                   </td>
                   <td className="p-4">

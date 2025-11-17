@@ -31,7 +31,7 @@ type DeviceSlot = {
   isActive: boolean;
   paymentMethod: "upfront" | "installments";
   screenInsurance: boolean;
-  installmentMonths: number;
+  monthlyInstallment: number; // Monthly installment amount (1-30€)
 };
 
 const Index = () => {
@@ -86,7 +86,7 @@ const Index = () => {
           isActive: slotIndex < numberOfDevices,
           paymentMethod: "installments",
           screenInsurance: false,
-          installmentMonths: 24,
+          monthlyInstallment: 1,
         });
         slotIndex++;
       }
@@ -122,8 +122,8 @@ const Index = () => {
     setDeviceSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, screenInsurance: insurance } : s)));
   };
 
-  const handleUpdateInstallmentMonths = (slotId: string, months: number) => {
-    setDeviceSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, installmentMonths: months } : s)));
+  const handleUpdateMonthlyInstallment = (slotId: string, amount: number) => {
+    setDeviceSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, monthlyInstallment: amount } : s)));
   };
 
   const generateLinesFromConfiguration = () => {
@@ -132,7 +132,7 @@ const Index = () => {
       tariffId: slot.tariffId,
       deviceId: slot.isActive && slot.deviceId ? slot.deviceId : "no-dev",
       devicePayment: slot.paymentMethod,
-      deviceMonthly: slot.paymentMethod === "installments" ? slot.installmentMonths : null,
+      deviceMonthly: slot.paymentMethod === "installments" ? slot.monthlyInstallment : null,
       addonIds: [],
       lineType: null,
       walletUse: slot.walletUse,
@@ -160,10 +160,8 @@ const Index = () => {
         const device = devices.find((x) => x.id === l.deviceId);
         let devMonthly = 0;
         if (l.devicePayment === "installments" && device && device.id !== "no-dev") {
-          const walletDiscount = l.walletUse ?? 0;
-          const priceAfterWallet = Math.max(0, device.upfront - walletDiscount);
-          const months = l.deviceMonthly ?? 24; // deviceMonthly now stores installment months
-          devMonthly = priceAfterWallet / months;
+          // deviceMonthly now stores the monthly installment amount
+          devMonthly = l.deviceMonthly ?? 0;
         }
         const screenInsuranceCost = device && device.id !== "no-dev" && l.screenInsurance ? 4.99 : 0;
         return s + t + devMonthly + screenInsuranceCost;
@@ -272,7 +270,7 @@ const Index = () => {
             onUpdatePaymentMethod={handleUpdatePaymentMethod}
             onUpdateWalletUse={handleUpdateWalletUse}
             onUpdateInsurance={handleUpdateInsurance}
-            onUpdateInstallmentMonths={handleUpdateInstallmentMonths}
+            onUpdateMonthlyInstallment={handleUpdateMonthlyInstallment}
             onNext={handleDeviceNext}
             onBack={() => setCurrentStep(getStepNumberForScreen("Tarife"))}
           />

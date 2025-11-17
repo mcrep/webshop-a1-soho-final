@@ -27,10 +27,8 @@ export function LineRow({
 
   let deviceMonthly = 0;
   if (line.devicePayment === "installments" && device && device.id !== "no-dev") {
-    const walletDiscount = line.walletUse ?? 0;
-    const priceAfterWallet = Math.max(0, device.upfront - walletDiscount);
-    const months = line.deviceMonthly ?? 24; // deviceMonthly now stores installment months
-    deviceMonthly = priceAfterWallet / months;
+    // deviceMonthly now stores the monthly installment amount
+    deviceMonthly = line.deviceMonthly ?? 0;
   }
 
   const monthly = Math.max(
@@ -41,21 +39,34 @@ export function LineRow({
       (device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0)
   );
 
-  const deviceCap =
-    line.devicePayment === "upfront"
-      ? device?.upfront ?? 0
-      : device?.upfront ?? 0; // For installments, wallet can reduce full upfront price
-  const maxForLine = Math.max(
-    0,
-    Math.min(deviceCap, walletAvailForLine + (line.walletUse ?? 0))
-  );
+  // Calculate device cap for wallet usage
+  let deviceCap = 0;
+  if (device && device.id !== "no-dev") {
+    if (line.devicePayment === "upfront") {
+      deviceCap = device.upfront;
+    } else {
+      // For installments: wallet can reduce upfront = device price - total installments
+      const monthlyRate = line.deviceMonthly ?? 0;
+      const totalInstallments = monthlyRate * 24;
+      deviceCap = Math.max(0, device.upfront - totalInstallments);
+    }
+  }
+  
+  const maxForLine = Math.max(0, Math.min(deviceCap, walletAvailForLine + (line.walletUse ?? 0)));
   const safeWalletUse = Math.min(Math.max(0, line.walletUse ?? 0), maxForLine);
 
-  const onetime = Math.max(
-    0,
-    (line.devicePayment === "upfront" ? device?.upfront ?? 0 : 0) -
-      (line.devicePayment === "upfront" ? safeWalletUse : 0)
-  );
+  // Calculate onetime cost
+  let onetime = 0;
+  if (device && device.id !== "no-dev") {
+    if (line.devicePayment === "upfront") {
+      onetime = Math.max(0, device.upfront - safeWalletUse);
+    } else {
+      // For installments: upfront = device price - total installments - wallet
+      const monthlyRate = line.deviceMonthly ?? 0;
+      const totalInstallments = monthlyRate * 24;
+      onetime = Math.max(0, device.upfront - totalInstallments - safeWalletUse);
+    }
+  }
 
   const setWalletUseClamped = (val: number) => {
     const v = Number.isFinite(val) ? val : 0;
