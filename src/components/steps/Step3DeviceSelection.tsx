@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, ArrowRight, Smartphone, Wallet } from "lucide-react";
 import { devices, tariffs } from "@/data/catalog";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 type DeviceSlot = {
   id: string;
@@ -14,6 +14,7 @@ type DeviceSlot = {
   isActive: boolean;
   paymentMethod: "upfront" | "installments";
   screenInsurance: boolean;
+  installmentMonths: number;
 };
 
 type Step3Props = {
@@ -25,6 +26,7 @@ type Step3Props = {
   onUpdatePaymentMethod: (slotId: string, method: "upfront" | "installments") => void;
   onUpdateWalletUse: (slotId: string, amount: number) => void;
   onUpdateInsurance: (slotId: string, insurance: boolean) => void;
+  onUpdateInstallmentMonths: (slotId: string, months: number) => void;
   onNext: () => void;
   onBack: () => void;
 };
@@ -38,6 +40,7 @@ export function Step3DeviceSelection({
   onUpdatePaymentMethod,
   onUpdateWalletUse,
   onUpdateInsurance,
+  onUpdateInstallmentMonths,
   onNext,
   onBack,
 }: Step3Props) {
@@ -200,28 +203,29 @@ export function Step3DeviceSelection({
                   {/* Payment method */}
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Način plaćanja:</Label>
-                    <RadioGroup
-                      value={slot.paymentMethod}
-                      onValueChange={(value) =>
-                        onUpdatePaymentMethod(slot.id, value as "upfront" | "installments")
-                      }
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="upfront" id={`upfront-${slot.id}`} />
-                        <Label htmlFor={`upfront-${slot.id}`} className="cursor-pointer">
-                          Jednokratno
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="installments" id={`installments-${slot.id}`} />
-                        <Label htmlFor={`installments-${slot.id}`} className="cursor-pointer">
-                          Rate (€{device.installment}/mj)
-                        </Label>
-                      </div>
-                    </RadioGroup>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant={slot.paymentMethod === "upfront" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => onUpdatePaymentMethod(slot.id, "upfront")}
+                        className="flex-1"
+                      >
+                        Jednokratno
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={slot.paymentMethod === "installments" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => onUpdatePaymentMethod(slot.id, "installments")}
+                        className="flex-1"
+                      >
+                        Rate
+                      </Button>
+                    </div>
                   </div>
 
-                  {/* Wallet usage - only show for upfront payment */}
+                  {/* Wallet usage - show for upfront payment */}
                   {slot.paymentMethod === "upfront" && (
                     <div className="space-y-2">
                       <Label htmlFor={`wallet-${slot.id}`} className="text-sm font-medium">
@@ -246,6 +250,58 @@ export function Step3DeviceSelection({
                         Maks: €{maxWalletForDevice.toFixed(2)}
                       </div>
                     </div>
+                  )}
+
+                  {/* Installments configuration */}
+                  {slot.paymentMethod === "installments" && (
+                    <>
+                      {/* Installment months slider */}
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">
+                          Broj rata: {slot.installmentMonths} mjeseci
+                        </Label>
+                        <Slider
+                          value={[slot.installmentMonths]}
+                          onValueChange={(value) => onUpdateInstallmentMonths(slot.id, value[0])}
+                          min={6}
+                          max={36}
+                          step={6}
+                          className="w-full"
+                        />
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>6 mj</span>
+                          <span>12 mj</span>
+                          <span>24 mj</span>
+                          <span>36 mj</span>
+                        </div>
+                      </div>
+
+                      {/* Wallet usage for installments */}
+                      <div className="space-y-2">
+                        <Label htmlFor={`wallet-inst-${slot.id}`} className="text-sm font-medium">
+                          A1 Wallet popust (€):
+                        </Label>
+                        <Input
+                          id={`wallet-inst-${slot.id}`}
+                          type="number"
+                          min={0}
+                          max={Math.min(device.upfront, totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0))}
+                          value={slot.walletUse}
+                          onChange={(e) => {
+                            const maxWallet = Math.min(device.upfront, totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0));
+                            const value = Math.min(
+                              Math.max(0, parseFloat(e.target.value) || 0),
+                              maxWallet
+                            );
+                            onUpdateWalletUse(slot.id, value);
+                          }}
+                          className="w-full"
+                        />
+                        <div className="text-xs text-muted-foreground">
+                          Mjesečna rata nakon popusta: €{((device.upfront - slot.walletUse) / slot.installmentMonths).toFixed(2)}
+                        </div>
+                      </div>
+                    </>
                   )}
 
                   {/* Screen insurance */}
