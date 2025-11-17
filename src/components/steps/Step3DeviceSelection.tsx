@@ -92,7 +92,7 @@ export function Step3DeviceSelection({
           const maxWalletForDevice = Math.min(deviceCost, totalWallet - otherUsage);
 
           const activeCount = deviceSlots.filter(s => s.isActive).length;
-          const canToggleOff = slot.isActive && activeCount > numberOfDevices;
+          const canToggleOff = slot.isActive;
           const canToggleOn = !slot.isActive && activeCount < numberOfDevices;
 
           return (
