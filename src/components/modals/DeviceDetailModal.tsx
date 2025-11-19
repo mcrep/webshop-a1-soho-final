@@ -81,7 +81,7 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
 
           {/* Content */}
           <div className="flex-1 overflow-auto">
-            <div className="grid md:grid-cols-2 gap-8 p-6">
+            <div className="grid md:grid-cols-2 gap-8 p-6 pb-4">
               {/* Left Column - Gallery */}
               <div className="space-y-4">
                 <div className="relative aspect-square rounded-2xl overflow-hidden bg-muted/30 border border-border">
@@ -251,17 +251,19 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                     </div>
                   </div>
                 )}
-
-                {/* Action Buttons */}
-                <div className="flex gap-3 pt-4">
-                  <Button variant="outline" onClick={onClose} className="flex-1">
-                    Odustani
-                  </Button>
-                  <Button onClick={handleSelect} className="flex-1" disabled={!selectedVariant}>
-                    Odaberi uređaj
-                  </Button>
-                </div>
               </div>
+            </div>
+          </div>
+
+          {/* Sticky Footer with Action Buttons */}
+          <div className="sticky bottom-0 bg-card border-t border-border p-6 shadow-lg">
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={onClose} className="flex-1">
+                Odustani
+              </Button>
+              <Button onClick={handleSelect} className="flex-1" disabled={!selectedVariant}>
+                Odaberi uređaj
+              </Button>
             </div>
           </div>
         </div>
