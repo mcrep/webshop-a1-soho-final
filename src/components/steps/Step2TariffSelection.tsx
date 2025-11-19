@@ -1,7 +1,7 @@
-import { Minus, Plus, Wallet } from "lucide-react";
+import { Minus, Plus, ArrowLeft, ArrowRight } from "lucide-react";
 import { tariffs } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { WalletBanner } from "@/components/WalletBanner";
 
 type TariffQuantity = {
   tariffId: string;
@@ -29,18 +29,12 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      {/* Floating wallet indicator */}
-      <div className="fixed top-24 right-8 z-50 rounded-2xl border-2 border-primary bg-card/95 backdrop-blur-sm p-6 shadow-2xl min-w-[280px]">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <Wallet className="w-6 h-6 text-primary" />
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">A1 Wallet kredit</div>
-            <div className="text-2xl font-bold text-primary">€{totalWallet.toFixed(2)}</div>
-          </div>
-        </div>
-      </div>
+      <WalletBanner 
+        total={totalWallet}
+        used={0}
+        remaining={totalWallet}
+      />
+      
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">Odaberite tarife</h1>
         <p className="text-muted-foreground">Korak 2 od 4 - Odaberite točno {maxLines} {maxLines === 1 ? 'liniju' : 'linija'}</p>
