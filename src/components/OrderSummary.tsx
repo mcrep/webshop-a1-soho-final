@@ -33,6 +33,8 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
         {lines.map((line, index) => {
           const tariff = tariffs.find((t) => t.id === line.tariffId);
           const device = devices.find((d) => d.id === line.deviceId);
+          const variant = device?.variants?.find((v) => v.id === line.deviceVariantId);
+          const devicePrice = variant?.upfront || device?.upfront || 0;
           const lineAddons = line.addonIds.map((id) => addons.find((a) => a.id === id)).filter(Boolean);
           
           let deviceMonthly = 0;
@@ -45,12 +47,12 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
           let deviceUpfront = 0;
           if (device && device.id !== "no-dev") {
             if (line.devicePayment === "upfront") {
-              deviceUpfront = device.upfront;
+              deviceUpfront = devicePrice;
             } else {
               // For installments: upfront = device price - total installments
               const monthlyRate = line.deviceMonthly ?? 0;
               const totalInstallments = monthlyRate * 24;
-              deviceUpfront = Math.max(0, device.upfront - totalInstallments);
+              deviceUpfront = Math.max(0, devicePrice - totalInstallments);
             }
           }
           
@@ -94,6 +96,9 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
                 <div>
                   <div className="text-xs text-muted-foreground mb-1">Uređaj</div>
                   <div className="font-medium">{device?.name || "-"}</div>
+                  {variant && (
+                    <div className="text-xs text-muted-foreground">{variant.color} • {variant.memory}</div>
+                  )}
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground mb-1">Vrsta linije</div>

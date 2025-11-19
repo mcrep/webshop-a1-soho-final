@@ -26,6 +26,7 @@ type TariffQuantity = {
 type DeviceSlot = {
   id: string;
   deviceId: string | null;
+  deviceVariantId?: string | null;
   walletUse: number;
   tariffId: string;
   isActive: boolean;
@@ -131,6 +132,7 @@ const Index = () => {
       id: rid(),
       tariffId: slot.tariffId,
       deviceId: slot.isActive && slot.deviceId ? slot.deviceId : "no-dev",
+      deviceVariantId: slot.isActive && slot.deviceVariantId ? slot.deviceVariantId : null,
       devicePayment: slot.paymentMethod,
       deviceMonthly: slot.paymentMethod === "installments" ? slot.monthlyInstallment : null,
       addonIds: [],
@@ -158,6 +160,7 @@ const Index = () => {
       lines.reduce((s, l) => {
         const t = tariffs.find((x) => x.id === l.tariffId)?.monthly ?? 0;
         const device = devices.find((x) => x.id === l.deviceId);
+        const variant = device?.variants?.find((v) => v.id === l.deviceVariantId);
         let devMonthly = 0;
         if (l.devicePayment === "installments" && device && device.id !== "no-dev") {
           // deviceMonthly now stores the monthly installment amount
@@ -293,8 +296,8 @@ const Index = () => {
       {deviceListModalFor && (
         <DeviceListModal
           onClose={() => setDeviceListModalFor(null)}
-          onSelectDevice={(deviceId) => {
-            setDeviceSlots((prev) => prev.map((s) => (s.id === deviceListModalFor ? { ...s, deviceId } : s)));
+          onSelectDevice={(deviceId, variantId) => {
+            setDeviceSlots((prev) => prev.map((s) => (s.id === deviceListModalFor ? { ...s, deviceId, deviceVariantId: variantId } : s)));
             setDeviceListModalFor(null);
           }}
         />
