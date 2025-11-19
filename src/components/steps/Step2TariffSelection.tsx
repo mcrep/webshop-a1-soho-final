@@ -33,6 +33,7 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
         total={totalWallet}
         used={0}
         remaining={totalWallet}
+        showProgress={false}
       />
       
       <div className="text-center mb-8">

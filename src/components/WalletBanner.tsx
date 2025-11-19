@@ -5,20 +5,14 @@ type WalletBannerProps = {
   total: number;
   used: number;
   remaining: number;
+  showProgress?: boolean;
 };
 
-export function WalletBanner({ total, used, remaining }: WalletBannerProps) {
+export function WalletBanner({ total, used, remaining, showProgress = true }: WalletBannerProps) {
   const progressValue = total > 0 ? (used / total) * 100 : 0;
   const percentageUsed = total > 0 ? Math.round((used / total) * 100) : 0;
 
   // Conditional styling based on remaining amount
-  const getProgressColor = () => {
-    const remainingPercentage = (remaining / total) * 100;
-    if (remainingPercentage < 10) return "bg-destructive";
-    if (remainingPercentage < 30) return "bg-orange-500";
-    return "bg-primary";
-  };
-
   const getRemainingTextColor = () => {
     const remainingPercentage = (remaining / total) * 100;
     if (remainingPercentage < 10) return "text-destructive";
@@ -40,32 +34,36 @@ export function WalletBanner({ total, used, remaining }: WalletBannerProps) {
           </div>
         </div>
 
-        {/* Center: Usage info */}
-        <div className="flex gap-6 text-sm flex-shrink-0">
-          <div>
-            <span className="text-muted-foreground">Iskorišteno: </span>
-            <span className="font-semibold">€{used.toFixed(2)}</span>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Preostalo: </span>
-            <span className={`font-bold ${getRemainingTextColor()}`}>
-              €{remaining.toFixed(2)}
-            </span>
-          </div>
-        </div>
+        {showProgress && (
+          <>
+            {/* Center: Usage info */}
+            <div className="flex gap-6 text-sm flex-shrink-0">
+              <div>
+                <span className="text-muted-foreground">Iskorišteno: </span>
+                <span className="font-semibold">€{used.toFixed(2)}</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Preostalo: </span>
+                <span className={`font-bold ${getRemainingTextColor()}`}>
+                  €{remaining.toFixed(2)}
+                </span>
+              </div>
+            </div>
 
-        {/* Right: Progress bar */}
-        <div className="flex-1 min-w-[200px]">
-          <div className="flex items-center gap-3">
-            <Progress 
-              value={progressValue} 
-              className="h-3 flex-1"
-            />
-            <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
-              {percentageUsed}%
-            </span>
-          </div>
-        </div>
+            {/* Right: Progress bar */}
+            <div className="flex-1 min-w-[200px]">
+              <div className="flex items-center gap-3">
+                <Progress 
+                  value={progressValue} 
+                  className="h-3 flex-1"
+                />
+                <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+                  {percentageUsed}%
+                </span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
