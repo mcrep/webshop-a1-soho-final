@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { ArrowLeft, ArrowRight, Smartphone, Wallet } from "lucide-react";
+import { ArrowLeft, ArrowRight, Smartphone } from "lucide-react";
 import { devices, tariffs } from "@/data/catalog";
 import { Label } from "@/components/ui/label";
+import { WalletBanner } from "@/components/WalletBanner";
 
 type DeviceSlot = {
   id: string;
@@ -54,28 +55,11 @@ export function Step3DeviceSelection({
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Floating wallet indicator */}
-      <div className="fixed top-24 right-8 z-50 rounded-2xl border-2 border-primary bg-card/95 backdrop-blur-sm p-6 shadow-2xl min-w-[280px]">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <Wallet className="w-6 h-6 text-primary" />
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">A1 Wallet</div>
-            <div className="text-2xl font-bold text-primary">€{totalWallet.toFixed(2)}</div>
-          </div>
-        </div>
-        <div className="space-y-2 pt-4 border-t border-border">
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Iskorišteno:</span>
-            <span className="font-semibold">€{walletUsed.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Preostalo:</span>
-            <span className="font-bold text-primary">€{walletRemaining.toFixed(2)}</span>
-          </div>
-        </div>
-      </div>
+      <WalletBanner 
+        total={totalWallet}
+        used={walletUsed}
+        remaining={walletRemaining}
+      />
 
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">Odabir uređaja i raspodjela walleta</h1>
