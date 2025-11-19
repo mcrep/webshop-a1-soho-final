@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 type DeviceSlot = {
   id: string;
   deviceId: string | null;
+  deviceVariantId?: string | null;
   walletUse: number;
   tariffId: string;
   isActive: boolean;
