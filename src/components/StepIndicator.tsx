@@ -14,7 +14,7 @@ export function StepIndicator({ currentStep, onStepClick, steps }: StepIndicator
           <div className="flex flex-col items-center gap-1">
             <button
               onClick={() => onStepClick(step.number)}
-              className={`h-10 w-10 rounded-full grid place-items-center border text-sm font-semibold transition-all ${
+              className={`h-5 w-5 rounded-full grid place-items-center border text-xs font-semibold transition-all ${
                 currentStep === step.number
                   ? "bg-primary text-primary-foreground border-primary shadow-md"
                   : currentStep > step.number
@@ -24,7 +24,7 @@ export function StepIndicator({ currentStep, onStepClick, steps }: StepIndicator
               aria-current={currentStep === step.number ? "step" : undefined}
               title={`Korak ${step.number}: ${step.name}`}
             >
-              {currentStep > step.number ? <Check size={20} /> : step.number}
+              {currentStep > step.number ? <Check size={10} /> : step.number}
             </button>
             <span
               className={`text-xs font-medium text-center max-w-[80px] ${
