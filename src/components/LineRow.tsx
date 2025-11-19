@@ -111,7 +111,15 @@ export function LineRow({
             onClick={onOpenDeviceModal}
             className="rounded-xl border border-border p-2 text-left text-sm hover:bg-muted transition-colors"
           >
-            {device ? `${device.name}` : "Odaberi uređaj"}
+            {device ? (
+              <>
+                {device.name}
+                {variant && <span className="text-xs text-muted-foreground ml-1">({variant.color} • {variant.memory})</span>}
+                <div className="text-xs text-muted-foreground">€{devicePrice} ili do €{variant?.installment || device.installment}/mj</div>
+              </>
+            ) : (
+              "Odaberi uređaj"
+            )}
           </button>
         </div>
 
