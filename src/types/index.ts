@@ -1,7 +1,17 @@
+export type DeviceVariant = {
+  id: string;
+  color: string;
+  colorHex: string;
+  memory: string;
+  upfront: number;
+  installment: number;
+};
+
 export type Line = {
   id: string;
   tariffId: string | null;
   deviceId: string | null;
+  deviceVariantId?: string | null;
   devicePayment: "installments" | "upfront";
   deviceMonthly?: number | null;
   addonIds: string[];
@@ -45,6 +55,17 @@ export type Device = {
   installment: number;
   emoji: string;
   image?: string;
+  images?: string[];
+  description?: string;
+  variants?: DeviceVariant[];
+  specs?: {
+    display: string;
+    processor: string;
+    camera: string;
+    battery: string;
+    weight: string;
+  };
+  energyClass?: string;
 };
 
 export type Addon = {

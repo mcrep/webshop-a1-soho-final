@@ -49,6 +49,8 @@ export function Step4Summary({
             {lines.map((line, index) => {
               const tariff = tariffs.find((t) => t.id === line.tariffId);
               const device = devices.find((d) => d.id === line.deviceId);
+              const variant = device?.variants?.find((v) => v.id === line.deviceVariantId);
+              const devicePrice = variant?.upfront || device?.upfront || 0;
               
               const tariffMonthly = tariff?.monthly ?? 0;
               let deviceMonthly = 0;
@@ -64,12 +66,12 @@ export function Step4Summary({
               let lineOnetime = 0;
               if (device && device.id !== "no-dev") {
                 if (line.devicePayment === "upfront") {
-                  lineOnetime = Math.max(0, (device.upfront ?? 0) - (line.walletUse ?? 0));
+                  lineOnetime = Math.max(0, devicePrice - (line.walletUse ?? 0));
                 } else {
                   // Installments: upfront = device price - total installments - wallet
                   const monthlyRate = line.deviceMonthly ?? 0;
                   const totalInstallments = monthlyRate * 24;
-                  lineOnetime = Math.max(0, device.upfront - totalInstallments - (line.walletUse ?? 0));
+                  lineOnetime = Math.max(0, devicePrice - totalInstallments - (line.walletUse ?? 0));
                 }
               }
 
@@ -87,9 +89,14 @@ export function Step4Summary({
                   </td>
                   <td className="p-4">
                     <div className="font-semibold">{device?.name}</div>
-                    {device && device.id !== "no-dev" && (
+                    {variant && (
                       <div className="text-xs text-muted-foreground">
-                        {line.screenInsurance && "Zaštita ekrana"}
+                        {variant.color} • {variant.memory}
+                      </div>
+                    )}
+                    {device && device.id !== "no-dev" && line.screenInsurance && (
+                      <div className="text-xs text-muted-foreground">
+                        Zaštita ekrana
                       </div>
                     )}
                   </td>

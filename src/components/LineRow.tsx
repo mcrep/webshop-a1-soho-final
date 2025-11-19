@@ -24,6 +24,8 @@ export function LineRow({
 }: LineRowProps) {
   const tariff = tariffs.find((t) => t.id === line.tariffId);
   const device = devices.find((d) => d.id === line.deviceId);
+  const variant = device?.variants?.find((v) => v.id === line.deviceVariantId);
+  const devicePrice = variant?.upfront || device?.upfront || 0;
 
   let deviceMonthly = 0;
   if (line.devicePayment === "installments" && device && device.id !== "no-dev") {
@@ -43,12 +45,12 @@ export function LineRow({
   let deviceCap = 0;
   if (device && device.id !== "no-dev") {
     if (line.devicePayment === "upfront") {
-      deviceCap = device.upfront;
+      deviceCap = devicePrice;
     } else {
       // For installments: wallet can reduce upfront = device price - total installments
       const monthlyRate = line.deviceMonthly ?? 0;
       const totalInstallments = monthlyRate * 24;
-      deviceCap = Math.max(0, device.upfront - totalInstallments);
+      deviceCap = Math.max(0, devicePrice - totalInstallments);
     }
   }
   
@@ -59,12 +61,12 @@ export function LineRow({
   let onetime = 0;
   if (device && device.id !== "no-dev") {
     if (line.devicePayment === "upfront") {
-      onetime = Math.max(0, device.upfront - safeWalletUse);
+      onetime = Math.max(0, devicePrice - safeWalletUse);
     } else {
       // For installments: upfront = device price - total installments - wallet
       const monthlyRate = line.deviceMonthly ?? 0;
       const totalInstallments = monthlyRate * 24;
-      onetime = Math.max(0, device.upfront - totalInstallments - safeWalletUse);
+      onetime = Math.max(0, devicePrice - totalInstallments - safeWalletUse);
     }
   }
 

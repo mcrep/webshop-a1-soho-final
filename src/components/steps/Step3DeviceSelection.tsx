@@ -96,10 +96,12 @@ export function Step3DeviceSelection({
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {deviceSlots.map((slot, index) => {
           const device = devices.find((d) => d.id === slot.deviceId);
+          const variant = device?.variants?.find((v) => v.id === slot.deviceVariantId);
           const tariff = tariffs.find((t) => t.id === slot.tariffId);
           
-          // Calculate max wallet for this device
-          const deviceCost = device && slot.paymentMethod === "upfront" ? device.upfront : 0;
+          // Calculate max wallet for this device - use variant price if available
+          const devicePrice = variant?.upfront || device?.upfront || 0;
+          const deviceCost = device && slot.paymentMethod === "upfront" ? devicePrice : 0;
           const otherUsage = deviceSlots.reduce(
             (sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse),
             0
@@ -153,11 +155,16 @@ export function Step3DeviceSelection({
                     )}
                     <div className="text-center">
                       <div className="font-bold text-lg mb-1">{device.name}</div>
+                      {variant && (
+                        <div className="text-xs text-muted-foreground mb-1">
+                          {variant.color} • {variant.memory}
+                        </div>
+                      )}
                       <div className="text-sm text-muted-foreground">
-                        MPC: €{device.upfront}
+                        MPC: €{devicePrice}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        Rata: €{device.installment}/mj
+                        Rata: do €{variant?.installment || device.installment}/mj
                       </div>
                     </div>
                     {slot.isActive && (
