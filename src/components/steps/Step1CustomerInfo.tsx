@@ -50,7 +50,7 @@ export function Step1CustomerInfo({
           <Input
             type="number"
             min="0"
-            value={numberOfLines === 0 ? "" : numberOfLines}
+            value={numberOfLines}
             onChange={(e) => onUpdateNumberOfLines(parseInt(e.target.value) || 0)}
             className="w-24 h-12 text-center text-lg font-semibold"
             placeholder="0"
@@ -62,7 +62,7 @@ export function Step1CustomerInfo({
             type="number"
             min="0"
             max={numberOfLines}
-            value={numberOfDevices === 0 ? "" : numberOfDevices}
+            value={numberOfDevices}
             onChange={(e) => {
               const val = parseInt(e.target.value) || 0;
               onUpdateNumberOfDevices(Math.min(val, numberOfLines));
