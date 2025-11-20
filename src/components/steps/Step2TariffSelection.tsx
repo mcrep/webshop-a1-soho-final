@@ -18,6 +18,11 @@ type Step2Props = {
 };
 
 export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuantity, onNext, onBack }: Step2Props) {
+  // Filter to show only Perfect, Ideal, and Master Biz tariffs
+  const displayedTariffs = tariffs.filter(t => 
+    ['perfect-biz', 'ideal-biz', 'master-biz'].includes(t.id)
+  );
+
   const totalLines = tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0);
   const canProceed = totalLines === maxLines;
   const canAddMore = totalLines < maxLines;
@@ -59,7 +64,7 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
         className="w-full"
       >
         <CarouselContent className="-ml-4">
-          {tariffs.map((tariff) => {
+          {displayedTariffs.map((tariff) => {
             const tq = tariffQuantities.find((t) => t.tariffId === tariff.id);
             const quantity = tq?.quantity ?? 0;
             const canIncrease = totalLines < maxLines;
