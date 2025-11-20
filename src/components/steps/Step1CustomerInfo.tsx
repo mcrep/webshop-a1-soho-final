@@ -34,7 +34,7 @@ export function Step1CustomerInfo({
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <Users className="h-5 w-5 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold">Tip korisnika</h3>
+              <h3 className="text-lg font-semibold">Ja sam</h3>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <button
@@ -72,13 +72,13 @@ export function Step1CustomerInfo({
         {/* Number of Lines Card */}
         <Card className="border-2 hover:border-primary/50 transition-all duration-300">
           <CardContent className="p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <Smartphone className="h-5 w-5 text-primary" />
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Smartphone className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold">Želim aktivirati</h3>
               </div>
-              <h3 className="text-lg font-semibold">Broj mobilnih linija</h3>
-            </div>
-            <div className="flex items-center justify-center gap-4">
               <Button
                 variant="outline"
                 size="icon"
@@ -88,11 +88,8 @@ export function Step1CustomerInfo({
               >
                 <Minus className="h-5 w-5" />
               </Button>
-              <div className="text-center min-w-[120px]">
+              <div className="text-center min-w-[80px]">
                 <p className="text-5xl font-bold text-primary">{numberOfLines}</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {numberOfLines === 1 ? "linija" : "linija"}
-                </p>
               </div>
               <Button
                 variant="outline"
@@ -102,6 +99,7 @@ export function Step1CustomerInfo({
               >
                 <Plus className="h-5 w-5" />
               </Button>
+              <h3 className="text-lg font-semibold">{numberOfLines === 1 ? "liniju" : "linija"}</h3>
             </div>
           </CardContent>
         </Card>
@@ -109,13 +107,13 @@ export function Step1CustomerInfo({
         {/* Number of Devices Card */}
         <Card className="border-2 hover:border-primary/50 transition-all duration-300">
           <CardContent className="p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <Smartphone className="h-5 w-5 text-primary" />
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Smartphone className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold">Uz to želim kupiti</h3>
               </div>
-              <h3 className="text-lg font-semibold">Broj mobilnih uređaja</h3>
-            </div>
-            <div className="flex items-center justify-center gap-4">
               <Button
                 variant="outline"
                 size="icon"
@@ -125,11 +123,8 @@ export function Step1CustomerInfo({
               >
                 <Minus className="h-5 w-5" />
               </Button>
-              <div className="text-center min-w-[120px]">
+              <div className="text-center min-w-[80px]">
                 <p className="text-5xl font-bold text-primary">{numberOfDevices}</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {numberOfDevices === 1 ? "uređaj" : "uređaja"}
-                </p>
               </div>
               <Button
                 variant="outline"
@@ -140,6 +135,7 @@ export function Step1CustomerInfo({
               >
                 <Plus className="h-5 w-5" />
               </Button>
+              <h3 className="text-lg font-semibold">{numberOfDevices === 1 ? "uređaj" : "uređaja"}</h3>
             </div>
             {numberOfDevices > numberOfLines && (
               <p className="text-sm text-destructive text-center mt-4">
@@ -148,22 +144,6 @@ export function Step1CustomerInfo({
             )}
           </CardContent>
         </Card>
-      </div>
-
-      {/* Quick Benefits */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="text-center p-4 rounded-xl bg-accent/50">
-          <p className="text-sm font-medium text-accent-foreground">Brza aktivacija</p>
-          <p className="text-xs text-muted-foreground mt-1">U samo 5 koraka</p>
-        </div>
-        <div className="text-center p-4 rounded-xl bg-accent/50">
-          <p className="text-sm font-medium text-accent-foreground">Fleksibilni planovi</p>
-          <p className="text-xs text-muted-foreground mt-1">Prilagođeni vašim potrebama</p>
-        </div>
-        <div className="text-center p-4 rounded-xl bg-accent/50">
-          <p className="text-sm font-medium text-accent-foreground">Najbolja pokrivenost</p>
-          <p className="text-xs text-muted-foreground mt-1">5G mreža u cijeloj Hrvatskoj</p>
-        </div>
       </div>
 
       {/* Action Button */}
