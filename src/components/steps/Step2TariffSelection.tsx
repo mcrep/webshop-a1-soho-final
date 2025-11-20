@@ -18,10 +18,17 @@ type Step2Props = {
 };
 
 export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuantity, onNext, onBack }: Step2Props) {
-  // Filter to show only Perfect, Ideal, and Master Biz tariffs
-  const displayedTariffs = tariffs.filter(t => 
-    ['perfect-biz', 'ideal-biz', 'master-biz'].includes(t.id)
-  );
+  // Sort tariffs to show Perfect, Ideal, and Master Biz first
+  const displayedTariffs = [...tariffs].sort((a, b) => {
+    const priority = ['perfect-biz', 'ideal-biz', 'master-biz'];
+    const aIndex = priority.indexOf(a.id);
+    const bIndex = priority.indexOf(b.id);
+    
+    if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+    if (aIndex !== -1) return -1;
+    if (bIndex !== -1) return 1;
+    return 0;
+  });
 
   const totalLines = tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0);
   const canProceed = totalLines === maxLines;
