@@ -93,6 +93,7 @@ const Index = () => {
       }
     });
     setDeviceSlots(slots);
+    return slots;
   };
 
   const handleToggleSlot = (slotId: string) => {
@@ -204,11 +205,24 @@ const Index = () => {
 
   const handleTariffNext = () => {
     // Generate device slots AFTER tariffs are selected
-    generateDeviceSlots();
+    const slots = generateDeviceSlots();
     
     const nextStepNumber = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Sažetak");
     if (numberOfDevices === 0) {
-      generateLinesFromConfiguration();
+      // Generate lines immediately with the new slots
+      const newLines: Line[] = slots.map((slot) => ({
+        id: rid(),
+        tariffId: slot.tariffId,
+        deviceId: "no-dev",
+        deviceVariantId: null,
+        devicePayment: slot.paymentMethod,
+        deviceMonthly: null,
+        addonIds: [],
+        lineType: null,
+        walletUse: 0,
+        screenInsurance: false,
+      }));
+      setLines(newLines);
     }
     setCurrentStep(nextStepNumber);
   };
