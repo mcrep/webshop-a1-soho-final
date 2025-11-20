@@ -25,19 +25,6 @@ export function Step1CustomerInfo({
 
   return (
     <div className="max-w-5xl mx-auto">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary to-brand-a1-dark p-12 mb-8 shadow-xl">
-        <div className="relative z-10 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-primary-foreground mb-4">
-            Započnite svoju A1 avanturu
-          </h1>
-          <p className="text-lg text-primary-foreground/90 max-w-2xl mx-auto">
-            Odaberite broj linija i uređaja prema vašim potrebama
-          </p>
-        </div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.1),transparent)]"></div>
-      </div>
-
       {/* Configuration Cards */}
       <div className="space-y-6 mb-8">
         {/* Customer Type Card */}
