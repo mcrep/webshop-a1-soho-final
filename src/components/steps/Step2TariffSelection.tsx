@@ -2,6 +2,7 @@ import { Minus, Plus, ArrowLeft, ArrowRight } from "lucide-react";
 import { tariffs } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
 import { WalletBanner } from "@/components/WalletBanner";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 type TariffQuantity = {
   tariffId: string;
@@ -50,65 +51,74 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {tariffs.map((tariff) => {
-          const tq = tariffQuantities.find((t) => t.tariffId === tariff.id);
-          const quantity = tq?.quantity ?? 0;
-          const canIncrease = totalLines < maxLines;
+      <Carousel
+        opts={{
+          align: "start",
+          slidesToScroll: 1,
+        }}
+        className="w-full"
+      >
+        <CarouselContent className="-ml-4">
+          {tariffs.map((tariff) => {
+            const tq = tariffQuantities.find((t) => t.tariffId === tariff.id);
+            const quantity = tq?.quantity ?? 0;
+            const canIncrease = totalLines < maxLines;
 
-          return (
-            <div
-              key={tariff.id}
-              className="rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-md transition-shadow relative"
-            >
-              <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
-                +€{tariff.walletCredit} A1 Wallet
-              </div>
-              <h3 className="text-xl font-bold mb-2">{tariff.name}</h3>
-              <div className="text-2xl font-bold text-primary mb-3">
-                €{tariff.monthly.toFixed(2)}<span className="text-sm text-muted-foreground">/mj</span>
-              </div>
-              
-              <div className="space-y-2 mb-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">Internet:</span>
-                  <span className="font-medium">{tariff.data}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">Pozivi:</span>
-                  <span className="font-medium">{tariff.voice}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">Roaming:</span>
-                  <span className="font-medium">{tariff.roaming}</span>
-                </div>
-              </div>
+            return (
+              <CarouselItem key={tariff.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                <div className="rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-md transition-shadow relative h-full">
+                  <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
+                    +€{tariff.walletCredit} A1 Wallet
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">{tariff.name}</h3>
+                  <div className="text-2xl font-bold text-primary mb-3">
+                    €{tariff.monthly.toFixed(2)}<span className="text-sm text-muted-foreground">/mj</span>
+                  </div>
+                  
+                  <div className="space-y-2 mb-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">Internet:</span>
+                      <span className="font-medium">{tariff.data}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">Pozivi:</span>
+                      <span className="font-medium">{tariff.voice}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">Roaming:</span>
+                      <span className="font-medium">{tariff.roaming}</span>
+                    </div>
+                  </div>
 
-              <div className="flex items-center justify-between gap-3 mt-6">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => onUpdateQuantity(tariff.id, -1)}
-                  disabled={quantity === 0}
-                  className="h-10 w-10"
-                >
-                  <Minus size={18} />
-                </Button>
-                <div className="text-2xl font-bold min-w-[40px] text-center">{quantity}</div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => onUpdateQuantity(tariff.id, 1)}
-                  disabled={!canIncrease}
-                  className="h-10 w-10"
-                >
-                  <Plus size={18} />
-                </Button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+                  <div className="flex items-center justify-between gap-3 mt-6">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => onUpdateQuantity(tariff.id, -1)}
+                      disabled={quantity === 0}
+                      className="h-10 w-10"
+                    >
+                      <Minus size={18} />
+                    </Button>
+                    <div className="text-2xl font-bold min-w-[40px] text-center">{quantity}</div>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => onUpdateQuantity(tariff.id, 1)}
+                      disabled={!canIncrease}
+                      className="h-10 w-10"
+                    >
+                      <Plus size={18} />
+                    </Button>
+                  </div>
+                </div>
+              </CarouselItem>
+            );
+          })}
+        </CarouselContent>
+        <CarouselPrevious className="left-0 -translate-x-12" />
+        <CarouselNext className="right-0 translate-x-12" />
+      </Carousel>
 
       <div className="flex items-center justify-between pt-6 border-t">
         <Button onClick={onBack} variant="outline" size="lg">
