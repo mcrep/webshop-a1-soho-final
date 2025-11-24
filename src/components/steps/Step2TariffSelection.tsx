@@ -128,8 +128,8 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
             );
           })}
         </CarouselContent>
-        <CarouselPrevious className="left-0 -translate-x-12" />
-        <CarouselNext className="right-0 translate-x-12" />
+        <CarouselPrevious className="left-0 -translate-x-12 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
+        <CarouselNext className="right-0 translate-x-12 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
       </Carousel>
 
       <div className="flex items-center justify-between pt-6 border-t">
