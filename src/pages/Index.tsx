@@ -310,8 +310,14 @@ const Index = () => {
       {deviceListModalFor && (
         <DeviceListModal
           onClose={() => setDeviceListModalFor(null)}
-          onSelectDevice={(deviceId, variantId) => {
-            setDeviceSlots((prev) => prev.map((s) => (s.id === deviceListModalFor ? { ...s, deviceId, deviceVariantId: variantId } : s)));
+          onSelectDevice={(deviceId, variantId, paymentMethod, monthlyInstallment, screenInsurance) => {
+            setDeviceSlots((prev) => 
+              prev.map((s) => 
+                s.id === deviceListModalFor 
+                  ? { ...s, deviceId, deviceVariantId: variantId, paymentMethod, monthlyInstallment, screenInsurance } 
+                  : s
+              )
+            );
             setDeviceListModalFor(null);
           }}
         />

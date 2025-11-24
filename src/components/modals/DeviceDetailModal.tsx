@@ -4,12 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
 import type { Device, DeviceVariant } from "@/types";
 
 type DeviceDetailModalProps = {
   device: Device;
   onClose: () => void;
-  onSelectDevice: (deviceId: string, variantId: string) => void;
+  onSelectDevice: (
+    deviceId: string, 
+    variantId: string, 
+    paymentMethod: "upfront" | "installments",
+    monthlyInstallment: number,
+    screenInsurance: boolean
+  ) => void;
 };
 
 export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDetailModalProps) {
@@ -17,6 +24,8 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
   const [selectedVariant, setSelectedVariant] = useState<DeviceVariant | null>(
     device.variants?.[0] || null
   );
+  const [paymentMethod, setPaymentMethod] = useState<"upfront" | "installments">("upfront");
+  const [monthlyInstallment, setMonthlyInstallment] = useState(1);
   const [screenInsurance, setScreenInsurance] = useState(false);
 
   const images = device.images || [device.image || ""];
@@ -43,7 +52,7 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
 
   const handleSelect = () => {
     if (selectedVariant) {
-      onSelectDevice(device.id, selectedVariant.id);
+      onSelectDevice(device.id, selectedVariant.id, paymentMethod, monthlyInstallment, screenInsurance);
       onClose();
     }
   };
@@ -184,16 +193,74 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                 {/* Pricing */}
                 <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-border">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Jednokratno:</span>
+                    <span className="text-sm text-muted-foreground">MPC Jednokratno:</span>
                     <span className="text-2xl font-bold">€{upfront}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Rate:</span>
+                    <span className="text-sm text-muted-foreground">MPC Rate:</span>
                     <span className="text-xl font-semibold">
                       do €{maxInstallment}/mj <span className="text-sm text-muted-foreground">(24 mj)</span>
                     </span>
                   </div>
                 </div>
+
+                {/* Payment Method Selection */}
+                <div className="space-y-3">
+                  <Label className="text-base font-semibold">Način plaćanja:</Label>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant={paymentMethod === "upfront" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setPaymentMethod("upfront")}
+                      className="flex-1"
+                    >
+                      Jednokratno
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={paymentMethod === "installments" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setPaymentMethod("installments")}
+                      className="flex-1"
+                    >
+                      Rate
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Installment Configuration */}
+                {paymentMethod === "installments" && (
+                  <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-border">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">
+                        Iznos rate: €{monthlyInstallment}/mj
+                      </Label>
+                      <Slider
+                        value={[monthlyInstallment]}
+                        onValueChange={(value) => setMonthlyInstallment(value[0])}
+                        min={1}
+                        max={Math.min(30, maxInstallment)}
+                        step={1}
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>€1</span>
+                        <span>€{Math.min(30, maxInstallment)}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-1 text-sm pt-2 border-t border-border">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Ukupno rata (24 mj):</span>
+                        <span className="font-semibold">€{(monthlyInstallment * 24).toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Upfront cijena:</span>
+                        <span className="font-semibold">€{Math.max(0, upfront - (monthlyInstallment * 24)).toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Screen Insurance */}
                 <div className="flex items-center justify-between p-4 rounded-xl border border-border">

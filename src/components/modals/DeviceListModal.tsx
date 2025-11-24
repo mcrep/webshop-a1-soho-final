@@ -9,7 +9,13 @@ import type { Device } from "@/types";
 
 type DeviceListModalProps = {
   onClose: () => void;
-  onSelectDevice: (deviceId: string, variantId: string) => void;
+  onSelectDevice: (
+    deviceId: string, 
+    variantId: string,
+    paymentMethod: "upfront" | "installments",
+    monthlyInstallment: number,
+    screenInsurance: boolean
+  ) => void;
 };
 
 export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProps) {
