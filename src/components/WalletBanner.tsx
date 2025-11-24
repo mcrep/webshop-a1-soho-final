@@ -30,7 +30,7 @@ export function WalletBanner({ total, used, remaining }: WalletBannerProps) {
         </div>
 
         {/* Usage info */}
-        <div className="flex gap-6 text-sm flex-shrink-0">
+        <div className="flex flex-col gap-1 text-sm flex-shrink-0">
           <div>
             <span className="text-muted-foreground">Iskorišteno: </span>
             <span className="font-semibold">€{used.toFixed(2)}</span>
