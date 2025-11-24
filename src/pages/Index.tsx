@@ -251,61 +251,67 @@ const Index = () => {
         allLinesConfigured={allLinesConfigured}
         onFinishOrder={handleFinish}
       />
-      <div className="mx-auto max-w-[1600px] px-4 py-8">
-        {currentStep > 1 && <StepIndicator currentStep={currentStep} onStepClick={handleStepClick} steps={steps} />}
-        {currentScreen === "Početak" && (
-          <Step1CustomerInfo
-            customerType={customerType}
-            numberOfLines={numberOfLines}
-            numberOfDevices={numberOfDevices}
-            onUpdateCustomerType={setCustomerType}
-            onUpdateNumberOfLines={setNumberOfLines}
-            onUpdateNumberOfDevices={setNumberOfDevices}
-            onNext={handleStep1Next}
-          />
+      <div className="flex">
+        {currentStep > 1 && (
+          <div className="fixed left-4 top-24 z-10">
+            <StepIndicator currentStep={currentStep} onStepClick={handleStepClick} steps={steps} />
+          </div>
         )}
-        {currentScreen === "Prijava" && <Step2Login onNext={handleLoginNext} onBack={() => setCurrentStep(1)} />}
-        {currentScreen === "Tarife" && (
-          <Step2TariffSelection
-            tariffQuantities={tariffQuantities}
-            maxLines={numberOfLines}
-            onUpdateQuantity={updateQuantity}
-            onNext={handleTariffNext}
-            onBack={() => {
-              const prevStep = customerType === "existing" ? getStepNumberForScreen("Prijava") : 1;
-              setCurrentStep(prevStep);
-            }}
-          />
-        )}
-        {currentScreen === "Uređaji" && (
-          <Step3DeviceSelection
-            deviceSlots={deviceSlots}
-            totalWallet={walletTotal}
-            numberOfDevices={numberOfDevices}
-            onOpenDeviceModal={setDeviceListModalFor}
-            onToggleSlot={handleToggleSlot}
-            onUpdatePaymentMethod={handleUpdatePaymentMethod}
-            onUpdateWalletUse={handleUpdateWalletUse}
-            onUpdateInsurance={handleUpdateInsurance}
-            onUpdateMonthlyInstallment={handleUpdateMonthlyInstallment}
-            onNext={handleDeviceNext}
-            onBack={() => setCurrentStep(getStepNumberForScreen("Tarife"))}
-          />
-        )}
-        {currentScreen === "Sažetak" && (
-          <Step4Summary
-            lines={lines}
-            totalMonthly={totalMonthly}
-            totalOnetime={totalOnetime}
-            onUpdateLine={updateLine}
-            onBack={() => {
-              const prevStep = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
-              setCurrentStep(prevStep);
-            }}
-            onFinish={handleFinish}
-            onOpenLineTypeModal={setLineTypeSelectionFor}
-          />
-        )}
+        <div className={`mx-auto max-w-[1600px] px-4 py-8 w-full ${currentStep > 1 ? 'ml-32' : ''}`}>
+          {currentScreen === "Početak" && (
+            <Step1CustomerInfo
+              customerType={customerType}
+              numberOfLines={numberOfLines}
+              numberOfDevices={numberOfDevices}
+              onUpdateCustomerType={setCustomerType}
+              onUpdateNumberOfLines={setNumberOfLines}
+              onUpdateNumberOfDevices={setNumberOfDevices}
+              onNext={handleStep1Next}
+            />
+          )}
+          {currentScreen === "Prijava" && <Step2Login onNext={handleLoginNext} onBack={() => setCurrentStep(1)} />}
+          {currentScreen === "Tarife" && (
+            <Step2TariffSelection
+              tariffQuantities={tariffQuantities}
+              maxLines={numberOfLines}
+              onUpdateQuantity={updateQuantity}
+              onNext={handleTariffNext}
+              onBack={() => {
+                const prevStep = customerType === "existing" ? getStepNumberForScreen("Prijava") : 1;
+                setCurrentStep(prevStep);
+              }}
+            />
+          )}
+          {currentScreen === "Uređaji" && (
+            <Step3DeviceSelection
+              deviceSlots={deviceSlots}
+              totalWallet={walletTotal}
+              numberOfDevices={numberOfDevices}
+              onOpenDeviceModal={setDeviceListModalFor}
+              onToggleSlot={handleToggleSlot}
+              onUpdatePaymentMethod={handleUpdatePaymentMethod}
+              onUpdateWalletUse={handleUpdateWalletUse}
+              onUpdateInsurance={handleUpdateInsurance}
+              onUpdateMonthlyInstallment={handleUpdateMonthlyInstallment}
+              onNext={handleDeviceNext}
+              onBack={() => setCurrentStep(getStepNumberForScreen("Tarife"))}
+            />
+          )}
+          {currentScreen === "Sažetak" && (
+            <Step4Summary
+              lines={lines}
+              totalMonthly={totalMonthly}
+              totalOnetime={totalOnetime}
+              onUpdateLine={updateLine}
+              onBack={() => {
+                const prevStep = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
+                setCurrentStep(prevStep);
+              }}
+              onFinish={handleFinish}
+              onOpenLineTypeModal={setLineTypeSelectionFor}
+            />
+          )}
+        </div>
       </div>
       {deviceListModalFor && (
         <DeviceListModal
