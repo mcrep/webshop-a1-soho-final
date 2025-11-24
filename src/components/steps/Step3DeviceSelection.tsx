@@ -59,6 +59,7 @@ export function Step3DeviceSelection({
         total={totalWallet}
         used={walletUsed}
         remaining={walletRemaining}
+        showProgress={false}
       />
 
       <div className="text-center mb-8">
@@ -111,15 +112,22 @@ export function Step3DeviceSelection({
               </div>
 
               {/* Toggle activation */}
-              <div className="flex items-center justify-between mb-4 pb-4 border-b border-border">
-                <Label htmlFor={`toggle-${slot.id}`} className="text-sm font-medium">
-                  {slot.isActive ? "Aktivno" : "Bez uređaja"}
+              <div className={`flex items-center justify-between gap-4 mb-4 pb-4 border-b border-border rounded-lg p-3 transition-all cursor-pointer ${
+                !slot.isActive && canToggleOn 
+                  ? "bg-primary/5 hover:bg-primary/10 border border-primary/20" 
+                  : ""
+              }`}
+              onClick={() => (canToggleOn || canToggleOff) && onToggleSlot(slot.id)}
+              >
+                <Label htmlFor={`toggle-${slot.id}`} className="text-sm font-medium flex-1 cursor-pointer">
+                  Želim kupiti uređaj uz ovu tarifu
                 </Label>
                 <Switch
                   id={`toggle-${slot.id}`}
                   checked={slot.isActive}
                   onCheckedChange={() => onToggleSlot(slot.id)}
                   disabled={!canToggleOn && !canToggleOff}
+                  className="pointer-events-none"
                 />
               </div>
 
