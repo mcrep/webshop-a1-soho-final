@@ -317,20 +317,20 @@ const Index = () => {
         allLinesConfigured={allLinesConfigured}
         onFinishOrder={handleFinish}
       />
-      {showWallet && (
-        <WalletBanner
-          total={walletTotal}
-          used={walletUsed}
-          remaining={walletRemaining}
-        />
-      )}
-      <div className="flex">
+      <div className="flex pt-[73px]">
         {currentStep > 1 && (
           <div className="fixed left-4 top-1/2 -translate-y-1/2 z-10">
             <StepIndicator currentStep={currentStep} onStepClick={handleStepClick} steps={steps} />
           </div>
         )}
-        <div className={`mx-auto max-w-[1600px] px-4 pb-8 w-full ${currentStep > 1 ? 'ml-32' : ''} ${showWallet ? 'pt-[170px]' : 'pt-[90px]'}`}>
+        <div className={`mx-auto max-w-[1600px] px-4 pb-8 w-full ${currentStep > 1 ? 'ml-32' : ''}`}>
+          {showWallet && (
+            <WalletBanner
+              total={walletTotal}
+              used={walletUsed}
+              remaining={walletRemaining}
+            />
+          )}
           {currentScreen === "Početak" && (
             <Step1CustomerInfo
               customerType={customerType}
