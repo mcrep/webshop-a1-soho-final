@@ -257,7 +257,7 @@ const Index = () => {
             <StepIndicator currentStep={currentStep} onStepClick={handleStepClick} steps={steps} />
           </div>
         )}
-        <div className={`mx-auto max-w-[1600px] px-4 py-8 w-full ${currentStep > 1 ? 'ml-32' : ''}`}>
+        <div className={`mx-auto max-w-[1600px] px-4 pb-8 w-full ${currentStep > 1 ? 'ml-32' : ''}`}>
           {currentScreen === "Početak" && (
             <Step1CustomerInfo
               customerType={customerType}

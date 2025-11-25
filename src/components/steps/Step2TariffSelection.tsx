@@ -42,7 +42,7 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <div className="-mt-6 mb-6">
+      <div className="mb-6">
         <WalletBanner
           total={totalWallet}
           used={0}
