@@ -316,13 +316,11 @@ const Index = () => {
         onetime={totalOnetime}
         allLinesConfigured={allLinesConfigured}
         onFinishOrder={handleFinish}
+        currentStep={currentStep > 1 ? currentStep : undefined}
+        steps={currentStep > 1 ? steps : undefined}
+        onStepClick={handleStepClick}
       />
       <div className="flex pt-[73px]">
-        {currentStep > 1 && (
-          <div className="fixed left-4 top-1/2 -translate-y-1/2 z-10">
-            <StepIndicator currentStep={currentStep} onStepClick={handleStepClick} steps={steps} />
-          </div>
-        )}
         <div className="mx-auto max-w-6xl px-4 pb-8 w-full">
           {showWallet && (
             <WalletBanner
