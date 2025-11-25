@@ -321,7 +321,11 @@ const Index = () => {
         onStepClick={handleStepClick}
       />
       <div className="flex pt-[73px]">
-        <div className="mx-auto max-w-6xl px-4 pb-8 w-full">
+        <div className={`mx-auto max-w-6xl px-4 w-full ${
+          currentScreen === "Početak" 
+            ? "flex items-center min-h-[calc(100vh-73px-96px)]" 
+            : "pb-8"
+        }`}>
           {showWallet && (
             <WalletBanner
               total={walletTotal}
