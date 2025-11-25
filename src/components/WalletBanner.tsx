@@ -17,7 +17,7 @@ export function WalletBanner({ total, used, remaining }: WalletBannerProps) {
 
   return (
     <div 
-      className="border-l border-r border-b border-border -mt-px rounded-b-2xl"
+      className="fixed top-[73px] left-0 right-0 z-40 border-l border-r border-b border-border rounded-b-2xl"
       style={{
         background: 'linear-gradient(to bottom, hsl(var(--card)) 0%, #fff1f1 100%)'
       }}

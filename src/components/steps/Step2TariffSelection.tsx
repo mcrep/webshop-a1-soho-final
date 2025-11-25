@@ -1,7 +1,6 @@
 import { Minus, Plus, ArrowLeft, ArrowRight } from "lucide-react";
 import { tariffs } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
-import { WalletBanner } from "@/components/WalletBanner";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 type TariffQuantity = {
@@ -34,22 +33,8 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
   const canProceed = totalLines === maxLines;
   const canAddMore = totalLines < maxLines;
 
-  // Calculate total wallet credit from selected tariffs
-  const totalWallet = tariffQuantities.reduce((sum, tq) => {
-    const tariff = tariffs.find((t) => t.id === tq.tariffId);
-    return sum + (tariff ? tariff.walletCredit * tq.quantity : 0);
-  }, 0);
-
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <div className="mb-6">
-        <WalletBanner
-          total={totalWallet}
-          used={0}
-          remaining={totalWallet}
-        />
-      </div>
-      
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">Odaberite tarife</h1>
         <p className="text-muted-foreground">Korak 2 od 4 - Odaberite točno {maxLines} {maxLines === 1 ? 'liniju' : 'linija'}</p>
