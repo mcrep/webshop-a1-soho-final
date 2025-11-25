@@ -17,7 +17,7 @@ export function WalletBanner({ total, used, remaining, showDetails = true }: Wal
     return "text-primary";
   };
 
-  const usedPercentage = total > 0 ? (used / total) * 100 : 0;
+  const remainingPercentage = total > 0 ? (remaining / total) * 100 : 0;
 
   return (
     <div 
@@ -42,7 +42,7 @@ export function WalletBanner({ total, used, remaining, showDetails = true }: Wal
 
             {/* Center: Progress bar */}
             <div className="flex-1">
-              <Progress value={usedPercentage} className="h-3" />
+              <Progress value={remainingPercentage} className="h-3" />
             </div>
 
             {/* Right: Used amount */}
