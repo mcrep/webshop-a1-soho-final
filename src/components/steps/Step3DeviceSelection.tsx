@@ -55,8 +55,8 @@ export function Step3DeviceSelection({
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <div className="mb-8">
-        <WalletBanner 
+      <div className="mb-4">
+        <WalletBanner
           total={totalWallet}
           used={walletUsed}
           remaining={walletRemaining}

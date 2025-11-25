@@ -16,7 +16,14 @@ export function WalletBanner({ total, used, remaining }: WalletBannerProps) {
   };
 
   return (
-    <div className="bg-gradient-to-b from-card to-card/50 border-b border-border/50">
+    <div 
+      className="border-b"
+      style={{
+        background: 'linear-gradient(to bottom, #ffffff 0%, #fff1f1 100%)',
+        borderBottomColor: '#e6e6e6',
+        borderBottomWidth: '1px'
+      }}
+    >
       <div className="mx-auto max-w-[1600px] px-4 py-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           {/* Left: Icon + Total */}
