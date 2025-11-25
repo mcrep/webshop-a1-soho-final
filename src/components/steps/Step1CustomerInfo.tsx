@@ -82,19 +82,19 @@ export function Step1CustomerInfo({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-12 w-12 rounded-full"
+                className="h-12 w-12 rounded-full border-destructive"
                 onClick={() => onUpdateNumberOfLines(Math.max(0, numberOfLines - 1))}
                 disabled={numberOfLines <= 0}
               >
                 <Minus className="h-5 w-5" />
               </Button>
               <div className="text-center min-w-[80px]">
-                <p className="text-5xl font-bold text-primary">{numberOfLines}</p>
+                <p className="text-5xl font-bold text-foreground">{numberOfLines}</p>
               </div>
               <Button
                 variant="outline"
                 size="icon"
-                className="h-12 w-12 rounded-full"
+                className="h-12 w-12 rounded-full border-destructive"
                 onClick={() => onUpdateNumberOfLines(numberOfLines + 1)}
               >
                 <Plus className="h-5 w-5" />
@@ -117,19 +117,19 @@ export function Step1CustomerInfo({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-12 w-12 rounded-full"
+                className="h-12 w-12 rounded-full border-destructive"
                 onClick={() => onUpdateNumberOfDevices(Math.max(0, numberOfDevices - 1))}
                 disabled={numberOfDevices <= 0}
               >
                 <Minus className="h-5 w-5" />
               </Button>
               <div className="text-center min-w-[80px]">
-                <p className="text-5xl font-bold text-primary">{numberOfDevices}</p>
+                <p className="text-5xl font-bold text-foreground">{numberOfDevices}</p>
               </div>
               <Button
                 variant="outline"
                 size="icon"
-                className="h-12 w-12 rounded-full"
+                className="h-12 w-12 rounded-full border-destructive"
                 onClick={() => onUpdateNumberOfDevices(Math.min(numberOfLines, numberOfDevices + 1))}
                 disabled={numberOfDevices >= numberOfLines}
               >
