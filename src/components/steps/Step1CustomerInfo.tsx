@@ -77,7 +77,7 @@ export function Step1CustomerInfo({
                 <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                   <Smartphone className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold">Želim aktivirati</h3>
+                <h3 className="text-lg font-semibold">Želim konfigurirati</h3>
               </div>
               <Button
                 variant="outline"
