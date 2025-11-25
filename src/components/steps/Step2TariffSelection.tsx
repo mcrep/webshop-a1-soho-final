@@ -104,7 +104,7 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
 
                   <div className="flex items-center justify-between gap-3 mt-6">
                     <Button
-                      variant="default"
+                      variant="outline"
                       size="icon"
                       onClick={() => onUpdateQuantity(tariff.id, -1)}
                       disabled={quantity === 0}
@@ -114,7 +114,7 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
                     </Button>
                     <div className="text-2xl font-bold min-w-[40px] text-center">{quantity}</div>
                     <Button
-                      variant="default"
+                      variant="outline"
                       size="icon"
                       onClick={() => onUpdateQuantity(tariff.id, 1)}
                       disabled={!canIncrease}

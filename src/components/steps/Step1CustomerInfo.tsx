@@ -80,7 +80,7 @@ export function Step1CustomerInfo({
                 <h3 className="text-lg font-semibold">Želim konfigurirati</h3>
               </div>
               <Button
-                variant="default"
+                variant="outline"
                 size="icon"
                 className="h-12 w-12 rounded-full"
                 onClick={() => onUpdateNumberOfLines(Math.max(0, numberOfLines - 1))}
@@ -89,10 +89,10 @@ export function Step1CustomerInfo({
                 <Minus className="h-5 w-5" />
               </Button>
               <div className="text-center min-w-[80px]">
-                <p className="text-5xl font-bold text-foreground">{numberOfLines}</p>
+                <p className="text-5xl font-bold text-primary">{numberOfLines}</p>
               </div>
               <Button
-                variant="default"
+                variant="outline"
                 size="icon"
                 className="h-12 w-12 rounded-full"
                 onClick={() => onUpdateNumberOfLines(numberOfLines + 1)}
@@ -115,7 +115,7 @@ export function Step1CustomerInfo({
                 <h3 className="text-lg font-semibold">Uz to želim kupiti</h3>
               </div>
               <Button
-                variant="default"
+                variant="outline"
                 size="icon"
                 className="h-12 w-12 rounded-full"
                 onClick={() => onUpdateNumberOfDevices(Math.max(0, numberOfDevices - 1))}
@@ -124,10 +124,10 @@ export function Step1CustomerInfo({
                 <Minus className="h-5 w-5" />
               </Button>
               <div className="text-center min-w-[80px]">
-                <p className="text-5xl font-bold text-foreground">{numberOfDevices}</p>
+                <p className="text-5xl font-bold text-primary">{numberOfDevices}</p>
               </div>
               <Button
-                variant="default"
+                variant="outline"
                 size="icon"
                 className="h-12 w-12 rounded-full"
                 onClick={() => onUpdateNumberOfDevices(Math.min(numberOfLines, numberOfDevices + 1))}
