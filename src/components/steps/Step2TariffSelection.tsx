@@ -108,7 +108,7 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
                       size="icon"
                       onClick={() => onUpdateQuantity(tariff.id, -1)}
                       disabled={quantity === 0}
-                      className="h-12 w-12 rounded-full"
+                      className="h-12 w-12 rounded-full border-destructive"
                     >
                       <Minus className="h-5 w-5" />
                     </Button>
@@ -118,7 +118,7 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
                       size="icon"
                       onClick={() => onUpdateQuantity(tariff.id, 1)}
                       disabled={!canIncrease}
-                      className="h-12 w-12 rounded-full"
+                      className="h-12 w-12 rounded-full border-destructive"
                     >
                       <Plus className="h-5 w-5" />
                     </Button>
