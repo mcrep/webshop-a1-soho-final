@@ -24,9 +24,9 @@ export function Step1CustomerInfo({
   const canProceed = customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= numberOfLines;
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="w-full">
       {/* Configuration Cards */}
-      <div className="space-y-6 mb-8">
+      <div className="space-y-6 mb-8 max-w-5xl mx-auto">
         {/* Customer Type Card */}
         <Card className="border-2 hover:border-primary/50 transition-all duration-300">
           <CardContent className="p-6">
