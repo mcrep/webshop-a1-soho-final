@@ -22,7 +22,7 @@ export function WalletBanner({ total, used, remaining }: WalletBannerProps) {
         background: 'linear-gradient(to bottom, hsl(var(--card)) 0%, #fff1f1 100%)'
       }}
     >
-      <div className="mx-auto max-w-[1600px] px-4 py-6">
+      <div className="mx-auto max-w-6xl px-4 py-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           {/* Left: Icon + Total */}
           <div className="flex items-center gap-3 flex-shrink-0">
