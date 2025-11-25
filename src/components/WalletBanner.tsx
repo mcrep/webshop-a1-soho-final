@@ -1,4 +1,5 @@
 import { Wallet } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 type WalletBannerProps = {
   total: number;
@@ -16,6 +17,8 @@ export function WalletBanner({ total, used, remaining, showDetails = true }: Wal
     return "text-primary";
   };
 
+  const usedPercentage = total > 0 ? (used / total) * 100 : 0;
+
   return (
     <div 
       className="border-l border-r border-b border-border -mt-px rounded-b-2xl sticky top-[73px] z-40"
@@ -24,34 +27,46 @@ export function WalletBanner({ total, used, remaining, showDetails = true }: Wal
       }}
     >
       <div className="mx-auto max-w-6xl px-4 py-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          {/* Left: Icon + Total */}
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Wallet className="w-5 h-5 text-primary" />
+        {showDetails ? (
+          <div className="flex items-center gap-6">
+            {/* Left: Icon + Total */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <Wallet className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">A1 Wallet</div>
+                <div className="text-xl font-bold text-primary">€{total.toFixed(2)}</div>
+              </div>
             </div>
-            <div>
-              <div className="text-xs text-muted-foreground">A1 Wallet</div>
-              <div className="text-xl font-bold text-primary">€{total.toFixed(2)}</div>
+
+            {/* Center: Progress bar */}
+            <div className="flex-1">
+              <Progress value={usedPercentage} className="h-3" />
+            </div>
+
+            {/* Right: Used amount */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <div>
+                <div className="text-xs text-muted-foreground">A1 Wallet iskorišteno</div>
+                <div className="text-xl font-bold text-muted-foreground">€{used.toFixed(2)}</div>
+              </div>
             </div>
           </div>
-
-          {/* Right: Usage info */}
-          {showDetails && (
-            <div className="flex flex-col gap-1 text-sm">
-              <div>
-                <span className="text-muted-foreground">Iskorišteno: </span>
-                <span className="font-semibold">€{used.toFixed(2)}</span>
+        ) : (
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            {/* Left: Icon + Total */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <Wallet className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <span className="text-muted-foreground">Preostalo: </span>
-                <span className={`font-bold ${getRemainingTextColor()}`}>
-                  €{remaining.toFixed(2)}
-                </span>
+                <div className="text-xs text-muted-foreground">A1 Wallet</div>
+                <div className="text-xl font-bold text-primary">€{total.toFixed(2)}</div>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
