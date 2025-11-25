@@ -321,20 +321,20 @@ const Index = () => {
         steps={currentStep > 1 ? steps : undefined}
         onStepClick={handleStepClick}
       />
+      {showWallet && (
+        <WalletBanner
+          total={walletTotal}
+          used={walletUsed}
+          remaining={walletRemaining}
+          showDetails={showWalletDetails}
+        />
+      )}
       <div className="flex pt-[73px]">
         <div className={`mx-auto max-w-6xl px-4 w-full ${
           currentScreen === "Početak" 
             ? "flex items-center min-h-[calc(100vh-73px-96px)]" 
             : "pb-8"
         }`}>
-          {showWallet && (
-            <WalletBanner
-              total={walletTotal}
-              used={walletUsed}
-              remaining={walletRemaining}
-              showDetails={showWalletDetails}
-            />
-          )}
           {currentScreen === "Početak" && (
             <Step1CustomerInfo
               customerType={customerType}
