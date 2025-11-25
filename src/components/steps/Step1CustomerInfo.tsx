@@ -80,9 +80,9 @@ export function Step1CustomerInfo({
                 <h3 className="text-lg font-semibold">Želim konfigurirati</h3>
               </div>
               <Button
-                variant="outline"
+                variant="default"
                 size="icon"
-                className="h-12 w-12 rounded-full border-destructive"
+                className="h-12 w-12 rounded-full"
                 onClick={() => onUpdateNumberOfLines(Math.max(0, numberOfLines - 1))}
                 disabled={numberOfLines <= 0}
               >
@@ -92,9 +92,9 @@ export function Step1CustomerInfo({
                 <p className="text-5xl font-bold text-foreground">{numberOfLines}</p>
               </div>
               <Button
-                variant="outline"
+                variant="default"
                 size="icon"
-                className="h-12 w-12 rounded-full border-destructive"
+                className="h-12 w-12 rounded-full"
                 onClick={() => onUpdateNumberOfLines(numberOfLines + 1)}
               >
                 <Plus className="h-5 w-5" />
@@ -115,9 +115,9 @@ export function Step1CustomerInfo({
                 <h3 className="text-lg font-semibold">Uz to želim kupiti</h3>
               </div>
               <Button
-                variant="outline"
+                variant="default"
                 size="icon"
-                className="h-12 w-12 rounded-full border-destructive"
+                className="h-12 w-12 rounded-full"
                 onClick={() => onUpdateNumberOfDevices(Math.max(0, numberOfDevices - 1))}
                 disabled={numberOfDevices <= 0}
               >
@@ -127,9 +127,9 @@ export function Step1CustomerInfo({
                 <p className="text-5xl font-bold text-foreground">{numberOfDevices}</p>
               </div>
               <Button
-                variant="outline"
+                variant="default"
                 size="icon"
-                className="h-12 w-12 rounded-full border-destructive"
+                className="h-12 w-12 rounded-full"
                 onClick={() => onUpdateNumberOfDevices(Math.min(numberOfLines, numberOfDevices + 1))}
                 disabled={numberOfDevices >= numberOfLines}
               >
