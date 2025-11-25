@@ -146,18 +146,6 @@ export function Step1CustomerInfo({
         </Card>
       </div>
 
-      {/* Action Button */}
-      <div className="flex justify-center">
-        <Button 
-          onClick={onNext} 
-          disabled={!canProceed} 
-          size="lg"
-          className="h-14 px-8 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          Nastavi na odabir tarifa
-          <ArrowRight className="ml-2" size={20} />
-        </Button>
-      </div>
     </div>
   );
 }

@@ -132,17 +132,6 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
         <CarouselPrevious className="left-0 -translate-x-12 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
         <CarouselNext className="right-0 translate-x-12 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
       </Carousel>
-
-      <div className="flex items-center justify-between pt-6 border-t">
-        <Button onClick={onBack} variant="outline" size="lg">
-          <ArrowLeft className="mr-2" size={18} />
-          Natrag
-        </Button>
-        <Button onClick={onNext} disabled={!canProceed} size="lg">
-          Nastavi na uređaje
-          <ArrowRight className="ml-2" size={18} />
-        </Button>
-      </div>
     </div>
   );
 }

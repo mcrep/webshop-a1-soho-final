@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
 import { StepIndicator } from "@/components/StepIndicator";
+import { Footer } from "@/components/Footer";
 import { Step1CustomerInfo } from "@/components/steps/Step1CustomerInfo";
 import { Step2Login } from "@/components/steps/Step2Login";
 import { Step2TariffSelection } from "@/components/steps/Step2TariffSelection";
@@ -240,8 +241,64 @@ const Index = () => {
   const allLinesConfigured = lines.every((line) => line.lineType !== null);
   const currentScreen = steps.find((s) => s.number === currentStep)?.name ?? "Početak";
 
+  // Footer props based on current screen
+  const getFooterProps = () => {
+    const canProceed = {
+      "Početak": customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= numberOfLines,
+      "Prijava": false, // Handled in Step2Login component state
+      "Tarife": tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0) === numberOfLines,
+      "Uređaji": (() => {
+        const activeSlots = deviceSlots.filter((slot) => slot.isActive);
+        const correctNumberOfDevices = activeSlots.length === numberOfDevices;
+        const allActiveDevicesSelected = activeSlots.every((slot) => slot.deviceId !== null);
+        return correctNumberOfDevices && allActiveDevicesSelected;
+      })(),
+      "Sažetak": allLinesConfigured
+    };
+
+    const nextLabels = {
+      "Početak": "Nastavi na odabir tarifa",
+      "Prijava": "Nastavi na tarife",
+      "Tarife": "Nastavi na uređaje",
+      "Uređaji": "Nastavi na sažetak",
+      "Sažetak": "Završi narudžbu"
+    };
+
+    const handlers = {
+      "Početak": { onNext: handleStep1Next, onBack: undefined },
+      "Prijava": { onNext: handleLoginNext, onBack: () => setCurrentStep(1) },
+      "Tarife": { 
+        onNext: handleTariffNext, 
+        onBack: () => {
+          const prevStep = customerType === "existing" ? getStepNumberForScreen("Prijava") : 1;
+          setCurrentStep(prevStep);
+        }
+      },
+      "Uređaji": { 
+        onNext: handleDeviceNext, 
+        onBack: () => setCurrentStep(getStepNumberForScreen("Tarife"))
+      },
+      "Sažetak": { 
+        onNext: handleFinish, 
+        onBack: () => {
+          const prevStep = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
+          setCurrentStep(prevStep);
+        }
+      }
+    };
+
+    return {
+      showBack: currentScreen !== "Početak",
+      showNext: true,
+      nextDisabled: !canProceed[currentScreen as keyof typeof canProceed],
+      nextLabel: nextLabels[currentScreen as keyof typeof nextLabels],
+      onNext: handlers[currentScreen as keyof typeof handlers].onNext,
+      onBack: handlers[currentScreen as keyof typeof handlers].onBack
+    };
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground pb-24">
       <Header
         onOpenOTP={() => {}}
         onOpenLogin={() => {}}
@@ -367,6 +424,7 @@ const Index = () => {
           }}
         />
       )}
+      <Footer {...getFooterProps()} />
     </div>
   );
 };

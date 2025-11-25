@@ -293,17 +293,6 @@ export function Step3DeviceSelection({
           );
         })}
       </div>
-
-      <div className="flex items-center justify-between pt-6 border-t">
-        <Button onClick={onBack} variant="outline" size="lg">
-          <ArrowLeft className="mr-2" size={18} />
-          Natrag
-        </Button>
-        <Button onClick={onNext} disabled={!canProceed} size="lg">
-          Nastavi na sažetak
-          <ArrowRight className="ml-2" size={18} />
-        </Button>
-      </div>
     </div>
   );
 }

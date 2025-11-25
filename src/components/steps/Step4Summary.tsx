@@ -159,16 +159,6 @@ export function Step4Summary({
       <div className="text-sm text-muted-foreground text-center">
         *Sve cijene su bez PDV-a
       </div>
-
-      <div className="flex items-center justify-between pt-6 border-t">
-        <Button onClick={onBack} variant="outline" size="lg">
-          <ArrowLeft className="mr-2" size={18} />
-          Natrag
-        </Button>
-        <Button onClick={onFinish} disabled={!allLinesConfigured} size="lg">
-          Završi narudžbu
-        </Button>
-      </div>
     </div>
   );
 }
