@@ -62,7 +62,7 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
         }}
         className="w-full"
       >
-        <CarouselContent className="">
+        <CarouselContent className="pl-4">
           {displayedTariffs.map((tariff) => {
             const tq = tariffQuantities.find((t) => t.tariffId === tariff.id);
             const quantity = tq?.quantity ?? 0;
@@ -128,8 +128,8 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
             );
           })}
         </CarouselContent>
-        <CarouselPrevious className="left-0 -translate-x-12 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
-        <CarouselNext className="right-0 translate-x-12 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
+        <CarouselPrevious className="left-0 -translate-x-16 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
+        <CarouselNext className="right-0 translate-x-16 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
       </Carousel>
     </div>
   );
