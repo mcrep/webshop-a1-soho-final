@@ -4,9 +4,10 @@ type WalletBannerProps = {
   total: number;
   used: number;
   remaining: number;
+  showDetails?: boolean;
 };
 
-export function WalletBanner({ total, used, remaining }: WalletBannerProps) {
+export function WalletBanner({ total, used, remaining, showDetails = true }: WalletBannerProps) {
   // Conditional styling based on remaining amount
   const getRemainingTextColor = () => {
     const remainingPercentage = (remaining / total) * 100;
@@ -36,18 +37,20 @@ export function WalletBanner({ total, used, remaining }: WalletBannerProps) {
           </div>
 
           {/* Right: Usage info */}
-          <div className="flex flex-col gap-1 text-sm">
-            <div>
-              <span className="text-muted-foreground">Iskorišteno: </span>
-              <span className="font-semibold">€{used.toFixed(2)}</span>
+          {showDetails && (
+            <div className="flex flex-col gap-1 text-sm">
+              <div>
+                <span className="text-muted-foreground">Iskorišteno: </span>
+                <span className="font-semibold">€{used.toFixed(2)}</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Preostalo: </span>
+                <span className={`font-bold ${getRemainingTextColor()}`}>
+                  €{remaining.toFixed(2)}
+                </span>
+              </div>
             </div>
-            <div>
-              <span className="text-muted-foreground">Preostalo: </span>
-              <span className={`font-bold ${getRemainingTextColor()}`}>
-                €{remaining.toFixed(2)}
-              </span>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

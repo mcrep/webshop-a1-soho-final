@@ -248,7 +248,8 @@ const Index = () => {
   const lineCount = lines.length;
   const allLinesConfigured = lines.every((line) => line.lineType !== null);
   const currentScreen = steps.find((s) => s.number === currentStep)?.name ?? "Početak";
-  const showWallet = currentScreen === "Tarife" || currentScreen === "Uređaji";
+  const showWallet = currentScreen === "Početak" || currentScreen === "Tarife" || currentScreen === "Uređaji";
+  const showWalletDetails = currentScreen === "Uređaji";
 
   // Footer props based on current screen
   const getFooterProps = () => {
@@ -331,6 +332,7 @@ const Index = () => {
               total={walletTotal}
               used={walletUsed}
               remaining={walletRemaining}
+              showDetails={showWalletDetails}
             />
           )}
           {currentScreen === "Početak" && (
