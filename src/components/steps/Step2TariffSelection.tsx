@@ -1,7 +1,10 @@
-import { Minus, Plus, ArrowLeft, ArrowRight } from "lucide-react";
+import { Minus, Plus, Wifi, Phone, Globe } from "lucide-react";
 import { tariffs } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { cn } from "@/lib/utils";
 
 type TariffQuantity = {
   tariffId: string;
@@ -41,11 +44,14 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
       </div>
 
       <div className="rounded-2xl border border-border bg-card p-4 shadow-sm mb-6">
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Odabrane linije:</span>
-          <span className="text-xl font-bold">
-            {totalLines} / {maxLines}
-          </span>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Odabrane linije:</span>
+            <span className="text-xl font-bold">
+              {totalLines} / {maxLines}
+            </span>
+          </div>
+          <Progress value={(totalLines / maxLines) * 100} className="h-2" />
         </div>
       </div>
 
@@ -64,26 +70,34 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
 
             return (
               <CarouselItem key={tariff.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                <div className="rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-md transition-shadow relative h-full">
+                <div className={cn(
+                  "rounded-2xl border bg-card p-6 shadow-sm hover:shadow-md transition-all relative h-full",
+                  quantity > 0 ? "border-primary bg-primary/5 animate-pulse" : "border-border"
+                )}>
                   <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
                     +€{tariff.walletCredit} A1 Wallet
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{tariff.name}</h3>
+                  {tariff.id === 'perfect-biz' && (
+                    <Badge className="absolute top-4 left-4 bg-green-500 text-white hover:bg-green-600">
+                      Preporučeno
+                    </Badge>
+                  )}
+                  <h3 className="text-xl font-bold mb-2 mt-6">{tariff.name}</h3>
                   <div className="text-2xl font-bold text-primary mb-3">
                     €{tariff.monthly.toFixed(2)}<span className="text-sm text-muted-foreground">/mj</span>
                   </div>
                   
                   <div className="space-y-2 mb-4 text-sm">
                     <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Internet:</span>
+                      <Wifi className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">{tariff.data}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Pozivi:</span>
+                      <Phone className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">{tariff.voice}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Roaming:</span>
+                      <Globe className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">{tariff.roaming}</span>
                     </div>
                   </div>
