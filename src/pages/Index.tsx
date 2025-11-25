@@ -253,7 +253,7 @@ const Index = () => {
       />
       <div className="flex">
         {currentStep > 1 && (
-          <div className="fixed left-4 top-24 z-10">
+          <div className="fixed left-4 top-1/2 -translate-y-1/2 z-10">
             <StepIndicator currentStep={currentStep} onStepClick={handleStepClick} steps={steps} />
           </div>
         )}
