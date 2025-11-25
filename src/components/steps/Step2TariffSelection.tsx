@@ -94,9 +94,9 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
                       size="icon"
                       onClick={() => onUpdateQuantity(tariff.id, -1)}
                       disabled={quantity === 0}
-                      className="h-10 w-10"
+                      className="h-12 w-12 rounded-full"
                     >
-                      <Minus size={18} />
+                      <Minus className="h-5 w-5" />
                     </Button>
                     <div className="text-2xl font-bold min-w-[40px] text-center">{quantity}</div>
                     <Button
@@ -104,9 +104,9 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
                       size="icon"
                       onClick={() => onUpdateQuantity(tariff.id, 1)}
                       disabled={!canIncrease}
-                      className="h-10 w-10"
+                      className="h-12 w-12 rounded-full"
                     >
-                      <Plus size={18} />
+                      <Plus className="h-5 w-5" />
                     </Button>
                   </div>
                 </div>
