@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
+import { WalletBanner } from "@/components/WalletBanner";
 import { StepIndicator } from "@/components/StepIndicator";
 import { Footer } from "@/components/Footer";
 import { Step1CustomerInfo } from "@/components/steps/Step1CustomerInfo";
@@ -157,6 +158,13 @@ const Index = () => {
     [tariffQuantities]
   );
 
+  const walletUsed = useMemo(
+    () => deviceSlots.reduce((sum, slot) => sum + slot.walletUse, 0),
+    [deviceSlots]
+  );
+
+  const walletRemaining = walletTotal - walletUsed;
+
   const totalMonthly = useMemo(
     () =>
       lines.reduce((s, l) => {
@@ -240,6 +248,7 @@ const Index = () => {
   const lineCount = lines.length;
   const allLinesConfigured = lines.every((line) => line.lineType !== null);
   const currentScreen = steps.find((s) => s.number === currentStep)?.name ?? "Početak";
+  const showWallet = currentScreen === "Tarife" || currentScreen === "Uređaji";
 
   // Footer props based on current screen
   const getFooterProps = () => {
@@ -308,13 +317,20 @@ const Index = () => {
         allLinesConfigured={allLinesConfigured}
         onFinishOrder={handleFinish}
       />
+      {showWallet && (
+        <WalletBanner
+          total={walletTotal}
+          used={walletUsed}
+          remaining={walletRemaining}
+        />
+      )}
       <div className="flex">
         {currentStep > 1 && (
           <div className="fixed left-4 top-1/2 -translate-y-1/2 z-10">
             <StepIndicator currentStep={currentStep} onStepClick={handleStepClick} steps={steps} />
           </div>
         )}
-        <div className={`mx-auto max-w-[1600px] px-4 pb-8 w-full ${currentStep > 1 ? 'ml-32' : ''}`}>
+        <div className={`mx-auto max-w-[1600px] px-4 pb-8 w-full ${currentStep > 1 ? 'ml-32' : ''} ${showWallet ? 'pt-[170px]' : 'pt-[90px]'}`}>
           {currentScreen === "Početak" && (
             <Step1CustomerInfo
               customerType={customerType}

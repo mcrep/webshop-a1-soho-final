@@ -5,7 +5,6 @@ import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, ArrowRight, Smartphone } from "lucide-react";
 import { devices, tariffs } from "@/data/catalog";
 import { Label } from "@/components/ui/label";
-import { WalletBanner } from "@/components/WalletBanner";
 
 type DeviceSlot = {
   id: string;
@@ -50,19 +49,9 @@ export function Step3DeviceSelection({
   const correctNumberOfDevices = activeSlots.length === numberOfDevices;
   const allActiveDevicesSelected = activeSlots.every((slot) => slot.deviceId !== null);
   const canProceed = correctNumberOfDevices && allActiveDevicesSelected;
-  const walletUsed = deviceSlots.reduce((sum, slot) => sum + slot.walletUse, 0);
-  const walletRemaining = totalWallet - walletUsed;
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <div className="mb-6">
-        <WalletBanner
-          total={totalWallet}
-          used={walletUsed}
-          remaining={walletRemaining}
-        />
-      </div>
-
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">Odabir uređaja i raspodjela walleta</h1>
         <p className="text-muted-foreground">
