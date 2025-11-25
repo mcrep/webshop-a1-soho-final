@@ -62,14 +62,14 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
         }}
         className="w-full"
       >
-        <CarouselContent className="-ml-4">
+        <CarouselContent className="">
           {displayedTariffs.map((tariff) => {
             const tq = tariffQuantities.find((t) => t.tariffId === tariff.id);
             const quantity = tq?.quantity ?? 0;
             const canIncrease = totalLines < maxLines;
 
             return (
-              <CarouselItem key={tariff.id} className="pl-4 md:basis-1/2 lg:basis-1/3 px-3">
+              <CarouselItem key={tariff.id} className="p-4 md:basis-1/2 lg:basis-1/3">
                 <div className={cn(
                   "rounded-2xl border bg-card p-6 shadow-sm hover:shadow-md hover:scale-105 transition-all relative h-full",
                   quantity > 0 ? "border-primary bg-primary/5" : "border-border"
