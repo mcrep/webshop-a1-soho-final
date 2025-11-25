@@ -78,7 +78,7 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
                     +€{tariff.walletCredit} A1 Wallet
                   </div>
                   {tariff.id === 'perfect-biz' && (
-                    <Badge className="absolute top-4 left-4 bg-green-500 text-white hover:bg-green-600">
+                    <Badge className="absolute top-4 left-4 bg-gray-500 text-white hover:bg-gray-600">
                       Preporučeno
                     </Badge>
                   )}
