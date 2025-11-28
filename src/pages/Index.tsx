@@ -149,13 +149,20 @@ const Index = () => {
   const updateLine = (id: string, patch: Partial<Line>) =>
     setLines((prev) => prev.map((l) => (l.id === id ? { ...l, ...patch } : l)));
 
+  // Base wallet credit from lines without devices (30€ per line)
+  const baseWalletCredit = useMemo(
+    () => Math.max(0, numberOfLines - numberOfDevices) * 30,
+    [numberOfLines, numberOfDevices]
+  );
+
   const walletTotal = useMemo(
     () =>
+      baseWalletCredit +
       tariffQuantities.reduce((sum, tq) => {
         const credit = tariffs.find((t) => t.id === tq.tariffId)?.walletCredit ?? 0;
         return sum + credit * tq.quantity;
       }, 0),
-    [tariffQuantities]
+    [baseWalletCredit, tariffQuantities]
   );
 
   const walletUsed = useMemo(
