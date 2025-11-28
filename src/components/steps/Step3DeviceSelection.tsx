@@ -186,27 +186,27 @@ export function Step3DeviceSelection({
                       </div>
                       
                       <div className="space-y-1">
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center gap-4">
                           <Label htmlFor={`wallet-${slot.id}`} className="text-sm font-medium">
                             A1 Wallet popust:
                           </Label>
+                          <Input
+                            id={`wallet-${slot.id}`}
+                            type="number"
+                            min={0}
+                            max={maxWalletForDevice}
+                            value={slot.walletUse}
+                            onChange={(e) => {
+                              const value = Math.min(
+                                Math.max(0, parseFloat(e.target.value) || 0),
+                                maxWalletForDevice
+                              );
+                              onUpdateWalletUse(slot.id, value);
+                            }}
+                            className="w-32 text-right"
+                          />
                         </div>
-                        <Input
-                          id={`wallet-${slot.id}`}
-                          type="number"
-                          min={0}
-                          max={maxWalletForDevice}
-                          value={slot.walletUse}
-                          onChange={(e) => {
-                            const value = Math.min(
-                              Math.max(0, parseFloat(e.target.value) || 0),
-                              maxWalletForDevice
-                            );
-                            onUpdateWalletUse(slot.id, value);
-                          }}
-                          className="w-full"
-                        />
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-muted-foreground text-right">
                           Maks: €{maxWalletForDevice.toFixed(2)}
                         </div>
                       </div>
@@ -229,35 +229,35 @@ export function Step3DeviceSelection({
                       </div>
 
                       <div className="space-y-1">
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center gap-4">
                           <Label htmlFor={`wallet-inst-${slot.id}`} className="text-sm font-medium">
                             A1 Wallet popust:
                           </Label>
-                        </div>
-                        <Input
-                          id={`wallet-inst-${slot.id}`}
-                          type="number"
-                          min={0}
-                          max={Math.min(
-                            Math.max(0, devicePrice - (slot.monthlyInstallment * 24)),
-                            totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
-                          )}
-                          value={slot.walletUse}
-                          onChange={(e) => {
-                            const upfrontCost = Math.max(0, devicePrice - (slot.monthlyInstallment * 24));
-                            const maxWallet = Math.min(
-                              upfrontCost,
+                          <Input
+                            id={`wallet-inst-${slot.id}`}
+                            type="number"
+                            min={0}
+                            max={Math.min(
+                              Math.max(0, devicePrice - (slot.monthlyInstallment * 24)),
                               totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
-                            );
-                            const value = Math.min(
-                              Math.max(0, parseFloat(e.target.value) || 0),
-                              maxWallet
-                            );
-                            onUpdateWalletUse(slot.id, value);
-                          }}
-                          className="w-full"
-                        />
-                        <div className="text-xs text-muted-foreground">
+                            )}
+                            value={slot.walletUse}
+                            onChange={(e) => {
+                              const upfrontCost = Math.max(0, devicePrice - (slot.monthlyInstallment * 24));
+                              const maxWallet = Math.min(
+                                upfrontCost,
+                                totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
+                              );
+                              const value = Math.min(
+                                Math.max(0, parseFloat(e.target.value) || 0),
+                                maxWallet
+                              );
+                              onUpdateWalletUse(slot.id, value);
+                            }}
+                            className="w-32 text-right"
+                          />
+                        </div>
+                        <div className="text-xs text-muted-foreground text-right">
                           Maks: €{Math.min(
                             Math.max(0, devicePrice - (slot.monthlyInstallment * 24)),
                             totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
