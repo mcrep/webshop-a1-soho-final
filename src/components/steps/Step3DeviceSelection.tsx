@@ -218,7 +218,7 @@ export function Step3DeviceSelection({
                           className="w-full h-10"
                           title="Postavi maksimalni popust"
                         >
-                          Max popust
+                          Primjeni maksimalni popust
                         </Button>
                       </div>
 
@@ -283,7 +283,7 @@ export function Step3DeviceSelection({
                           className="w-full h-10"
                           title="Postavi maksimalni popust"
                         >
-                          Max popust
+                          Primjeni maksimalni popust
                         </Button>
                       </div>
 
