@@ -179,9 +179,16 @@ export function Step3DeviceSelection({
                 <div className="mt-auto pt-4 border-t border-border space-y-4">
                   {/* Wallet usage - show for upfront payment */}
                   {slot.paymentMethod === "upfront" && (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
+                      <div className="text-sm text-muted-foreground">
+                        Jednokratna cijena (odabrana u detaljima uređaja):
+                      </div>
+                      <div className="font-bold text-lg">
+                        €{devicePrice.toFixed(2)}
+                      </div>
+                      
                       <Label htmlFor={`wallet-${slot.id}`} className="text-sm font-medium">
-                        A1 Wallet popust (€):
+                        A1 Wallet popust:
                       </Label>
                       <Input
                         id={`wallet-${slot.id}`}
@@ -201,14 +208,30 @@ export function Step3DeviceSelection({
                       <div className="text-xs text-muted-foreground">
                         Maks: €{maxWalletForDevice.toFixed(2)}
                       </div>
+
+                      <div className="pt-2 border-t border-border">
+                        <div className="text-sm text-muted-foreground mb-1">
+                          Ukupna cijena uređaja:
+                        </div>
+                        <div className="font-bold text-xl text-primary">
+                          €{Math.max(0, devicePrice - slot.walletUse).toFixed(2)}
+                        </div>
+                      </div>
                     </div>
                   )}
 
                   {/* Wallet usage for installments - on upfront portion only */}
                   {slot.paymentMethod === "installments" && (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
+                      <div className="text-sm text-muted-foreground">
+                        Jednokratna cijena (odabrana u detaljima uređaja):
+                      </div>
+                      <div className="font-bold text-lg">
+                        €{Math.max(0, devicePrice - (slot.monthlyInstallment * 24)).toFixed(2)}
+                      </div>
+
                       <Label htmlFor={`wallet-inst-${slot.id}`} className="text-sm font-medium">
-                        A1 Wallet popust na upfront (€):
+                        A1 Wallet popust:
                       </Label>
                       <Input
                         id={`wallet-inst-${slot.id}`}
@@ -234,7 +257,19 @@ export function Step3DeviceSelection({
                         className="w-full"
                       />
                       <div className="text-xs text-muted-foreground">
-                        Upfront nakon popusta: €{Math.max(0, devicePrice - (slot.monthlyInstallment * 24) - slot.walletUse).toFixed(2)}
+                        Maks: €{Math.min(
+                          Math.max(0, devicePrice - (slot.monthlyInstallment * 24)),
+                          totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
+                        ).toFixed(2)}
+                      </div>
+
+                      <div className="pt-2 border-t border-border">
+                        <div className="text-sm text-muted-foreground mb-1">
+                          Ukupna cijena uređaja:
+                        </div>
+                        <div className="font-bold text-xl text-primary">
+                          €{Math.max(0, devicePrice - (slot.monthlyInstallment * 24) - slot.walletUse).toFixed(2)}
+                        </div>
                       </div>
                     </div>
                   )}
