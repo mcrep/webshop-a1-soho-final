@@ -35,7 +35,7 @@ export function WalletBanner({ total, used, remaining, showDetails = true }: Wal
                 <Wallet className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">A1 Wallet</div>
+                <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
                 <div className="text-xl font-bold text-primary">€{total.toFixed(2)}</div>
               </div>
             </div>
@@ -61,7 +61,7 @@ export function WalletBanner({ total, used, remaining, showDetails = true }: Wal
                 <Wallet className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">A1 Wallet</div>
+                <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
                 <div className="text-xl font-bold text-primary">€{total.toFixed(2)}</div>
               </div>
             </div>
