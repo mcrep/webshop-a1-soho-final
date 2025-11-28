@@ -189,38 +189,36 @@ export function Step3DeviceSelection({
                         <span className="font-bold">€{devicePrice.toFixed(2)}</span>
                       </div>
                       
-                      <div className="space-y-1">
-                        <div className="flex justify-between items-center gap-2">
-                          <Label htmlFor={`wallet-${slot.id}`} className="text-sm font-medium">
-                            A1 Wallet popust:
-                          </Label>
-                          <div className="flex items-center gap-2">
-                            <Input
-                              id={`wallet-${slot.id}`}
-                              type="number"
-                              min={0}
-                              max={maxWalletForDevice}
-                              value={slot.walletUse}
-                              onChange={(e) => {
-                                const value = Math.min(
-                                  Math.max(0, parseFloat(e.target.value) || 0),
-                                  maxWalletForDevice
-                                );
-                                onUpdateWalletUse(slot.id, value);
-                              }}
-                              className="w-32 text-right"
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => onUpdateWalletUse(slot.id, maxWalletForDevice)}
-                              className="h-10 px-3"
-                              title="Postavi maksimalni popust"
-                            >
-                              Max popust
-                            </Button>
-                          </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`wallet-${slot.id}`} className="text-sm font-medium">
+                          A1 Wallet popust:
+                        </Label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            id={`wallet-${slot.id}`}
+                            type="number"
+                            min={0}
+                            max={maxWalletForDevice}
+                            value={slot.walletUse}
+                            onChange={(e) => {
+                              const value = Math.min(
+                                Math.max(0, parseFloat(e.target.value) || 0),
+                                maxWalletForDevice
+                              );
+                              onUpdateWalletUse(slot.id, value);
+                            }}
+                            className="flex-1 text-right"
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onUpdateWalletUse(slot.id, maxWalletForDevice)}
+                            className="h-10 px-3"
+                            title="Postavi maksimalni popust"
+                          >
+                            Max popust
+                          </Button>
                         </div>
                       </div>
 
@@ -241,53 +239,51 @@ export function Step3DeviceSelection({
                         <span className="font-bold">€{Math.max(0, devicePrice - (slot.monthlyInstallment * 24)).toFixed(2)}</span>
                       </div>
 
-                      <div className="space-y-1">
-                        <div className="flex justify-between items-center gap-2">
-                          <Label htmlFor={`wallet-inst-${slot.id}`} className="text-sm font-medium">
-                            A1 Wallet popust:
-                          </Label>
-                          <div className="flex items-center gap-2">
-                            <Input
-                              id={`wallet-inst-${slot.id}`}
-                              type="number"
-                              min={0}
-                              max={Math.min(
-                                Math.max(0, devicePrice - (slot.monthlyInstallment * 24)),
+                      <div className="space-y-2">
+                        <Label htmlFor={`wallet-inst-${slot.id}`} className="text-sm font-medium">
+                          A1 Wallet popust:
+                        </Label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            id={`wallet-inst-${slot.id}`}
+                            type="number"
+                            min={0}
+                            max={Math.min(
+                              Math.max(0, devicePrice - (slot.monthlyInstallment * 24)),
+                              totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
+                            )}
+                            value={slot.walletUse}
+                            onChange={(e) => {
+                              const upfrontCost = Math.max(0, devicePrice - (slot.monthlyInstallment * 24));
+                              const maxWallet = Math.min(
+                                upfrontCost,
                                 totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
-                              )}
-                              value={slot.walletUse}
-                              onChange={(e) => {
-                                const upfrontCost = Math.max(0, devicePrice - (slot.monthlyInstallment * 24));
-                                const maxWallet = Math.min(
-                                  upfrontCost,
-                                  totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
-                                );
-                                const value = Math.min(
-                                  Math.max(0, parseFloat(e.target.value) || 0),
-                                  maxWallet
-                                );
-                                onUpdateWalletUse(slot.id, value);
-                              }}
-                              className="w-32 text-right"
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                const upfrontCost = Math.max(0, devicePrice - (slot.monthlyInstallment * 24));
-                                const maxWallet = Math.min(
-                                  upfrontCost,
-                                  totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
-                                );
-                                onUpdateWalletUse(slot.id, maxWallet);
-                              }}
-                              className="h-10 px-3"
-                              title="Postavi maksimalni popust"
-                            >
-                              Max popust
-                            </Button>
-                          </div>
+                              );
+                              const value = Math.min(
+                                Math.max(0, parseFloat(e.target.value) || 0),
+                                maxWallet
+                              );
+                              onUpdateWalletUse(slot.id, value);
+                            }}
+                            className="flex-1 text-right"
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const upfrontCost = Math.max(0, devicePrice - (slot.monthlyInstallment * 24));
+                              const maxWallet = Math.min(
+                                upfrontCost,
+                                totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
+                              );
+                              onUpdateWalletUse(slot.id, maxWallet);
+                            }}
+                            className="h-10 px-3"
+                            title="Postavi maksimalni popust"
+                          >
+                            Max popust
+                          </Button>
                         </div>
                       </div>
 
