@@ -218,9 +218,6 @@ export function Step3DeviceSelection({
                             </Button>
                           </div>
                         </div>
-                        <div className="text-xs text-muted-foreground text-right">
-                          Maks: €{maxWalletForDevice.toFixed(2)}
-                        </div>
                       </div>
 
                       <div className="flex justify-between items-center pt-2 border-t border-border">
@@ -287,12 +284,6 @@ export function Step3DeviceSelection({
                               Max popust
                             </Button>
                           </div>
-                        </div>
-                        <div className="text-xs text-muted-foreground text-right">
-                          Maks: €{Math.min(
-                            Math.max(0, devicePrice - (slot.monthlyInstallment * 24)),
-                            totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
-                          ).toFixed(2)}
                         </div>
                       </div>
 
