@@ -230,8 +230,22 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
                               </span>
                             </div>
                             {device.energyClass && (
-                              <div className="text-xs text-muted-foreground">
+                              <div className="text-xs text-muted-foreground flex items-center gap-2">
                                 Energetski razred: {device.energyClass}
+                                {device.availability && (
+                                  <div className="flex items-center gap-1">
+                                    <div className={`w-2 h-2 rounded-full ${
+                                      device.availability === "available" ? "bg-green-500" :
+                                      device.availability === "on-request" ? "bg-orange-500" :
+                                      "bg-red-500"
+                                    }`} />
+                                    <span className="text-xs">
+                                      {device.availability === "available" ? "Dostupan" :
+                                       device.availability === "on-request" ? "Na upit" :
+                                       "Nedostupan"}
+                                    </span>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>
