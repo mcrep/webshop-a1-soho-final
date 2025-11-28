@@ -88,7 +88,7 @@ const Index = () => {
           tariffId: tq.tariffId,
           isActive: slotIndex < numberOfDevices,
           paymentMethod: "installments",
-          screenInsurance: false,
+          screenInsurance: true,
           monthlyInstallment: 1,
         });
         slotIndex++;

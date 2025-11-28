@@ -361,27 +361,21 @@ export function Step3DeviceSelection({
 
                   {/* Screen insurance */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Osiguranje ekrana:</Label>
-                    <div className="flex gap-2">
-                      <Button
-                        type="button"
-                        variant={slot.screenInsurance ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => onUpdateInsurance(slot.id, true)}
-                        className="flex-1"
-                      >
-                        Želim
-                      </Button>
-                      <Button
-                        type="button"
-                        variant={!slot.screenInsurance ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => onUpdateInsurance(slot.id, false)}
-                        className="flex-1"
-                      >
-                        Ne želim
-                      </Button>
+                    <div className="flex items-center justify-between gap-4 rounded-lg p-3 border border-border">
+                      <Label htmlFor={`insurance-${slot.id}`} className="text-sm font-medium flex-1">
+                        Osiguranje ekrana
+                      </Label>
+                      <Switch
+                        id={`insurance-${slot.id}`}
+                        checked={slot.screenInsurance}
+                        onCheckedChange={(checked) => onUpdateInsurance(slot.id, checked)}
+                      />
                     </div>
+                    {slot.screenInsurance && (
+                      <p className="text-xs text-muted-foreground pl-3">
+                        Uz uređaj je aktivirano osiguranje ekrana s mjesečnom naknadom 4,19€
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
