@@ -176,46 +176,100 @@ export function Step3DeviceSelection({
 
               {/* Configuration - only show when active and device selected */}
               {slot.isActive && device && (
-                <div className="mt-auto pt-4 border-t border-border space-y-4">
+                <div className="mt-auto pt-4 border-t border-border space-y-3">
                   {/* Wallet usage - show for upfront payment */}
                   {slot.paymentMethod === "upfront" && (
                     <div className="space-y-3">
-                      <div className="text-sm text-muted-foreground">
-                        Jednokratna cijena (odabrana u detaljima uređaja):
-                      </div>
-                      <div className="font-bold text-lg">
-                        €{devicePrice.toFixed(2)}
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">Jednokratna cijena:</span>
+                        <span className="font-bold">€{devicePrice.toFixed(2)}</span>
                       </div>
                       
-                      <Label htmlFor={`wallet-${slot.id}`} className="text-sm font-medium">
-                        A1 Wallet popust:
-                      </Label>
-                      <Input
-                        id={`wallet-${slot.id}`}
-                        type="number"
-                        min={0}
-                        max={maxWalletForDevice}
-                        value={slot.walletUse}
-                        onChange={(e) => {
-                          const value = Math.min(
-                            Math.max(0, parseFloat(e.target.value) || 0),
-                            maxWalletForDevice
-                          );
-                          onUpdateWalletUse(slot.id, value);
-                        }}
-                        className="w-full"
-                      />
-                      <div className="text-xs text-muted-foreground">
-                        Maks: €{maxWalletForDevice.toFixed(2)}
+                      <div className="space-y-1">
+                        <div className="flex justify-between items-center">
+                          <Label htmlFor={`wallet-${slot.id}`} className="text-sm font-medium">
+                            A1 Wallet popust:
+                          </Label>
+                        </div>
+                        <Input
+                          id={`wallet-${slot.id}`}
+                          type="number"
+                          min={0}
+                          max={maxWalletForDevice}
+                          value={slot.walletUse}
+                          onChange={(e) => {
+                            const value = Math.min(
+                              Math.max(0, parseFloat(e.target.value) || 0),
+                              maxWalletForDevice
+                            );
+                            onUpdateWalletUse(slot.id, value);
+                          }}
+                          className="w-full"
+                        />
+                        <div className="text-xs text-muted-foreground">
+                          Maks: €{maxWalletForDevice.toFixed(2)}
+                        </div>
                       </div>
 
-                      <div className="pt-2 border-t border-border">
-                        <div className="text-sm text-muted-foreground mb-1">
-                          Ukupna cijena uređaja:
-                        </div>
-                        <div className="font-bold text-xl text-primary">
+                      <div className="flex justify-between items-center pt-2 border-t border-border">
+                        <span className="text-sm font-medium">Ukupna cijena uređaja:</span>
+                        <span className="font-bold text-lg text-primary">
                           €{Math.max(0, devicePrice - slot.walletUse).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Wallet usage for installments - on upfront portion only */}
+                  {slot.paymentMethod === "installments" && (
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">Jednokratna cijena:</span>
+                        <span className="font-bold">€{Math.max(0, devicePrice - (slot.monthlyInstallment * 24)).toFixed(2)}</span>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex justify-between items-center">
+                          <Label htmlFor={`wallet-inst-${slot.id}`} className="text-sm font-medium">
+                            A1 Wallet popust:
+                          </Label>
                         </div>
+                        <Input
+                          id={`wallet-inst-${slot.id}`}
+                          type="number"
+                          min={0}
+                          max={Math.min(
+                            Math.max(0, devicePrice - (slot.monthlyInstallment * 24)),
+                            totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
+                          )}
+                          value={slot.walletUse}
+                          onChange={(e) => {
+                            const upfrontCost = Math.max(0, devicePrice - (slot.monthlyInstallment * 24));
+                            const maxWallet = Math.min(
+                              upfrontCost,
+                              totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
+                            );
+                            const value = Math.min(
+                              Math.max(0, parseFloat(e.target.value) || 0),
+                              maxWallet
+                            );
+                            onUpdateWalletUse(slot.id, value);
+                          }}
+                          className="w-full"
+                        />
+                        <div className="text-xs text-muted-foreground">
+                          Maks: €{Math.min(
+                            Math.max(0, devicePrice - (slot.monthlyInstallment * 24)),
+                            totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
+                          ).toFixed(2)}
+                        </div>
+                      </div>
+
+                      <div className="flex justify-between items-center pt-2 border-t border-border">
+                        <span className="text-sm font-medium">Ukupna cijena uređaja:</span>
+                        <span className="font-bold text-lg text-primary">
+                          €{Math.max(0, devicePrice - (slot.monthlyInstallment * 24) - slot.walletUse).toFixed(2)}
+                        </span>
                       </div>
                     </div>
                   )}
