@@ -29,14 +29,14 @@ export function WalletBanner({ total, used, remaining, showDetails = true }: Wal
       <div className="mx-auto max-w-6xl px-4 py-6">
         {showDetails ? (
           <div className="flex items-center gap-6">
-            {/* Left: Icon + Total */}
+            {/* Left: Icon + Remaining (Available) */}
             <div className="flex items-center gap-3 flex-shrink-0">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <Wallet className="w-5 h-5 text-primary" />
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
-                <div className="text-xl font-bold text-primary">€{total.toFixed(2)}</div>
+                <div className={`text-xl font-bold ${getRemainingTextColor()}`}>€{remaining.toFixed(2)}</div>
               </div>
             </div>
 
@@ -55,14 +55,14 @@ export function WalletBanner({ total, used, remaining, showDetails = true }: Wal
           </div>
         ) : (
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            {/* Left: Icon + Total */}
+            {/* Left: Icon + Remaining (Available) */}
             <div className="flex items-center gap-3 flex-shrink-0">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <Wallet className="w-5 h-5 text-primary" />
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
-                <div className="text-xl font-bold text-primary">€{total.toFixed(2)}</div>
+                <div className={`text-xl font-bold ${getRemainingTextColor()}`}>€{remaining.toFixed(2)}</div>
               </div>
             </div>
           </div>
