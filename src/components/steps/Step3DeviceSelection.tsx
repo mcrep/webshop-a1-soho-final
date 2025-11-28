@@ -130,32 +130,19 @@ export function Step3DeviceSelection({
                 }`}
               >
                 {device ? (
-                  <>
-                    {device.image ? (
-                      <img src={device.image} alt={device.name} className="w-32 h-32 object-contain" />
-                    ) : (
-                      <span className="text-6xl">{device.emoji}</span>
+                  <div className="text-center">
+                    <div className="font-bold text-lg mb-1">{device.brand} {device.name}</div>
+                    {variant && (
+                      <div className="text-xs text-muted-foreground mb-1">
+                        {variant.color} • {variant.memory}
+                      </div>
                     )}
-                    <div className="text-center">
-                      <div className="font-bold text-lg mb-1">{device.name}</div>
-                      {variant && (
-                        <div className="text-xs text-muted-foreground mb-1">
-                          {variant.color} • {variant.memory}
-                        </div>
-                      )}
-                      <div className="text-sm text-muted-foreground">
-                        MPC: €{devicePrice}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Rata: do €{variant?.installment || device.installment}/mj
-                      </div>
-                    </div>
                     {slot.isActive && (
                       <div className="text-xs text-primary font-medium mt-2 group-hover:underline">
                         Klikni za promjenu
                       </div>
                     )}
-                  </>
+                  </div>
                 ) : (
                   <>
                     <div
