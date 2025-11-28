@@ -26,7 +26,6 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
   );
   const [paymentMethod, setPaymentMethod] = useState<"upfront" | "installments">("upfront");
   const [monthlyInstallment, setMonthlyInstallment] = useState(1);
-  const [screenInsurance, setScreenInsurance] = useState(false);
 
   const images = device.images || [device.image || ""];
   const availableColors = Array.from(new Set(device.variants?.map(v => v.color) || []));
@@ -52,7 +51,7 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
 
   const handleSelect = () => {
     if (selectedVariant) {
-      onSelectDevice(device.id, selectedVariant.id, paymentMethod, monthlyInstallment, screenInsurance);
+      onSelectDevice(device.id, selectedVariant.id, paymentMethod, monthlyInstallment, false);
       onClose();
     }
   };
@@ -204,20 +203,6 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                   </div>
                 )}
 
-                {/* Pricing */}
-                <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-border">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">MPC Jednokratno:</span>
-                    <span className="text-2xl font-bold">€{upfront}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">MPC Rate:</span>
-                    <span className="text-xl font-semibold">
-                      do €{maxInstallment}/mj <span className="text-sm text-muted-foreground">(24 mj)</span>
-                    </span>
-                  </div>
-                </div>
-
                 {/* Payment Method Selection */}
                 <div className="space-y-3">
                   <Label className="text-base font-semibold">Način plaćanja:</Label>
@@ -263,30 +248,29 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                         <span>€{Math.min(30, maxInstallment)}</span>
                       </div>
                     </div>
-                    <div className="space-y-1 text-sm pt-2 border-t border-border">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Ukupno rata (24 mj):</span>
-                        <span className="font-semibold">€{(monthlyInstallment * 24).toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Upfront cijena:</span>
-                        <span className="font-semibold">€{Math.max(0, upfront - (monthlyInstallment * 24)).toFixed(2)}</span>
-                      </div>
-                    </div>
                   </div>
                 )}
 
-                {/* Screen Insurance */}
-                <div className="flex items-center justify-between p-4 rounded-xl border border-border">
-                  <div>
-                    <Label htmlFor="insurance" className="font-semibold">Osiguranje ekrana</Label>
-                    <p className="text-sm text-muted-foreground">+€4.99/mj</p>
+                {/* Pricing */}
+                <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-border">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">MPC Jednokratno:</span>
+                    <span className="text-2xl font-bold">
+                      {paymentMethod === "upfront" 
+                        ? `€${upfront}` 
+                        : `€${Math.max(0, upfront - (monthlyInstallment * 24)).toFixed(2)}`}
+                    </span>
                   </div>
-                  <Switch
-                    id="insurance"
-                    checked={screenInsurance}
-                    onCheckedChange={setScreenInsurance}
-                  />
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">MPC Rate:</span>
+                    <span className="text-xl font-semibold">
+                      {paymentMethod === "upfront"
+                        ? "0€ mjesečno"
+                        : `€${monthlyInstallment} mjesečno`}
+                      {" "}
+                      <span className="text-sm text-muted-foreground">(24 mj)</span>
+                    </span>
+                  </div>
                 </div>
 
                 {/* Technical Specs */}
