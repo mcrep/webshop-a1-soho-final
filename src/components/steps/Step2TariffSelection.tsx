@@ -71,7 +71,7 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
             return (
               <CarouselItem key={tariff.id} className="p-4 md:basis-1/2 lg:basis-1/3">
                 <div className={cn(
-                  "rounded-2xl border bg-card p-6 shadow-sm hover:shadow-md hover:scale-105 transition-all relative h-full",
+                  "rounded-2xl border-2 bg-card p-6 shadow-sm hover:shadow-md hover:scale-105 hover:border-primary/50 transition-all relative h-full",
                   quantity > 0 ? "border-primary bg-primary/5" : "border-border"
                 )}>
                   <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
