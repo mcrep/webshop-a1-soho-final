@@ -26,7 +26,7 @@ export function Step1CustomerInfo({
   return (
     <div className="w-full">
       {/* Configuration Cards */}
-      <div className="space-y-6 mb-8 max-w-5xl mx-auto">
+      <div className="space-y-6 mb-8 max-w-6xl mx-auto px-4">
         {/* Customer Type Card */}
         <Card className="border-2 hover:border-primary/50 transition-all duration-300">
           <CardContent className="p-6">
