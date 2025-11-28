@@ -66,6 +66,7 @@ export type Device = {
     weight: string;
   };
   energyClass?: string;
+  availability?: "available" | "on-request" | "unavailable";
 };
 
 export type Addon = {

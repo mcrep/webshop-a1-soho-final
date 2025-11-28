@@ -71,8 +71,22 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
               <h2 className="font-bold text-2xl flex items-center gap-3">
                 {device.brand} {device.name}
                 {device.energyClass && (
-                  <Badge variant="outline" className="text-sm font-normal">
+                  <Badge variant="outline" className="text-sm font-normal flex items-center gap-2">
                     Energetski razred: {device.energyClass}
+                    {device.availability && (
+                      <>
+                        <div className={`w-2 h-2 rounded-full ${
+                          device.availability === "available" ? "bg-green-500" :
+                          device.availability === "on-request" ? "bg-orange-500" :
+                          "bg-red-500"
+                        }`} />
+                        <span>
+                          {device.availability === "available" ? "Dostupan" :
+                           device.availability === "on-request" ? "Na upit" :
+                           "Nedostupan"}
+                        </span>
+                      </>
+                    )}
                   </Badge>
                 )}
               </h2>
