@@ -254,7 +254,7 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                 {/* Pricing */}
                 <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-border">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">MPC Jednokratno:</span>
+                    <span className="text-sm text-muted-foreground">Jednokratni iznos:</span>
                     <span className="text-2xl font-bold">
                       {paymentMethod === "upfront" 
                         ? `€${upfront}` 
@@ -262,7 +262,7 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">MPC Rate:</span>
+                    <span className="text-sm text-muted-foreground">Iznos rate:</span>
                     <span className="text-xl font-semibold">
                       {paymentMethod === "upfront"
                         ? "0€ mjesečno"
