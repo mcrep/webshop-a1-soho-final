@@ -214,7 +214,7 @@ export function Step3DeviceSelection({
                               className="h-10 px-3"
                               title="Postavi maksimalni popust"
                             >
-                              <ArrowUpToLine className="h-4 w-4" />
+                              Max popust
                             </Button>
                           </div>
                         </div>
@@ -284,7 +284,7 @@ export function Step3DeviceSelection({
                               className="h-10 px-3"
                               title="Postavi maksimalni popust"
                             >
-                              <ArrowUpToLine className="h-4 w-4" />
+                              Max popust
                             </Button>
                           </div>
                         </div>
