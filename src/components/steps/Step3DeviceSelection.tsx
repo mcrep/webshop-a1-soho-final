@@ -91,7 +91,7 @@ export function Step3DeviceSelection({
           return (
             <div
               key={slot.id}
-              className={`rounded-2xl border-2 bg-card p-6 shadow-sm transition-all flex flex-col ${
+              className={`rounded-2xl border-2 bg-card p-6 shadow-sm hover:border-primary/50 transition-all flex flex-col ${
                 slot.isActive ? "border-primary" : "border-border opacity-60"
               }`}
             >
