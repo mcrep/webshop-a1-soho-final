@@ -8,13 +8,15 @@ import { Step2Login } from "@/components/steps/Step2Login";
 import { Step2TariffSelection } from "@/components/steps/Step2TariffSelection";
 import { Step3DeviceSelection } from "@/components/steps/Step3DeviceSelection";
 import { Step4Summary } from "@/components/steps/Step4Summary";
+import { Step5Verification } from "@/components/steps/Step5Verification";
+import { Step6DeliveryPayment } from "@/components/steps/Step6DeliveryPayment";
 import { DeviceListModal } from "@/components/modals/DeviceListModal";
 import { LineTypeSelectionModal } from "@/components/modals/LineTypeSelectionModal";
 import { NumberPortingModal } from "@/components/modals/NumberPortingModal";
 import { PrepaidToPostpaidModal } from "@/components/modals/PrepaidToPostpaidModal";
 import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExtensionModal";
 import { tariffs, devices } from "@/data/catalog";
-import type { Line } from "@/types";
+import type { Line, VerificationData, DeliveryData, PaymentData } from "@/types";
 
 function rid() {
   return Math.random().toString(36).slice(2, 9);
@@ -50,6 +52,9 @@ const Index = () => {
   const [deviceListModalFor, setDeviceListModalFor] = useState<string | null>(null);
   const [lineTypeSelectionFor, setLineTypeSelectionFor] = useState<string | null>(null);
   const [lineTypeModalFor, setLineTypeModalFor] = useState<{ lineId: string; lineType: string } | null>(null);
+  const [verificationData, setVerificationData] = useState<VerificationData | null>(null);
+  const [deliveryData, setDeliveryData] = useState<DeliveryData | null>(null);
+  const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
 
   const steps = useMemo(() => {
     const dynamicSteps = [{ number: 1, name: "Početak" }];
@@ -65,6 +70,12 @@ const Index = () => {
       stepNumber++;
     }
     dynamicSteps.push({ number: stepNumber, name: "Sažetak" });
+    stepNumber++;
+    if (customerType === "new") {
+      dynamicSteps.push({ number: stepNumber, name: "Verifikacija" });
+      stepNumber++;
+    }
+    dynamicSteps.push({ number: stepNumber, name: "Isporuka" });
     return dynamicSteps;
   }, [customerType, numberOfDevices]);
 
@@ -248,8 +259,28 @@ const Index = () => {
     setCurrentStep(getStepNumberForScreen("Sažetak"));
   };
 
+  const handleSummaryNext = () => {
+    const nextScreen = customerType === "new" ? "Verifikacija" : "Isporuka";
+    setCurrentStep(getStepNumberForScreen(nextScreen));
+  };
+
+  const handleVerificationNext = () => {
+    setCurrentStep(getStepNumberForScreen("Isporuka"));
+  };
+
+  const handleDeliveryNext = () => {
+    console.log("Narudžba završena!", { 
+      lines, 
+      totalMonthly, 
+      totalOnetime, 
+      verificationData, 
+      deliveryData, 
+      paymentData 
+    });
+  };
+
   const handleFinish = () => {
-    console.log("Narudžba završena!", { lines, totalMonthly, totalOnetime });
+    handleSummaryNext();
   };
 
   const lineCount = lines.length;
@@ -270,7 +301,9 @@ const Index = () => {
         const allActiveDevicesSelected = activeSlots.every((slot) => slot.deviceId !== null);
         return correctNumberOfDevices && allActiveDevicesSelected;
       })(),
-      "Sažetak": allLinesConfigured
+      "Sažetak": allLinesConfigured,
+      "Verifikacija": verificationData !== null,
+      "Isporuka": deliveryData !== null && paymentData !== null
     };
 
     const nextLabels = {
@@ -278,7 +311,9 @@ const Index = () => {
       "Prijava": "Nastavi na tarife",
       "Tarife": "Nastavi na uređaje",
       "Uređaji": "Nastavi na sažetak",
-      "Sažetak": "Završi narudžbu"
+      "Sažetak": customerType === "new" ? "Nastavi na verifikaciju" : "Nastavi na isporuku",
+      "Verifikacija": "Nastavi na isporuku",
+      "Isporuka": "Završi narudžbu"
     };
 
     const handlers = {
@@ -296,9 +331,20 @@ const Index = () => {
         onBack: () => setCurrentStep(getStepNumberForScreen("Tarife"))
       },
       "Sažetak": { 
-        onNext: handleFinish, 
+        onNext: handleSummaryNext, 
         onBack: () => {
           const prevStep = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
+          setCurrentStep(prevStep);
+        }
+      },
+      "Verifikacija": {
+        onNext: handleVerificationNext,
+        onBack: () => setCurrentStep(getStepNumberForScreen("Sažetak"))
+      },
+      "Isporuka": {
+        onNext: handleDeliveryNext,
+        onBack: () => {
+          const prevStep = customerType === "new" ? getStepNumberForScreen("Verifikacija") : getStepNumberForScreen("Sažetak");
           setCurrentStep(prevStep);
         }
       }
@@ -393,6 +439,20 @@ const Index = () => {
               }}
               onFinish={handleFinish}
               onOpenLineTypeModal={setLineTypeSelectionFor}
+            />
+          )}
+          {currentScreen === "Verifikacija" && (
+            <Step5Verification
+              data={verificationData}
+              onUpdate={setVerificationData}
+            />
+          )}
+          {currentScreen === "Isporuka" && (
+            <Step6DeliveryPayment
+              deliveryData={deliveryData}
+              paymentData={paymentData}
+              onUpdateDelivery={setDeliveryData}
+              onUpdatePayment={setPaymentData}
             />
             )}
           </div>
