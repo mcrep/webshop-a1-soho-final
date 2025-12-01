@@ -32,8 +32,8 @@ export function Header({ onOpenOTP, onOpenLogin, lineCount, monthly, onetime, al
             <div className="flex items-center gap-3">
               <img src={a1Logo} alt="A1 Logo" className="h-9 w-auto" />
               <div>
-                <h1 className="text-lg font-semibold">Business Webshop</h1>
-                <p className="text-xs text-muted-foreground">
+                <h1 className="text-lg font-semibold text-foreground">Business Webshop</h1>
+                <p className="text-xs text-foreground">
                   Konfigurator tarifa za male poslovne korisnike
                 </p>
               </div>
@@ -184,8 +184,8 @@ export function Header({ onOpenOTP, onOpenLogin, lineCount, monthly, onetime, al
             <div className="flex items-center gap-3">
               <img src={a1Logo} alt="A1 Logo" className="h-9 w-auto" />
               <div>
-                <h1 className="text-lg font-semibold">Business Webshop</h1>
-                <p className="text-xs text-muted-foreground">
+                <h1 className="text-lg font-semibold text-foreground">Business Webshop</h1>
+                <p className="text-xs text-foreground">
                   Konfigurator tarifa za male poslovne korisnike
                 </p>
               </div>
