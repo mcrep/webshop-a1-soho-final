@@ -173,6 +173,12 @@ export function Step3DeviceSelection({
                           Klikni za konfiguraciju
                         </div>
                       )}
+                      {!slot.isActive && tariff && (
+                        <div className="text-sm text-green-600 font-medium mt-2 flex items-center justify-center gap-1">
+                          <span>💰</span>
+                          <span>Ova linija donosi još {tariff.noDeviceWalletBonus}€ u A1 Wallet</span>
+                        </div>
+                      )}
                     </div>
                   </>
                 )}

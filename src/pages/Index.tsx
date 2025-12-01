@@ -160,20 +160,25 @@ const Index = () => {
   const updateLine = (id: string, patch: Partial<Line>) =>
     setLines((prev) => prev.map((l) => (l.id === id ? { ...l, ...patch } : l)));
 
-  // Base wallet credit from lines without devices (30€ per line)
-  const baseWalletCredit = useMemo(
-    () => Math.max(0, numberOfLines - numberOfDevices) * 30,
-    [numberOfLines, numberOfDevices]
+  // Wallet bonus from inactive slots (lines without devices)
+  const noDeviceWalletBonus = useMemo(
+    () => deviceSlots
+      .filter(slot => !slot.isActive)
+      .reduce((sum, slot) => {
+        const tariff = tariffs.find(t => t.id === slot.tariffId);
+        return sum + (tariff?.noDeviceWalletBonus ?? 0);
+      }, 0),
+    [deviceSlots]
   );
 
   const walletTotal = useMemo(
     () =>
-      baseWalletCredit +
+      noDeviceWalletBonus +
       tariffQuantities.reduce((sum, tq) => {
         const credit = tariffs.find((t) => t.id === tq.tariffId)?.walletCredit ?? 0;
         return sum + credit * tq.quantity;
       }, 0),
-    [baseWalletCredit, tariffQuantities]
+    [noDeviceWalletBonus, tariffQuantities]
   );
 
   const walletUsed = useMemo(
@@ -286,7 +291,7 @@ const Index = () => {
   const lineCount = lines.length;
   const allLinesConfigured = lines.every((line) => line.lineType !== null);
   const currentScreen = steps.find((s) => s.number === currentStep)?.name ?? "Početak";
-  const showWallet = currentScreen === "Početak" || currentScreen === "Tarife" || currentScreen === "Uređaji";
+  const showWallet = currentScreen === "Tarife" || currentScreen === "Uređaji";
   const showWalletDetails = currentScreen === "Uređaji";
 
   // Footer props based on current screen

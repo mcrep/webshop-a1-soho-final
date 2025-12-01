@@ -13,6 +13,7 @@ export const tariffs: Tariff[] = [
     roaming: "HR",
     desc: "200 minuta i SMS poruka • 1 GB podatkovnog prometa",
     walletCredit: 10,
+    noDeviceWalletBonus: 5,
   },
   {
     id: "easy-biz",
@@ -23,6 +24,7 @@ export const tariffs: Tariff[] = [
     roaming: "HR",
     desc: "Neograničene minute i SMS poruke • 5 GB podatkovnog prometa",
     walletCredit: 35,
+    noDeviceWalletBonus: 10,
   },
   {
     id: "connect-biz",
@@ -33,6 +35,7 @@ export const tariffs: Tariff[] = [
     roaming: "EU",
     desc: "20GB internet prometa • Neograničene min i SMS",
     walletCredit: 75,
+    noDeviceWalletBonus: 20,
   },
   {
     id: "perfect-biz",
@@ -43,6 +46,7 @@ export const tariffs: Tariff[] = [
     roaming: "EU",
     desc: "Neograničeni internet • Neograničeni pozivi i SMS • A1 Net Protect",
     walletCredit: 170,
+    noDeviceWalletBonus: 30,
   },
   {
     id: "ideal-biz",
@@ -53,6 +57,7 @@ export const tariffs: Tariff[] = [
     roaming: "EU + Regija (3GB)",
     desc: "Neograničeni internet • Neograničene min i SMS • 3 GB u roamingu u zemljama regije • MultiSIM za samo 3,61 €/mj. • A1 Net Protect",
     walletCredit: 285,
+    noDeviceWalletBonus: 40,
   },
   {
     id: "master-biz",
@@ -63,6 +68,7 @@ export const tariffs: Tariff[] = [
     roaming: "EU + Regija (3GB) + Svijet (250MB)",
     desc: "Neograničeni internet • Neograničeni pozivi i SMS • 3 GB u roamingu u zemljama regije i 250MB roaminga u svijetu • MultiSIM • A1 Net Protect",
     walletCredit: 360,
+    noDeviceWalletBonus: 50,
   },
 ];
 
