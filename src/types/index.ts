@@ -79,3 +79,37 @@ export type LineTypeOpt = {
   id: string;
   name: string;
 };
+
+export type VerificationData = {
+  companyOib: string;
+  authorizedPerson: {
+    firstName: string;
+    lastName: string;
+    oib: string;
+    contactNumber: string;
+    contactEmail: string;
+  };
+  idCardFront: File | null;
+  idCardBack: File | null;
+};
+
+export type DeliveryData = {
+  method: "a1-center" | "postal";
+  a1CenterId?: string;
+  postalAddress?: {
+    street: string;
+    city: string;
+    postalCode: string;
+  };
+};
+
+export type PaymentData = {
+  method: "invoice" | "card";
+};
+
+export type A1Center = {
+  id: string;
+  name: string;
+  address: string;
+  city: string;
+};
