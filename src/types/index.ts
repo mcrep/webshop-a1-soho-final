@@ -45,6 +45,7 @@ export type Tariff = {
   roaming: string;
   desc: string;
   walletCredit: number;
+  noDeviceWalletBonus: number;
 };
 
 export type Device = {
