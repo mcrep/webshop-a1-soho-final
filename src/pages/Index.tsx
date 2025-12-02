@@ -190,6 +190,12 @@ const Index = () => {
     [deviceSlots]
   );
 
+  // Count of lines without devices
+  const linesWithoutDevices = useMemo(
+    () => deviceSlots.filter(slot => !slot.isActive).length,
+    [deviceSlots]
+  );
+
   // Tariff-based wallet credit
   const tariffCredit = useMemo(
     () => tariffQuantities.reduce((sum, tq) => {
@@ -412,6 +418,7 @@ const Index = () => {
               showDetails={showWalletDetails}
               tariffCredit={tariffCredit}
               noDeviceBonus={noDeviceWalletBonus}
+              linesWithoutDevices={linesWithoutDevices}
             />
           )}
           <div className={currentScreen === "Početak" 

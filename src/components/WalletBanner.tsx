@@ -1,4 +1,4 @@
-import { Wallet, Gift, CreditCard, TrendingUp, TrendingDown } from "lucide-react";
+import { Wallet, Gift, TrendingUp, TrendingDown } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useCountAnimation } from "@/hooks/use-count-animation";
 
@@ -9,6 +9,7 @@ type WalletBannerProps = {
   showDetails?: boolean;
   tariffCredit?: number;
   noDeviceBonus?: number;
+  linesWithoutDevices?: number;
 };
 
 export function WalletBanner({ 
@@ -17,7 +18,8 @@ export function WalletBanner({
   remaining, 
   showDetails = true,
   tariffCredit = 0,
-  noDeviceBonus = 0
+  noDeviceBonus = 0,
+  linesWithoutDevices = 0
 }: WalletBannerProps) {
   // Animate wallet remaining whenever it changes
   const { value: animatedRemaining, isAnimating, direction } = useCountAnimation({
@@ -41,7 +43,6 @@ export function WalletBanner({
   };
 
   const remainingPercentage = total > 0 ? (animatedRemaining / total) * 100 : 0;
-  const showBreakdown = showDetails && (tariffCredit > 0 || noDeviceBonus > 0);
 
   return (
     <div 
@@ -88,29 +89,12 @@ export function WalletBanner({
               </div>
             </div>
 
-            {/* Breakdown row */}
-            {showBreakdown && (
-              <div className="flex flex-col gap-3 pt-3 border-t border-border/50">
-                <div className="flex items-center justify-center gap-6">
-                  <div className="flex items-center gap-2 text-sm">
-                    <CreditCard className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Tarife:</span>
-                    <span className="font-semibold">€{tariffCredit.toFixed(2)}</span>
-                  </div>
-                  <span className="text-muted-foreground">+</span>
-                  <div className={`flex items-center gap-2 text-sm ${isAnimating ? "animate-pulse" : ""}`}>
-                    <Gift className="w-4 h-4 text-green-600" />
-                    <span className="text-muted-foreground">Bonus bez uređaja:</span>
-                    <span className="font-semibold text-green-600">€{noDeviceBonus.toFixed(2)}</span>
-                  </div>
-                  <span className="text-muted-foreground">=</span>
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="text-muted-foreground">Ukupno:</span>
-                    <span className="font-bold text-primary">€{total.toFixed(2)}</span>
-                  </div>
-                </div>
-                <p className="text-xs text-muted-foreground text-center">
-                  Svaka linija bez uređaja donosi dodatni bonus u A1 Wallet. Iznos bonusa ovisi o odabranoj tarifi – veća tarifa znači veći bonus!
+            {/* Bonus explanation row */}
+            {showDetails && (
+              <div className="flex items-start gap-2 pt-3 border-t border-border/50">
+                <Gift className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-muted-foreground text-left">
+                  Svaka linija bez uređaja donosi dodatni bonus u A1 Wallet. Iznos bonusa ovisi o odabranoj tarifi – veća tarifa znači veći bonus! Trenutno imate {linesWithoutDevices} linija bez uređaja koje vam donose ukupno €{noDeviceBonus.toFixed(2)} bonusa.
                 </p>
               </div>
             )}
