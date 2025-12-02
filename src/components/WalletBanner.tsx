@@ -1,4 +1,4 @@
-import { Wallet, Gift, CreditCard, Sparkles } from "lucide-react";
+import { Wallet, Gift, CreditCard, TrendingUp, TrendingDown } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useCountAnimation } from "@/hooks/use-count-animation";
 
@@ -20,13 +20,19 @@ export function WalletBanner({
   noDeviceBonus = 0
 }: WalletBannerProps) {
   // Animate wallet remaining whenever it changes
-  const { value: animatedRemaining, isAnimating } = useCountAnimation({
+  const { value: animatedRemaining, isAnimating, direction } = useCountAnimation({
     value: remaining,
     duration: 600,
     enabled: true,
   });
 
-  // Conditional styling based on remaining amount
+  // Conditional styling based on remaining amount and animation direction
+  const getAnimationColor = () => {
+    if (isAnimating && direction === "up") return "text-green-600";
+    if (isAnimating && direction === "down") return "text-destructive";
+    return getRemainingTextColor();
+  };
+
   const getRemainingTextColor = () => {
     const remainingPercentage = (remaining / total) * 100;
     if (remainingPercentage < 10) return "text-destructive";
@@ -56,10 +62,13 @@ export function WalletBanner({
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
-                  <div className={`text-xl font-bold ${getRemainingTextColor()} transition-colors`}>
+                  <div className={`text-xl font-bold ${getAnimationColor()} transition-colors`}>
                     €{animatedRemaining.toFixed(2)}
-                    {isAnimating && (
-                      <Sparkles className="inline-block w-4 h-4 ml-1 text-green-500 animate-pulse" />
+                    {isAnimating && direction === "up" && (
+                      <TrendingUp className="inline-block w-4 h-4 ml-1 text-green-500 animate-pulse" />
+                    )}
+                    {isAnimating && direction === "down" && (
+                      <TrendingDown className="inline-block w-4 h-4 ml-1 text-destructive animate-pulse" />
                     )}
                   </div>
                 </div>
@@ -115,10 +124,13 @@ export function WalletBanner({
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
-                <div className={`text-xl font-bold ${getRemainingTextColor()}`}>
+                <div className={`text-xl font-bold ${getAnimationColor()}`}>
                   €{animatedRemaining.toFixed(2)}
-                  {isAnimating && (
-                    <Sparkles className="inline-block w-4 h-4 ml-1 text-green-500 animate-pulse" />
+                  {isAnimating && direction === "up" && (
+                    <TrendingUp className="inline-block w-4 h-4 ml-1 text-green-500 animate-pulse" />
+                  )}
+                  {isAnimating && direction === "down" && (
+                    <TrendingDown className="inline-block w-4 h-4 ml-1 text-destructive animate-pulse" />
                   )}
                 </div>
               </div>

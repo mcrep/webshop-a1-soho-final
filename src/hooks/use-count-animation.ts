@@ -13,6 +13,7 @@ export function useCountAnimation({
 }: UseCountAnimationOptions) {
   const [displayValue, setDisplayValue] = useState(value);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [direction, setDirection] = useState<"up" | "down" | null>(null);
   const previousValue = useRef(value);
   const animationRef = useRef<number | null>(null);
 
@@ -34,6 +35,7 @@ export function useCountAnimation({
     }
 
     setIsAnimating(true);
+    setDirection(to > from ? "up" : "down");
     const startTime = Date.now();
     const diff = to - from;
 
@@ -52,6 +54,7 @@ export function useCountAnimation({
       } else {
         setDisplayValue(to);
         setIsAnimating(false);
+        setDirection(null);
         animationRef.current = null;
       }
     };
@@ -65,5 +68,5 @@ export function useCountAnimation({
     };
   }, [value, duration, enabled]);
 
-  return { value: displayValue, isAnimating };
+  return { value: displayValue, isAnimating, direction };
 }
