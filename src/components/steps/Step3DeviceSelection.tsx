@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -51,6 +52,14 @@ export function Step3DeviceSelection({
   const allActiveDevicesSelected = activeSlots.every((slot) => slot.deviceId !== null);
   const canProceed = correctNumberOfDevices && allActiveDevicesSelected;
 
+  // Track which slot is shaking
+  const [shakingSlotId, setShakingSlotId] = useState<string | null>(null);
+
+  const handleDisabledClick = (slotId: string) => {
+    setShakingSlotId(slotId);
+    setTimeout(() => setShakingSlotId(null), 500);
+  };
+
   // Calculate total bonus from inactive slots
   const totalNoDeviceBonus = inactiveSlots.reduce((sum, slot) => {
     const tariff = tariffs.find(t => t.id === slot.tariffId);
@@ -98,13 +107,14 @@ export function Step3DeviceSelection({
           return (
             <div
               key={slot.id}
+              onClick={() => !canToggleOn && !canToggleOff && handleDisabledClick(slot.id)}
               className={`rounded-2xl border-2 bg-card p-6 shadow-sm transition-all duration-300 flex flex-col ${
                 slot.isActive 
                   ? "border-border hover:border-primary/50 animate-scale-in" 
                   : canToggleOn 
                     ? "border-border opacity-60 hover:border-primary/50 scale-95" 
-                    : "border-border opacity-60 scale-95"
-              }`}
+                    : "border-border opacity-60 scale-95 cursor-not-allowed"
+              } ${shakingSlotId === slot.id ? "animate-shake" : ""}`}
             >
               {/* Tariff name */}
               <div className="mb-3 pb-3 border-b border-border">
