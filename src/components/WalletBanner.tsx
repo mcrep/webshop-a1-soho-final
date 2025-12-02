@@ -90,7 +90,7 @@ export function WalletBanner({
             </div>
 
             {/* Bonus explanation row */}
-            {showDetails && (
+            {showDetails && linesWithoutDevices > 0 && (
               <div className="flex items-start gap-2 pt-3 border-t border-border/50">
                 <Gift className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-muted-foreground text-left">
