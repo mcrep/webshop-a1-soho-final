@@ -87,11 +87,9 @@ export function WalletBanner({
                     <span className="font-bold text-primary">€{total.toFixed(2)}</span>
                   </div>
                 </div>
-                {noDeviceBonus > 0 && (
-                  <p className="text-xs text-muted-foreground text-center">
-                    💡 Linije bez uređaja donose dodatni bonus u A1 Wallet koji možete iskoristiti za kupnju uređaja.
-                  </p>
-                )}
+                <p className="text-xs text-muted-foreground text-center">
+                  Svaka linija bez uređaja donosi dodatni bonus u A1 Wallet. Iznos bonusa ovisi o odabranoj tarifi – veća tarifa znači veći bonus!
+                </p>
               </div>
             )}
           </div>
