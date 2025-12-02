@@ -1,7 +1,6 @@
 import { Wallet, Gift, CreditCard, Sparkles } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useCountAnimation } from "@/hooks/use-count-animation";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type WalletBannerProps = {
   total: number;
@@ -20,15 +19,12 @@ export function WalletBanner({
   tariffCredit = 0,
   noDeviceBonus = 0
 }: WalletBannerProps) {
-  // Animate wallet total whenever it changes
-  const { value: animatedTotal, isAnimating } = useCountAnimation({
-    value: total,
+  // Animate wallet remaining whenever it changes
+  const { value: animatedRemaining, isAnimating } = useCountAnimation({
+    value: remaining,
     duration: 600,
     enabled: true,
   });
-
-  const displayTotal = animatedTotal;
-  const displayRemaining = displayTotal - used;
 
   // Conditional styling based on remaining amount
   const getRemainingTextColor = () => {
@@ -38,7 +34,7 @@ export function WalletBanner({
     return "text-primary";
   };
 
-  const remainingPercentage = total > 0 ? (displayRemaining / displayTotal) * 100 : 0;
+  const remainingPercentage = total > 0 ? (animatedRemaining / total) * 100 : 0;
   const showBreakdown = showDetails && (tariffCredit > 0 || noDeviceBonus > 0);
 
   return (
@@ -60,21 +56,12 @@ export function WalletBanner({
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
-                  <TooltipProvider>
-                    <Tooltip open={isAnimating}>
-                      <TooltipTrigger asChild>
-                        <div className={`text-xl font-bold ${getRemainingTextColor()} ${isAnimating ? "text-green-600" : ""} transition-colors`}>
-                          €{displayRemaining.toFixed(2)}
-                          {isAnimating && (
-                            <Sparkles className="inline-block w-4 h-4 ml-1 text-green-500 animate-pulse" />
-                          )}
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" className="bg-green-600 text-white border-green-600">
-                        <p className="font-medium">+€{noDeviceBonus.toFixed(2)} bonus od linija bez uređaja!</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <div className={`text-xl font-bold ${getRemainingTextColor()} transition-colors`}>
+                    €{animatedRemaining.toFixed(2)}
+                    {isAnimating && (
+                      <Sparkles className="inline-block w-4 h-4 ml-1 text-green-500 animate-pulse" />
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -110,7 +97,7 @@ export function WalletBanner({
                   <span className="text-muted-foreground">=</span>
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-muted-foreground">Ukupno:</span>
-                    <span className="font-bold text-primary">€{displayTotal.toFixed(2)}</span>
+                    <span className="font-bold text-primary">€{total.toFixed(2)}</span>
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground text-center">
@@ -123,12 +110,17 @@ export function WalletBanner({
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             {/* Left: Icon + Remaining (Available) */}
             <div className="flex items-center gap-3 flex-shrink-0">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className={`w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
                 <Wallet className="w-5 h-5 text-primary" />
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
-                <div className={`text-xl font-bold ${getRemainingTextColor()}`}>€{remaining.toFixed(2)}</div>
+                <div className={`text-xl font-bold ${getRemainingTextColor()}`}>
+                  €{animatedRemaining.toFixed(2)}
+                  {isAnimating && (
+                    <Sparkles className="inline-block w-4 h-4 ml-1 text-green-500 animate-pulse" />
+                  )}
+                </div>
               </div>
             </div>
           </div>
