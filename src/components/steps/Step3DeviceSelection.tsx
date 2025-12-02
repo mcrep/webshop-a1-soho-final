@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { ArrowLeft, ArrowRight, Smartphone, ArrowUpToLine } from "lucide-react";
+import { ArrowLeft, ArrowRight, Smartphone, ArrowUpToLine, Info, Gift } from "lucide-react";
 import { devices, tariffs } from "@/data/catalog";
 import { Label } from "@/components/ui/label";
 
@@ -46,12 +46,34 @@ export function Step3DeviceSelection({
   onBack,
 }: Step3Props) {
   const activeSlots = deviceSlots.filter((slot) => slot.isActive);
+  const inactiveSlots = deviceSlots.filter((slot) => !slot.isActive);
   const correctNumberOfDevices = activeSlots.length === numberOfDevices;
   const allActiveDevicesSelected = activeSlots.every((slot) => slot.deviceId !== null);
   const canProceed = correctNumberOfDevices && allActiveDevicesSelected;
 
+  // Calculate total bonus from inactive slots
+  const totalNoDeviceBonus = inactiveSlots.reduce((sum, slot) => {
+    const tariff = tariffs.find(t => t.id === slot.tariffId);
+    return sum + (tariff?.noDeviceWalletBonus ?? 0);
+  }, 0);
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
+      {/* Info Banner */}
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-4 flex items-start gap-4">
+        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+          <Gift className="w-5 h-5 text-green-600" />
+        </div>
+        <div className="flex-1">
+          <h3 className="font-semibold text-green-800 mb-1">Bonus za linije bez uređaja</h3>
+          <p className="text-sm text-green-700">
+            Svaka linija bez uređaja donosi dodatni bonus u A1 Wallet. Iznos bonusa ovisi o odabranoj tarifi – 
+            veća tarifa znači veći bonus! Trenutno imate <span className="font-bold">{inactiveSlots.length}</span> linija 
+            bez uređaja koje vam donose ukupno <span className="font-bold text-green-800">€{totalNoDeviceBonus.toFixed(2)}</span> bonusa.
+          </p>
+        </div>
+      </div>
+
       <div className="text-center my-8">
         <h1 className="text-3xl font-bold mb-2">Odabir uređaja i raspodjela walleta</h1>
         <p className="text-muted-foreground">
