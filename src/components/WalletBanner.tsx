@@ -100,24 +100,33 @@ export function WalletBanner({
             )}
           </div>
         ) : (
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            {/* Left: Icon + Remaining (Available) */}
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <div className={`w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
-                <Wallet className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
-                <div className={`text-xl font-bold ${getAnimationColor()}`}>
-                  €{animatedRemaining.toFixed(2)}
-                  {isAnimating && direction === "up" && (
-                    <TrendingUp className="inline-block w-4 h-4 ml-1 text-green-500 animate-pulse" />
-                  )}
-                  {isAnimating && direction === "down" && (
-                    <TrendingDown className="inline-block w-4 h-4 ml-1 text-destructive animate-pulse" />
-                  )}
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              {/* Left: Icon + Remaining (Available) */}
+              <div className="flex items-center gap-3 flex-shrink-0">
+                <div className={`w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
+                  <Wallet className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
+                  <div className={`text-xl font-bold ${getAnimationColor()}`}>
+                    €{animatedRemaining.toFixed(2)}
+                    {isAnimating && direction === "up" && (
+                      <TrendingUp className="inline-block w-4 h-4 ml-1 text-green-500 animate-pulse" />
+                    )}
+                    {isAnimating && direction === "down" && (
+                      <TrendingDown className="inline-block w-4 h-4 ml-1 text-destructive animate-pulse" />
+                    )}
+                  </div>
                 </div>
               </div>
+            </div>
+            {/* Educational text for tariff screen */}
+            <div className="flex items-start gap-2 pt-3 border-t border-border/50">
+              <Gift className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-muted-foreground text-left">
+                Ovisno o odabranoj tarifi u A1 Wallet dobivate bonus koji se može koristiti za umanjenje cijene uređaja.
+              </p>
             </div>
           </div>
         )}
