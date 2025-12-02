@@ -129,9 +129,7 @@ export function WalletBanner({
               {/* Center: Lines progress bar */}
               {maxLines > 0 && (
                 <div className="flex-1">
-                  <div className="text-xs text-muted-foreground mb-1 text-center">Odabrane linije</div>
                   <Progress value={(selectedLines / maxLines) * 100} className="h-3" />
-                  <div className="text-xs text-muted-foreground mt-1 text-center">{selectedLines} / {maxLines}</div>
                 </div>
               )}
             </div>
