@@ -10,6 +10,8 @@ type WalletBannerProps = {
   tariffCredit?: number;
   noDeviceBonus?: number;
   linesWithoutDevices?: number;
+  selectedLines?: number;
+  maxLines?: number;
 };
 
 export function WalletBanner({ 
@@ -19,7 +21,9 @@ export function WalletBanner({
   showDetails = true,
   tariffCredit = 0,
   noDeviceBonus = 0,
-  linesWithoutDevices = 0
+  linesWithoutDevices = 0,
+  selectedLines = 0,
+  maxLines = 0
 }: WalletBannerProps) {
   // Animate wallet remaining whenever it changes
   const { value: animatedRemaining, isAnimating, direction } = useCountAnimation({
@@ -101,7 +105,8 @@ export function WalletBanner({
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            {/* Main row with wallet and lines progress */}
+            <div className="flex items-center gap-6">
               {/* Left: Icon + Remaining (Available) */}
               <div className="flex items-center gap-3 flex-shrink-0">
                 <div className={`w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
@@ -120,6 +125,15 @@ export function WalletBanner({
                   </div>
                 </div>
               </div>
+
+              {/* Center: Lines progress bar */}
+              {maxLines > 0 && (
+                <div className="flex-1">
+                  <div className="text-xs text-muted-foreground mb-1 text-center">Odabrane linije</div>
+                  <Progress value={(selectedLines / maxLines) * 100} className="h-3" />
+                  <div className="text-xs text-muted-foreground mt-1 text-center">{selectedLines} / {maxLines}</div>
+                </div>
+              )}
             </div>
             {/* Educational text for tariff screen */}
             <div className="flex items-start gap-2 pt-3 border-t border-border/50">

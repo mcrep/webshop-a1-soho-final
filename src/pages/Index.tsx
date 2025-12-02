@@ -419,6 +419,8 @@ const Index = () => {
               tariffCredit={tariffCredit}
               noDeviceBonus={noDeviceWalletBonus}
               linesWithoutDevices={linesWithoutDevices}
+              selectedLines={tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0)}
+              maxLines={numberOfLines}
             />
           )}
           <div className={currentScreen === "Početak" 
