@@ -68,23 +68,30 @@ export function WalletBanner({
 
             {/* Breakdown row */}
             {showBreakdown && (
-              <div className="flex items-center justify-center gap-6 pt-3 border-t border-border/50">
-                <div className="flex items-center gap-2 text-sm">
-                  <CreditCard className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Tarife:</span>
-                  <span className="font-semibold">€{tariffCredit.toFixed(2)}</span>
+              <div className="flex flex-col gap-3 pt-3 border-t border-border/50">
+                <div className="flex items-center justify-center gap-6">
+                  <div className="flex items-center gap-2 text-sm">
+                    <CreditCard className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">Tarife:</span>
+                    <span className="font-semibold">€{tariffCredit.toFixed(2)}</span>
+                  </div>
+                  <span className="text-muted-foreground">+</span>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Gift className="w-4 h-4 text-green-600" />
+                    <span className="text-muted-foreground">Bonus bez uređaja:</span>
+                    <span className="font-semibold text-green-600">€{noDeviceBonus.toFixed(2)}</span>
+                  </div>
+                  <span className="text-muted-foreground">=</span>
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-muted-foreground">Ukupno:</span>
+                    <span className="font-bold text-primary">€{total.toFixed(2)}</span>
+                  </div>
                 </div>
-                <span className="text-muted-foreground">+</span>
-                <div className="flex items-center gap-2 text-sm">
-                  <Gift className="w-4 h-4 text-green-600" />
-                  <span className="text-muted-foreground">Bonus bez uređaja:</span>
-                  <span className="font-semibold text-green-600">€{noDeviceBonus.toFixed(2)}</span>
-                </div>
-                <span className="text-muted-foreground">=</span>
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-muted-foreground">Ukupno:</span>
-                  <span className="font-bold text-primary">€{total.toFixed(2)}</span>
-                </div>
+                {noDeviceBonus > 0 && (
+                  <p className="text-xs text-muted-foreground text-center">
+                    💡 Linije bez uređaja donose dodatni bonus u A1 Wallet koji možete iskoristiti za kupnju uređaja.
+                  </p>
+                )}
               </div>
             )}
           </div>
