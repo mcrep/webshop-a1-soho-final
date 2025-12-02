@@ -1,5 +1,7 @@
-import { Wallet, Gift, CreditCard } from "lucide-react";
+import { Wallet, Gift, CreditCard, Sparkles } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useCountAnimation } from "@/hooks/use-count-animation";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type WalletBannerProps = {
   total: number;
@@ -18,6 +20,18 @@ export function WalletBanner({
   tariffCredit = 0,
   noDeviceBonus = 0
 }: WalletBannerProps) {
+  // Animate from tariffCredit to total when showing details (device screen)
+  const shouldAnimate = showDetails && noDeviceBonus > 0;
+  const { value: animatedTotal, isAnimating } = useCountAnimation({
+    from: tariffCredit,
+    to: total,
+    duration: 1500,
+    enabled: shouldAnimate,
+  });
+
+  const displayTotal = shouldAnimate ? animatedTotal : total;
+  const displayRemaining = displayTotal - used;
+
   // Conditional styling based on remaining amount
   const getRemainingTextColor = () => {
     const remainingPercentage = (remaining / total) * 100;
@@ -26,7 +40,7 @@ export function WalletBanner({
     return "text-primary";
   };
 
-  const remainingPercentage = total > 0 ? (remaining / total) * 100 : 0;
+  const remainingPercentage = total > 0 ? (displayRemaining / displayTotal) * 100 : 0;
   const showBreakdown = showDetails && (tariffCredit > 0 || noDeviceBonus > 0);
 
   return (
@@ -43,12 +57,26 @@ export function WalletBanner({
             <div className="flex items-center gap-6">
               {/* Left: Icon + Remaining (Available) */}
               <div className="flex items-center gap-3 flex-shrink-0">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <div className={`w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
                   <Wallet className="w-5 h-5 text-primary" />
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
-                  <div className={`text-xl font-bold ${getRemainingTextColor()}`}>€{remaining.toFixed(2)}</div>
+                  <TooltipProvider>
+                    <Tooltip open={isAnimating}>
+                      <TooltipTrigger asChild>
+                        <div className={`text-xl font-bold ${getRemainingTextColor()} ${isAnimating ? "text-green-600" : ""} transition-colors`}>
+                          €{displayRemaining.toFixed(2)}
+                          {isAnimating && (
+                            <Sparkles className="inline-block w-4 h-4 ml-1 text-green-500 animate-pulse" />
+                          )}
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="bg-green-600 text-white border-green-600">
+                        <p className="font-medium">+€{noDeviceBonus.toFixed(2)} bonus od linija bez uređaja!</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </div>
 
@@ -76,7 +104,7 @@ export function WalletBanner({
                     <span className="font-semibold">€{tariffCredit.toFixed(2)}</span>
                   </div>
                   <span className="text-muted-foreground">+</span>
-                  <div className="flex items-center gap-2 text-sm">
+                  <div className={`flex items-center gap-2 text-sm ${isAnimating ? "animate-pulse" : ""}`}>
                     <Gift className="w-4 h-4 text-green-600" />
                     <span className="text-muted-foreground">Bonus bez uređaja:</span>
                     <span className="font-semibold text-green-600">€{noDeviceBonus.toFixed(2)}</span>
@@ -84,7 +112,7 @@ export function WalletBanner({
                   <span className="text-muted-foreground">=</span>
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-muted-foreground">Ukupno:</span>
-                    <span className="font-bold text-primary">€{total.toFixed(2)}</span>
+                    <span className="font-bold text-primary">€{displayTotal.toFixed(2)}</span>
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground text-center">
