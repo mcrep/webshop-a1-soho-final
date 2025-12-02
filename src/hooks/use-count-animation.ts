@@ -1,33 +1,39 @@
 import { useState, useEffect, useRef } from "react";
 
 type UseCountAnimationOptions = {
-  from: number;
-  to: number;
+  value: number;
   duration?: number;
   enabled?: boolean;
-  onComplete?: () => void;
 };
 
 export function useCountAnimation({
-  from,
-  to,
-  duration = 1500,
+  value,
+  duration = 800,
   enabled = true,
-  onComplete,
 }: UseCountAnimationOptions) {
-  const [value, setValue] = useState(enabled ? from : to);
+  const [displayValue, setDisplayValue] = useState(value);
   const [isAnimating, setIsAnimating] = useState(false);
-  const hasAnimated = useRef(false);
+  const previousValue = useRef(value);
+  const animationRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!enabled || hasAnimated.current || from === to) {
-      setValue(to);
+    if (!enabled) {
+      setDisplayValue(value);
       return;
     }
 
-    hasAnimated.current = true;
+    const from = previousValue.current;
+    const to = value;
+    previousValue.current = value;
+
+    if (from === to) return;
+
+    // Cancel any ongoing animation
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+
     setIsAnimating(true);
-    
     const startTime = Date.now();
     const diff = to - from;
 
@@ -39,19 +45,25 @@ export function useCountAnimation({
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
       const currentValue = from + diff * easeOutQuart;
       
-      setValue(currentValue);
+      setDisplayValue(currentValue);
 
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        animationRef.current = requestAnimationFrame(animate);
       } else {
-        setValue(to);
+        setDisplayValue(to);
         setIsAnimating(false);
-        onComplete?.();
+        animationRef.current = null;
       }
     };
 
-    requestAnimationFrame(animate);
-  }, [from, to, duration, enabled, onComplete]);
+    animationRef.current = requestAnimationFrame(animate);
 
-  return { value, isAnimating };
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [value, duration, enabled]);
+
+  return { value: displayValue, isAnimating };
 }

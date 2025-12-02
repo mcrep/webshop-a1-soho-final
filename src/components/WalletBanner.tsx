@@ -20,16 +20,14 @@ export function WalletBanner({
   tariffCredit = 0,
   noDeviceBonus = 0
 }: WalletBannerProps) {
-  // Animate from tariffCredit to total when showing details (device screen)
-  const shouldAnimate = showDetails && noDeviceBonus > 0;
+  // Animate wallet total whenever it changes
   const { value: animatedTotal, isAnimating } = useCountAnimation({
-    from: tariffCredit,
-    to: total,
-    duration: 1500,
-    enabled: shouldAnimate,
+    value: total,
+    duration: 600,
+    enabled: true,
   });
 
-  const displayTotal = shouldAnimate ? animatedTotal : total;
+  const displayTotal = animatedTotal;
   const displayRemaining = displayTotal - used;
 
   // Conditional styling based on remaining amount
