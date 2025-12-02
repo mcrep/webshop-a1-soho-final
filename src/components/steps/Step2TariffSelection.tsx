@@ -2,7 +2,6 @@ import { Minus, Plus, Wifi, Phone, Globe } from "lucide-react";
 import { tariffs } from "@/data/catalog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
 
@@ -43,17 +42,6 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
         <p className="text-muted-foreground">Korak 2 od 4 - Odaberite točno {maxLines} {maxLines === 1 ? 'liniju' : 'linija'}</p>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-4 shadow-sm mb-6">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Odabrane linije:</span>
-            <span className="text-xl font-bold">
-              {totalLines} / {maxLines}
-            </span>
-          </div>
-          <Progress value={(totalLines / maxLines) * 100} className="h-2" />
-        </div>
-      </div>
 
       <Carousel
         opts={{
