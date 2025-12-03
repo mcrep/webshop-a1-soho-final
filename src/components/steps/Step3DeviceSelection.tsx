@@ -6,6 +6,7 @@ import { Slider } from "@/components/ui/slider";
 import { Smartphone } from "lucide-react";
 import { devices, tariffs } from "@/data/catalog";
 import { Label } from "@/components/ui/label";
+import { motion, LayoutGroup } from "framer-motion";
 
 type DeviceSlot = {
   id: string;
@@ -74,37 +75,40 @@ export function Step3DeviceSelection({
         </h1>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {[...deviceSlots].sort((a, b) => (b.isActive ? 1 : 0) - (a.isActive ? 1 : 0)).map((slot, index) => {
-          const device = devices.find((d) => d.id === slot.deviceId);
-          const variant = device?.variants?.find((v) => v.id === slot.deviceVariantId);
-          const tariff = tariffs.find((t) => t.id === slot.tariffId);
-          
-          // Calculate max wallet for this device - use variant price if available
-          const devicePrice = variant?.upfront || device?.upfront || 0;
-          const deviceCost = device && slot.paymentMethod === "upfront" ? devicePrice : 0;
-          const otherUsage = deviceSlots.reduce(
-            (sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse),
-            0
-          );
-          const maxWalletForDevice = Math.min(deviceCost, totalWallet - otherUsage);
+      <LayoutGroup>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {[...deviceSlots].sort((a, b) => (b.isActive ? 1 : 0) - (a.isActive ? 1 : 0)).map((slot, index) => {
+            const device = devices.find((d) => d.id === slot.deviceId);
+            const variant = device?.variants?.find((v) => v.id === slot.deviceVariantId);
+            const tariff = tariffs.find((t) => t.id === slot.tariffId);
+            
+            // Calculate max wallet for this device - use variant price if available
+            const devicePrice = variant?.upfront || device?.upfront || 0;
+            const deviceCost = device && slot.paymentMethod === "upfront" ? devicePrice : 0;
+            const otherUsage = deviceSlots.reduce(
+              (sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse),
+              0
+            );
+            const maxWalletForDevice = Math.min(deviceCost, totalWallet - otherUsage);
 
-          const activeCount = deviceSlots.filter(s => s.isActive).length;
-          const canToggleOff = slot.isActive;
-          const canToggleOn = !slot.isActive && activeCount < numberOfDevices;
+            const activeCount = deviceSlots.filter(s => s.isActive).length;
+            const canToggleOff = slot.isActive;
+            const canToggleOn = !slot.isActive && activeCount < numberOfDevices;
 
-          return (
-            <div
-              key={slot.id}
-              onClick={() => !canToggleOn && !canToggleOff && handleDisabledClick(slot.id)}
-              className={`rounded-2xl border-2 bg-card p-6 shadow-sm transition-all duration-300 flex flex-col ${
-                slot.isActive 
-                  ? "border-border hover:border-primary/50 animate-scale-in" 
-                  : canToggleOn 
-                    ? "border-border opacity-60 hover:border-primary/50 scale-95" 
-                    : "border-border opacity-60 scale-95 cursor-not-allowed"
-              } ${shakingSlotId === slot.id ? "animate-shake" : ""}`}
-            >
+            return (
+              <motion.div
+                key={slot.id}
+                layout
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                onClick={() => !canToggleOn && !canToggleOff && handleDisabledClick(slot.id)}
+                className={`rounded-2xl border-2 bg-card p-6 shadow-sm flex flex-col ${
+                  slot.isActive 
+                    ? "border-border hover:border-primary/50" 
+                    : canToggleOn 
+                      ? "border-border opacity-60 hover:border-primary/50 scale-95" 
+                      : "border-border opacity-60 scale-95 cursor-not-allowed"
+                } ${shakingSlotId === slot.id ? "animate-shake" : ""}`}
+              >
               {/* Tariff name */}
               <div className="mb-3 pb-3 border-b border-border">
                 <div className="text-sm text-muted-foreground">Tarifa:</div>
@@ -329,10 +333,11 @@ export function Step3DeviceSelection({
                   </div>
                 </div>
               )}
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+        </div>
+      </LayoutGroup>
     </div>
   );
 }
