@@ -60,10 +60,13 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
 
             return (
               <CarouselItem key={tariff.id} className="p-4 md:basis-1/2 lg:basis-1/3">
-                <div className={cn(
-                  "rounded-2xl border-2 bg-card p-6 shadow-sm hover:shadow-md hover:scale-105 hover:border-primary/50 transition-all relative h-full",
-                  quantity > 0 ? "border-primary bg-primary/5" : "border-border"
-                )}>
+                <div 
+                  className={cn(
+                    "rounded-2xl border-2 bg-card p-6 shadow-sm hover:shadow-md hover:scale-105 hover:border-primary/50 transition-all relative h-full cursor-pointer",
+                    quantity > 0 ? "border-primary bg-primary/5" : "border-border"
+                  )}
+                  onClick={() => canIncrease && onUpdateQuantity(tariff.id, 1)}
+                >
                   <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
                     +€{tariff.walletCredit} A1 Wallet
                   </div>
@@ -92,26 +95,35 @@ export function Step2TariffSelection({ tariffQuantities, maxLines, onUpdateQuant
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 mt-6">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => onUpdateQuantity(tariff.id, -1)}
-                      disabled={quantity === 0}
-                      className="h-12 w-12 rounded-full"
-                    >
-                      <Minus className="h-5 w-5" />
-                    </Button>
-                    <div className="text-2xl font-bold min-w-[40px] text-center">{quantity}</div>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => onUpdateQuantity(tariff.id, 1)}
-                      disabled={!canIncrease}
-                      className="h-12 w-12 rounded-full"
-                    >
-                      <Plus className="h-5 w-5" />
-                    </Button>
+                  {/* Centered quantity controls in framed container */}
+                  <div className="flex justify-center mt-6">
+                    <div className="inline-flex items-center gap-4 bg-muted/50 border border-border rounded-full px-4 py-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onUpdateQuantity(tariff.id, -1);
+                        }}
+                        disabled={quantity === 0}
+                        className="h-10 w-10 rounded-full hover:bg-background"
+                      >
+                        <Minus className="h-5 w-5" />
+                      </Button>
+                      <div className="text-2xl font-bold min-w-[40px] text-center">{quantity}</div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onUpdateQuantity(tariff.id, 1);
+                        }}
+                        disabled={!canIncrease}
+                        className="h-10 w-10 rounded-full hover:bg-background"
+                      >
+                        <Plus className="h-5 w-5" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CarouselItem>
