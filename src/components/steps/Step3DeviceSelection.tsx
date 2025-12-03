@@ -69,20 +69,9 @@ export function Step3DeviceSelection({
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="text-center my-8">
-        <h1 className="text-3xl font-bold mb-2">Odabir uređaja i raspodjela walleta</h1>
-        <p className="text-muted-foreground">
-          Odaberite {numberOfDevices} uređaja od {deviceSlots.length} dostupnih linija
-        </p>
-        {!correctNumberOfDevices && (
-          <p className="text-sm text-destructive mt-2">
-            Morate uključiti točno {numberOfDevices} uređaja ({activeSlots.length}/{numberOfDevices})
-          </p>
-        )}
-        {correctNumberOfDevices && !allActiveDevicesSelected && (
-          <p className="text-sm text-destructive mt-2">
-            Svi aktivni uređaji moraju biti konfigurirani
-          </p>
-        )}
+        <h1 className="text-3xl font-bold">
+          {canProceed ? "Odabrani uređaji" : `Odaberi ${numberOfDevices - activeSlots.filter(s => s.deviceId !== null).length} ${numberOfDevices - activeSlots.filter(s => s.deviceId !== null).length === 1 ? 'uređaj' : 'uređaja'}`}
+        </h1>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
