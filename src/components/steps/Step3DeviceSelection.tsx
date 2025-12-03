@@ -75,7 +75,7 @@ export function Step3DeviceSelection({
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {deviceSlots.map((slot, index) => {
+        {[...deviceSlots].sort((a, b) => (b.isActive ? 1 : 0) - (a.isActive ? 1 : 0)).map((slot, index) => {
           const device = devices.find((d) => d.id === slot.deviceId);
           const variant = device?.variants?.find((v) => v.id === slot.deviceVariantId);
           const tariff = tariffs.find((t) => t.id === slot.tariffId);
