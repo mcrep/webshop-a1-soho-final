@@ -90,7 +90,6 @@ const Index = () => {
 
   const generateDeviceSlots = () => {
     const slots: DeviceSlot[] = [];
-    let slotIndex = 0;
     tariffQuantities.forEach((tq) => {
       for (let i = 0; i < tq.quantity; i++) {
         slots.push({
@@ -98,12 +97,11 @@ const Index = () => {
           deviceId: null,
           walletUse: 0,
           tariffId: tq.tariffId,
-          isActive: slotIndex < numberOfDevices,
+          isActive: false,
           paymentMethod: "installments",
           screenInsurance: true,
           monthlyInstallment: 1,
         });
-        slotIndex++;
       }
     });
     setDeviceSlots(slots);
