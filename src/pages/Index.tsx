@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { WalletBanner } from "@/components/WalletBanner";
 import { StepIndicator } from "@/components/StepIndicator";
@@ -163,6 +163,9 @@ const Index = () => {
   const activeDeviceSlots = deviceSlots.filter(slot => slot.isActive);
   const allDeviceLinesSelected = activeDeviceSlots.length === numberOfDevices;
 
+  // Track previous state to detect when bonus is added
+  const prevAllDeviceLinesSelectedRef = useRef(false);
+
   // Wallet bonus from inactive slots (lines without devices) - only calculated AFTER all device lines are selected
   const noDeviceWalletBonus = useMemo(
     () => {
@@ -176,6 +179,17 @@ const Index = () => {
     },
     [deviceSlots, allDeviceLinesSelected, numberOfDevices]
   );
+
+  // Show toast when wallet bonus is added
+  useEffect(() => {
+    if (allDeviceLinesSelected && !prevAllDeviceLinesSelectedRef.current && noDeviceWalletBonus > 0) {
+      toast({
+        title: "🎁 A1 Wallet napunjen!",
+        description: `Dodano +€${noDeviceWalletBonus.toFixed(2)} bonusa za linije bez uređaja.`,
+      });
+    }
+    prevAllDeviceLinesSelectedRef.current = allDeviceLinesSelected;
+  }, [allDeviceLinesSelected, noDeviceWalletBonus]);
 
   // Count of lines without devices
   const linesWithoutDevices = useMemo(
