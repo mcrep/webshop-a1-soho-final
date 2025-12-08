@@ -67,12 +67,28 @@ export function Step3DeviceSelection({
     return sum + (tariff?.noDeviceWalletBonus ?? 0);
   }, 0);
 
+  // Determine title based on state
+  const activeCount = activeSlots.length;
+  const devicesSelectedCount = activeSlots.filter(s => s.deviceId !== null).length;
+  const remainingLinesToActivate = numberOfDevices - activeCount;
+  const remainingDevicesToSelect = numberOfDevices - devicesSelectedCount;
+
+  let title = "";
+  if (activeCount < numberOfDevices) {
+    // Phase 1: Need to activate more lines
+    title = `Odaberite ${remainingLinesToActivate} ${remainingLinesToActivate === 1 ? 'liniju' : 'linije'} na kojima želite uzeti uređaje`;
+  } else if (!allActiveDevicesSelected) {
+    // Phase 2: Lines activated, need to select devices
+    title = `Odaberite ${remainingDevicesToSelect} ${remainingDevicesToSelect === 1 ? 'uređaj' : 'uređaja'}`;
+  } else {
+    // Phase 3: All done
+    title = "Odabrani uređaji";
+  }
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="text-center my-8">
-        <h1 className="text-3xl font-bold">
-          {canProceed ? "Odabrani uređaji" : `Odaberi ${numberOfDevices - activeSlots.filter(s => s.deviceId !== null).length} ${numberOfDevices - activeSlots.filter(s => s.deviceId !== null).length === 1 ? 'uređaj' : 'uređaja'}`}
-        </h1>
+        <h1 className="text-3xl font-bold">{title}</h1>
       </div>
 
       <LayoutGroup>
