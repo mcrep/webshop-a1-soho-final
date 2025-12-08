@@ -322,8 +322,9 @@ export function Step3DeviceSelection({
             <div className="space-y-2">
               {inactiveSlots.map((slot) => {
                 const tariff = tariffs.find((t) => t.id === slot.tariffId);
-                const activeCount = deviceSlots.filter(s => s.isActive).length;
-                const canToggleOn = activeCount < numberOfDevices;
+                const currentActiveCount = deviceSlots.filter(s => s.isActive).length;
+                const canToggleOn = currentActiveCount < numberOfDevices;
+                const linesSelected = currentActiveCount === numberOfDevices;
 
                 return (
                   <motion.div
@@ -342,17 +343,16 @@ export function Step3DeviceSelection({
                       <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
                         <Smartphone className="w-4 h-4 text-muted-foreground" />
                       </div>
-                      <div>
-                        <div className="font-medium text-sm">{tariff?.name || "Unknown"}</div>
-                        <div className="text-xs text-muted-foreground">Bez uređaja</div>
-                      </div>
+                      <div className="font-medium text-sm">{tariff?.name || "Unknown"}</div>
                     </div>
 
-                    {/* Bonus info */}
-                    <div className="flex items-center gap-2 text-green-600">
-                      <Gift className="w-4 h-4" />
-                      <span className="text-sm font-medium">+{tariff?.noDeviceWalletBonus || 0}€ bonus</span>
-                    </div>
+                    {/* Bonus info - only show when lines are selected */}
+                    {linesSelected && (
+                      <div className="flex items-center gap-2 text-green-600">
+                        <Gift className="w-4 h-4" />
+                        <span className="text-sm font-medium">+{tariff?.noDeviceWalletBonus || 0}€ dodatnog bonusa za tarifu bez uređaja</span>
+                      </div>
+                    )}
 
                     {/* Activate button */}
                     <Button
@@ -366,7 +366,7 @@ export function Step3DeviceSelection({
                       className="gap-1"
                     >
                       <Plus className="w-4 h-4" />
-                      Aktiviraj
+                      Uređaj
                     </Button>
                   </motion.div>
                 );

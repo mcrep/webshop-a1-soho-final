@@ -117,24 +117,6 @@ const Index = () => {
       // Can't turn on if already at max numberOfDevices
       if (!slot.isActive && activeCount >= numberOfDevices) return prev;
       
-      const tariff = tariffs.find(t => t.id === slot.tariffId);
-      const bonus = tariff?.noDeviceWalletBonus ?? 0;
-      
-      // Show toast notification
-      if (slot.isActive) {
-        // Turning OFF device = gaining bonus
-        toast({
-          title: "🎁 Bonus dodan u A1 Wallet",
-          description: `Linija ${tariff?.name} bez uređaja donosi +€${bonus.toFixed(2)} bonusa u wallet.`,
-        });
-      } else {
-        // Turning ON device = losing bonus
-        toast({
-          title: "📱 Uređaj aktiviran",
-          description: `Bonus od €${bonus.toFixed(2)} uklonjen iz walleta jer ste aktivirali uređaj na liniji ${tariff?.name}.`,
-        });
-      }
-      
       // Can always turn off, can turn on only if under limit
       return prev.map((s) => (s.id === slotId ? { ...s, isActive: !s.isActive, deviceId: null, walletUse: 0 } : s));
     });
@@ -177,15 +159,22 @@ const Index = () => {
   const updateLine = (id: string, patch: Partial<Line>) =>
     setLines((prev) => prev.map((l) => (l.id === id ? { ...l, ...patch } : l)));
 
-  // Wallet bonus from inactive slots (lines without devices)
+  // Check if all device lines have been selected
+  const activeDeviceSlots = deviceSlots.filter(slot => slot.isActive);
+  const allDeviceLinesSelected = activeDeviceSlots.length === numberOfDevices;
+
+  // Wallet bonus from inactive slots (lines without devices) - only calculated AFTER all device lines are selected
   const noDeviceWalletBonus = useMemo(
-    () => deviceSlots
-      .filter(slot => !slot.isActive)
-      .reduce((sum, slot) => {
-        const tariff = tariffs.find(t => t.id === slot.tariffId);
-        return sum + (tariff?.noDeviceWalletBonus ?? 0);
-      }, 0),
-    [deviceSlots]
+    () => {
+      if (!allDeviceLinesSelected) return 0;
+      return deviceSlots
+        .filter(slot => !slot.isActive)
+        .reduce((sum, slot) => {
+          const tariff = tariffs.find(t => t.id === slot.tariffId);
+          return sum + (tariff?.noDeviceWalletBonus ?? 0);
+        }, 0);
+    },
+    [deviceSlots, allDeviceLinesSelected, numberOfDevices]
   );
 
   // Count of lines without devices
