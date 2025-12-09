@@ -1,14 +1,18 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, UserPlus, Users, Smartphone, Minus, Plus } from "lucide-react";
+import { ArrowRight, UserPlus, Users, Smartphone, Minus, Plus, Check } from "lucide-react";
+import { AuthModal } from "@/components/modals/AuthModal";
 
 type Step1Props = {
   customerType: "new" | "existing" | null;
   numberOfLines: number;
   numberOfDevices: number;
+  isLoggedIn: boolean;
   onUpdateCustomerType: (type: "new" | "existing") => void;
   onUpdateNumberOfLines: (num: number) => void;
   onUpdateNumberOfDevices: (num: number) => void;
+  onLoginSuccess: () => void;
   onNext: () => void;
 };
 
@@ -16,12 +20,15 @@ export function Step1CustomerInfo({
   customerType,
   numberOfLines,
   numberOfDevices,
+  isLoggedIn,
   onUpdateCustomerType,
   onUpdateNumberOfLines,
   onUpdateNumberOfDevices,
+  onLoginSuccess,
   onNext,
 }: Step1Props) {
-  const canProceed = customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= numberOfLines;
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const canProceed = customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= numberOfLines && (customerType === "new" || isLoggedIn);
 
   return (
     <div className="w-full">
@@ -52,18 +59,29 @@ export function Step1CustomerInfo({
                 <p className="text-sm text-muted-foreground mt-1">Novi u A1 obitelji</p>
               </button>
               <button
-                onClick={() => onUpdateCustomerType("existing")}
+                onClick={() => {
+                  if (!isLoggedIn) {
+                    setShowAuthModal(true);
+                  }
+                  onUpdateCustomerType("existing");
+                }}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
                   customerType === "existing"
                     ? "border-primary bg-accent shadow-lg scale-[1.02]"
                     : "border-border hover:border-primary/30 hover:bg-accent/50"
                 }`}
               >
-                <Users className={`h-8 w-8 mx-auto mb-3 ${customerType === "existing" ? "text-primary" : "text-muted-foreground"}`} />
+                {customerType === "existing" && isLoggedIn ? (
+                  <Check className="h-8 w-8 mx-auto mb-3 text-green-500" />
+                ) : (
+                  <Users className={`h-8 w-8 mx-auto mb-3 ${customerType === "existing" ? "text-primary" : "text-muted-foreground"}`} />
+                )}
                 <p className={`font-semibold ${customerType === "existing" ? "text-accent-foreground" : "text-foreground"}`}>
                   Postojeći korisnik
                 </p>
-                <p className="text-sm text-muted-foreground mt-1">Već dio A1 obitelji</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {customerType === "existing" && isLoggedIn ? "Prijavljen" : "Već dio A1 obitelji"}
+                </p>
               </button>
             </div>
           </CardContent>
@@ -146,6 +164,16 @@ export function Step1CustomerInfo({
         </Card>
       </div>
 
+      {/* Auth Modal */}
+      {showAuthModal && (
+        <AuthModal
+          onClose={() => setShowAuthModal(false)}
+          onLoginSuccess={() => {
+            onLoginSuccess();
+            setShowAuthModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }
