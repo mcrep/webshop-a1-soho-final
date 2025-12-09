@@ -22,6 +22,8 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
+          active: "hsl(var(--primary-active))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -60,6 +62,32 @@ export default {
         brand: {
           a1: "hsl(var(--brand-a1))",
           "a1-dark": "hsl(var(--brand-a1-dark))",
+        },
+        a1: {
+          red: {
+            light3: "hsl(var(--a1-red-light-3))",
+            light2: "hsl(var(--a1-red-light-2))",
+            light1: "hsl(var(--a1-red-light-1))",
+            DEFAULT: "hsl(var(--a1-red))",
+            dark1: "hsl(var(--a1-red-dark-1))",
+            dark2: "hsl(var(--a1-red-dark-2))",
+            dark3: "hsl(var(--a1-red-dark-3))",
+          },
+          grey: {
+            1: "hsl(var(--a1-grey-1))",
+            2: "hsl(var(--a1-grey-2))",
+            3: "hsl(var(--a1-grey-3))",
+            4: "hsl(var(--a1-grey-4))",
+            5: "hsl(var(--a1-grey-5))",
+          },
+          white: "hsl(var(--a1-white))",
+          black: "hsl(var(--a1-black))",
+          orange: "hsl(var(--a1-orange))",
+          blue: "hsl(var(--a1-blue))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          light: "hsl(var(--success-light))",
         },
       },
       borderRadius: {
