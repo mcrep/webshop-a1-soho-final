@@ -96,7 +96,7 @@ export function WalletBanner({
             {/* Bonus explanation row */}
             {showDetails && linesWithoutDevices > 0 && (
               <div className="flex items-start gap-2 pt-3 border-t border-border/50">
-                <Gift className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <Gift className="w-4 h-4 text-bonus mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-muted-foreground text-left">
                   Svaka linija bez uređaja donosi dodatni popust u A1 Wallet. Iznos bonusa ovisi o odabranoj tarifi – veća tarifa znači veći bonus!
                 </p>
@@ -135,7 +135,7 @@ export function WalletBanner({
             </div>
             {/* Educational text for tariff screen */}
             <div className="flex items-start gap-2 pt-3 border-t border-border/50">
-              <Gift className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+              <Gift className="w-4 h-4 text-bonus mt-0.5 flex-shrink-0" />
               <p className="text-xs text-muted-foreground text-left">
                 Ovisno o odabranoj tarifi u A1 Wallet dobivate popust koji se može koristiti za umanjenje cijene uređaja.
               </p>

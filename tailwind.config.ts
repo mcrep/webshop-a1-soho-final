@@ -61,6 +61,7 @@ export default {
           a1: "hsl(var(--brand-a1))",
           "a1-dark": "hsl(var(--brand-a1-dark))",
         },
+        bonus: "hsl(var(--bonus))",
       },
       borderRadius: {
         lg: "var(--radius)",

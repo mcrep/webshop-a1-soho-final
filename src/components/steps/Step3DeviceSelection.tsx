@@ -346,9 +346,8 @@ export function Step3DeviceSelection({
                       <div className="font-medium text-sm">{tariff?.name || "Unknown"}</div>
                     </div>
 
-                    {/* Bonus info - only show when lines are selected */}
                     {linesSelected && (
-                      <div className="flex items-center gap-2 text-green-600">
+                      <div className="flex items-center gap-2 text-bonus">
                         <Gift className="w-4 h-4" />
                         <span className="text-sm font-medium">+{tariff?.noDeviceWalletBonus || 0}€ dodatnog bonusa za tarifu bez uređaja</span>
                       </div>
