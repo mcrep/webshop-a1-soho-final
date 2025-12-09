@@ -7,7 +7,7 @@ type AuthModalProps = {
   onLoginSuccess: () => void;
 };
 
-type AuthView = "select" | "login" | "otp";
+type AuthView = "select" | "login" | "phone-input" | "otp";
 
 export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
   const [view, setView] = useState<AuthView>("select");
@@ -16,17 +16,29 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   
-  // OTP state
+  // Phone/OTP state
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [code, setCode] = useState("");
-  const [maskedTarget, setMaskedTarget] = useState("");
+
+  const maskPhoneNumber = (phone: string) => {
+    if (phone.length < 4) return phone;
+    const visible = phone.slice(-2);
+    const hidden = phone.slice(0, -2).replace(/\d/g, "*");
+    return hidden + visible;
+  };
 
   const handleSelectLogin = () => {
     setView("login");
   };
 
   const handleSelectOTP = () => {
-    setMaskedTarget("091 *** **45");
-    setView("otp");
+    setView("phone-input");
+  };
+
+  const handlePhoneSubmit = () => {
+    if (phoneNumber.length >= 9) {
+      setView("otp");
+    }
   };
 
   const handleLoginSubmit = () => {
@@ -44,10 +56,16 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
   };
 
   const handleBack = () => {
-    setView("select");
-    setUser("");
-    setPass("");
-    setCode("");
+    if (view === "otp") {
+      setView("phone-input");
+      setCode("");
+    } else {
+      setView("select");
+      setUser("");
+      setPass("");
+      setPhoneNumber("");
+      setCode("");
+    }
   };
 
   const handleOTPChange = (i: number, val: string) => {
@@ -89,7 +107,8 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
               <div className="text-xl font-semibold">
                 {view === "select" && "Prijava u sustav"}
                 {view === "login" && "Prijava putem korisničkih podataka"}
-                {view === "otp" && "Prijava putem A1 mobilnog broja"}
+                {view === "phone-input" && "Unesi A1 mobilni broj"}
+                {view === "otp" && "Unesi kod iz SMS-a"}
               </div>
             </div>
             <button
@@ -180,11 +199,42 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
               </div>
             )}
 
+            {/* Phone Input View */}
+            {view === "phone-input" && (
+              <div className="grid gap-4">
+                <p className="text-muted-foreground">
+                  Unesi svoj A1 mobilni broj na koji ćemo poslati SMS s kodom za prijavu.
+                </p>
+                
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-muted-foreground">A1 mobilni broj</label>
+                  <input
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ""))}
+                    inputMode="tel"
+                    className="rounded-xl border border-border p-3 bg-card focus:ring-2 focus:ring-primary outline-none"
+                    placeholder="npr. 0911234567"
+                  />
+                  {phoneNumber.length > 0 && phoneNumber.length < 9 && (
+                    <div className="text-[11px] text-destructive">Unesi ispravan broj.</div>
+                  )}
+                </div>
+
+                <Button
+                  onClick={handlePhoneSubmit}
+                  className="rounded-2xl mt-2"
+                  disabled={phoneNumber.length < 9}
+                >
+                  Pošalji SMS kod
+                </Button>
+              </div>
+            )}
+
             {/* OTP View */}
             {view === "otp" && (
               <div className="grid gap-4">
                 <p className="text-muted-foreground">
-                  Poslali smo ti šesteroznamenkasti kod SMS-om na {maskedTarget}
+                  Poslali smo ti šesteroznamenkasti kod SMS-om na {maskPhoneNumber(phoneNumber)}
                 </p>
                 
                 <div className="flex gap-3">
