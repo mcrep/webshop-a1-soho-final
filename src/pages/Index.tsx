@@ -4,7 +4,6 @@ import { WalletBanner } from "@/components/WalletBanner";
 import { StepIndicator } from "@/components/StepIndicator";
 import { Footer } from "@/components/Footer";
 import { Step1CustomerInfo } from "@/components/steps/Step1CustomerInfo";
-import { Step2Login } from "@/components/steps/Step2Login";
 import { Step2TariffSelection } from "@/components/steps/Step2TariffSelection";
 import { Step3DeviceSelection } from "@/components/steps/Step3DeviceSelection";
 import { Step4Summary } from "@/components/steps/Step4Summary";
@@ -45,6 +44,7 @@ const Index = () => {
   const [customerType, setCustomerType] = useState<"new" | "existing" | null>(null);
   const [numberOfLines, setNumberOfLines] = useState(0);
   const [numberOfDevices, setNumberOfDevices] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [tariffQuantities, setTariffQuantities] = useState<TariffQuantity[]>(
     tariffs.map((t) => ({ tariffId: t.id, quantity: 0 }))
   );
@@ -60,10 +60,7 @@ const Index = () => {
   const steps = useMemo(() => {
     const dynamicSteps = [{ number: 1, name: "Početak" }];
     let stepNumber = 2;
-    if (customerType === "existing") {
-      dynamicSteps.push({ number: stepNumber, name: "Prijava" });
-      stepNumber++;
-    }
+    // Removed login step - login is now handled on first screen
     dynamicSteps.push({ number: stepNumber, name: "Tarife" });
     stepNumber++;
     if (numberOfDevices > 0) {
@@ -257,11 +254,6 @@ const Index = () => {
   };
 
   const handleStep1Next = () => {
-    const nextStepNumber = customerType === "existing" ? 2 : getStepNumberForScreen("Tarife");
-    setCurrentStep(nextStepNumber);
-  };
-
-  const handleLoginNext = () => {
     setCurrentStep(getStepNumberForScreen("Tarife"));
   };
 
@@ -327,8 +319,7 @@ const Index = () => {
   // Footer props based on current screen
   const getFooterProps = () => {
     const canProceed = {
-      "Početak": customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= numberOfLines,
-      "Prijava": false, // Handled in Step2Login component state
+      "Početak": customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= numberOfLines && (customerType === "new" || isLoggedIn),
       "Tarife": tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0) === numberOfLines,
       "Uređaji": (() => {
         const activeSlots = deviceSlots.filter((slot) => slot.isActive);
@@ -343,7 +334,6 @@ const Index = () => {
 
     const nextLabels = {
       "Početak": "Nastavi na odabir tarifa",
-      "Prijava": "Nastavi na tarife",
       "Tarife": "Nastavi na uređaje",
       "Uređaji": "Nastavi na sažetak",
       "Sažetak": customerType === "new" ? "Nastavi na verifikaciju" : "Nastavi na isporuku",
@@ -353,13 +343,9 @@ const Index = () => {
 
     const handlers = {
       "Početak": { onNext: handleStep1Next, onBack: undefined },
-      "Prijava": { onNext: handleLoginNext, onBack: () => setCurrentStep(1) },
       "Tarife": { 
         onNext: handleTariffNext, 
-        onBack: () => {
-          const prevStep = customerType === "existing" ? getStepNumberForScreen("Prijava") : 1;
-          setCurrentStep(prevStep);
-        }
+        onBack: () => setCurrentStep(1)
       },
       "Uređaji": { 
         onNext: handleDeviceNext, 
@@ -433,23 +419,21 @@ const Index = () => {
               customerType={customerType}
               numberOfLines={numberOfLines}
               numberOfDevices={numberOfDevices}
+              isLoggedIn={isLoggedIn}
               onUpdateCustomerType={setCustomerType}
               onUpdateNumberOfLines={setNumberOfLines}
               onUpdateNumberOfDevices={setNumberOfDevices}
+              onLoginSuccess={() => setIsLoggedIn(true)}
               onNext={handleStep1Next}
             />
           )}
-          {currentScreen === "Prijava" && <Step2Login onNext={handleLoginNext} onBack={() => setCurrentStep(1)} />}
           {currentScreen === "Tarife" && (
             <Step2TariffSelection
               tariffQuantities={tariffQuantities}
               maxLines={numberOfLines}
               onUpdateQuantity={updateQuantity}
               onNext={handleTariffNext}
-              onBack={() => {
-                const prevStep = customerType === "existing" ? getStepNumberForScreen("Prijava") : 1;
-                setCurrentStep(prevStep);
-              }}
+              onBack={() => setCurrentStep(1)}
             />
           )}
           {currentScreen === "Uređaji" && (
