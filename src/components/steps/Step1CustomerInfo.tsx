@@ -86,7 +86,7 @@ export function Step1CustomerInfo({
                   Postojeći korisnik
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {customerType === "existing" && isLoggedIn ? "Prijavljen" : "Već dio A1 obitelji"}
+                  {customerType === "existing" && isLoggedIn ? "Prijavljen" : "Postojeća tvrtka koja koristi mobilne, fiksne ili ICT usluge u A1 mreži i želi raditi promjene"}
                 </p>
               </button>
             </div>
