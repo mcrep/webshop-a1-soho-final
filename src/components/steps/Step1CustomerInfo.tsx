@@ -145,7 +145,7 @@ export function Step1CustomerInfo({
                 <Button
                   variant="outline"
                   onClick={() => setShowExtensionModal(true)}
-                  className="h-12 min-w-[80px] rounded-full text-2xl font-bold text-primary hover:bg-primary/10"
+                  className="h-16 min-w-[80px] rounded-full text-5xl font-bold text-primary hover:bg-primary/10"
                 >
                   {extensionLineIds.length}
                 </Button>
