@@ -45,6 +45,8 @@ const Index = () => {
   const [numberOfLines, setNumberOfLines] = useState(0);
   const [numberOfDevices, setNumberOfDevices] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userIdentifier, setUserIdentifier] = useState<string>("");
+  const [extensionLineIds, setExtensionLineIds] = useState<string[]>([]);
   const [tariffQuantities, setTariffQuantities] = useState<TariffQuantity[]>(
     tariffs.map((t) => ({ tariffId: t.id, quantity: 0 }))
   );
@@ -381,6 +383,18 @@ const Index = () => {
     };
   };
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUserIdentifier("");
+    setExtensionLineIds([]);
+    setCustomerType(null);
+  };
+
+  const handleLoginSuccess = (identifier: string, type: "email" | "phone") => {
+    setIsLoggedIn(true);
+    setUserIdentifier(identifier);
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground pb-24">
       <Header
@@ -394,6 +408,9 @@ const Index = () => {
         currentStep={currentStep > 1 ? currentStep : undefined}
         steps={currentStep > 1 ? steps : undefined}
         onStepClick={handleStepClick}
+        isLoggedIn={isLoggedIn}
+        userIdentifier={userIdentifier}
+        onLogout={handleLogout}
       />
       <div className="flex pt-[73px]">
         <div className="mx-auto max-w-6xl px-4 w-full">
@@ -420,10 +437,12 @@ const Index = () => {
               numberOfLines={numberOfLines}
               numberOfDevices={numberOfDevices}
               isLoggedIn={isLoggedIn}
+              extensionLineIds={extensionLineIds}
               onUpdateCustomerType={setCustomerType}
               onUpdateNumberOfLines={setNumberOfLines}
               onUpdateNumberOfDevices={setNumberOfDevices}
-              onLoginSuccess={() => setIsLoggedIn(true)}
+              onLoginSuccess={handleLoginSuccess}
+              onUpdateExtensionLines={setExtensionLineIds}
               onNext={handleStep1Next}
             />
           )}
