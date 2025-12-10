@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { UserPlus, Users, Smartphone, Minus, Plus, Check, RefreshCw } from "lucide-react";
 import { AuthModal } from "@/components/modals/AuthModal";
 import { ExtensionLinesModal } from "@/components/modals/ExtensionLinesModal";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Croatian pluralization helper
 const getLinePlural = (n: number) => {
@@ -17,6 +18,22 @@ const getDevicePlural = (n: number) => {
   if (n >= 2 && n <= 4) return "mobilna uređaja";
   return "mobilnih uređaja";
 };
+
+// Animated number component
+const AnimatedNumber = ({ value, className }: { value: number; className?: string }) => (
+  <AnimatePresence mode="popLayout">
+    <motion.span
+      key={value}
+      initial={{ y: -20, opacity: 0, scale: 0.8 }}
+      animate={{ y: 0, opacity: 1, scale: 1 }}
+      exit={{ y: 20, opacity: 0, scale: 0.8 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      className={className}
+    >
+      {value}
+    </motion.span>
+  </AnimatePresence>
+);
 
 type Step1Props = {
   customerType: "new" | "existing" | null;
@@ -129,7 +146,7 @@ export function Step1CustomerInfo({
                 <Minus className="h-5 w-5" />
               </Button>
               <div className="text-center min-w-[80px]">
-                <p className="text-5xl font-bold text-primary">{numberOfLines}</p>
+                <AnimatedNumber value={numberOfLines} className="text-5xl font-bold text-primary" />
               </div>
               <Button
                 variant="outline"
@@ -160,7 +177,7 @@ export function Step1CustomerInfo({
                   onClick={() => setShowExtensionModal(true)}
                   className="h-16 min-w-[80px] rounded-full text-5xl font-bold text-primary hover:bg-primary/10"
                 >
-                  {extensionLineIds.length}
+                  <AnimatedNumber value={extensionLineIds.length} className="text-5xl font-bold text-primary" />
                 </Button>
                 <h3 className="text-lg font-semibold">{getLinePlural(extensionLineIds.length)}</h3>
               </div>
@@ -188,7 +205,7 @@ export function Step1CustomerInfo({
                 <Minus className="h-5 w-5" />
               </Button>
               <div className="text-center min-w-[80px]">
-                <p className="text-5xl font-bold text-primary">{numberOfDevices}</p>
+                <AnimatedNumber value={numberOfDevices} className="text-5xl font-bold text-primary" />
               </div>
               <Button
                 variant="outline"
