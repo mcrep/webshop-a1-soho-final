@@ -1,16 +1,9 @@
-import { User, Phone, LogIn, LogOut, Check } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { LogIn, LogOut, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import a1Logo from "@/assets/a1-logo.png";
 
 type HeaderProps = {
-  onOpenOTP: () => void;
-  onOpenLogin: () => void;
+  onOpenAuth: () => void;
   lineCount: number;
   monthly: number;
   onetime: number;
@@ -20,11 +13,10 @@ type HeaderProps = {
   steps?: { number: number; name: string }[];
   onStepClick?: (step: number) => void;
   isLoggedIn?: boolean;
-  userIdentifier?: string;
   onLogout?: () => void;
 };
 
-export function Header({ onOpenOTP, onOpenLogin, lineCount, monthly, onetime, allLinesConfigured, onFinishOrder, currentStep, steps, onStepClick, isLoggedIn, userIdentifier, onLogout }: HeaderProps) {
+export function Header({ onOpenAuth, lineCount, monthly, onetime, allLinesConfigured, onFinishOrder, currentStep, steps, onStepClick, isLoggedIn, onLogout }: HeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-card shadow-sm border-b border-border">
       <div className="mx-auto max-w-[1600px] px-4 py-4">
@@ -80,70 +72,24 @@ export function Header({ onOpenOTP, onOpenLogin, lineCount, monthly, onetime, al
             </div>
 
             <div className="flex items-center gap-2 justify-end">
-              {/* Login/User Menu */}
-              {isLoggedIn && userIdentifier ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="rounded-full gap-2 px-4">
-                      <User className="h-4 w-4" />
-                      <span className="text-sm">Dobrodošli, {userIdentifier}</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 bg-popover">
-                    <DropdownMenuItem
-                      onClick={onLogout}
-                      className="cursor-pointer p-3 rounded-lg text-destructive focus:text-destructive"
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Odjava
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+              {isLoggedIn ? (
+                <Button
+                  variant="outline"
+                  className="rounded-full gap-2 px-4"
+                  onClick={onLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="text-sm">Odjava</span>
+                </Button>
               ) : (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full">
-                      <LogIn className="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-72 bg-popover">
-                    <div className="p-2 space-y-1">
-                      <DropdownMenuItem
-                        onClick={onOpenLogin}
-                        className="cursor-pointer p-3 rounded-lg"
-                      >
-                        <div className="flex items-start gap-3 w-full">
-                          <div className="h-10 w-10 rounded-xl bg-muted grid place-items-center text-muted-foreground flex-shrink-0">
-                            <User size={20} />
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium">Korisničko ime i lozinka</div>
-                            <div className="text-xs text-muted-foreground">
-                              Prijava putem korisničkih podataka.
-                            </div>
-                          </div>
-                        </div>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem
-                        onClick={onOpenOTP}
-                        className="cursor-pointer p-3 rounded-lg"
-                      >
-                        <div className="flex items-start gap-3 w-full">
-                          <div className="h-10 w-10 rounded-xl bg-destructive/10 grid place-items-center text-destructive flex-shrink-0">
-                            <Phone size={20} />
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium">A1 mobilni broj</div>
-                            <div className="text-xs text-muted-foreground">
-                              Putem SMS-a ćemo poslati kod.
-                            </div>
-                          </div>
-                        </div>
-                      </DropdownMenuItem>
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full"
+                  onClick={onOpenAuth}
+                >
+                  <LogIn className="h-5 w-5" />
+                </Button>
               )}
             </div>
           </div>
@@ -161,70 +107,24 @@ export function Header({ onOpenOTP, onOpenLogin, lineCount, monthly, onetime, al
             </div>
 
             <div className="flex items-center gap-2">
-              {/* Login/User Menu */}
-              {isLoggedIn && userIdentifier ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="rounded-full gap-2 px-4">
-                      <User className="h-4 w-4" />
-                      <span className="text-sm">Dobrodošli, {userIdentifier}</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 bg-popover">
-                    <DropdownMenuItem
-                      onClick={onLogout}
-                      className="cursor-pointer p-3 rounded-lg text-destructive focus:text-destructive"
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Odjava
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+              {isLoggedIn ? (
+                <Button
+                  variant="outline"
+                  className="rounded-full gap-2 px-4"
+                  onClick={onLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="text-sm">Odjava</span>
+                </Button>
               ) : (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full">
-                      <LogIn className="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-72 bg-popover">
-                    <div className="p-2 space-y-1">
-                      <DropdownMenuItem
-                        onClick={onOpenLogin}
-                        className="cursor-pointer p-3 rounded-lg"
-                      >
-                        <div className="flex items-start gap-3 w-full">
-                          <div className="h-10 w-10 rounded-xl bg-muted grid place-items-center text-muted-foreground flex-shrink-0">
-                            <User size={20} />
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium">Korisničko ime i lozinka</div>
-                            <div className="text-xs text-muted-foreground">
-                              Prijava putem korisničkih podataka.
-                            </div>
-                          </div>
-                        </div>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem
-                        onClick={onOpenOTP}
-                        className="cursor-pointer p-3 rounded-lg"
-                      >
-                        <div className="flex items-start gap-3 w-full">
-                          <div className="h-10 w-10 rounded-xl bg-destructive/10 grid place-items-center text-destructive flex-shrink-0">
-                            <Phone size={20} />
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium">A1 mobilni broj</div>
-                            <div className="text-xs text-muted-foreground">
-                              Putem SMS-a ćemo poslati kod.
-                            </div>
-                          </div>
-                        </div>
-                      </DropdownMenuItem>
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full"
+                  onClick={onOpenAuth}
+                >
+                  <LogIn className="h-5 w-5" />
+                </Button>
               )}
             </div>
           </div>

@@ -14,6 +14,7 @@ import { LineTypeSelectionModal } from "@/components/modals/LineTypeSelectionMod
 import { NumberPortingModal } from "@/components/modals/NumberPortingModal";
 import { PrepaidToPostpaidModal } from "@/components/modals/PrepaidToPostpaidModal";
 import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExtensionModal";
+import { AuthModal } from "@/components/modals/AuthModal";
 import { tariffs, devices } from "@/data/catalog";
 import type { Line, VerificationData, DeliveryData, PaymentData } from "@/types";
 import { toast } from "@/hooks/use-toast";
@@ -47,6 +48,7 @@ const Index = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userIdentifier, setUserIdentifier] = useState<string>("");
   const [extensionLineIds, setExtensionLineIds] = useState<string[]>([]);
+  const [showHeaderAuthModal, setShowHeaderAuthModal] = useState(false);
   const [tariffQuantities, setTariffQuantities] = useState<TariffQuantity[]>(
     tariffs.map((t) => ({ tariffId: t.id, quantity: 0 }))
   );
@@ -398,8 +400,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground pb-24">
       <Header
-        onOpenOTP={() => {}}
-        onOpenLogin={() => {}}
+        onOpenAuth={() => setShowHeaderAuthModal(true)}
         lineCount={lineCount}
         monthly={totalMonthly}
         onetime={totalOnetime}
@@ -409,7 +410,6 @@ const Index = () => {
         steps={currentStep > 1 ? steps : undefined}
         onStepClick={handleStepClick}
         isLoggedIn={isLoggedIn}
-        userIdentifier={userIdentifier}
         onLogout={handleLogout}
       />
       <div className="flex pt-[73px]">
@@ -552,6 +552,16 @@ const Index = () => {
           onSave={(data) => {
             updateLine(lineTypeModalFor.lineId, { lineType: "renew", ...data });
             setLineTypeModalFor(null);
+          }}
+        />
+      )}
+      {showHeaderAuthModal && (
+        <AuthModal
+          onClose={() => setShowHeaderAuthModal(false)}
+          onLoginSuccess={(identifier, type) => {
+            handleLoginSuccess(identifier, type);
+            setCustomerType("existing");
+            setShowHeaderAuthModal(false);
           }}
         />
       )}
