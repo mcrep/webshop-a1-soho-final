@@ -142,12 +142,13 @@ export function Step1CustomerInfo({
                   </div>
                   <h3 className="text-lg font-semibold">i produljiti</h3>
                 </div>
-                <button
+                <Button
+                  variant="outline"
                   onClick={() => setShowExtensionModal(true)}
-                  className="text-5xl font-bold text-primary min-w-[80px] text-center hover:opacity-80 transition-opacity"
+                  className="h-12 min-w-[80px] rounded-full text-2xl font-bold text-primary hover:bg-primary/10"
                 >
                   {extensionLineIds.length}
-                </button>
+                </Button>
                 <h3 className="text-lg font-semibold">mobilnih linija</h3>
               </div>
             </CardContent>
