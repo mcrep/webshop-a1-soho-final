@@ -51,9 +51,12 @@ export function Step1CustomerInfo({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <button
-                onClick={() => onUpdateCustomerType("new")}
+                onClick={() => !isLoggedIn && onUpdateCustomerType("new")}
+                disabled={isLoggedIn}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                  customerType === "new"
+                  isLoggedIn
+                    ? "opacity-50 cursor-not-allowed border-border bg-muted"
+                    : customerType === "new"
                     ? "border-primary"
                     : "border-border hover:border-primary/30 hover:bg-accent/50"
                 }`}
