@@ -123,7 +123,7 @@ export function Step1CustomerInfo({
               >
                 <Plus className="h-5 w-5" />
               </Button>
-              <h3 className="text-lg font-semibold">{numberOfLines === 1 ? "liniju" : "linija"}</h3>
+              <h3 className="text-lg font-semibold">mobilnih linija</h3>
             </div>
           </CardContent>
         </Card>
@@ -137,7 +137,7 @@ export function Step1CustomerInfo({
                   <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                     <RefreshCw className="h-5 w-5 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">Želim produljiti</h3>
+                  <h3 className="text-lg font-semibold">i produljiti</h3>
                 </div>
                 <button
                   onClick={() => setShowExtensionModal(true)}
@@ -145,7 +145,7 @@ export function Step1CustomerInfo({
                 >
                   {extensionLineIds.length > 0 ? `${extensionLineIds.length} odabrano` : "odaberi"}
                 </button>
-                <h3 className="text-lg font-semibold">linija</h3>
+                <h3 className="text-lg font-semibold">mobilnih linija</h3>
               </div>
             </CardContent>
           </Card>
@@ -159,7 +159,7 @@ export function Step1CustomerInfo({
                 <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                   <Smartphone className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold">Uz to želim kupiti</h3>
+                <h3 className="text-lg font-semibold">a uz to želim kupiti</h3>
               </div>
               <Button
                 variant="outline"
@@ -182,7 +182,7 @@ export function Step1CustomerInfo({
               >
                 <Plus className="h-5 w-5" />
               </Button>
-              <h3 className="text-lg font-semibold">{numberOfDevices === 1 ? "uređaj" : "uređaja"}</h3>
+              <h3 className="text-lg font-semibold">mobilnih uređaja</h3>
             </div>
             {numberOfDevices > numberOfLines && (
               <p className="text-sm text-destructive text-center mt-4">
