@@ -48,7 +48,7 @@ export function Step1CustomerInfo({
                 onClick={() => onUpdateCustomerType("new")}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
                   customerType === "new"
-                    ? "border-primary bg-accent shadow-lg scale-[1.02]"
+                    ? "border-primary"
                     : "border-border hover:border-primary/30 hover:bg-accent/50"
                 }`}
               >
@@ -67,7 +67,7 @@ export function Step1CustomerInfo({
                 }}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
                   customerType === "existing"
-                    ? "border-primary bg-accent shadow-lg scale-[1.02]"
+                    ? "border-primary"
                     : "border-border hover:border-primary/30 hover:bg-accent/50"
                 }`}
               >
