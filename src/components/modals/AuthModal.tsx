@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 type AuthModalProps = {
   onClose: () => void;
-  onLoginSuccess: () => void;
+  onLoginSuccess: (identifier: string, type: "email" | "phone") => void;
 };
 
 type AuthView = "select" | "login" | "phone-input" | "otp";
@@ -43,14 +43,14 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
 
   const handleLoginSubmit = () => {
     if (user && pass) {
-      onLoginSuccess();
+      onLoginSuccess(user, "email");
       onClose();
     }
   };
 
   const handleOTPSubmit = () => {
     if (code.length === 6) {
-      onLoginSuccess();
+      onLoginSuccess(phoneNumber, "phone");
       onClose();
     }
   };

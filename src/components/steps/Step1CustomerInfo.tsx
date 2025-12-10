@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, UserPlus, Users, Smartphone, Minus, Plus, Check } from "lucide-react";
+import { UserPlus, Users, Smartphone, Minus, Plus, Check, RefreshCw } from "lucide-react";
 import { AuthModal } from "@/components/modals/AuthModal";
+import { ExtensionLinesModal } from "@/components/modals/ExtensionLinesModal";
 
 type Step1Props = {
   customerType: "new" | "existing" | null;
   numberOfLines: number;
   numberOfDevices: number;
   isLoggedIn: boolean;
+  extensionLineIds: string[];
   onUpdateCustomerType: (type: "new" | "existing") => void;
   onUpdateNumberOfLines: (num: number) => void;
   onUpdateNumberOfDevices: (num: number) => void;
-  onLoginSuccess: () => void;
+  onLoginSuccess: (identifier: string, type: "email" | "phone") => void;
+  onUpdateExtensionLines: (lineIds: string[]) => void;
   onNext: () => void;
 };
 
@@ -21,13 +24,16 @@ export function Step1CustomerInfo({
   numberOfLines,
   numberOfDevices,
   isLoggedIn,
+  extensionLineIds,
   onUpdateCustomerType,
   onUpdateNumberOfLines,
   onUpdateNumberOfDevices,
   onLoginSuccess,
+  onUpdateExtensionLines,
   onNext,
 }: Step1Props) {
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showExtensionModal, setShowExtensionModal] = useState(false);
   const canProceed = customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= numberOfLines && (customerType === "new" || isLoggedIn);
 
   return (
@@ -122,6 +128,29 @@ export function Step1CustomerInfo({
           </CardContent>
         </Card>
 
+        {/* Extension Lines Card - Only shown when logged in */}
+        {isLoggedIn && (
+          <Card className="border-2 hover:border-primary/50 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-center gap-3 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <RefreshCw className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold">Želim produljiti</h3>
+                </div>
+                <button
+                  onClick={() => setShowExtensionModal(true)}
+                  className="px-4 py-2 rounded-full border-2 border-primary text-primary font-medium hover:bg-primary/10 transition-colors"
+                >
+                  {extensionLineIds.length > 0 ? `${extensionLineIds.length} odabrano` : "odaberi"}
+                </button>
+                <h3 className="text-lg font-semibold">linija</h3>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Number of Devices Card */}
         <Card className="border-2 hover:border-primary/50 transition-all duration-300">
           <CardContent className="p-6">
@@ -168,10 +197,19 @@ export function Step1CustomerInfo({
       {showAuthModal && (
         <AuthModal
           onClose={() => setShowAuthModal(false)}
-          onLoginSuccess={() => {
-            onLoginSuccess();
+          onLoginSuccess={(identifier, type) => {
+            onLoginSuccess(identifier, type);
             setShowAuthModal(false);
           }}
+        />
+      )}
+
+      {/* Extension Lines Modal */}
+      {showExtensionModal && (
+        <ExtensionLinesModal
+          onClose={() => setShowExtensionModal(false)}
+          onSave={onUpdateExtensionLines}
+          selectedLineIds={extensionLineIds}
         />
       )}
     </div>
