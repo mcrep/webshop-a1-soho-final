@@ -35,6 +35,22 @@ const AnimatedNumber = ({ value, className }: { value: number; className?: strin
   </AnimatePresence>
 );
 
+// Animated text component for plural labels
+const AnimatedText = ({ text, className }: { text: string; className?: string }) => (
+  <AnimatePresence mode="popLayout">
+    <motion.span
+      key={text}
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 10 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      className={className}
+    >
+      {text}
+    </motion.span>
+  </AnimatePresence>
+);
+
 type Step1Props = {
   customerType: "new" | "existing" | null;
   numberOfLines: number;
@@ -156,7 +172,7 @@ export function Step1CustomerInfo({
               >
                 <Plus className="h-5 w-5" />
               </Button>
-              <h3 className="text-lg font-semibold">{getLinePlural(numberOfLines)}</h3>
+              <h3 className="text-lg font-semibold"><AnimatedText text={getLinePlural(numberOfLines)} /></h3>
             </div>
           </CardContent>
         </Card>
@@ -179,7 +195,7 @@ export function Step1CustomerInfo({
                 >
                   <AnimatedNumber value={extensionLineIds.length} className="text-5xl font-bold text-primary" />
                 </Button>
-                <h3 className="text-lg font-semibold">{getLinePlural(extensionLineIds.length)}</h3>
+                <h3 className="text-lg font-semibold"><AnimatedText text={getLinePlural(extensionLineIds.length)} /></h3>
               </div>
             </CardContent>
           </Card>
@@ -216,7 +232,7 @@ export function Step1CustomerInfo({
               >
                 <Plus className="h-5 w-5" />
               </Button>
-              <h3 className="text-lg font-semibold">{getDevicePlural(numberOfDevices)}</h3>
+              <h3 className="text-lg font-semibold"><AnimatedText text={getDevicePlural(numberOfDevices)} /></h3>
             </div>
             {numberOfDevices > numberOfLines && (
               <p className="text-sm text-destructive text-center mt-4">
