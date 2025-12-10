@@ -152,26 +152,30 @@ export function Step1CustomerInfo({
                 </div>
                 <h3 className="text-lg font-semibold">Želim aktivirati</h3>
               </div>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-12 w-12 rounded-full"
-                onClick={() => onUpdateNumberOfLines(Math.max(0, numberOfLines - 1))}
-                disabled={numberOfLines <= 0}
-              >
-                <Minus className="h-5 w-5" />
-              </Button>
+              <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-12 w-12 rounded-full"
+                  onClick={() => onUpdateNumberOfLines(Math.max(0, numberOfLines - 1))}
+                  disabled={numberOfLines <= 0}
+                >
+                  <Minus className="h-5 w-5" />
+                </Button>
+              </motion.div>
               <div className="text-center min-w-[80px]">
                 <AnimatedNumber value={numberOfLines} className="text-5xl font-bold text-primary" />
               </div>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-12 w-12 rounded-full"
-                onClick={() => onUpdateNumberOfLines(numberOfLines + 1)}
-              >
-                <Plus className="h-5 w-5" />
-              </Button>
+              <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-12 w-12 rounded-full"
+                  onClick={() => onUpdateNumberOfLines(numberOfLines + 1)}
+                >
+                  <Plus className="h-5 w-5" />
+                </Button>
+              </motion.div>
               <h3 className="text-lg font-semibold"><AnimatedText text={getLinePlural(numberOfLines)} /></h3>
             </div>
           </CardContent>
@@ -211,27 +215,31 @@ export function Step1CustomerInfo({
                 </div>
                 <h3 className="text-lg font-semibold">a uz to želim kupiti</h3>
               </div>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-12 w-12 rounded-full"
-                onClick={() => onUpdateNumberOfDevices(Math.max(0, numberOfDevices - 1))}
-                disabled={numberOfDevices <= 0}
-              >
-                <Minus className="h-5 w-5" />
-              </Button>
+              <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-12 w-12 rounded-full"
+                  onClick={() => onUpdateNumberOfDevices(Math.max(0, numberOfDevices - 1))}
+                  disabled={numberOfDevices <= 0}
+                >
+                  <Minus className="h-5 w-5" />
+                </Button>
+              </motion.div>
               <div className="text-center min-w-[80px]">
                 <AnimatedNumber value={numberOfDevices} className="text-5xl font-bold text-primary" />
               </div>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-12 w-12 rounded-full"
-                onClick={() => onUpdateNumberOfDevices(Math.min(numberOfLines, numberOfDevices + 1))}
-                disabled={numberOfDevices >= numberOfLines}
-              >
-                <Plus className="h-5 w-5" />
-              </Button>
+              <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-12 w-12 rounded-full"
+                  onClick={() => onUpdateNumberOfDevices(Math.min(numberOfLines, numberOfDevices + 1))}
+                  disabled={numberOfDevices >= numberOfLines}
+                >
+                  <Plus className="h-5 w-5" />
+                </Button>
+              </motion.div>
               <h3 className="text-lg font-semibold"><AnimatedText text={getDevicePlural(numberOfDevices)} /></h3>
             </div>
             {numberOfDevices > numberOfLines && (
