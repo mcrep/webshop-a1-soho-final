@@ -141,9 +141,9 @@ export function Step1CustomerInfo({
                 </div>
                 <button
                   onClick={() => setShowExtensionModal(true)}
-                  className="px-4 py-2 rounded-full border-2 border-primary text-primary font-medium hover:bg-primary/10 transition-colors"
+                  className="text-5xl font-bold text-primary min-w-[80px] text-center hover:opacity-80 transition-opacity"
                 >
-                  {extensionLineIds.length > 0 ? `${extensionLineIds.length} odabrano` : "odaberi"}
+                  {extensionLineIds.length}
                 </button>
                 <h3 className="text-lg font-semibold">mobilnih linija</h3>
               </div>
