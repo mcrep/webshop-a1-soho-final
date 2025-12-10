@@ -62,7 +62,7 @@ export function Step1CustomerInfo({
                 <p className={`font-semibold ${customerType === "new" ? "text-accent-foreground" : "text-foreground"}`}>
                   Novi korisnik
                 </p>
-                <p className="text-sm text-muted-foreground mt-1">Novi u A1 obitelji</p>
+                <p className="text-sm text-muted-foreground mt-1">Nova tvrtka koja ne koristi usluge u A1 mreži</p>
               </button>
               <button
                 onClick={() => {
