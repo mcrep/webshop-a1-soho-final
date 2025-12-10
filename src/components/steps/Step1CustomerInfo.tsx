@@ -5,6 +5,19 @@ import { UserPlus, Users, Smartphone, Minus, Plus, Check, RefreshCw } from "luci
 import { AuthModal } from "@/components/modals/AuthModal";
 import { ExtensionLinesModal } from "@/components/modals/ExtensionLinesModal";
 
+// Croatian pluralization helper
+const getLinePlural = (n: number) => {
+  if (n === 1) return "mobilnu liniju";
+  if (n >= 2 && n <= 4) return "mobilne linije";
+  return "mobilnih linija";
+};
+
+const getDevicePlural = (n: number) => {
+  if (n === 1) return "mobilni uređaj";
+  if (n >= 2 && n <= 4) return "mobilna uređaja";
+  return "mobilnih uređaja";
+};
+
 type Step1Props = {
   customerType: "new" | "existing" | null;
   numberOfLines: number;
@@ -126,7 +139,7 @@ export function Step1CustomerInfo({
               >
                 <Plus className="h-5 w-5" />
               </Button>
-              <h3 className="text-lg font-semibold">mobilnih linija</h3>
+              <h3 className="text-lg font-semibold">{getLinePlural(numberOfLines)}</h3>
             </div>
           </CardContent>
         </Card>
@@ -149,7 +162,7 @@ export function Step1CustomerInfo({
                 >
                   {extensionLineIds.length}
                 </Button>
-                <h3 className="text-lg font-semibold">mobilnih linija</h3>
+                <h3 className="text-lg font-semibold">{getLinePlural(extensionLineIds.length)}</h3>
               </div>
             </CardContent>
           </Card>
@@ -186,7 +199,7 @@ export function Step1CustomerInfo({
               >
                 <Plus className="h-5 w-5" />
               </Button>
-              <h3 className="text-lg font-semibold">mobilnih uređaja</h3>
+              <h3 className="text-lg font-semibold">{getDevicePlural(numberOfDevices)}</h3>
             </div>
             {numberOfDevices > numberOfLines && (
               <p className="text-sm text-destructive text-center mt-4">
