@@ -337,11 +337,11 @@ const Index = () => {
     };
 
     const nextLabels = {
-      "Početak": "Nastavi na odabir tarifa",
-      "Tarife": "Nastavi na uređaje",
-      "Uređaji": "Nastavi na sažetak",
-      "Sažetak": customerType === "new" ? "Nastavi na verifikaciju" : "Nastavi na isporuku",
-      "Verifikacija": "Nastavi na isporuku",
+      "Početak": "Nastavi",
+      "Tarife": "Nastavi",
+      "Uređaji": "Nastavi",
+      "Sažetak": "Nastavi",
+      "Verifikacija": "Nastavi",
       "Isporuka": "Završi narudžbu"
     };
 
