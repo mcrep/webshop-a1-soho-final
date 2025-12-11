@@ -310,7 +310,7 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                   ))}
                 </div>
 
-                <div className="flex items-center gap-4 mt-2">
+                <div className="flex items-center justify-between mt-2">
                   <Button
                     onClick={handleOTPSubmit}
                     className="rounded-2xl"
