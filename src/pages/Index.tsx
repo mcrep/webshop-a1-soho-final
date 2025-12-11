@@ -426,7 +426,7 @@ const Index = () => {
               noDeviceBonus={noDeviceWalletBonus}
               linesWithoutDevices={linesWithoutDevices}
               selectedLines={tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0)}
-              maxLines={numberOfLines}
+              maxLines={isLoggedIn ? numberOfLines + extensionLineIds.length : numberOfLines}
             />
           )}
           <div className={currentScreen === "Početak" 
