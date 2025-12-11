@@ -323,10 +323,10 @@ const Index = () => {
 
   // Footer props based on current screen
   const getFooterProps = () => {
-    const maxDevices = isLoggedIn ? numberOfLines + extensionLineIds.length : numberOfLines;
+    const totalLines = isLoggedIn ? numberOfLines + extensionLineIds.length : numberOfLines;
     const canProceed = {
-      "Početak": customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= maxDevices && (customerType === "new" || isLoggedIn),
-      "Tarife": tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0) === numberOfLines,
+      "Početak": customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= totalLines && (customerType === "new" || isLoggedIn),
+      "Tarife": tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0) === totalLines,
       "Uređaji": (() => {
         const activeSlots = deviceSlots.filter((slot) => slot.isActive);
         const correctNumberOfDevices = activeSlots.length === numberOfDevices;
