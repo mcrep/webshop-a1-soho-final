@@ -8,7 +8,7 @@ type AuthModalProps = {
   onLoginSuccess: (identifier: string, type: "email" | "phone") => void;
 };
 
-type AuthView = "select" | "login" | "phone-input" | "otp";
+type AuthView = "select" | "login" | "login-otp" | "phone-input" | "otp";
 
 export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
   const [view, setView] = useState<AuthView>("select");
@@ -21,6 +21,7 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
   
   // Phone/OTP state
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [loginPhoneNumber, setLoginPhoneNumber] = useState("");
   const [code, setCode] = useState("");
 
   const formatPhoneDisplay = (phone: string) => {
@@ -55,6 +56,14 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
 
   const handleLoginSubmit = () => {
     if (user && pass) {
+      // Dummy phone number from "backend" - will be fetched based on user credentials
+      setLoginPhoneNumber("912345678");
+      setView("login-otp");
+    }
+  };
+
+  const handleLoginOTPSubmit = () => {
+    if (code.length === 6) {
       onLoginSuccess(user, "email");
       onClose();
     }
@@ -71,11 +80,17 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
     if (view === "otp") {
       setView("phone-input");
       setCode("");
+    } else if (view === "login-otp") {
+      setView("login");
+      setCode("");
     } else {
       setView("select");
       setUser("");
       setPass("");
+      setUserTouched(false);
+      setPassTouched(false);
       setPhoneNumber("");
+      setLoginPhoneNumber("");
       setCode("");
     }
   };
@@ -134,6 +149,7 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
               <div className="text-xl font-semibold">
                 {view === "select" && "Prijavite se za nastavak"}
                 {view === "login" && "Prijava putem korisničkih podataka"}
+                {view === "login-otp" && "Unesi kod iz SMS-a"}
                 {view === "phone-input" && "Unesi A1 mobilni broj"}
                 {view === "otp" && "Unesi kod iz SMS-a"}
               </div>
@@ -313,6 +329,49 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                 <div className="flex items-center justify-between mt-2">
                   <Button
                     onClick={handleOTPSubmit}
+                    className="rounded-2xl"
+                    disabled={code.length !== 6}
+                  >
+                    Potvrdi
+                  </Button>
+                  <button
+                    className="text-sm text-muted-foreground underline hover:text-foreground transition-colors"
+                    onClick={() => setCode("")}
+                  >
+                    Poruka nije stigla? Pošalji ponovno
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Login OTP View - after credentials */}
+            {view === "login-otp" && (
+              <div className="grid gap-4">
+                <p className="text-muted-foreground">
+                  Poslali smo ti šesteroznamenkasti kod SMS-om na {maskPhoneNumber(loginPhoneNumber)}
+                </p>
+                
+                <div className="flex gap-3 justify-center">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <input
+                      key={i}
+                      id={`auth-otp-${i}`}
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={code[i] || ""}
+                      onChange={(e) => {
+                        handleOTPChange(i, e.target.value);
+                        if (e.target.value) focusNext(i);
+                      }}
+                      onKeyDown={(e) => handleOTPKeyDown(e, i)}
+                      className="h-14 w-12 rounded-xl border border-border text-center text-xl bg-card focus:ring-2 focus:ring-primary outline-none"
+                    />
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-between mt-2">
+                  <Button
+                    onClick={handleLoginOTPSubmit}
                     className="rounded-2xl"
                     disabled={code.length !== 6}
                   >
