@@ -252,11 +252,6 @@ export function Step1CustomerInfo({
               </motion.div>
               <h3 className="text-lg font-semibold"><AnimatedText text={getDevicePlural(numberOfDevices)} /></h3>
             </div>
-            {numberOfDevices > maxDevices && (
-              <p className="text-sm text-destructive text-center mt-4">
-                Broj uređaja ne može biti veći od ukupnog broja linija
-              </p>
-            )}
           </CardContent>
         </Card>
       </div>
