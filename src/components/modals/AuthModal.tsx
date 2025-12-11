@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { User, Phone, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 type AuthModalProps = {
   onClose: () => void;
@@ -90,9 +91,19 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
 
   return (
     <div className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm" 
+        onClick={onClose} 
+      />
       <div className="absolute inset-0 grid place-items-center p-4">
-        <div className="w-full max-w-xl rounded-2xl bg-card shadow-xl border border-border overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+          className="w-full max-w-xl rounded-2xl bg-card shadow-xl border border-border overflow-hidden"
+        >
           {/* Header */}
           <div className="p-6 flex items-start justify-between border-b border-border">
             <div className="flex items-center gap-3">
@@ -271,7 +282,7 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
