@@ -80,7 +80,10 @@ export function Step1CustomerInfo({
 }: Step1Props) {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showExtensionModal, setShowExtensionModal] = useState(false);
-  const canProceed = customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= numberOfLines && (customerType === "new" || isLoggedIn);
+  
+  // Max devices = new lines + extension lines (for logged in users)
+  const maxDevices = isLoggedIn ? numberOfLines + extensionLineIds.length : numberOfLines;
+  const canProceed = customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= maxDevices && (customerType === "new" || isLoggedIn);
 
   return (
     <div className="w-full">
@@ -234,17 +237,17 @@ export function Step1CustomerInfo({
                   variant="outline"
                   size="icon"
                   className="h-12 w-12 rounded-full"
-                  onClick={() => onUpdateNumberOfDevices(Math.min(numberOfLines, numberOfDevices + 1))}
-                  disabled={numberOfDevices >= numberOfLines}
+                  onClick={() => onUpdateNumberOfDevices(Math.min(maxDevices, numberOfDevices + 1))}
+                  disabled={numberOfDevices >= maxDevices}
                 >
                   <Plus className="h-5 w-5" />
                 </Button>
               </motion.div>
               <h3 className="text-lg font-semibold"><AnimatedText text={getDevicePlural(numberOfDevices)} /></h3>
             </div>
-            {numberOfDevices > numberOfLines && (
+            {numberOfDevices > maxDevices && (
               <p className="text-sm text-destructive text-center mt-4">
-                Broj uređaja ne može biti veći od broja linija
+                Broj uređaja ne može biti veći od ukupnog broja linija
               </p>
             )}
           </CardContent>
