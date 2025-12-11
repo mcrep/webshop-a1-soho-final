@@ -105,7 +105,7 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                 </button>
               )}
               <div className="text-xl font-semibold">
-                {view === "select" && "Prijava u sustav"}
+                {view === "select" && "Prijavite se za nastavak"}
                 {view === "login" && "Prijava putem korisničkih podataka"}
                 {view === "phone-input" && "Unesi A1 mobilni broj"}
                 {view === "otp" && "Unesi kod iz SMS-a"}
@@ -124,8 +124,6 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
             {/* Selection View */}
             {view === "select" && (
               <div className="grid gap-4">
-                <p className="text-sm text-muted-foreground mb-2">Odaberi način prijave</p>
-                
                 <button
                   onClick={handleSelectLogin}
                   className="w-full text-left rounded-2xl border border-border px-4 py-4 hover:bg-muted transition-colors flex items-start gap-3"
@@ -134,9 +132,9 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                     <User size={20} />
                   </div>
                   <div>
-                    <div className="font-medium">Korisničko ime i lozinka</div>
+                    <div className="font-medium">Korisničko ime ili email i lozinka</div>
                     <div className="text-sm text-muted-foreground">
-                      Prijava putem korisničkih podataka.
+                      Prijavite se putem Moj A1 korisničkog imena ili emaila i pripadajuće lozinke.
                     </div>
                   </div>
                 </button>
@@ -151,7 +149,7 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                   <div>
                     <div className="font-medium">A1 mobilni broj</div>
                     <div className="text-sm text-muted-foreground">
-                      Putem SMS-a ćemo poslati kod koji ćeš unijeti u sljedećem koraku.
+                      Prijavite se putem jednokratnog SMS koda.
                     </div>
                   </div>
                 </button>
