@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserPlus, Users, Smartphone, Minus, Plus, Check, RefreshCw } from "lucide-react";
@@ -84,6 +84,13 @@ export function Step1CustomerInfo({
   // Max devices = new lines + extension lines (for logged in users)
   const maxDevices = isLoggedIn ? numberOfLines + extensionLineIds.length : numberOfLines;
   const canProceed = customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= maxDevices && (customerType === "new" || isLoggedIn);
+
+  // Auto-adjust numberOfDevices if it exceeds maxDevices
+  useEffect(() => {
+    if (numberOfDevices > maxDevices) {
+      onUpdateNumberOfDevices(maxDevices);
+    }
+  }, [numberOfLines, extensionLineIds.length, maxDevices, numberOfDevices, onUpdateNumberOfDevices]);
 
   return (
     <div className="w-full">
