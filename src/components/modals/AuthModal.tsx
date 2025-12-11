@@ -266,7 +266,7 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                   Poslali smo ti šesteroznamenkasti kod SMS-om na {maskPhoneNumber(phoneNumber)}
                 </p>
                 
-                <div className="flex gap-3">
+                <div className="flex gap-3 justify-center">
                   {Array.from({ length: 6 }).map((_, i) => (
                     <input
                       key={i}
