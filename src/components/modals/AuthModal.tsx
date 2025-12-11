@@ -21,11 +21,20 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [code, setCode] = useState("");
 
+  const formatPhoneDisplay = (phone: string) => {
+    // Format: 9X XXX XXXX (2 3 4 pattern)
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 5) return `${digits.slice(0, 2)} ${digits.slice(2)}`;
+    return `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
+  };
+
   const maskPhoneNumber = (phone: string) => {
-    if (phone.length < 4) return phone;
-    const visible = phone.slice(-2);
-    const hidden = phone.slice(0, -2).replace(/\d/g, "*");
-    return hidden + visible;
+    if (phone.length < 4) return "+385 " + phone;
+    const formatted = formatPhoneDisplay(phone);
+    const visible = formatted.slice(-2);
+    const hidden = formatted.slice(0, -2).replace(/\d/g, "*");
+    return "+385 " + hidden + visible;
   };
 
   const handleSelectLogin = () => {
@@ -225,13 +234,12 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                   <div className="flex items-center rounded-xl border border-border bg-card focus-within:ring-2 focus-within:ring-primary">
                     <span className="pl-3 pr-1 text-muted-foreground select-none">+385</span>
                     <input
-                      value={phoneNumber}
+                      value={formatPhoneDisplay(phoneNumber)}
                       onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, "").slice(0, 9);
-                        setPhoneNumber(value);
+                        const rawValue = e.target.value.replace(/\D/g, "").slice(0, 9);
+                        setPhoneNumber(rawValue);
                       }}
                       inputMode="tel"
-                      maxLength={9}
                       className="flex-1 p-3 pl-1 bg-transparent outline-none"
                       placeholder="9X XXX XXXX"
                     />
