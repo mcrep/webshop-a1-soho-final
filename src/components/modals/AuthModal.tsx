@@ -90,10 +90,14 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50">
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+    <motion.div 
+      className="fixed inset-0 z-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <div 
         className="absolute inset-0 bg-black/30 backdrop-blur-sm" 
         onClick={onClose} 
       />
@@ -101,7 +105,8 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
         <motion.div 
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ type: "spring", duration: 0.3, bounce: 0.2 }}
           className="w-full max-w-xl rounded-2xl bg-card shadow-xl border border-border overflow-hidden"
         >
           {/* Header */}
@@ -284,6 +289,6 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
           </div>
         </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
