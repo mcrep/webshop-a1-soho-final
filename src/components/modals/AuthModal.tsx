@@ -16,6 +16,8 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
   // Login form state
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
+  const [userTouched, setUserTouched] = useState(false);
+  const [passTouched, setPassTouched] = useState(false);
   
   // Phone/OTP state
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -189,10 +191,11 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                   <input
                     value={user}
                     onChange={(e) => setUser(e.target.value)}
+                    onBlur={() => setUserTouched(true)}
                     className="rounded-xl border border-border p-3 bg-card focus:ring-2 focus:ring-primary outline-none"
-                    placeholder="npr. ime.prezime@firma.hr"
+                    placeholder="ime.prezime@firma.hr"
                   />
-                  {!user && <div className="text-[11px] text-destructive">Obavezno polje.</div>}
+                  {userTouched && !user && <div className="text-[11px] text-destructive">Obavezno polje.</div>}
                 </div>
 
                 <div className="flex flex-col gap-1">
@@ -201,10 +204,11 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                     type="password"
                     value={pass}
                     onChange={(e) => setPass(e.target.value)}
+                    onBlur={() => setPassTouched(true)}
                     className="rounded-xl border border-border p-3 bg-card focus:ring-2 focus:ring-primary outline-none"
                     placeholder="••••••••"
                   />
-                  {!pass && <div className="text-[11px] text-destructive">Obavezno polje.</div>}
+                  {passTouched && !pass && <div className="text-[11px] text-destructive">Obavezno polje.</div>}
                 </div>
 
                 <div className="flex items-center justify-between mt-2">
