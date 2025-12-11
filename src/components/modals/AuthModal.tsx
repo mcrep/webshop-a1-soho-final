@@ -37,7 +37,7 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
   };
 
   const handlePhoneSubmit = () => {
-    if (phoneNumber.length >= 9) {
+    if (phoneNumber.length >= 8 && phoneNumber.length <= 9) {
       setView("otp");
     }
   };
@@ -221,23 +221,30 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                 </p>
                 
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs text-muted-foreground">A1 mobilni broj</label>
-                  <input
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ""))}
-                    inputMode="tel"
-                    className="rounded-xl border border-border p-3 bg-card focus:ring-2 focus:ring-primary outline-none"
-                    placeholder="npr. 0911234567"
-                  />
-                  {phoneNumber.length > 0 && phoneNumber.length < 9 && (
-                    <div className="text-[11px] text-destructive">Unesi ispravan broj.</div>
+                  <label className="text-xs text-muted-foreground">Broj mobitela</label>
+                  <div className="flex items-center rounded-xl border border-border bg-card focus-within:ring-2 focus-within:ring-primary">
+                    <span className="pl-3 pr-1 text-muted-foreground select-none">+385</span>
+                    <input
+                      value={phoneNumber}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "").slice(0, 9);
+                        setPhoneNumber(value);
+                      }}
+                      inputMode="tel"
+                      maxLength={9}
+                      className="flex-1 p-3 pl-1 bg-transparent outline-none"
+                      placeholder="9X XXX XXXX"
+                    />
+                  </div>
+                  {phoneNumber.length > 0 && phoneNumber.length < 8 && (
+                    <div className="text-[11px] text-destructive">Minimalno 8 znakova.</div>
                   )}
                 </div>
 
                 <Button
                   onClick={handlePhoneSubmit}
                   className="rounded-2xl mt-2"
-                  disabled={phoneNumber.length < 9}
+                  disabled={phoneNumber.length < 8}
                 >
                   Pošalji SMS kod
                 </Button>
