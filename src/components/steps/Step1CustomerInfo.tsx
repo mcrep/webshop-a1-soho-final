@@ -252,15 +252,17 @@ export function Step1CustomerInfo({
       </div>
 
       {/* Auth Modal */}
-      {showAuthModal && (
-        <AuthModal
-          onClose={() => setShowAuthModal(false)}
-          onLoginSuccess={(identifier, type) => {
-            onLoginSuccess(identifier, type);
-            setShowAuthModal(false);
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {showAuthModal && (
+          <AuthModal
+            onClose={() => setShowAuthModal(false)}
+            onLoginSuccess={(identifier, type) => {
+              onLoginSuccess(identifier, type);
+              setShowAuthModal(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Extension Lines Modal */}
       {showExtensionModal && (

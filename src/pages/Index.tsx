@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
 import { Header } from "@/components/Header";
 import { WalletBanner } from "@/components/WalletBanner";
 import { StepIndicator } from "@/components/StepIndicator";
@@ -555,16 +556,18 @@ const Index = () => {
           }}
         />
       )}
-      {showHeaderAuthModal && (
-        <AuthModal
-          onClose={() => setShowHeaderAuthModal(false)}
-          onLoginSuccess={(identifier, type) => {
-            handleLoginSuccess(identifier, type);
-            setCustomerType("existing");
-            setShowHeaderAuthModal(false);
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {showHeaderAuthModal && (
+          <AuthModal
+            onClose={() => setShowHeaderAuthModal(false)}
+            onLoginSuccess={(identifier, type) => {
+              handleLoginSuccess(identifier, type);
+              setCustomerType("existing");
+              setShowHeaderAuthModal(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
       <Footer {...getFooterProps()} />
     </div>
   );
