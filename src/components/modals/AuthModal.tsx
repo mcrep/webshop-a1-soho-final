@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { User, Phone, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 type AuthModalProps = {
   onClose: () => void;
@@ -195,7 +195,18 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                     className="rounded-xl border border-border p-3 bg-card focus:ring-2 focus:ring-primary outline-none"
                     placeholder="ime.prezime@firma.hr"
                   />
-                  {userTouched && !user && <div className="text-[11px] text-destructive">Obavezno polje.</div>}
+                  <AnimatePresence>
+                    {userTouched && !user && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        className="text-[11px] text-destructive"
+                      >
+                        Obavezno polje.
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 <div className="flex flex-col gap-1">
@@ -208,7 +219,18 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                     className="rounded-xl border border-border p-3 bg-card focus:ring-2 focus:ring-primary outline-none"
                     placeholder="••••••••"
                   />
-                  {passTouched && !pass && <div className="text-[11px] text-destructive">Obavezno polje.</div>}
+                  <AnimatePresence>
+                    {passTouched && !pass && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        className="text-[11px] text-destructive"
+                      >
+                        Obavezno polje.
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 <div className="flex items-center justify-between mt-2">
