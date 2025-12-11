@@ -451,7 +451,7 @@ const Index = () => {
           {currentScreen === "Tarife" && (
             <Step2TariffSelection
               tariffQuantities={tariffQuantities}
-              maxLines={numberOfLines}
+              maxLines={isLoggedIn ? numberOfLines + extensionLineIds.length : numberOfLines}
               onUpdateQuantity={updateQuantity}
               onNext={handleTariffNext}
               onBack={() => setCurrentStep(1)}
