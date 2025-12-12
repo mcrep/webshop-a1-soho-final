@@ -223,13 +223,25 @@ const Index = () => {
     [deviceSlots]
   );
 
-  // Tariff-based wallet credit
+  // Tariff-based wallet credit (new lines + extension lines)
   const tariffCredit = useMemo(
-    () => tariffQuantities.reduce((sum, tq) => {
-      const credit = tariffs.find((t) => t.id === tq.tariffId)?.walletCredit ?? 0;
-      return sum + credit * tq.quantity;
-    }, 0),
-    [tariffQuantities]
+    () => {
+      // Credit from new lines
+      const newLinesCredit = tariffQuantities.reduce((sum, tq) => {
+        const credit = tariffs.find((t) => t.id === tq.tariffId)?.walletCredit ?? 0;
+        return sum + credit * tq.quantity;
+      }, 0);
+      // Credit from extension lines with selected tariffs
+      const extensionLinesCredit = extensionLines.reduce((sum, extLine) => {
+        if (extLine.newTariffId) {
+          const credit = tariffs.find((t) => t.id === extLine.newTariffId)?.walletCredit ?? 0;
+          return sum + credit;
+        }
+        return sum;
+      }, 0);
+      return newLinesCredit + extensionLinesCredit;
+    },
+    [tariffQuantities, extensionLines]
   );
 
   const walletTotal = useMemo(
