@@ -5,6 +5,7 @@ import { UserPlus, Users, Smartphone, Minus, Plus, Check, RefreshCw } from "luci
 import { AuthModal } from "@/components/modals/AuthModal";
 import { ExtensionLinesModal } from "@/components/modals/ExtensionLinesModal";
 import { motion, AnimatePresence } from "framer-motion";
+import type { ExtensionLineWithTariff } from "@/types";
 
 // Croatian pluralization helper
 const getLinePlural = (n: number) => {
@@ -56,12 +57,12 @@ type Step1Props = {
   numberOfLines: number;
   numberOfDevices: number;
   isLoggedIn: boolean;
-  extensionLineIds: string[];
+  extensionLines: ExtensionLineWithTariff[];
   onUpdateCustomerType: (type: "new" | "existing") => void;
   onUpdateNumberOfLines: (num: number) => void;
   onUpdateNumberOfDevices: (num: number) => void;
   onLoginSuccess: (identifier: string, type: "email" | "phone") => void;
-  onUpdateExtensionLines: (lineIds: string[]) => void;
+  onUpdateExtensionLines: (lines: ExtensionLineWithTariff[]) => void;
   onNext: () => void;
 };
 
@@ -70,7 +71,7 @@ export function Step1CustomerInfo({
   numberOfLines,
   numberOfDevices,
   isLoggedIn,
-  extensionLineIds,
+  extensionLines,
   onUpdateCustomerType,
   onUpdateNumberOfLines,
   onUpdateNumberOfDevices,
@@ -82,7 +83,7 @@ export function Step1CustomerInfo({
   const [showExtensionModal, setShowExtensionModal] = useState(false);
   
   // Max devices = new lines + extension lines (for logged in users)
-  const maxDevices = isLoggedIn ? numberOfLines + extensionLineIds.length : numberOfLines;
+  const maxDevices = isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines;
   const canProceed = customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= maxDevices && (customerType === "new" || isLoggedIn);
 
   // Auto-adjust numberOfDevices if it exceeds maxDevices
@@ -90,7 +91,7 @@ export function Step1CustomerInfo({
     if (numberOfDevices > maxDevices) {
       onUpdateNumberOfDevices(maxDevices);
     }
-  }, [numberOfLines, extensionLineIds.length, maxDevices, numberOfDevices, onUpdateNumberOfDevices]);
+  }, [numberOfLines, extensionLines.length, maxDevices, numberOfDevices, onUpdateNumberOfDevices]);
 
   return (
     <div className="w-full">
@@ -207,9 +208,9 @@ export function Step1CustomerInfo({
                   onClick={() => setShowExtensionModal(true)}
                   className="h-16 min-w-[80px] rounded-full text-5xl font-bold text-primary hover:bg-primary/10"
                 >
-                  <AnimatedNumber value={extensionLineIds.length} className="text-5xl font-bold text-primary" />
+                  <AnimatedNumber value={extensionLines.length} className="text-5xl font-bold text-primary" />
                 </Button>
-                <h3 className="text-lg font-semibold"><AnimatedText text={getLinePlural(extensionLineIds.length)} /></h3>
+                <h3 className="text-lg font-semibold"><AnimatedText text={getLinePlural(extensionLines.length)} /></h3>
               </div>
             </CardContent>
           </Card>
@@ -274,7 +275,7 @@ export function Step1CustomerInfo({
         <ExtensionLinesModal
           onClose={() => setShowExtensionModal(false)}
           onSave={onUpdateExtensionLines}
-          selectedLineIds={extensionLineIds}
+          selectedLines={extensionLines}
         />
       )}
     </div>

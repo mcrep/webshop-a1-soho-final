@@ -114,3 +114,10 @@ export type A1Center = {
   address: string;
   city: string;
 };
+
+export type ExtensionLineWithTariff = {
+  lineId: string;
+  msisdn: string;
+  currentTariff: string;
+  newTariffId: string | null;
+};
