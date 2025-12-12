@@ -17,7 +17,7 @@ import { PrepaidToPostpaidModal } from "@/components/modals/PrepaidToPostpaidMod
 import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExtensionModal";
 import { AuthModal } from "@/components/modals/AuthModal";
 import { tariffs, devices } from "@/data/catalog";
-import type { Line, VerificationData, DeliveryData, PaymentData } from "@/types";
+import type { Line, VerificationData, DeliveryData, PaymentData, ExtensionLineWithTariff } from "@/types";
 import { toast } from "@/hooks/use-toast";
 
 function rid() {
@@ -48,7 +48,7 @@ const Index = () => {
   const [numberOfDevices, setNumberOfDevices] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userIdentifier, setUserIdentifier] = useState<string>("");
-  const [extensionLineIds, setExtensionLineIds] = useState<string[]>([]);
+  const [extensionLines, setExtensionLines] = useState<ExtensionLineWithTariff[]>([]);
   const [showHeaderAuthModal, setShowHeaderAuthModal] = useState(false);
   const [tariffQuantities, setTariffQuantities] = useState<TariffQuantity[]>(
     tariffs.map((t) => ({ tariffId: t.id, quantity: 0 }))
@@ -92,6 +92,7 @@ const Index = () => {
 
   const generateDeviceSlots = () => {
     const slots: DeviceSlot[] = [];
+    // Add slots from new lines (tariffQuantities)
     tariffQuantities.forEach((tq) => {
       for (let i = 0; i < tq.quantity; i++) {
         slots.push({
@@ -106,8 +107,31 @@ const Index = () => {
         });
       }
     });
+    // Add slots from extension lines
+    extensionLines.forEach((extLine) => {
+      if (extLine.newTariffId) {
+        slots.push({
+          id: rid(),
+          deviceId: null,
+          walletUse: 0,
+          tariffId: extLine.newTariffId,
+          isActive: false,
+          paymentMethod: "installments",
+          screenInsurance: true,
+          monthlyInstallment: 1,
+        });
+      }
+    });
     setDeviceSlots(slots);
     return slots;
+  };
+
+  const updateExtensionLineTariff = (lineId: string, tariffId: string) => {
+    setExtensionLines((prev) =>
+      prev.map((line) =>
+        line.lineId === lineId ? { ...line, newTariffId: tariffId } : line
+      )
+    );
   };
 
   const handleToggleSlot = (slotId: string) => {
@@ -323,10 +347,13 @@ const Index = () => {
 
   // Footer props based on current screen
   const getFooterProps = () => {
-    const totalLines = isLoggedIn ? numberOfLines + extensionLineIds.length : numberOfLines;
+    const totalLines = isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines;
+    const allExtensionLinesHaveTariff = extensionLines.every(line => line.newTariffId !== null);
+    const newLinesCount = tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0);
+    const newLinesMax = totalLines - extensionLines.length;
     const canProceed = {
       "Početak": customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= totalLines && (customerType === "new" || isLoggedIn),
-      "Tarife": tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0) === totalLines,
+      "Tarife": newLinesCount === newLinesMax && allExtensionLinesHaveTariff,
       "Uređaji": (() => {
         const activeSlots = deviceSlots.filter((slot) => slot.isActive);
         const correctNumberOfDevices = activeSlots.length === numberOfDevices;
@@ -390,7 +417,7 @@ const Index = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserIdentifier("");
-    setExtensionLineIds([]);
+    setExtensionLines([]);
     setCustomerType(null);
   };
 
@@ -425,8 +452,8 @@ const Index = () => {
               tariffCredit={tariffCredit}
               noDeviceBonus={noDeviceWalletBonus}
               linesWithoutDevices={linesWithoutDevices}
-              selectedLines={tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0)}
-              maxLines={isLoggedIn ? numberOfLines + extensionLineIds.length : numberOfLines}
+              selectedLines={tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0) + extensionLines.filter(l => l.newTariffId).length}
+              maxLines={isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines}
             />
           )}
           <div className={currentScreen === "Početak" 
@@ -439,20 +466,22 @@ const Index = () => {
               numberOfLines={numberOfLines}
               numberOfDevices={numberOfDevices}
               isLoggedIn={isLoggedIn}
-              extensionLineIds={extensionLineIds}
+              extensionLines={extensionLines}
               onUpdateCustomerType={setCustomerType}
               onUpdateNumberOfLines={setNumberOfLines}
               onUpdateNumberOfDevices={setNumberOfDevices}
               onLoginSuccess={handleLoginSuccess}
-              onUpdateExtensionLines={setExtensionLineIds}
+              onUpdateExtensionLines={setExtensionLines}
               onNext={handleStep1Next}
             />
           )}
           {currentScreen === "Tarife" && (
             <Step2TariffSelection
               tariffQuantities={tariffQuantities}
-              maxLines={isLoggedIn ? numberOfLines + extensionLineIds.length : numberOfLines}
+              maxLines={isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines}
+              extensionLines={extensionLines}
               onUpdateQuantity={updateQuantity}
+              onUpdateExtensionLineTariff={updateExtensionLineTariff}
               onNext={handleTariffNext}
               onBack={() => setCurrentStep(1)}
             />

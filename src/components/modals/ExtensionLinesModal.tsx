@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { ExtensionLineWithTariff } from "@/types";
 
 type ExtensionLine = {
   id: string;
@@ -11,8 +12,8 @@ type ExtensionLine = {
 
 type ExtensionLinesModalProps = {
   onClose: () => void;
-  onSave: (selectedLines: string[]) => void;
-  selectedLineIds: string[];
+  onSave: (selectedLines: ExtensionLineWithTariff[]) => void;
+  selectedLines: ExtensionLineWithTariff[];
 };
 
 // Mock data - zamijeni s pravim podacima iz API-ja
@@ -23,8 +24,8 @@ const mockExistingLines: ExtensionLine[] = [
   { id: "line-4", number: "385917778899", tariff: "Biz XL", expires: "10.02.2026" },
 ];
 
-export function ExtensionLinesModal({ onClose, onSave, selectedLineIds }: ExtensionLinesModalProps) {
-  const [selected, setSelected] = useState<string[]>(selectedLineIds);
+export function ExtensionLinesModal({ onClose, onSave, selectedLines }: ExtensionLinesModalProps) {
+  const [selected, setSelected] = useState<string[]>(selectedLines.map(l => l.lineId));
 
   const handleToggleLine = (lineId: string) => {
     setSelected((prev) =>
@@ -33,7 +34,17 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLineIds }: Extens
   };
 
   const handleSave = () => {
-    onSave(selected);
+    const selectedWithTariffs: ExtensionLineWithTariff[] = selected.map(lineId => {
+      const mockLine = mockExistingLines.find(l => l.id === lineId);
+      const existing = selectedLines.find(l => l.lineId === lineId);
+      return {
+        lineId,
+        msisdn: mockLine?.number ?? "",
+        currentTariff: mockLine?.tariff ?? "",
+        newTariffId: existing?.newTariffId ?? null,
+      };
+    });
+    onSave(selectedWithTariffs);
     onClose();
   };
 
