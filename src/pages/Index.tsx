@@ -38,7 +38,9 @@ type DeviceSlot = {
   isActive: boolean;
   paymentMethod: "upfront" | "installments";
   screenInsurance: boolean;
-  monthlyInstallment: number; // Monthly installment amount (1-30€)
+  monthlyInstallment: number;
+  label: string; // "Linija 1", "Linija 2", or MSISDN for extension lines
+  isExtension: boolean; // true for extension lines
 };
 
 const Index = () => {
@@ -92,6 +94,8 @@ const Index = () => {
 
   const generateDeviceSlots = () => {
     const slots: DeviceSlot[] = [];
+    let newLineIndex = 1;
+    
     // Add slots from new lines (tariffQuantities)
     tariffQuantities.forEach((tq) => {
       for (let i = 0; i < tq.quantity; i++) {
@@ -104,7 +108,10 @@ const Index = () => {
           paymentMethod: "installments",
           screenInsurance: true,
           monthlyInstallment: 1,
+          label: `Linija ${newLineIndex}`,
+          isExtension: false,
         });
+        newLineIndex++;
       }
     });
     // Add slots from extension lines
@@ -119,6 +126,8 @@ const Index = () => {
           paymentMethod: "installments",
           screenInsurance: true,
           monthlyInstallment: 1,
+          label: extLine.msisdn,
+          isExtension: true,
         });
       }
     });

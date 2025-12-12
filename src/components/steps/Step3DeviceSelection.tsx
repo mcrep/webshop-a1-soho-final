@@ -18,6 +18,8 @@ type DeviceSlot = {
   paymentMethod: "upfront" | "installments";
   screenInsurance: boolean;
   monthlyInstallment: number;
+  label: string;
+  isExtension: boolean;
 };
 
 type Step3Props = {
@@ -114,10 +116,15 @@ export function Step3DeviceSelection({
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 className="rounded-2xl border-2 bg-card p-6 shadow-sm flex flex-col border-border hover:border-primary/50"
               >
-                {/* Tariff name */}
+                {/* Line label and tariff name */}
                 <div className="mb-3 pb-3 border-b border-border">
-                  <div className="text-sm text-muted-foreground">Tarifa:</div>
-                  <div className="font-bold text-lg">{tariff?.name || "Unknown"}</div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${slot.isExtension ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                      {slot.isExtension ? 'Produljenje' : 'Nova linija'}
+                    </span>
+                  </div>
+                  <div className="font-bold text-lg mt-1">{slot.label}</div>
+                  <div className="text-sm text-muted-foreground">Tarifa: {tariff?.name || "Unknown"}</div>
                 </div>
 
                 {/* Toggle activation */}
@@ -338,12 +345,18 @@ export function Step3DeviceSelection({
                         : "border-border/50 opacity-60 cursor-not-allowed"
                     } ${shakingSlotId === slot.id ? "animate-shake" : ""}`}
                   >
-                    {/* Tariff info */}
+                    {/* Line info */}
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
                         <Smartphone className="w-4 h-4 text-muted-foreground" />
                       </div>
-                      <div className="font-medium text-sm">{tariff?.name || "Unknown"}</div>
+                      <div>
+                        <div className="font-medium text-sm">{slot.label}</div>
+                        <div className="text-xs text-muted-foreground">{tariff?.name || "Unknown"}</div>
+                      </div>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${slot.isExtension ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                        {slot.isExtension ? 'Produljenje' : 'Nova'}
+                      </span>
                     </div>
 
                     {linesSelected && (
