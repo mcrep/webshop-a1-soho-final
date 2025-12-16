@@ -64,20 +64,17 @@ export function TariffLineAssignmentModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <AnimatePresence>
-        {open && (
-          <DialogContent className="max-w-lg overflow-hidden" forceMount asChild>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 350, 
-                damping: 30,
-                mass: 0.8
-              }}
-            >
+      <DialogContent className="max-w-lg overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 350, 
+            damping: 30,
+            mass: 0.8
+          }}
+        >
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-3">
                   <motion.div 
@@ -183,8 +180,6 @@ export function TariffLineAssignmentModal({
               </DialogFooter>
             </motion.div>
           </DialogContent>
-        )}
-      </AnimatePresence>
     </Dialog>
   );
 }
