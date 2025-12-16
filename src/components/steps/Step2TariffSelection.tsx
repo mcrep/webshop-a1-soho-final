@@ -1,36 +1,36 @@
-import { Minus, Plus, Wifi, Phone, Globe } from "lucide-react";
+import { useState } from "react";
+import { Wifi, Phone, Globe, Users, AlertCircle } from "lucide-react";
 import { tariffs } from "@/data/catalog";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { TariffLineAssignmentModal, type LineForAssignment } from "@/components/modals/TariffLineAssignmentModal";
 import type { ExtensionLineWithTariff } from "@/types";
 
-type TariffQuantity = {
-  tariffId: string;
-  quantity: number;
+type LineAssignment = {
+  lineId: string;
+  tariffId: string | null;
 };
 
 type Step2Props = {
-  tariffQuantities: TariffQuantity[];
-  maxLines: number;
+  numberOfLines: number;
   extensionLines: ExtensionLineWithTariff[];
-  onUpdateQuantity: (tariffId: string, delta: number) => void;
-  onUpdateExtensionLineTariff: (lineId: string, tariffId: string) => void;
+  lineAssignments: LineAssignment[];
+  onUpdateLineAssignments: (assignments: LineAssignment[]) => void;
   onNext: () => void;
   onBack: () => void;
 };
 
 export function Step2TariffSelection({ 
-  tariffQuantities, 
-  maxLines, 
+  numberOfLines,
   extensionLines,
-  onUpdateQuantity, 
-  onUpdateExtensionLineTariff,
+  lineAssignments,
+  onUpdateLineAssignments,
   onNext, 
   onBack 
 }: Step2Props) {
+  const [selectedTariffId, setSelectedTariffId] = useState<string | null>(null);
+
   // Sort tariffs to show Perfect, Ideal, and Master Biz first
   const displayedTariffs = [...tariffs].sort((a, b) => {
     const priority = ['perfect-biz', 'ideal-biz', 'master-biz'];
@@ -43,23 +43,62 @@ export function Step2TariffSelection({
     return 0;
   });
 
-  // Calculate lines for new tariffs (maxLines - extension lines)
-  const newLinesMax = maxLines - extensionLines.length;
-  const totalNewLines = tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0);
-  const allExtensionLinesHaveTariff = extensionLines.every(line => line.newTariffId !== null);
-  const canProceed = totalNewLines === newLinesMax && allExtensionLinesHaveTariff;
-  const canAddMore = totalNewLines < newLinesMax;
+  // Build lines for assignment modal
+  const allLines: LineForAssignment[] = [
+    // New lines
+    ...Array.from({ length: numberOfLines }, (_, i) => ({
+      id: `new-line-${i + 1}`,
+      label: `Linija ${i + 1}`,
+      isExtension: false,
+      assignedTariffId: lineAssignments.find(a => a.lineId === `new-line-${i + 1}`)?.tariffId ?? null,
+    })),
+    // Extension lines
+    ...extensionLines.map(ext => ({
+      id: ext.lineId,
+      label: ext.msisdn,
+      isExtension: true,
+      currentTariff: ext.currentTariff,
+      assignedTariffId: lineAssignments.find(a => a.lineId === ext.lineId)?.tariffId ?? null,
+    })),
+  ];
+
+  // Count unassigned lines
+  const unassignedLines = allLines.filter(l => l.assignedTariffId === null);
+  const totalLines = allLines.length;
+  const assignedCount = totalLines - unassignedLines.length;
+
+  // Handle line assignment from modal
+  const handleAssignLines = (tariffId: string, lineIds: string[]) => {
+    // Get all line IDs that are NOT being assigned to this tariff
+    const otherAssignments = lineAssignments.filter(a => !lineIds.includes(a.lineId) && a.tariffId !== tariffId);
+    
+    // Add the new assignments for this tariff
+    const newAssignments: LineAssignment[] = [
+      ...otherAssignments,
+      ...lineIds.map(lineId => ({ lineId, tariffId })),
+    ];
+
+    // Also include lines that were assigned to this tariff but are now being unassigned (set to null)
+    const previouslyAssignedToThisTariff = lineAssignments
+      .filter(a => a.tariffId === tariffId && !lineIds.includes(a.lineId))
+      .map(a => ({ lineId: a.lineId, tariffId: null as string | null }));
+
+    onUpdateLineAssignments([...newAssignments, ...previouslyAssignedToThisTariff].filter(a => a.tariffId !== null) as LineAssignment[]);
+  };
+
+  // Get count of lines assigned to each tariff
+  const getAssignedCount = (tariffId: string) => {
+    return lineAssignments.filter(a => a.tariffId === tariffId).length;
+  };
 
   // Title logic
-  const remainingExtensionLines = extensionLines.filter(l => !l.newTariffId).length;
-  const remainingNewLines = newLinesMax - totalNewLines;
-  const totalRemaining = remainingExtensionLines + remainingNewLines;
-
   const getTitle = () => {
-    if (canProceed) return "Odabrane tarife";
-    if (totalRemaining === 1) return `Odaberite još 1 tarifu`;
-    return `Odaberite još ${totalRemaining} tarifa`;
+    if (assignedCount === totalLines) return "Odabrane tarife";
+    if (unassignedLines.length === 1) return `Dodijelite tarifu za još 1 liniju`;
+    return `Dodijelite tarife za još ${unassignedLines.length} linija`;
   };
+
+  const selectedTariff = tariffs.find(t => t.id === selectedTariffId);
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -67,149 +106,137 @@ export function Step2TariffSelection({
         <h1 className="text-3xl font-bold">{getTitle()}</h1>
       </div>
 
-      {/* Extension Lines Section */}
-      {extensionLines.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-4 text-muted-foreground">Produljenje postojećih linija</h2>
-          <div className="space-y-3">
-            {extensionLines.map((line) => (
-              <div 
-                key={line.lineId}
-                className={cn(
-                  "flex items-center justify-between gap-4 p-4 rounded-xl border-2 bg-card transition-all",
-                  line.newTariffId ? "border-primary" : "border-border"
-                )}
-              >
-                <div className="flex-1">
-                  <div className="font-semibold">{line.msisdn}</div>
-                  <div className="text-sm text-muted-foreground">
-                    Trenutna tarifa: {line.currentTariff}
-                  </div>
-                </div>
-                <div className="w-64">
-                  <Select
-                    value={line.newTariffId ?? ""}
-                    onValueChange={(value) => onUpdateExtensionLineTariff(line.lineId, value)}
+      {/* Unassigned Lines Warning */}
+      {unassignedLines.length > 0 && (
+        <div className="bg-muted/50 border border-border rounded-xl p-4 mb-6">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <div className="font-medium mb-2">Linije bez tarife:</div>
+              <div className="flex flex-wrap gap-2">
+                {unassignedLines.map(line => (
+                  <Badge 
+                    key={line.id} 
+                    variant={line.isExtension ? "default" : "secondary"}
+                    className="text-sm"
                   >
-                    <SelectTrigger className={cn(
-                      "w-full",
-                      !line.newTariffId && "border-destructive"
-                    )}>
-                      <SelectValue placeholder="Odaberi novu tarifu" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {tariffs.map((tariff) => (
-                        <SelectItem key={tariff.id} value={tariff.id}>
-                          <div className="flex items-center justify-between gap-4">
-                            <span>{tariff.name}</span>
-                            <span className="text-muted-foreground">€{tariff.monthly.toFixed(2)}/mj</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                    {line.label}
+                    {line.isExtension && <span className="ml-1 opacity-70">(produljenje)</span>}
+                  </Badge>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       )}
 
-      {/* New Lines Section */}
-      {newLinesMax > 0 && (
-        <>
-          {extensionLines.length > 0 && (
-            <h2 className="text-lg font-semibold mb-4 text-muted-foreground">Nove linije ({totalNewLines}/{newLinesMax})</h2>
-          )}
-          <Carousel
-            opts={{
-              align: "start",
-              slidesToScroll: 1,
-            }}
-            className="w-full"
-          >
-            <CarouselContent className="pl-4">
-              {displayedTariffs.map((tariff) => {
-                const tq = tariffQuantities.find((t) => t.tariffId === tariff.id);
-                const quantity = tq?.quantity ?? 0;
-                const canIncrease = totalNewLines < newLinesMax;
+      {/* Tariff Cards */}
+      <Carousel
+        opts={{
+          align: "start",
+          slidesToScroll: 1,
+        }}
+        className="w-full"
+      >
+        <CarouselContent className="pl-4">
+          {displayedTariffs.map((tariff) => {
+            const assignedToThis = getAssignedCount(tariff.id);
+            const hasAssignments = assignedToThis > 0;
 
-                return (
-                  <CarouselItem key={tariff.id} className="p-4 md:basis-1/2 lg:basis-1/3">
-                    <div 
-                      className={cn(
-                        "rounded-2xl border-2 bg-card p-6 shadow-sm transition-all relative h-full cursor-pointer",
-                        quantity > 0 ? "border-primary" : "border-border hover:border-primary/30 hover:bg-accent/50"
-                      )}
-                      onClick={() => canIncrease && onUpdateQuantity(tariff.id, 1)}
-                    >
-                      <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
-                        +€{tariff.walletCredit} A1 Wallet
-                      </div>
-                      {tariff.id === 'perfect-biz' && (
-                        <Badge className="absolute top-4 left-4 bg-gray-500 text-white hover:bg-gray-600">
-                          Preporučeno
-                        </Badge>
-                      )}
-                      <h3 className="text-xl font-bold mb-2 mt-6">{tariff.name}</h3>
-                      <div className="text-2xl font-bold text-primary mb-3">
-                        €{tariff.monthly.toFixed(2)}<span className="text-sm text-muted-foreground">/mj</span>
-                      </div>
-                      
-                      <div className="space-y-2 mb-4 text-sm">
-                        <div className="flex items-center gap-2">
-                          <Wifi className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-medium">{tariff.data}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-medium">{tariff.voice}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Globe className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-medium">{tariff.roaming}</span>
-                        </div>
-                      </div>
+            return (
+              <CarouselItem key={tariff.id} className="p-4 md:basis-1/2 lg:basis-1/3">
+                <div 
+                  className={cn(
+                    "rounded-2xl border-2 bg-card p-6 shadow-sm transition-all relative h-full cursor-pointer",
+                    hasAssignments ? "border-primary" : "border-border hover:border-primary/30 hover:bg-accent/50"
+                  )}
+                  onClick={() => setSelectedTariffId(tariff.id)}
+                >
+                  <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
+                    +€{tariff.walletCredit} A1 Wallet
+                  </div>
+                  {tariff.id === 'perfect-biz' && (
+                    <Badge className="absolute top-4 left-4 bg-gray-500 text-white hover:bg-gray-600">
+                      Preporučeno
+                    </Badge>
+                  )}
+                  <h3 className="text-xl font-bold mb-2 mt-6">{tariff.name}</h3>
+                  <div className="text-2xl font-bold text-primary mb-3">
+                    €{tariff.monthly.toFixed(2)}<span className="text-sm text-muted-foreground">/mj</span>
+                  </div>
+                  
+                  <div className="space-y-2 mb-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Wifi className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium">{tariff.data}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium">{tariff.voice}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium">{tariff.roaming}</span>
+                    </div>
+                  </div>
 
-                      {/* Centered quantity controls in framed container */}
-                      <div className="flex justify-center mt-6">
-                        <div className="inline-flex items-center gap-4 bg-muted/50 border border-border rounded-full px-4 py-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onUpdateQuantity(tariff.id, -1);
-                            }}
-                            disabled={quantity === 0}
-                            className="h-10 w-10 rounded-full hover:bg-background"
-                          >
-                            <Minus className="h-5 w-5" />
-                          </Button>
-                          <div className="text-2xl font-bold min-w-[40px] text-center">{quantity}</div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onUpdateQuantity(tariff.id, 1);
-                            }}
-                            disabled={!canIncrease}
-                            className="h-10 w-10 rounded-full hover:bg-background"
-                          >
-                            <Plus className="h-5 w-5" />
-                          </Button>
-                        </div>
+                  {/* Assignment indicator */}
+                  <div className="flex justify-center mt-6">
+                    <div className={cn(
+                      "inline-flex items-center gap-2 px-4 py-2 rounded-full transition-colors",
+                      hasAssignments 
+                        ? "bg-primary text-primary-foreground" 
+                        : "bg-muted/50 border border-border text-muted-foreground"
+                    )}>
+                      <Users className="h-4 w-4" />
+                      <span className="font-semibold">
+                        {hasAssignments 
+                          ? `${assignedToThis} ${assignedToThis === 1 ? 'linija' : assignedToThis < 5 ? 'linije' : 'linija'}`
+                          : 'Dodijeli linije'
+                        }
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Show assigned lines preview */}
+                  {hasAssignments && (
+                    <div className="mt-4 pt-4 border-t border-border">
+                      <div className="flex flex-wrap gap-1.5">
+                        {lineAssignments
+                          .filter(a => a.tariffId === tariff.id)
+                          .map(a => {
+                            const line = allLines.find(l => l.id === a.lineId);
+                            return (
+                              <Badge 
+                                key={a.lineId} 
+                                variant="outline" 
+                                className="text-xs"
+                              >
+                                {line?.label}
+                              </Badge>
+                            );
+                          })}
                       </div>
                     </div>
-                  </CarouselItem>
-                );
-              })}
-            </CarouselContent>
-            <CarouselPrevious className="left-0 -translate-x-16 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
-            <CarouselNext className="right-0 translate-x-16 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
-          </Carousel>
-        </>
+                  )}
+                </div>
+              </CarouselItem>
+            );
+          })}
+        </CarouselContent>
+        <CarouselPrevious className="left-0 -translate-x-16 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
+        <CarouselNext className="right-0 translate-x-16 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
+      </Carousel>
+
+      {/* Assignment Modal */}
+      {selectedTariff && (
+        <TariffLineAssignmentModal
+          open={selectedTariffId !== null}
+          onOpenChange={(open) => !open && setSelectedTariffId(null)}
+          tariff={selectedTariff}
+          lines={allLines}
+          onAssignLines={handleAssignLines}
+        />
       )}
     </div>
   );
