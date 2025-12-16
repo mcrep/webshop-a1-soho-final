@@ -24,9 +24,9 @@ function rid() {
   return Math.random().toString(36).slice(2, 9);
 }
 
-type TariffQuantity = {
-  tariffId: string;
-  quantity: number;
+type LineAssignment = {
+  lineId: string;
+  tariffId: string | null;
 };
 
 type DeviceSlot = {
@@ -52,9 +52,7 @@ const Index = () => {
   const [userIdentifier, setUserIdentifier] = useState<string>("");
   const [extensionLines, setExtensionLines] = useState<ExtensionLineWithTariff[]>([]);
   const [showHeaderAuthModal, setShowHeaderAuthModal] = useState(false);
-  const [tariffQuantities, setTariffQuantities] = useState<TariffQuantity[]>(
-    tariffs.map((t) => ({ tariffId: t.id, quantity: 0 }))
-  );
+  const [lineAssignments, setLineAssignments] = useState<LineAssignment[]>([]);
   const [deviceSlots, setDeviceSlots] = useState<DeviceSlot[]>([]);
   const [lines, setLines] = useState<Line[]>([]);
   const [deviceListModalFor, setDeviceListModalFor] = useState<string | null>(null);
@@ -84,63 +82,59 @@ const Index = () => {
     return dynamicSteps;
   }, [customerType, numberOfDevices]);
 
-  const updateQuantity = (tariffId: string, delta: number) => {
-    setTariffQuantities((prev) =>
-      prev.map((tq) =>
-        tq.tariffId === tariffId ? { ...tq, quantity: Math.max(0, tq.quantity + delta) } : tq
-      )
-    );
+  const updateLineAssignments = (assignments: LineAssignment[]) => {
+    setLineAssignments(assignments);
   };
 
   const generateDeviceSlots = () => {
     const slots: DeviceSlot[] = [];
     let newLineIndex = 1;
     
-    // Add slots from new lines (tariffQuantities)
-    tariffQuantities.forEach((tq) => {
-      for (let i = 0; i < tq.quantity; i++) {
-        slots.push({
-          id: rid(),
-          deviceId: null,
-          walletUse: 0,
-          tariffId: tq.tariffId,
-          isActive: false,
-          paymentMethod: "installments",
-          screenInsurance: true,
-          monthlyInstallment: 1,
-          label: `Linija ${newLineIndex}`,
-          isExtension: false,
-        });
-        newLineIndex++;
-      }
-    });
-    // Add slots from extension lines
-    extensionLines.forEach((extLine) => {
-      if (extLine.newTariffId) {
-        slots.push({
-          id: rid(),
-          deviceId: null,
-          walletUse: 0,
-          tariffId: extLine.newTariffId,
-          isActive: false,
-          paymentMethod: "installments",
-          screenInsurance: true,
-          monthlyInstallment: 1,
-          label: extLine.msisdn,
-          isExtension: true,
-        });
-      }
-    });
+    // Add slots from new line assignments
+    lineAssignments
+      .filter(a => a.lineId.startsWith('new-line-'))
+      .forEach((assignment) => {
+        if (assignment.tariffId) {
+          slots.push({
+            id: rid(),
+            deviceId: null,
+            walletUse: 0,
+            tariffId: assignment.tariffId,
+            isActive: false,
+            paymentMethod: "installments",
+            screenInsurance: true,
+            monthlyInstallment: 1,
+            label: `Linija ${newLineIndex}`,
+            isExtension: false,
+          });
+          newLineIndex++;
+        }
+      });
+    
+    // Add slots from extension lines (from lineAssignments)
+    lineAssignments
+      .filter(a => !a.lineId.startsWith('new-line-'))
+      .forEach((assignment) => {
+        if (assignment.tariffId) {
+          const extLine = extensionLines.find(e => e.lineId === assignment.lineId);
+          if (extLine) {
+            slots.push({
+              id: rid(),
+              deviceId: null,
+              walletUse: 0,
+              tariffId: assignment.tariffId,
+              isActive: false,
+              paymentMethod: "installments",
+              screenInsurance: true,
+              monthlyInstallment: 1,
+              label: extLine.msisdn,
+              isExtension: true,
+            });
+          }
+        }
+      });
     setDeviceSlots(slots);
     return slots;
-  };
-
-  const updateExtensionLineTariff = (lineId: string, tariffId: string) => {
-    setExtensionLines((prev) =>
-      prev.map((line) =>
-        line.lineId === lineId ? { ...line, newTariffId: tariffId } : line
-      )
-    );
   };
 
   const handleToggleSlot = (slotId: string) => {
@@ -232,25 +226,18 @@ const Index = () => {
     [deviceSlots]
   );
 
-  // Tariff-based wallet credit (new lines + extension lines)
+  // Tariff-based wallet credit (from line assignments)
   const tariffCredit = useMemo(
     () => {
-      // Credit from new lines
-      const newLinesCredit = tariffQuantities.reduce((sum, tq) => {
-        const credit = tariffs.find((t) => t.id === tq.tariffId)?.walletCredit ?? 0;
-        return sum + credit * tq.quantity;
-      }, 0);
-      // Credit from extension lines with selected tariffs
-      const extensionLinesCredit = extensionLines.reduce((sum, extLine) => {
-        if (extLine.newTariffId) {
-          const credit = tariffs.find((t) => t.id === extLine.newTariffId)?.walletCredit ?? 0;
+      return lineAssignments.reduce((sum, assignment) => {
+        if (assignment.tariffId) {
+          const credit = tariffs.find((t) => t.id === assignment.tariffId)?.walletCredit ?? 0;
           return sum + credit;
         }
         return sum;
       }, 0);
-      return newLinesCredit + extensionLinesCredit;
     },
-    [tariffQuantities, extensionLines]
+    [lineAssignments]
   );
 
   const walletTotal = useMemo(
@@ -369,12 +356,10 @@ const Index = () => {
   // Footer props based on current screen
   const getFooterProps = () => {
     const totalLines = isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines;
-    const allExtensionLinesHaveTariff = extensionLines.every(line => line.newTariffId !== null);
-    const newLinesCount = tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0);
-    const newLinesMax = totalLines - extensionLines.length;
+    const allLinesAssigned = lineAssignments.length === totalLines;
     const canProceed = {
       "Početak": customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= totalLines && (customerType === "new" || isLoggedIn),
-      "Tarife": newLinesCount === newLinesMax && allExtensionLinesHaveTariff,
+      "Tarife": allLinesAssigned,
       "Uređaji": (() => {
         const activeSlots = deviceSlots.filter((slot) => slot.isActive);
         const correctNumberOfDevices = activeSlots.length === numberOfDevices;
@@ -473,7 +458,7 @@ const Index = () => {
               tariffCredit={tariffCredit}
               noDeviceBonus={noDeviceWalletBonus}
               linesWithoutDevices={linesWithoutDevices}
-              selectedLines={tariffQuantities.reduce((sum, tq) => sum + tq.quantity, 0) + extensionLines.filter(l => l.newTariffId).length}
+              selectedLines={lineAssignments.length}
               maxLines={isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines}
             />
           )}
@@ -498,11 +483,10 @@ const Index = () => {
           )}
           {currentScreen === "Tarife" && (
             <Step2TariffSelection
-              tariffQuantities={tariffQuantities}
-              maxLines={isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines}
+              numberOfLines={numberOfLines}
               extensionLines={extensionLines}
-              onUpdateQuantity={updateQuantity}
-              onUpdateExtensionLineTariff={updateExtensionLineTariff}
+              lineAssignments={lineAssignments}
+              onUpdateLineAssignments={updateLineAssignments}
               onNext={handleTariffNext}
               onBack={() => setCurrentStep(1)}
             />
