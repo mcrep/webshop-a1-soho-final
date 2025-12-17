@@ -78,13 +78,27 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
             </button>
           </div>
 
-          <div className="p-6 space-y-4">
-            <p className="text-sm text-muted-foreground mb-4">
+          <motion.div 
+            className="p-6 space-y-4"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.08 } }
+            }}
+          >
+            <motion.p 
+              className="text-sm text-muted-foreground mb-4"
+              variants={{
+                hidden: { opacity: 0, y: 10 },
+                visible: { opacity: 1, y: 0 }
+              }}
+            >
               Odaberite jednu ili više linija koje želite produžiti. Možete odabrati više linija.
-            </p>
+            </motion.p>
 
-            {mockExistingLines.map((line) => (
-              <button
+            {mockExistingLines.map((line, index) => (
+              <motion.button
                 key={line.id}
                 onClick={() => handleToggleLine(line.id)}
                 className={`w-full rounded-xl border-2 p-4 text-left transition-all ${
@@ -92,6 +106,12 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
                     ? "border-primary"
                     : "border-border hover:border-primary/30 hover:bg-accent/50"
                 }`}
+                variants={{
+                  hidden: { opacity: 0, x: -20 },
+                  visible: { opacity: 1, x: 0 }
+                }}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
               >
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
@@ -100,14 +120,20 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
                     <div className="text-sm text-muted-foreground">Istječe: {line.expires}</div>
                   </div>
                   {selected.includes(line.id) && (
-                    <div className="h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+                    <motion.div 
+                      className="h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      transition={{ type: "spring", damping: 15, stiffness: 300 }}
+                    >
                       <Check size={16} />
-                    </div>
+                    </motion.div>
                   )}
                 </div>
-              </button>
+              </motion.button>
             ))}
-          </div>
+          </motion.div>
 
           <div className="sticky bottom-0 bg-card border-t border-border px-6 py-4 flex gap-3 justify-between items-center">
             <div className="text-sm text-muted-foreground">
