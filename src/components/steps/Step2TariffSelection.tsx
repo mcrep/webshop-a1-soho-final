@@ -121,7 +121,6 @@ export function Step2TariffSelection({
                     className="text-sm"
                   >
                     {line.label}
-                    {line.isExtension && <span className="ml-1 opacity-70">(produljenje)</span>}
                   </Badge>
                 ))}
               </div>
