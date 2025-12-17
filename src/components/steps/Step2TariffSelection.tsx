@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Wifi, Phone, Globe, Users, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { tariffs } from "@/data/catalog";
 import { Badge } from "@/components/ui/badge";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
@@ -185,26 +186,36 @@ export function Step2TariffSelection({
                   {hasAssignments && (
                     <div className="mt-4 pt-4 border-t border-border">
                     <div className="flex flex-wrap gap-1.5">
-                        {lineAssignments
-                          .filter(a => a.tariffId === tariff.id)
-                          .map(a => {
-                            const line = allLines.find(l => l.id === a.lineId);
-                            return (
-                              <Badge 
-                                key={a.lineId} 
-                                variant="outline" 
-                                className="text-xs pr-1 flex items-center gap-1"
-                              >
-                                {line?.label}
-                                <button
-                                  onClick={(e) => handleRemoveLine(a.lineId, e)}
-                                  className="ml-0.5 hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
+                        <AnimatePresence mode="popLayout">
+                          {lineAssignments
+                            .filter(a => a.tariffId === tariff.id)
+                            .map(a => {
+                              const line = allLines.find(l => l.id === a.lineId);
+                              return (
+                                <motion.div
+                                  key={a.lineId}
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  exit={{ opacity: 0, scale: 0.8 }}
+                                  transition={{ duration: 0.2 }}
+                                  layout
                                 >
-                                  <X className="h-3 w-3" />
-                                </button>
-                              </Badge>
-                            );
-                          })}
+                                  <Badge 
+                                    variant="outline" 
+                                    className="text-xs pr-1 flex items-center gap-1"
+                                  >
+                                    {line?.label}
+                                    <button
+                                      onClick={(e) => handleRemoveLine(a.lineId, e)}
+                                      className="ml-0.5 hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
+                                    >
+                                      <X className="h-3 w-3" />
+                                    </button>
+                                  </Badge>
+                                </motion.div>
+                              );
+                            })}
+                        </AnimatePresence>
                       </div>
                     </div>
                   )}
