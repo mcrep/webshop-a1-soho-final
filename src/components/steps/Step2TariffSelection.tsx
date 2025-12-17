@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Wifi, Phone, Globe, Users } from "lucide-react";
+import { Wifi, Phone, Globe, Users, X } from "lucide-react";
 import { tariffs } from "@/data/catalog";
 import { Badge } from "@/components/ui/badge";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
@@ -86,6 +86,12 @@ export function Step2TariffSelection({
     onUpdateLineAssignments([...newAssignments, ...previouslyAssignedToThisTariff].filter(a => a.tariffId !== null) as LineAssignment[]);
   };
 
+  // Remove a single line from its tariff
+  const handleRemoveLine = (lineId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    onUpdateLineAssignments(lineAssignments.filter(a => a.lineId !== lineId));
+  };
+
   // Get count of lines assigned to each tariff
   const getAssignedCount = (tariffId: string) => {
     return lineAssignments.filter(a => a.tariffId === tariffId).length;
@@ -163,7 +169,7 @@ export function Step2TariffSelection({
                       "inline-flex items-center gap-2 px-4 py-2 rounded-full transition-colors",
                       hasAssignments 
                         ? "bg-primary text-primary-foreground" 
-                        : "bg-muted/50 border border-border text-muted-foreground"
+                        : "border-2 border-primary text-primary bg-transparent"
                     )}>
                       <Users className="h-4 w-4" />
                       <span className="font-semibold">
@@ -178,7 +184,7 @@ export function Step2TariffSelection({
                   {/* Show assigned lines preview */}
                   {hasAssignments && (
                     <div className="mt-4 pt-4 border-t border-border">
-                      <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1.5">
                         {lineAssignments
                           .filter(a => a.tariffId === tariff.id)
                           .map(a => {
@@ -187,9 +193,15 @@ export function Step2TariffSelection({
                               <Badge 
                                 key={a.lineId} 
                                 variant="outline" 
-                                className="text-xs"
+                                className="text-xs pr-1 flex items-center gap-1"
                               >
                                 {line?.label}
+                                <button
+                                  onClick={(e) => handleRemoveLine(a.lineId, e)}
+                                  className="ml-0.5 hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
                               </Badge>
                             );
                           })}
