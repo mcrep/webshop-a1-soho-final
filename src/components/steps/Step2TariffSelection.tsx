@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Wifi, Phone, Globe, Users, AlertCircle } from "lucide-react";
+import { Wifi, Phone, Globe, Users } from "lucide-react";
 import { tariffs } from "@/data/catalog";
 import { Badge } from "@/components/ui/badge";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
@@ -106,32 +106,6 @@ export function Step2TariffSelection({
         <h1 className="text-3xl font-bold">{getTitle()}</h1>
       </div>
 
-      {/* Unassigned Lines Warning */}
-      {unassignedLines.length > 0 && (
-        <div className="bg-muted/50 border border-border rounded-xl p-4 mb-6">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="h-5 w-5 text-muted-foreground mt-0.5" />
-            <div>
-              <div className="font-medium mb-2">Linije bez tarife:</div>
-              <div className="flex flex-wrap gap-2">
-                {unassignedLines.map(line => (
-                  <Badge 
-                    key={line.id} 
-                    className="text-sm"
-                    style={{
-                      backgroundColor: line.isExtension ? 'rgba(122, 142, 255, 0.15)' : 'rgba(255, 191, 0, 0.15)',
-                      color: line.isExtension ? '#7A8EFF' : '#FFBF00',
-                      borderColor: line.isExtension ? '#7A8EFF' : '#FFBF00',
-                    }}
-                  >
-                    {line.label}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Tariff Cards */}
       <Carousel
