@@ -117,12 +117,12 @@ export function Step2TariffSelection({
                 {unassignedLines.map(line => (
                   <Badge 
                     key={line.id} 
-                    className={cn(
-                      "text-sm",
-                      line.isExtension 
-                        ? "bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400" 
-                        : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400"
-                    )}
+                    className="text-sm"
+                    style={{
+                      backgroundColor: line.isExtension ? 'rgba(122, 142, 255, 0.15)' : 'rgba(255, 191, 0, 0.15)',
+                      color: line.isExtension ? '#7A8EFF' : '#FFBF00',
+                      borderColor: line.isExtension ? '#7A8EFF' : '#FFBF00',
+                    }}
                   >
                     {line.label}
                   </Badge>
