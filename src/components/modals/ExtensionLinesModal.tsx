@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import type { ExtensionLineWithTariff } from "@/types";
 
 type ExtensionLine = {
@@ -50,9 +51,22 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
 
   return (
     <div className="fixed inset-0 z-[60]">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
+      <motion.div 
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm" 
+        onClick={onClose}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+      />
       <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="relative bg-card border border-border rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <motion.div 
+          className="relative bg-card border border-border rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        >
           <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between z-10">
             <h2 className="text-xl font-semibold">Odaberi linije za produljenje</h2>
             <button
@@ -108,7 +122,7 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
               </Button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
