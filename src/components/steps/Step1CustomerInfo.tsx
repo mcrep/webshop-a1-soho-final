@@ -9,9 +9,9 @@ import type { ExtensionLineWithTariff } from "@/types";
 
 // Croatian pluralization helper
 const getLinePlural = (n: number) => {
-  if (n === 1) return "mobilnu liniju";
-  if (n >= 2 && n <= 4) return "mobilne linije";
-  return "mobilnih linija";
+  if (n === 1) return "novu mobilnu liniju";
+  if (n >= 2 && n <= 4) return "nove mobilne linije";
+  return "novih mobilnih linija";
 };
 
 const getDevicePlural = (n: number) => {
