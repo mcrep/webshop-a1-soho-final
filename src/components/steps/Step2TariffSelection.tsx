@@ -131,15 +131,20 @@ export function Step2TariffSelection({
 
             return (
               <CarouselItem key={tariff.id} className="p-4 md:basis-1/2 lg:basis-1/3">
-                <div 
+                <motion.div 
                   className={cn(
-                    "rounded-2xl border-2 bg-card p-6 shadow-sm transition-all relative h-full",
+                    "rounded-2xl border-2 bg-card p-6 shadow-sm relative h-full",
                     isDisabled 
-                      ? "opacity-50 cursor-not-allowed border-border" 
+                      ? "cursor-not-allowed border-border" 
                       : hasAssignments 
                         ? "border-primary cursor-pointer" 
                         : "border-border hover:border-primary/30 hover:bg-accent/50 cursor-pointer"
                   )}
+                  animate={{
+                    opacity: isDisabled ? 0.5 : 1,
+                    scale: isDisabled ? 0.98 : 1,
+                  }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
                   onClick={() => !isDisabled && setSelectedTariffId(tariff.id)}
                 >
                   <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
@@ -229,7 +234,7 @@ export function Step2TariffSelection({
                       </div>
                     </div>
                   )}
-                </div>
+                </motion.div>
               </CarouselItem>
             );
           })}
