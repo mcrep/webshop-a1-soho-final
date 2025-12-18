@@ -123,18 +123,24 @@ export function Step2TariffSelection({
         className="w-full"
       >
         <CarouselContent className="pl-4">
-          {displayedTariffs.map((tariff) => {
+        {displayedTariffs.map((tariff) => {
             const assignedToThis = getAssignedCount(tariff.id);
             const hasAssignments = assignedToThis > 0;
+            const allLinesAssigned = unassignedLines.length === 0;
+            const isDisabled = allLinesAssigned && !hasAssignments;
 
             return (
               <CarouselItem key={tariff.id} className="p-4 md:basis-1/2 lg:basis-1/3">
                 <div 
                   className={cn(
-                    "rounded-2xl border-2 bg-card p-6 shadow-sm transition-all relative h-full cursor-pointer",
-                    hasAssignments ? "border-primary" : "border-border hover:border-primary/30 hover:bg-accent/50"
+                    "rounded-2xl border-2 bg-card p-6 shadow-sm transition-all relative h-full",
+                    isDisabled 
+                      ? "opacity-50 cursor-not-allowed border-border" 
+                      : hasAssignments 
+                        ? "border-primary cursor-pointer" 
+                        : "border-border hover:border-primary/30 hover:bg-accent/50 cursor-pointer"
                   )}
-                  onClick={() => setSelectedTariffId(tariff.id)}
+                  onClick={() => !isDisabled && setSelectedTariffId(tariff.id)}
                 >
                   <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
                     +€{tariff.walletCredit} A1 Wallet
@@ -167,16 +173,20 @@ export function Step2TariffSelection({
                   {/* Assignment indicator */}
                   <div className="flex justify-center mt-6">
                     <div className={cn(
-                      "inline-flex items-center gap-2 px-4 py-2 rounded-full transition-colors",
+                      "inline-flex items-center gap-2 px-4 py-2 rounded-full transition-colors text-center",
                       hasAssignments 
                         ? "bg-primary text-primary-foreground" 
-                        : "border-2 border-primary text-primary bg-transparent"
+                        : isDisabled
+                          ? "border-2 border-muted text-muted-foreground bg-transparent"
+                          : "border-2 border-primary text-primary bg-transparent"
                     )}>
                       <Users className="h-4 w-4" />
-                      <span className="font-semibold">
+                      <span className="font-semibold text-sm">
                         {hasAssignments 
                           ? `${assignedToThis} ${assignedToThis === 1 ? 'linija' : assignedToThis < 5 ? 'linije' : 'linija'}`
-                          : 'Dodijeli linije'
+                          : isDisabled
+                            ? 'Sve linije su dodijeljene'
+                            : 'Dodijeli linije'
                         }
                       </span>
                     </div>
