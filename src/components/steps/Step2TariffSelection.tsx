@@ -106,7 +106,7 @@ export function Step2TariffSelection({
   };
 
   const getTitle = () => {
-    if (assignedCount === totalLines) return "Odabrane tarife";
+    if (assignedCount === totalLines) return "Odabrali ste sve tarife!";
     return `Potrebno je dodijeliti neku od navedenih tarifa na ${getLineDeclension(unassignedLines.length)}`;
   };
 
