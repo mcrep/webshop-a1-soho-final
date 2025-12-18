@@ -98,11 +98,16 @@ export function Step2TariffSelection({
     return lineAssignments.filter(a => a.tariffId === tariffId).length;
   };
 
-  // Title logic
+  // Title logic with Croatian declension
+  const getLineDeclension = (count: number) => {
+    if (count === 1) return "1 mobilnu liniju";
+    if (count >= 2 && count <= 4) return `${count} mobilne linije`;
+    return `${count} mobilnih linija`;
+  };
+
   const getTitle = () => {
     if (assignedCount === totalLines) return "Odabrane tarife";
-    if (unassignedLines.length === 1) return `Dodijelite tarifu za još 1 liniju`;
-    return `Dodijelite tarife za još ${unassignedLines.length} linija`;
+    return `Potrebno je dodijeliti neku od navedenih tarifa na ${getLineDeclension(unassignedLines.length)}`;
   };
 
   const selectedTariff = tariffs.find(t => t.id === selectedTariffId);
