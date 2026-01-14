@@ -165,13 +165,14 @@ export function Step2TariffSelection({
               <CarouselItem key={tariff.id} className="p-4 md:basis-1/2 lg:basis-1/3">
                 <motion.div 
                   className={cn(
-                    "rounded-2xl border-2 bg-card p-6 shadow-sm relative h-full",
+                    "rounded-2xl border-2 bg-card p-6 shadow-sm relative h-full transition-all duration-300",
                     isDisabled 
                       ? "cursor-not-allowed border-border" 
                       : hasAssignments 
                         ? "border-primary cursor-pointer" 
-                        : "border-border hover:border-primary/30 hover:bg-accent/50 cursor-pointer"
+                        : "border-border hover:border-primary/30 hover:bg-accent/50 hover:shadow-md cursor-pointer"
                   )}
+                  whileHover={!isDisabled && !hasAssignments ? { scale: 1.02 } : undefined}
                   animate={{
                     opacity: isDisabled ? 0.5 : 1,
                     scale: isDisabled ? 0.98 : 1,
