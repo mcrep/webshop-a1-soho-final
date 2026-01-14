@@ -50,6 +50,7 @@ const Index = () => {
   const [numberOfDevices, setNumberOfDevices] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userIdentifier, setUserIdentifier] = useState<string>("");
+  const [companyOIB, setCompanyOIB] = useState<string>("");
   const [extensionLines, setExtensionLines] = useState<ExtensionLineWithTariff[]>([]);
   const [showHeaderAuthModal, setShowHeaderAuthModal] = useState(false);
   const [lineAssignments, setLineAssignments] = useState<LineAssignment[]>([]);
@@ -349,7 +350,8 @@ const Index = () => {
       totalOnetime, 
       verificationData, 
       deliveryData, 
-      paymentData 
+      paymentData,
+      companyOIB: customerType === "new" ? companyOIB : undefined,
     });
   };
 
@@ -484,11 +486,13 @@ const Index = () => {
               numberOfDevices={numberOfDevices}
               isLoggedIn={isLoggedIn}
               extensionLines={extensionLines}
+              companyOIB={companyOIB}
               onUpdateCustomerType={setCustomerType}
               onUpdateNumberOfLines={setNumberOfLines}
               onUpdateNumberOfDevices={setNumberOfDevices}
               onLoginSuccess={handleLoginSuccess}
               onUpdateExtensionLines={setExtensionLines}
+              onUpdateCompanyOIB={setCompanyOIB}
               onNext={handleStep1Next}
             />
           )}

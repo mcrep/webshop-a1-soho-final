@@ -59,11 +59,13 @@ type Step1Props = {
   numberOfDevices: number;
   isLoggedIn: boolean;
   extensionLines: ExtensionLineWithTariff[];
+  companyOIB: string;
   onUpdateCustomerType: (type: "new" | "existing") => void;
   onUpdateNumberOfLines: (num: number) => void;
   onUpdateNumberOfDevices: (num: number) => void;
   onLoginSuccess: (identifier: string, type: "email" | "phone") => void;
   onUpdateExtensionLines: (lines: ExtensionLineWithTariff[]) => void;
+  onUpdateCompanyOIB: (oib: string) => void;
   onNext: () => void;
 };
 
@@ -73,11 +75,13 @@ export function Step1CustomerInfo({
   numberOfDevices,
   isLoggedIn,
   extensionLines,
+  companyOIB,
   onUpdateCustomerType,
   onUpdateNumberOfLines,
   onUpdateNumberOfDevices,
   onLoginSuccess,
   onUpdateExtensionLines,
+  onUpdateCompanyOIB,
   onNext,
 }: Step1Props) {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -301,7 +305,7 @@ export function Step1CustomerInfo({
           <OIBModal
             onClose={() => setShowOIBModal(false)}
             onSubmit={(oib) => {
-              console.log("OIB submitted:", oib);
+              onUpdateCompanyOIB(oib);
               setShowOIBModal(false);
             }}
           />
