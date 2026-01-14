@@ -75,10 +75,17 @@ export function Step3DeviceSelection({
   const remainingLinesToActivate = numberOfDevices - activeCount;
   const remainingDevicesToSelect = numberOfDevices - devicesSelectedCount;
 
+  // Helper for Croatian grammar - line declension
+  const getLineText = (count: number) => {
+    if (count === 1) return "1 liniju na kojoj";
+    if (count >= 2 && count <= 4) return `${count} linije na kojima`;
+    return `${count} linija na kojima`;
+  };
+
   let title = "";
   if (activeCount < numberOfDevices) {
     // Phase 1: Need to activate more lines
-    title = `Odaberite ${remainingLinesToActivate} ${remainingLinesToActivate === 1 ? 'liniju' : 'linije'} na kojima želite uzeti uređaje`;
+    title = `Odaberite ${getLineText(remainingLinesToActivate)} želite uzeti uređaje`;
   } else if (!allActiveDevicesSelected) {
     // Phase 2: Lines activated, need to select devices
     title = `Odaberite ${remainingDevicesToSelect} ${remainingDevicesToSelect === 1 ? 'uređaj' : 'uređaja'}`;
