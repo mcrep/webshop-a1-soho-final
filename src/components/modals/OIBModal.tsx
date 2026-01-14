@@ -135,13 +135,13 @@ export function OIBModal({ onClose, onSubmit }: OIBModalProps) {
             className="flex-1"
             onClick={onClose}
           >
-            Odustani
+            Ne želim personaliziranu ponudu
           </Button>
           <Button
             className="flex-1"
             onClick={handleSubmit}
           >
-            Nastavi
+            Želim personaliziranu ponudu
           </Button>
         </div>
       </motion.div>
