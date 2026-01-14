@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Check } from "lucide-react";
+import { X, Check, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import type { ExtensionLineWithTariff } from "@/types";
@@ -50,36 +50,45 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
   };
 
   return (
-    <div className="fixed inset-0 z-[60]">
+    <motion.div 
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+    >
       <motion.div 
-        className="absolute inset-0 bg-black/30 backdrop-blur-sm" 
-        onClick={onClose}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-      />
-      <div className="absolute inset-0 flex items-center justify-center p-4">
-        <motion.div 
-          className="relative bg-card border border-border rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        >
-          <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between z-10">
-            <h2 className="text-xl font-semibold">Odaberi linije za produljenje</h2>
-            <button
-              onClick={onClose}
-              className="h-8 w-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors"
-              aria-label="Zatvori"
-            >
-              <X size={20} />
-            </button>
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        className="w-full max-w-lg mx-4 rounded-2xl bg-background shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="relative bg-gradient-to-r from-primary/80 to-primary/60 p-6 text-primary-foreground">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center">
+              <RefreshCw className="h-6 w-6" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold">Produljenje linija</h2>
+              <p className="text-sm opacity-90">Odaberite linije za produljenje</p>
+            </div>
           </div>
+        </div>
 
+        {/* Content */}
+        <div className="p-6 overflow-y-auto flex-1">
           <motion.div 
-            className="p-6 space-y-4"
+            className="space-y-3"
             initial="hidden"
             animate="visible"
             variants={{
@@ -94,17 +103,17 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
                 visible: { opacity: 1, y: 0 }
               }}
             >
-              Odaberite jednu ili više linija koje želite produžiti. Možete odabrati više linija.
+              Odaberite jednu ili više linija koje želite produžiti.
             </motion.p>
 
-            {mockExistingLines.map((line, index) => (
+            {mockExistingLines.map((line) => (
               <motion.button
                 key={line.id}
                 onClick={() => handleToggleLine(line.id)}
-                className={`w-full rounded-xl border-2 p-4 text-left transition-all ${
+                className={`w-full rounded-2xl border px-4 py-4 text-left transition-all flex items-start gap-3 ${
                   selected.includes(line.id)
-                    ? "border-primary"
-                    : "border-border hover:border-primary/30 hover:bg-accent/50"
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:bg-muted"
                 }`}
                 variants={{
                   hidden: { opacity: 0, x: -20 },
@@ -113,43 +122,46 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
               >
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <div className="font-semibold text-lg">{line.number}</div>
-                    <div className="text-sm text-muted-foreground">Tarifa: {line.tariff}</div>
-                    <div className="text-sm text-muted-foreground">Istječe: {line.expires}</div>
-                  </div>
+                <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
+                  selected.includes(line.id)
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-muted-foreground/30"
+                }`}>
                   {selected.includes(line.id) && (
-                    <motion.div 
-                      className="h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center"
+                    <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      exit={{ scale: 0 }}
                       transition={{ type: "spring", damping: 15, stiffness: 300 }}
                     >
-                      <Check size={16} />
+                      <Check size={14} />
                     </motion.div>
                   )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium">{line.number}</div>
+                  <div className="text-sm text-muted-foreground">Tarifa: {line.tariff}</div>
+                  <div className="text-sm text-muted-foreground">Istječe: {line.expires}</div>
                 </div>
               </motion.button>
             ))}
           </motion.div>
+        </div>
 
-          <div className="sticky bottom-0 bg-card border-t border-border px-6 py-4 flex gap-3 justify-between items-center">
-            <div className="text-sm text-muted-foreground">
-              Odabrano: {selected.length} {selected.length === 1 ? "linija" : "linija"}
-            </div>
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={onClose}>
-                Odustani
-              </Button>
-              <Button onClick={handleSave}>
-                Spremi ({selected.length})
-              </Button>
-            </div>
+        {/* Footer */}
+        <div className="border-t border-border px-6 py-4 flex items-center justify-between bg-background">
+          <div className="text-sm text-muted-foreground">
+            Odabrano: {selected.length} {selected.length === 1 ? "linija" : "linija"}
           </div>
-        </motion.div>
-      </div>
-    </div>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={onClose} className="rounded-2xl">
+              Odustani
+            </Button>
+            <Button onClick={handleSave} className="rounded-2xl">
+              Spremi ({selected.length})
+            </Button>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
