@@ -76,9 +76,18 @@ export function Step2TariffSelection({
   const handleTariffClick = (tariffId: string, isDisabled: boolean, hasAssignments: boolean) => {
     if (isDisabled) return;
     
-    // Single line: directly assign/reassign without modal
+    // Single line: directly assign if unassigned, otherwise open modal to allow removal
     if (isSingleLine) {
       const singleLineId = allLines[0].id;
+      const currentAssignment = lineAssignments.find(a => a.lineId === singleLineId);
+      
+      // If already assigned to this tariff, open modal to allow removal
+      if (currentAssignment?.tariffId === tariffId) {
+        setSelectedTariffId(tariffId);
+        return;
+      }
+      
+      // Otherwise directly assign
       onUpdateLineAssignments([{ lineId: singleLineId, tariffId }]);
       return;
     }
