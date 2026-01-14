@@ -19,6 +19,8 @@ export type Line = {
   walletUse?: number;
   screenInsurance?: boolean;
   completed?: boolean;
+  isExtension?: boolean;
+  extensionLabel?: string;
   // Number porting data (mnp)
   portingNumber?: string;
   portingNumberType?: "prepaid" | "postpaid";

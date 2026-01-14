@@ -75,7 +75,9 @@ export function Step4Summary({
           const lineTypeName = line.lineType === "new" ? "Nova linija" :
             line.lineType === "mnp" ? "Prijenos broja" :
             line.lineType === "pre2post" ? "S bonova na pretplatu" :
-            line.lineType === "renew" ? "Produljenje linije" : null;
+            line.lineType === "renew" ? "Produljenje postojeće linije" : null;
+          
+          const isExtensionLine = line.isExtension === true;
 
           const isExpanded = expandedLines.has(line.id);
 
@@ -143,19 +145,24 @@ export function Step4Summary({
                         line.lineType ? "text-primary font-medium" : "text-destructive"
                       )}>
                         {line.lineType ? lineTypeName : "Obavezno odaberite vrstu linije"}
+                        {isExtensionLine && line.extensionLabel && (
+                          <span className="ml-2 text-muted-foreground">({line.extensionLabel})</span>
+                        )}
                       </p>
                     </div>
                   </div>
-                  <Button
-                    variant={line.lineType ? "outline" : "default"}
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onOpenLineTypeModal(line.id);
-                    }}
-                  >
-                    {line.lineType ? "Promijeni" : "Odaberi vrstu"}
-                  </Button>
+                  {!isExtensionLine && (
+                    <Button
+                      variant={line.lineType ? "outline" : "default"}
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenLineTypeModal(line.id);
+                      }}
+                    >
+                      {line.lineType ? "Promijeni" : "Odaberi vrstu"}
+                    </Button>
+                  )}
                 </div>
               </div>
 
