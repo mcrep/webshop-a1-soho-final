@@ -183,7 +183,6 @@ export function Step3DeviceSelection({
                             <span className="text-sm font-semibold">Umanji cijenu uređaja korištenjem A1 Wallet popusta</span>
                           </div>
                           <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
                             <Input
                               id={`wallet-${slot.id}`}
                               type="number"
@@ -197,13 +196,11 @@ export function Step3DeviceSelection({
                                 );
                                 onUpdateWalletUse(slot.id, value);
                               }}
-                              placeholder="0.00"
-                              className="pl-7 text-lg font-bold h-12 bg-background border-2 border-primary/20 focus:border-primary"
+                              placeholder="0"
+                              className="text-center text-lg font-bold h-12 bg-background border-2 border-primary/20 focus:border-primary pr-8"
                             />
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
                           </div>
-                          <p className="text-xs text-muted-foreground">
-                            Dostupno: <span className="font-semibold text-foreground">€{maxWalletForDevice.toFixed(2)}</span>
-                          </p>
                         </div>
 
                         <div className="flex justify-between items-center pt-2 border-t border-border">
@@ -236,7 +233,6 @@ export function Step3DeviceSelection({
                                 <span className="text-sm font-semibold">Umanji cijenu uređaja korištenjem A1 Wallet popusta</span>
                               </div>
                               <div className="relative">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
                                 <Input
                                   id={`wallet-inst-${slot.id}`}
                                   type="number"
@@ -250,13 +246,11 @@ export function Step3DeviceSelection({
                                     );
                                     onUpdateWalletUse(slot.id, value);
                                   }}
-                                  placeholder="0.00"
-                                  className="pl-7 text-lg font-bold h-12 bg-background border-2 border-primary/20 focus:border-primary"
+                                  placeholder="0"
+                                  className="text-center text-lg font-bold h-12 bg-background border-2 border-primary/20 focus:border-primary pr-8"
                                 />
+                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
                               </div>
-                              <p className="text-xs text-muted-foreground">
-                                Dostupno: <span className="font-semibold text-foreground">€{maxWalletInstallment.toFixed(2)}</span>
-                              </p>
                             </div>
                           );
                         })()}
