@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { tariffs } from "@/data/catalog";
-import { Check, X, Wifi, Phone, Globe, Wallet } from "lucide-react";
+import { Check, X, Wifi, Phone, Globe, Wallet, Tag } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 type CompareTariffsModalProps = {
@@ -22,7 +22,43 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       key: "monthly", 
       label: "Mjesečna cijena", 
       icon: null,
-      render: (tariff: typeof tariffs[0]) => `€${tariff.monthly.toFixed(2)}`
+      render: (tariff: typeof tariffs[0]) => {
+        if (tariff.originalMonthly && tariff.originalMonthly > tariff.monthly) {
+          return (
+            <div className="flex flex-col items-center gap-0.5">
+              <span className="text-sm text-muted-foreground line-through">
+                €{tariff.originalMonthly.toFixed(2)}
+              </span>
+              <span className="font-bold text-primary text-lg">
+                €{tariff.monthly.toFixed(2)}
+              </span>
+            </div>
+          );
+        }
+        return <span className="font-bold text-primary text-lg">€{tariff.monthly.toFixed(2)}</span>;
+      }
+    },
+    { 
+      key: "savings", 
+      label: "Ušteda", 
+      icon: Tag,
+      render: (tariff: typeof tariffs[0]) => {
+        if (tariff.originalMonthly && tariff.originalMonthly > tariff.monthly) {
+          const savingsPercent = ((tariff.originalMonthly - tariff.monthly) / tariff.originalMonthly * 100).toFixed(0);
+          const savingsAmount = (tariff.originalMonthly - tariff.monthly).toFixed(2);
+          return (
+            <div className="inline-flex flex-col items-center gap-1">
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full text-xs font-semibold">
+                -{savingsPercent}%
+              </span>
+              <span className="text-xs text-muted-foreground">
+                €{savingsAmount}/mj
+              </span>
+            </div>
+          );
+        }
+        return <span className="text-muted-foreground">—</span>;
+      }
     },
     { 
       key: "data", 
@@ -127,6 +163,8 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
                             ) : (
                               <X className="h-5 w-5 text-muted-foreground/40 mx-auto" />
                             )
+                          ) : typeof value === 'object' ? (
+                            value
                           ) : (
                             <span className={feature.key === "monthly" ? "font-bold text-primary text-lg" : ""}>
                               {value}
