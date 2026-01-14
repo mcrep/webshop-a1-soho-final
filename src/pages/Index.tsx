@@ -357,8 +357,9 @@ const Index = () => {
   const getFooterProps = () => {
     const totalLines = isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines;
     const allLinesAssigned = lineAssignments.length === totalLines;
+    const hasAtLeastOneLine = totalLines > 0;
     const canProceed = {
-      "Početak": customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= totalLines && (customerType === "new" || isLoggedIn),
+      "Početak": customerType !== null && hasAtLeastOneLine && numberOfDevices >= 0 && numberOfDevices <= totalLines && (customerType === "new" || isLoggedIn),
       "Tarife": allLinesAssigned,
       "Uređaji": (() => {
         const activeSlots = deviceSlots.filter((slot) => slot.isActive);
