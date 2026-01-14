@@ -82,7 +82,7 @@ export function OIBModal({ onClose, onSubmit }: OIBModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-primary to-primary/80 p-6 text-primary-foreground">
+        <div className="relative bg-gradient-to-r from-primary/80 to-primary/60 p-6 text-primary-foreground">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
