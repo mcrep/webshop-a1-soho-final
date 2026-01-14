@@ -185,18 +185,18 @@ export function Step3DeviceSelection({
                           <div className="relative">
                             <Input
                               id={`wallet-${slot.id}`}
-                              type="text"
-                              inputMode="decimal"
-                              value={slot.walletUse.toFixed(2)}
+                              type="number"
+                              min={0}
+                              max={maxWalletForDevice}
+                              value={slot.walletUse}
                               onChange={(e) => {
-                                const parsed = parseFloat(e.target.value.replace(',', '.')) || 0;
                                 const value = Math.min(
-                                  Math.max(0, parsed),
+                                  Math.max(0, parseFloat(e.target.value) || 0),
                                   maxWalletForDevice
                                 );
                                 onUpdateWalletUse(slot.id, value);
                               }}
-                              placeholder="0.00"
+                              placeholder="0"
                               className="text-center text-lg font-bold h-12 bg-background border-2 border-primary/20 focus:border-primary pr-8"
                             />
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
@@ -235,18 +235,18 @@ export function Step3DeviceSelection({
                               <div className="relative">
                                 <Input
                                   id={`wallet-inst-${slot.id}`}
-                                  type="text"
-                                  inputMode="decimal"
-                                  value={slot.walletUse.toFixed(2)}
+                                  type="number"
+                                  min={0}
+                                  max={maxWalletInstallment}
+                                  value={slot.walletUse}
                                   onChange={(e) => {
-                                    const parsed = parseFloat(e.target.value.replace(',', '.')) || 0;
                                     const value = Math.min(
-                                      Math.max(0, parsed),
+                                      Math.max(0, parseFloat(e.target.value) || 0),
                                       maxWalletInstallment
                                     );
                                     onUpdateWalletUse(slot.id, value);
                                   }}
-                                  placeholder="0.00"
+                                  placeholder="0"
                                   className="text-center text-lg font-bold h-12 bg-background border-2 border-primary/20 focus:border-primary pr-8"
                                 />
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
