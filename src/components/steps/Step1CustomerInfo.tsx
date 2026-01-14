@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { UserPlus, Users, Smartphone, Minus, Plus, Check, RefreshCw } from "lucide-react";
 import { AuthModal } from "@/components/modals/AuthModal";
 import { ExtensionLinesModal } from "@/components/modals/ExtensionLinesModal";
+import { OIBModal } from "@/components/modals/OIBModal";
 import { motion, AnimatePresence } from "framer-motion";
 import type { ExtensionLineWithTariff } from "@/types";
 
@@ -81,6 +82,7 @@ export function Step1CustomerInfo({
 }: Step1Props) {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showExtensionModal, setShowExtensionModal] = useState(false);
+  const [showOIBModal, setShowOIBModal] = useState(false);
   
   // Max devices = new lines + extension lines (for logged in users)
   const maxDevices = isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines;
@@ -96,7 +98,7 @@ export function Step1CustomerInfo({
   return (
     <div className="w-full">
       {/* Welcome Message */}
-      <div className="text-center mb-8 pt-6 max-w-2xl mx-auto px-4">
+      <div className="text-center mb-8 pt-12 max-w-2xl mx-auto px-4">
         <h1 className="text-3xl font-bold mb-3">Dobrodošli u A1 Webshop za poslovne korisnike</h1>
         <p className="text-muted-foreground text-lg">
           Konfigurirajte svoje mobilne linije i uređaje u par jednostavnih koraka. 
@@ -117,7 +119,12 @@ export function Step1CustomerInfo({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <button
-                onClick={() => !isLoggedIn && onUpdateCustomerType("new")}
+                onClick={() => {
+                  if (!isLoggedIn) {
+                    onUpdateCustomerType("new");
+                    setShowOIBModal(true);
+                  }
+                }}
                 disabled={isLoggedIn}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
                   isLoggedIn
@@ -287,6 +294,19 @@ export function Step1CustomerInfo({
           selectedLines={extensionLines}
         />
       )}
+
+      {/* OIB Modal for new customers */}
+      <AnimatePresence>
+        {showOIBModal && (
+          <OIBModal
+            onClose={() => setShowOIBModal(false)}
+            onSubmit={(oib) => {
+              console.log("OIB submitted:", oib);
+              setShowOIBModal(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
