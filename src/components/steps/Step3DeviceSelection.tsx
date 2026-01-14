@@ -189,36 +189,24 @@ export function Step3DeviceSelection({
                             <Wallet className="h-4 w-4 shrink-0" />
                             <span className="text-sm font-semibold">Umanji cijenu uređaja korištenjem A1 Wallet popusta</span>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <div className="relative flex-1">
-                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
-                              <Input
-                                id={`wallet-${slot.id}`}
-                                type="number"
-                                min={0}
-                                max={maxWalletForDevice}
-                                value={slot.walletUse}
-                                onChange={(e) => {
-                                  const value = Math.min(
-                                    Math.max(0, parseFloat(e.target.value) || 0),
-                                    maxWalletForDevice
-                                  );
-                                  onUpdateWalletUse(slot.id, value);
-                                }}
-                                placeholder="0.00"
-                                className="pl-7 text-lg font-bold h-12 bg-background border-2 border-primary/20 focus:border-primary"
-                              />
-                            </div>
-                            <Button
-                              type="button"
-                              variant="default"
-                              size="sm"
-                              onClick={() => onUpdateWalletUse(slot.id, maxWalletForDevice)}
-                              className="h-12 px-4 whitespace-nowrap"
-                              title="Postavi maksimalni popust"
-                            >
-                              Max
-                            </Button>
+                          <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
+                            <Input
+                              id={`wallet-${slot.id}`}
+                              type="number"
+                              min={0}
+                              max={maxWalletForDevice}
+                              value={slot.walletUse}
+                              onChange={(e) => {
+                                const value = Math.min(
+                                  Math.max(0, parseFloat(e.target.value) || 0),
+                                  maxWalletForDevice
+                                );
+                                onUpdateWalletUse(slot.id, value);
+                              }}
+                              placeholder="0.00"
+                              className="pl-7 text-lg font-bold h-12 bg-background border-2 border-primary/20 focus:border-primary"
+                            />
                           </div>
                           <p className="text-xs text-muted-foreground">
                             Dostupno: <span className="font-semibold text-foreground">€{maxWalletForDevice.toFixed(2)}</span>
@@ -254,36 +242,24 @@ export function Step3DeviceSelection({
                                 <Wallet className="h-4 w-4 shrink-0" />
                                 <span className="text-sm font-semibold">Umanji cijenu uređaja korištenjem A1 Wallet popusta</span>
                               </div>
-                              <div className="flex items-center gap-2">
-                                <div className="relative flex-1">
-                                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
-                                  <Input
-                                    id={`wallet-inst-${slot.id}`}
-                                    type="number"
-                                    min={0}
-                                    max={maxWalletInstallment}
-                                    value={slot.walletUse}
-                                    onChange={(e) => {
-                                      const value = Math.min(
-                                        Math.max(0, parseFloat(e.target.value) || 0),
-                                        maxWalletInstallment
-                                      );
-                                      onUpdateWalletUse(slot.id, value);
-                                    }}
-                                    placeholder="0.00"
-                                    className="pl-7 text-lg font-bold h-12 bg-background border-2 border-primary/20 focus:border-primary"
-                                  />
-                                </div>
-                                <Button
-                                  type="button"
-                                  variant="default"
-                                  size="sm"
-                                  onClick={() => onUpdateWalletUse(slot.id, maxWalletInstallment)}
-                                  className="h-12 px-4 whitespace-nowrap"
-                                  title="Postavi maksimalni popust"
-                                >
-                                  Max
-                                </Button>
+                              <div className="relative">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
+                                <Input
+                                  id={`wallet-inst-${slot.id}`}
+                                  type="number"
+                                  min={0}
+                                  max={maxWalletInstallment}
+                                  value={slot.walletUse}
+                                  onChange={(e) => {
+                                    const value = Math.min(
+                                      Math.max(0, parseFloat(e.target.value) || 0),
+                                      maxWalletInstallment
+                                    );
+                                    onUpdateWalletUse(slot.id, value);
+                                  }}
+                                  placeholder="0.00"
+                                  className="pl-7 text-lg font-bold h-12 bg-background border-2 border-primary/20 focus:border-primary"
+                                />
                               </div>
                               <p className="text-xs text-muted-foreground">
                                 Dostupno: <span className="font-semibold text-foreground">€{maxWalletInstallment.toFixed(2)}</span>
