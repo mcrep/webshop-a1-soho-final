@@ -18,7 +18,28 @@ export function OIBModal({ onClose, onSubmit }: OIBModalProps) {
     if (!/^\d{11}$/.test(value)) {
       return false;
     }
-    return true;
+
+    // MOD 11,10 algorithm for Croatian OIB validation
+    let remainder = 10;
+    
+    for (let i = 0; i < 10; i++) {
+      const digit = parseInt(value[i], 10);
+      remainder = remainder + digit;
+      remainder = remainder % 10;
+      if (remainder === 0) {
+        remainder = 10;
+      }
+      remainder = remainder * 2;
+      remainder = remainder % 11;
+    }
+
+    let controlDigit = 11 - remainder;
+    if (controlDigit === 10) {
+      controlDigit = 0;
+    }
+
+    const lastDigit = parseInt(value[10], 10);
+    return controlDigit === lastDigit;
   };
 
   const handleSubmit = () => {
@@ -26,8 +47,12 @@ export function OIBModal({ onClose, onSubmit }: OIBModalProps) {
       setError("OIB je obavezan");
       return;
     }
-    if (!validateOIB(oib)) {
+    if (oib.length !== 11) {
       setError("OIB mora sadržavati točno 11 znamenki");
+      return;
+    }
+    if (!validateOIB(oib)) {
+      setError("Uneseni OIB nije ispravan");
       return;
     }
     setError("");
