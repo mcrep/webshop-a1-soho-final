@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { Smartphone, Plus, Gift, Wallet } from "lucide-react";
+import { Smartphone, Plus, Gift, Wallet, X } from "lucide-react";
 import { devices, tariffs } from "@/data/catalog";
 import { Label } from "@/components/ui/label";
 import { motion, LayoutGroup } from "framer-motion";
@@ -114,10 +114,19 @@ export function Step3DeviceSelection({
                 key={slot.id}
                 layout
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="rounded-2xl border-2 bg-card p-6 shadow-sm flex flex-col border-border hover:border-primary/50"
+                className="rounded-2xl border-2 bg-card p-6 shadow-sm flex flex-col border-border hover:border-primary/50 relative"
               >
+                {/* Close button */}
+                <button
+                  onClick={() => onToggleSlot(slot.id)}
+                  className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                  title="Zatvori uređaj"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+
                 {/* Line label and tariff name */}
-                <div className="mb-3 pb-3 border-b border-border">
+                <div className="mb-3 pb-3 border-b border-border pr-8">
                   <div className="flex items-center gap-2">
                     <span className={`text-xs px-2 py-0.5 rounded-full ${slot.isExtension ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
                       {slot.isExtension ? 'Produljenje' : 'Nova linija'}
@@ -125,22 +134,6 @@ export function Step3DeviceSelection({
                   </div>
                   <div className="font-bold text-lg mt-1">{slot.label}</div>
                   <div className="text-sm text-muted-foreground">Tarifa: {tariff?.name || "Unknown"}</div>
-                </div>
-
-                {/* Toggle activation */}
-                <div 
-                  className="flex items-center justify-between gap-4 mb-4 pb-4 border-b border-border rounded-lg p-3 transition-all cursor-pointer"
-                  onClick={() => onToggleSlot(slot.id)}
-                >
-                  <Label htmlFor={`toggle-${slot.id}`} className="text-sm font-medium flex-1 cursor-pointer">
-                    Želim kupiti uređaj uz ovu tarifu
-                  </Label>
-                  <Switch
-                    id={`toggle-${slot.id}`}
-                    checked={slot.isActive}
-                    onCheckedChange={() => onToggleSlot(slot.id)}
-                    className="pointer-events-none"
-                  />
                 </div>
 
                 {/* Device selection */}
