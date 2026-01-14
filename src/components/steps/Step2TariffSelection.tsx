@@ -170,9 +170,8 @@ export function Step2TariffSelection({
                       ? "cursor-not-allowed border-border" 
                       : hasAssignments 
                         ? "border-primary cursor-pointer" 
-                        : "border-border hover:border-primary/30 hover:bg-accent/50 hover:shadow-md cursor-pointer"
+                        : "border-border hover:border-primary/30 hover:bg-accent/50 cursor-pointer"
                   )}
-                  whileHover={!isDisabled && !hasAssignments ? { scale: 1.02 } : undefined}
                   animate={{
                     opacity: isDisabled ? 0.5 : 1,
                     scale: isDisabled ? 0.98 : 1,
