@@ -184,9 +184,11 @@ const Index = () => {
       devicePayment: slot.paymentMethod,
       deviceMonthly: slot.paymentMethod === "installments" ? slot.monthlyInstallment : null,
       addonIds: [],
-      lineType: null,
+      lineType: slot.isExtension ? "renew" : null,
       walletUse: slot.walletUse,
       screenInsurance: slot.screenInsurance,
+      isExtension: slot.isExtension,
+      extensionLabel: slot.isExtension ? slot.label : undefined,
     }));
     setLines(newLines);
   };
@@ -315,9 +317,11 @@ const Index = () => {
         devicePayment: slot.paymentMethod,
         deviceMonthly: null,
         addonIds: [],
-        lineType: null,
+        lineType: slot.isExtension ? "renew" : null,
         walletUse: 0,
         screenInsurance: false,
+        isExtension: slot.isExtension,
+        extensionLabel: slot.isExtension ? slot.label : undefined,
       }));
       setLines(newLines);
     }
