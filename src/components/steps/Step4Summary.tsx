@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Check } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Smartphone, CreditCard, Shield, Wallet, Tag } from "lucide-react";
 import { tariffs, devices } from "@/data/catalog";
 import type { Line } from "@/types";
+import { cn } from "@/lib/utils";
 
 type Step4Props = {
   lines: Line[];
@@ -22,138 +24,276 @@ export function Step4Summary({
   onFinish,
   onOpenLineTypeModal,
 }: Step4Props) {
+  const [expandedLines, setExpandedLines] = useState<Set<string>>(new Set());
   const allLinesConfigured = lines.every((line) => line.lineType !== null);
 
+  const toggleLine = (lineId: string) => {
+    setExpandedLines((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(lineId)) {
+        newSet.delete(lineId);
+      } else {
+        newSet.add(lineId);
+      }
+      return newSet;
+    });
+  };
+
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
       <div className="text-center my-8">
         <h1 className="text-3xl font-bold mb-2">Sažetak narudžbe</h1>
         <p className="text-muted-foreground">Korak 4 od 4 - Pregled i finalizacija</p>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-border shadow-sm">
-        <table className="w-full bg-card">
-          <thead>
-            <tr className="border-b border-border bg-muted/30">
-              <th className="text-left p-4 font-semibold">Linija</th>
-              <th className="text-left p-4 font-semibold">Tarifa</th>
-              <th className="text-left p-4 font-semibold">Uređaj</th>
-              <th className="text-left p-4 font-semibold">Plaćanje</th>
-              <th className="text-left p-4 font-semibold">Popust</th>
-              <th className="text-right p-4 font-semibold">Mjesečno</th>
-              <th className="text-right p-4 font-semibold">Jednokratno</th>
-              <th className="text-left p-4 font-semibold">Vrsta linije</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lines.map((line, index) => {
-              const tariff = tariffs.find((t) => t.id === line.tariffId);
-              const device = devices.find((d) => d.id === line.deviceId);
-              const variant = device?.variants?.find((v) => v.id === line.deviceVariantId);
-              const devicePrice = variant?.upfront || device?.upfront || 0;
-              
-              const tariffMonthly = tariff?.monthly ?? 0;
-              let deviceMonthly = 0;
-              if (line.devicePayment === "installments" && device && device.id !== "no-dev") {
-                // deviceMonthly now stores the monthly installment amount
-                deviceMonthly = line.deviceMonthly ?? 0;
-              }
-              const screenInsuranceCost = device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0;
-              const lineMonthly = tariffMonthly + deviceMonthly + screenInsuranceCost;
+      <div className="space-y-4">
+        {lines.map((line, index) => {
+          const tariff = tariffs.find((t) => t.id === line.tariffId);
+          const device = devices.find((d) => d.id === line.deviceId);
+          const variant = device?.variants?.find((v) => v.id === line.deviceVariantId);
+          const devicePrice = variant?.upfront || device?.upfront || 0;
+          
+          const tariffMonthly = tariff?.monthly ?? 0;
+          let deviceMonthly = 0;
+          if (line.devicePayment === "installments" && device && device.id !== "no-dev") {
+            deviceMonthly = line.deviceMonthly ?? 0;
+          }
+          const screenInsuranceCost = device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0;
+          const lineMonthly = tariffMonthly + deviceMonthly + screenInsuranceCost;
 
-              // For upfront: show device upfront - wallet
-              // For installments: show upfront = device.upfront - (monthlyRate × 24) - wallet
-              let lineOnetime = 0;
-              if (device && device.id !== "no-dev") {
-                if (line.devicePayment === "upfront") {
-                  lineOnetime = Math.max(0, devicePrice - (line.walletUse ?? 0));
-                } else {
-                  // Installments: upfront = device price - total installments - wallet
-                  const monthlyRate = line.deviceMonthly ?? 0;
-                  const totalInstallments = monthlyRate * 24;
-                  lineOnetime = Math.max(0, devicePrice - totalInstallments - (line.walletUse ?? 0));
-                }
-              }
+          let lineOnetime = 0;
+          if (device && device.id !== "no-dev") {
+            if (line.devicePayment === "upfront") {
+              lineOnetime = Math.max(0, devicePrice - (line.walletUse ?? 0));
+            } else {
+              const monthlyRate = line.deviceMonthly ?? 0;
+              const totalInstallments = monthlyRate * 24;
+              lineOnetime = Math.max(0, devicePrice - totalInstallments - (line.walletUse ?? 0));
+            }
+          }
 
-              const lineTypeName = line.lineType === "new" ? "Nova linija" :
-                line.lineType === "mnp" ? "Prijenos broja" :
-                line.lineType === "pre2post" ? "S bonova na pretplatu" :
-                line.lineType === "renew" ? "Produljenje linije" : null;
+          const lineTypeName = line.lineType === "new" ? "Nova linija" :
+            line.lineType === "mnp" ? "Prijenos broja" :
+            line.lineType === "pre2post" ? "S bonova na pretplatu" :
+            line.lineType === "renew" ? "Produljenje linije" : null;
 
-              return (
-                <tr key={line.id} className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors">
-                  <td className="p-4 font-medium">Linija {index + 1}</td>
-                  <td className="p-4">
-                    <div className="font-semibold">{tariff?.name}</div>
-                    <div className="text-xs text-muted-foreground">{tariff?.data}</div>
-                  </td>
-                  <td className="p-4">
-                    <div className="font-semibold">{device?.name}</div>
-                    {variant && (
-                      <div className="text-xs text-muted-foreground">
-                        {variant.color} • {variant.memory}
+          const isExpanded = expandedLines.has(line.id);
+
+          return (
+            <div
+              key={line.id}
+              className={cn(
+                "rounded-2xl border border-border bg-card shadow-sm overflow-hidden transition-all duration-200",
+                isExpanded && "ring-2 ring-primary/20"
+              )}
+            >
+              {/* Card Header - Always Visible */}
+              <div
+                className="p-4 cursor-pointer hover:bg-muted/30 transition-colors"
+                onClick={() => toggleLine(line.id)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <span className="text-lg font-bold text-primary">{index + 1}</span>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-lg">{tariff?.name}</h3>
+                        {line.lineType && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                            <Check size={12} />
+                            {lineTypeName}
+                          </span>
+                        )}
                       </div>
-                    )}
-                    {device && device.id !== "no-dev" && line.screenInsurance && (
-                      <div className="text-xs text-muted-foreground">
-                        Zaštita ekrana
-                      </div>
-                    )}
-                  </td>
-                  <td className="p-4 text-sm">
-                    {device?.id !== "no-dev" ? (
-                      line.devicePayment === "installments" ? `Rate (24 mj × €${line.deviceMonthly?.toFixed(2) ?? "0.00"})` : "Jednokratno"
-                    ) : "—"}
-                  </td>
-                  <td className="p-4">
-                    {line.walletUse ? (
-                      <span className="text-primary font-semibold">-€{line.walletUse.toFixed(2)}</span>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </td>
-                  <td className="p-4 text-right font-semibold">
-                    €{lineMonthly.toFixed(2)}
-                  </td>
-                  <td className="p-4 text-right font-semibold">
-                    {lineOnetime > 0 ? `€${lineOnetime.toFixed(2)}` : "—"}
-                  </td>
-                  <td className="p-4">
-                    <Button
-                      variant={line.lineType ? "outline" : "default"}
-                      size="sm"
-                      onClick={() => onOpenLineTypeModal(line.id)}
-                      className="w-full justify-start"
-                    >
-                      {line.lineType ? (
-                        <div className="flex items-center gap-2">
-                          <Check size={16} className="text-primary" />
-                          <span className="text-xs">{lineTypeName}</span>
-                        </div>
-                      ) : (
-                        <span className="text-xs">Odaberi vrstu</span>
+                      <p className="text-sm text-muted-foreground">
+                        {device?.id !== "no-dev" ? device?.name : "Bez uređaja"}
+                        {variant && ` • ${variant.color}`}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-6">
+                    <div className="text-right">
+                      <div className="text-xl font-bold text-primary">€{lineMonthly.toFixed(2)}<span className="text-sm font-normal text-muted-foreground">/mj</span></div>
+                      {lineOnetime > 0 && (
+                        <div className="text-sm text-muted-foreground">+ €{lineOnetime.toFixed(2)} jednokratno</div>
                       )}
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-          <tfoot>
-            <tr className="border-t-2 border-border bg-muted/30">
-              <td colSpan={5} className="p-4 text-right font-bold text-lg">
-                UKUPNO:
-              </td>
-              <td className="p-4 text-right font-bold text-xl text-primary">
-                €{totalMonthly.toFixed(2)}/mj
-              </td>
-              <td className="p-4 text-right font-bold text-xl text-primary">
-                {totalOnetime > 0 ? `€${totalOnetime.toFixed(2)}` : "—"}
-              </td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
+                    </div>
+                    <div className="text-muted-foreground">
+                      {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Expanded Details */}
+              {isExpanded && (
+                <div className="border-t border-border bg-muted/10 p-4 animate-fade-in">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Tariff Details */}
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Tarifa</h4>
+                      <div className="bg-card rounded-xl p-3 border border-border">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Tag size={18} className="text-primary" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-semibold">{tariff?.name}</div>
+                            <div className="text-sm text-muted-foreground">{tariff?.data} • {tariff?.voice}</div>
+                          </div>
+                          <div className="text-right font-semibold">€{tariffMonthly.toFixed(2)}/mj</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Device Details */}
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Uređaj</h4>
+                      <div className="bg-card rounded-xl p-3 border border-border">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-secondary/50 flex items-center justify-center">
+                            <Smartphone size={18} className="text-foreground" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-semibold">{device?.id !== "no-dev" ? device?.name : "Bez uređaja"}</div>
+                            {variant && (
+                              <div className="text-sm text-muted-foreground">{variant.color} • {variant.memory}</div>
+                            )}
+                          </div>
+                          {device?.id !== "no-dev" && (
+                            <div className="text-right text-sm">
+                              <div className="font-semibold">€{devicePrice.toFixed(2)}</div>
+                              <div className="text-muted-foreground">puna cijena</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Payment Method */}
+                    {device?.id !== "no-dev" && (
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Način plaćanja</h4>
+                        <div className="bg-card rounded-xl p-3 border border-border">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-accent/50 flex items-center justify-center">
+                              <CreditCard size={18} className="text-foreground" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="font-semibold">
+                                {line.devicePayment === "installments" ? "Plaćanje na rate" : "Jednokratno plaćanje"}
+                              </div>
+                              {line.devicePayment === "installments" && (
+                                <div className="text-sm text-muted-foreground">24 mjeseca × €{(line.deviceMonthly ?? 0).toFixed(2)}</div>
+                              )}
+                            </div>
+                            {line.devicePayment === "installments" ? (
+                              <div className="text-right font-semibold">€{deviceMonthly.toFixed(2)}/mj</div>
+                            ) : (
+                              <div className="text-right font-semibold">€{lineOnetime.toFixed(2)}</div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Wallet Discount */}
+                    {line.walletUse && line.walletUse > 0 && (
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">A1 Wallet popust</h4>
+                        <div className="bg-primary/5 rounded-xl p-3 border border-primary/20">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+                              <Wallet size={18} className="text-primary" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="font-semibold text-primary">Iskorišteni kredit</div>
+                              <div className="text-sm text-muted-foreground">Popust na uređaj</div>
+                            </div>
+                            <div className="text-right font-semibold text-primary">-€{line.walletUse.toFixed(2)}</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Screen Insurance */}
+                    {device?.id !== "no-dev" && line.screenInsurance && (
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Osiguranje</h4>
+                        <div className="bg-card rounded-xl p-3 border border-border">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
+                              <Shield size={18} className="text-green-600" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="font-semibold">Zaštita ekrana</div>
+                              <div className="text-sm text-muted-foreground">Pokriva slučajna oštećenja</div>
+                            </div>
+                            <div className="text-right font-semibold">€4.99/mj</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Line Type Selection */}
+                  <div className="mt-4 pt-4 border-t border-border">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-semibold">Vrsta linije</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {line.lineType ? lineTypeName : "Odaberite vrstu linije za nastavak"}
+                        </p>
+                      </div>
+                      <Button
+                        variant={line.lineType ? "outline" : "default"}
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenLineTypeModal(line.id);
+                        }}
+                      >
+                        {line.lineType ? (
+                          <div className="flex items-center gap-2">
+                            <Check size={16} className="text-primary" />
+                            <span>Promijeni</span>
+                          </div>
+                        ) : (
+                          <span>Odaberi vrstu</span>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Totals Card */}
+      <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-semibold mb-1">Ukupan trošak</h3>
+            <p className="text-sm text-muted-foreground">{lines.length} {lines.length === 1 ? "linija" : lines.length < 5 ? "linije" : "linija"} u narudžbi</p>
+          </div>
+          <div className="flex items-center gap-8">
+            <div className="text-right">
+              <div className="text-sm text-muted-foreground mb-1">Mjesečno</div>
+              <div className="text-2xl font-bold text-primary">€{totalMonthly.toFixed(2)}</div>
+            </div>
+            {totalOnetime > 0 && (
+              <div className="text-right">
+                <div className="text-sm text-muted-foreground mb-1">Jednokratno</div>
+                <div className="text-2xl font-bold">€{totalOnetime.toFixed(2)}</div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="text-sm text-muted-foreground text-center">
