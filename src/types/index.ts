@@ -42,6 +42,7 @@ export type Tariff = {
   id: string;
   name: string;
   monthly: number;
+  originalMonthly?: number;
   data: string;
   voice: string;
   roaming: string;

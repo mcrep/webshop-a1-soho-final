@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Wifi, Phone, Globe, Users, X, Scale } from "lucide-react";
+import { Wifi, Phone, Globe, Users, X, Scale, Tag } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { tariffs } from "@/data/catalog";
 import { Badge } from "@/components/ui/badge";
@@ -197,8 +197,25 @@ export function Step2TariffSelection({
                     </Badge>
                   )}
                   <h3 className="text-xl font-bold mb-2 mt-6">{tariff.name}</h3>
-                  <div className="text-2xl font-bold text-primary mb-3">
-                    {tariff.monthly.toFixed(2)}€<span className="text-sm text-muted-foreground">/mj</span>
+                  
+                  {/* Savings Badge */}
+                  {tariff.originalMonthly && tariff.originalMonthly > tariff.monthly && (
+                    <div className="inline-flex items-center gap-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2.5 py-1 rounded-full text-xs font-semibold mb-2">
+                      <Tag className="h-3 w-3" />
+                      Ušteda {((tariff.originalMonthly - tariff.monthly) / tariff.originalMonthly * 100).toFixed(0)}%
+                    </div>
+                  )}
+                  
+                  {/* Price Display */}
+                  <div className="mb-3">
+                    {tariff.originalMonthly && tariff.originalMonthly > tariff.monthly && (
+                      <div className="text-sm text-muted-foreground line-through">
+                        {tariff.originalMonthly.toFixed(2)}€/mj
+                      </div>
+                    )}
+                    <div className="text-2xl font-bold text-primary">
+                      {tariff.monthly.toFixed(2)}€<span className="text-sm text-muted-foreground font-normal">/mj</span>
+                    </div>
                   </div>
                   
                   <div className="space-y-2 mb-4 text-sm">
