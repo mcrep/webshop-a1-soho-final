@@ -186,8 +186,8 @@ export function Step3DeviceSelection({
                         
                         <div className="rounded-lg border-2 border-primary/30 bg-primary/5 p-3 space-y-3">
                           <div className="flex items-center gap-2 text-primary">
-                            <Wallet className="h-4 w-4" />
-                            <span className="text-sm font-semibold">A1 Wallet popust</span>
+                            <Wallet className="h-4 w-4 shrink-0" />
+                            <span className="text-sm font-semibold">Umanji cijenu uređaja korištenjem A1 Wallet popusta</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <div className="relative flex-1">
@@ -251,8 +251,8 @@ export function Step3DeviceSelection({
                           return (
                             <div className="rounded-lg border-2 border-primary/30 bg-primary/5 p-3 space-y-3">
                               <div className="flex items-center gap-2 text-primary">
-                                <Wallet className="h-4 w-4" />
-                                <span className="text-sm font-semibold">A1 Wallet popust</span>
+                                <Wallet className="h-4 w-4 shrink-0" />
+                                <span className="text-sm font-semibold">Umanji cijenu uređaja korištenjem A1 Wallet popusta</span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <div className="relative flex-1">
