@@ -25,12 +25,7 @@ export function Header({ onOpenAuth, lineCount, monthly, onetime, allLinesConfig
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6">
             <div className="flex items-center gap-3">
               <img src={a1Logo} alt="A1 Logo" className="h-9 w-auto" />
-              <div>
-                <h1 className="text-lg font-semibold text-foreground">Business Webshop</h1>
-                <p className="text-xs text-foreground">
-                  Konfigurator tarifa za male poslovne korisnike
-                </p>
-              </div>
+              <h1 className="text-lg font-semibold text-foreground">Business Webshop</h1>
             </div>
 
             {/* Horizontal Stepper - Centered */}
@@ -98,12 +93,7 @@ export function Header({ onOpenAuth, lineCount, monthly, onetime, allLinesConfig
           <div className="flex items-center justify-between gap-6">
             <div className="flex items-center gap-3">
               <img src={a1Logo} alt="A1 Logo" className="h-9 w-auto" />
-              <div>
-                <h1 className="text-lg font-semibold text-foreground">Business Webshop</h1>
-                <p className="text-xs text-foreground">
-                  Konfigurator tarifa za male poslovne korisnike
-                </p>
-              </div>
+              <h1 className="text-lg font-semibold text-foreground">Business Webshop</h1>
             </div>
 
             <div className="flex items-center gap-2">
