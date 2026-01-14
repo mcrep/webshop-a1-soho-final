@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, Phone, ArrowLeft } from "lucide-react";
+import { User, Phone, ArrowLeft, X, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -117,50 +117,59 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
 
   return (
     <motion.div 
-      className="fixed inset-0 z-[60]"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
+      onClick={onClose}
     >
-      <div 
-        className="absolute inset-0 bg-black/30 backdrop-blur-sm" 
-        onClick={onClose} 
-      />
-      <div className="absolute inset-0 grid place-items-center p-4">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          transition={{ type: "spring", duration: 0.3, bounce: 0.2 }}
-          className="w-full max-w-xl rounded-2xl bg-card shadow-xl border border-border overflow-hidden"
-        >
-          {/* Header */}
-          <div className="p-6 flex items-start justify-between border-b border-border">
-            <div className="flex items-center gap-3">
-              {view !== "select" && (
-                <button
-                  onClick={handleBack}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <ArrowLeft size={20} />
-                </button>
-              )}
-              <div className="text-xl font-semibold">
-                {view === "select" && "Prijavite se za nastavak"}
-                {view === "login" && "Prijava putem korisničkih podataka"}
-                {view === "login-otp" && "Unesi kod iz SMS-a"}
-                {view === "phone-input" && "Unesi A1 mobilni broj"}
-                {view === "otp" && "Unesi kod iz SMS-a"}
-              </div>
-            </div>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        className="w-full max-w-lg mx-4 rounded-2xl bg-background shadow-2xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="relative bg-gradient-to-r from-primary/80 to-primary/60 p-6 text-primary-foreground">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          {view !== "select" && (
             <button
-              onClick={onClose}
-              className="text-muted-foreground hover:text-foreground text-xl transition-colors"
+              onClick={handleBack}
+              className="absolute top-4 left-4 p-2 rounded-full hover:bg-white/20 transition-colors"
             >
-              ✕
+              <ArrowLeft className="h-5 w-5" />
             </button>
+          )}
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center">
+              <LogIn className="h-6 w-6" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold">
+                {view === "select" && "Prijavite se"}
+                {view === "login" && "Prijava"}
+                {view === "login-otp" && "Potvrda identiteta"}
+                {view === "phone-input" && "Prijava putem SMS-a"}
+                {view === "otp" && "Potvrda identiteta"}
+              </h2>
+              <p className="text-sm opacity-90">
+                {view === "select" && "Postojeći poslovni korisnik"}
+                {view === "login" && "Korisničko ime i lozinka"}
+                {view === "login-otp" && "Unesite SMS kod"}
+                {view === "phone-input" && "A1 mobilni broj"}
+                {view === "otp" && "Unesite SMS kod"}
+              </p>
+            </div>
           </div>
+        </div>
 
           {/* Content */}
           <div className="p-6">
@@ -388,7 +397,6 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
             )}
           </div>
         </motion.div>
-      </div>
     </motion.div>
   );
 }
