@@ -181,7 +181,7 @@ export function Step3DeviceSelection({
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
                           <span className="text-sm font-medium">Jednokratna cijena:</span>
-                          <span className="font-bold">€{devicePrice.toFixed(2)}</span>
+                          <span className="font-bold">{devicePrice.toFixed(2)}€</span>
                         </div>
                         
                         <div className="rounded-lg border-2 border-primary/30 bg-primary/5 p-3 space-y-3">
@@ -213,7 +213,7 @@ export function Step3DeviceSelection({
                         <div className="flex justify-between items-center pt-2 border-t border-border">
                           <span className="text-sm font-medium">Ukupna cijena uređaja:</span>
                           <span className="font-bold text-lg text-primary">
-                            €{Math.max(0, devicePrice - slot.walletUse).toFixed(2)}
+                            {Math.max(0, devicePrice - slot.walletUse).toFixed(2)}€
                           </span>
                         </div>
                       </div>
@@ -224,7 +224,7 @@ export function Step3DeviceSelection({
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
                           <span className="text-sm font-medium">Jednokratna cijena:</span>
-                          <span className="font-bold">€{Math.max(0, devicePrice - (slot.monthlyInstallment * 24)).toFixed(2)}</span>
+                          <span className="font-bold">{Math.max(0, devicePrice - (slot.monthlyInstallment * 24)).toFixed(2)}€</span>
                         </div>
 
                         {(() => {
@@ -265,7 +265,7 @@ export function Step3DeviceSelection({
                         <div className="flex justify-between items-center pt-2 border-t border-border">
                           <span className="text-sm font-medium">Ukupna cijena uređaja:</span>
                           <span className="font-bold text-lg text-primary">
-                            €{Math.max(0, devicePrice - (slot.monthlyInstallment * 24) - slot.walletUse).toFixed(2)}
+                            {Math.max(0, devicePrice - (slot.monthlyInstallment * 24) - slot.walletUse).toFixed(2)}€
                           </span>
                         </div>
                       </div>
