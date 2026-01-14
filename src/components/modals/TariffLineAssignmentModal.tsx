@@ -109,7 +109,7 @@ export function TariffLineAssignmentModal({
                 >
                   <h2 className="text-xl font-bold">{tariff.name}</h2>
                   <p className="text-sm opacity-90">
-                    €{tariff.monthly.toFixed(2)}/mj
+                    {tariff.monthly.toFixed(2)}€/mj
                   </p>
                 </motion.div>
               </div>

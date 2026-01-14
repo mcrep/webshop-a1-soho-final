@@ -180,7 +180,7 @@ export function Step2TariffSelection({
                   onClick={() => handleTariffClick(tariff.id, isDisabled, hasAssignments)}
                 >
                   <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
-                    +€{tariff.walletCredit} A1 Wallet
+                    +{tariff.walletCredit}€ A1 Wallet
                   </div>
                   {tariff.id === 'perfect-biz' && (
                     <Badge className="absolute top-4 left-4 bg-gray-500 text-white hover:bg-gray-600">
@@ -189,7 +189,7 @@ export function Step2TariffSelection({
                   )}
                   <h3 className="text-xl font-bold mb-2 mt-6">{tariff.name}</h3>
                   <div className="text-2xl font-bold text-primary mb-3">
-                    €{tariff.monthly.toFixed(2)}<span className="text-sm text-muted-foreground">/mj</span>
+                    {tariff.monthly.toFixed(2)}€<span className="text-sm text-muted-foreground">/mj</span>
                   </div>
                   
                   <div className="space-y-2 mb-4 text-sm">
