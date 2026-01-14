@@ -112,9 +112,9 @@ export function Step4Summary({
                   
                   <div className="flex items-center gap-6">
                     <div className="text-right">
-                      <div className="text-xl font-bold text-primary">€{lineMonthly.toFixed(2)}<span className="text-sm font-normal text-muted-foreground">/mj</span></div>
+                      <div className="text-xl font-bold text-primary">{lineMonthly.toFixed(2)}€<span className="text-sm font-normal text-muted-foreground">/mj</span></div>
                       {lineOnetime > 0 && (
-                        <div className="text-sm text-muted-foreground">+ €{lineOnetime.toFixed(2)} jednokratno</div>
+                        <div className="text-sm text-muted-foreground">+ {lineOnetime.toFixed(2)}€ jednokratno</div>
                       )}
                     </div>
                     <div className="text-muted-foreground">
@@ -182,7 +182,7 @@ export function Step4Summary({
                             <div className="font-semibold">{tariff?.name}</div>
                             <div className="text-sm text-muted-foreground">{tariff?.data} • {tariff?.voice}</div>
                           </div>
-                          <div className="text-right font-semibold">€{tariffMonthly.toFixed(2)}/mj</div>
+                          <div className="text-right font-semibold">{tariffMonthly.toFixed(2)}€/mj</div>
                         </div>
                       </div>
                     </div>
@@ -203,7 +203,7 @@ export function Step4Summary({
                           </div>
                           {device?.id !== "no-dev" && (
                             <div className="text-right text-sm">
-                              <div className="font-semibold">€{devicePrice.toFixed(2)}</div>
+                              <div className="font-semibold">{devicePrice.toFixed(2)}€</div>
                               <div className="text-muted-foreground">puna cijena</div>
                             </div>
                           )}
@@ -225,13 +225,13 @@ export function Step4Summary({
                                 {line.devicePayment === "installments" ? "Plaćanje na rate" : "Jednokratno plaćanje"}
                               </div>
                               {line.devicePayment === "installments" && (
-                                <div className="text-sm text-muted-foreground">24 mjeseca × €{(line.deviceMonthly ?? 0).toFixed(2)}</div>
+                                <div className="text-sm text-muted-foreground">24 mjeseca × {(line.deviceMonthly ?? 0).toFixed(2)}€</div>
                               )}
                             </div>
                             {line.devicePayment === "installments" ? (
-                              <div className="text-right font-semibold">€{deviceMonthly.toFixed(2)}/mj</div>
+                              <div className="text-right font-semibold">{deviceMonthly.toFixed(2)}€/mj</div>
                             ) : (
-                              <div className="text-right font-semibold">€{lineOnetime.toFixed(2)}</div>
+                              <div className="text-right font-semibold">{lineOnetime.toFixed(2)}€</div>
                             )}
                           </div>
                         </div>
@@ -251,7 +251,7 @@ export function Step4Summary({
                               <div className="font-semibold text-primary">Iskorišteni kredit</div>
                               <div className="text-sm text-muted-foreground">Popust na uređaj</div>
                             </div>
-                            <div className="text-right font-semibold text-primary">-€{line.walletUse.toFixed(2)}</div>
+                            <div className="text-right font-semibold text-primary">-{line.walletUse.toFixed(2)}€</div>
                           </div>
                         </div>
                       </div>
@@ -270,7 +270,7 @@ export function Step4Summary({
                               <div className="font-semibold">Zaštita ekrana</div>
                               <div className="text-sm text-muted-foreground">Pokriva slučajna oštećenja</div>
                             </div>
-                            <div className="text-right font-semibold">€4.99/mj</div>
+                            <div className="text-right font-semibold">4.99€/mj</div>
                           </div>
                         </div>
                       </div>
@@ -293,12 +293,12 @@ export function Step4Summary({
           <div className="flex items-center gap-8">
             <div className="text-right">
               <div className="text-sm text-muted-foreground mb-1">Mjesečno</div>
-              <div className="text-2xl font-bold text-primary">€{totalMonthly.toFixed(2)}</div>
+              <div className="text-2xl font-bold text-primary">{totalMonthly.toFixed(2)}€</div>
             </div>
             {totalOnetime > 0 && (
               <div className="text-right">
                 <div className="text-sm text-muted-foreground mb-1">Jednokratno</div>
-                <div className="text-2xl font-bold">€{totalOnetime.toFixed(2)}</div>
+                <div className="text-2xl font-bold">{totalOnetime.toFixed(2)}€</div>
               </div>
             )}
           </div>
