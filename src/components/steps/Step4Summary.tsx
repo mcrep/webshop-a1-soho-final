@@ -100,12 +100,6 @@ export function Step4Summary({
                     <div>
                       <div className="flex items-center gap-2">
                         <h3 className="font-semibold text-lg">{tariff?.name}</h3>
-                        {line.lineType && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
-                            <Check size={12} />
-                            {lineTypeName}
-                          </span>
-                        )}
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {device?.id !== "no-dev" ? device?.name : "Bez uređaja"}
@@ -125,6 +119,43 @@ export function Step4Summary({
                       {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Line Type Selection - Always Visible */}
+              <div className="px-4 pb-4 border-t border-border bg-muted/5">
+                <div className="flex items-center justify-between py-3">
+                  <div className="flex items-center gap-3">
+                    <div className={cn(
+                      "w-8 h-8 rounded-lg flex items-center justify-center",
+                      line.lineType ? "bg-primary/10" : "bg-destructive/10"
+                    )}>
+                      {line.lineType ? (
+                        <Check size={16} className="text-primary" />
+                      ) : (
+                        <span className="text-destructive font-bold text-sm">!</span>
+                      )}
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-sm">Vrsta linije</h4>
+                      <p className={cn(
+                        "text-sm",
+                        line.lineType ? "text-primary font-medium" : "text-destructive"
+                      )}>
+                        {line.lineType ? lineTypeName : "Obavezno odaberite vrstu linije"}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    variant={line.lineType ? "outline" : "default"}
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenLineTypeModal(line.id);
+                    }}
+                  >
+                    {line.lineType ? "Promijeni" : "Odaberi vrstu"}
+                  </Button>
                 </div>
               </div>
 
@@ -237,35 +268,6 @@ export function Step4Summary({
                         </div>
                       </div>
                     )}
-                  </div>
-
-                  {/* Line Type Selection */}
-                  <div className="mt-4 pt-4 border-t border-border">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-semibold">Vrsta linije</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {line.lineType ? lineTypeName : "Odaberite vrstu linije za nastavak"}
-                        </p>
-                      </div>
-                      <Button
-                        variant={line.lineType ? "outline" : "default"}
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onOpenLineTypeModal(line.id);
-                        }}
-                      >
-                        {line.lineType ? (
-                          <div className="flex items-center gap-2">
-                            <Check size={16} className="text-primary" />
-                            <span>Promijeni</span>
-                          </div>
-                        ) : (
-                          <span>Odaberi vrstu</span>
-                        )}
-                      </Button>
-                    </div>
                   </div>
                 </div>
               )}
