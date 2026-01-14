@@ -95,6 +95,15 @@ export function Step1CustomerInfo({
 
   return (
     <div className="w-full">
+      {/* Welcome Message */}
+      <div className="text-center mb-8 max-w-2xl mx-auto px-4">
+        <h1 className="text-3xl font-bold mb-3">Dobrodošli u A1 Webshop</h1>
+        <p className="text-muted-foreground text-lg">
+          Konfigurirajte svoje mobilne linije i uređaje u par jednostavnih koraka. 
+          Odaberite tarife, uređaje i dodatke koji vam najviše odgovaraju.
+        </p>
+      </div>
+
       {/* Configuration Cards */}
       <div className="space-y-6 mb-8 max-w-6xl mx-auto px-4">
         {/* Customer Type Card */}

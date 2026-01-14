@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Wifi, Phone, Globe, Users, X } from "lucide-react";
+import { Wifi, Phone, Globe, Users, X, Scale } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { tariffs } from "@/data/catalog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
 import { TariffLineAssignmentModal, type LineForAssignment } from "@/components/modals/TariffLineAssignmentModal";
+import { CompareTariffsModal } from "@/components/modals/CompareTariffsModal";
 import type { ExtensionLineWithTariff } from "@/types";
 
 type LineAssignment = {
@@ -31,6 +33,7 @@ export function Step2TariffSelection({
   onBack 
 }: Step2Props) {
   const [selectedTariffId, setSelectedTariffId] = useState<string | null>(null);
+  const [showCompareModal, setShowCompareModal] = useState(false);
 
   // Sort tariffs to show Perfect, Ideal, and Master Biz first
   const displayedTariffs = [...tariffs].sort((a, b) => {
@@ -132,6 +135,14 @@ export function Step2TariffSelection({
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="text-center my-8">
         <h1 className="text-3xl font-bold">{getTitle()}</h1>
+        <Button 
+          variant="outline" 
+          className="mt-4 gap-2"
+          onClick={() => setShowCompareModal(true)}
+        >
+          <Scale className="h-4 w-4" />
+          Usporedi tarife
+        </Button>
       </div>
 
 
@@ -274,6 +285,12 @@ export function Step2TariffSelection({
           onAssignLines={handleAssignLines}
         />
       )}
+
+      {/* Compare Tariffs Modal */}
+      <CompareTariffsModal 
+        open={showCompareModal} 
+        onOpenChange={setShowCompareModal} 
+      />
     </div>
   );
 }
