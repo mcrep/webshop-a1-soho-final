@@ -74,7 +74,7 @@ export function OIBModal({ onClose, onSubmit }: OIBModalProps) {
       onClick={onClose}
     >
       <motion.div
-        className="bg-background rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+        className="bg-background rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -129,16 +129,16 @@ export function OIBModal({ onClose, onSubmit }: OIBModalProps) {
         </div>
 
         {/* Footer */}
-        <div className="p-6 pt-0 flex gap-3">
+        <div className="p-6 pt-0 flex flex-col sm:flex-row gap-3">
           <Button
             variant="outline"
-            className="flex-1"
+            className="flex-1 text-sm"
             onClick={onClose}
           >
             Ne želim personaliziranu ponudu
           </Button>
           <Button
-            className="flex-1"
+            className="flex-1 text-sm"
             onClick={handleSubmit}
           >
             Želim personaliziranu ponudu
