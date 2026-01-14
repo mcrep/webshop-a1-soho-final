@@ -119,7 +119,7 @@ export function Step3DeviceSelection({
                 {/* Close button */}
                 <button
                   onClick={() => onToggleSlot(slot.id)}
-                  className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                  className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-destructive/10 transition-colors text-destructive hover:text-destructive"
                   title="Zatvori uređaj"
                 >
                   <X className="h-5 w-5" />
