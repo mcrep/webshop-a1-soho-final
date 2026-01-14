@@ -67,6 +67,22 @@ export function Step2TariffSelection({
   const unassignedLines = allLines.filter(l => l.assignedTariffId === null);
   const totalLines = allLines.length;
   const assignedCount = totalLines - unassignedLines.length;
+  const isSingleLine = totalLines === 1;
+
+  // Handle tariff click - simplified for single line
+  const handleTariffClick = (tariffId: string, isDisabled: boolean, hasAssignments: boolean) => {
+    if (isDisabled) return;
+    
+    // Single line: directly assign/reassign without modal
+    if (isSingleLine) {
+      const singleLineId = allLines[0].id;
+      onUpdateLineAssignments([{ lineId: singleLineId, tariffId }]);
+      return;
+    }
+    
+    // Multiple lines: open modal
+    setSelectedTariffId(tariffId);
+  };
 
   // Handle line assignment from modal
   const handleAssignLines = (tariffId: string, lineIds: string[]) => {
@@ -150,7 +166,7 @@ export function Step2TariffSelection({
                     scale: isDisabled ? 0.98 : 1,
                   }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
-                  onClick={() => !isDisabled && setSelectedTariffId(tariff.id)}
+                  onClick={() => handleTariffClick(tariff.id, isDisabled, hasAssignments)}
                 >
                   <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
                     +€{tariff.walletCredit} A1 Wallet
