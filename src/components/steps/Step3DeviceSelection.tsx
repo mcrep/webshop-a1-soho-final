@@ -204,7 +204,7 @@ export function Step3DeviceSelection({
                                 onUpdateWalletUse(slot.id, value);
                               }}
                               placeholder="0"
-                              className="text-center text-lg font-bold h-12 bg-background border-2 border-primary/20 focus:border-primary pr-8"
+                              className="text-center text-3xl font-bold h-14 bg-background border-2 border-primary/20 focus:border-primary pr-10"
                             />
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
                           </div>
@@ -254,7 +254,7 @@ export function Step3DeviceSelection({
                                     onUpdateWalletUse(slot.id, value);
                                   }}
                                   placeholder="0"
-                                  className="text-center text-lg font-bold h-12 bg-background border-2 border-primary/20 focus:border-primary pr-8"
+                                  className="text-center text-3xl font-bold h-14 bg-background border-2 border-primary/20 focus:border-primary pr-10"
                                 />
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
                               </div>
