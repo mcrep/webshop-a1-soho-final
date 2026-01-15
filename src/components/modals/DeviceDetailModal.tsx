@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -60,10 +61,21 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
   const maxInstallment = selectedVariant?.installment || device.installment;
 
   return (
-    <div className="fixed inset-0 z-[100]">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="absolute inset-0 grid place-items-center p-4">
-        <div className="w-full max-w-6xl rounded-2xl bg-card shadow-2xl border border-border overflow-hidden max-h-[90vh] flex flex-col">
+    <motion.div 
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <motion.div 
+        className="w-full max-w-6xl mx-4 rounded-2xl bg-card shadow-2xl border border-border overflow-hidden max-h-[90vh] flex flex-col"
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        onClick={(e) => e.stopPropagation()}
+      >
           {/* Header */}
           <div className="p-6 flex items-center justify-between border-b border-border">
             <div>
@@ -331,8 +343,7 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
               </Button>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </motion.div>
+      </motion.div>
   );
 }

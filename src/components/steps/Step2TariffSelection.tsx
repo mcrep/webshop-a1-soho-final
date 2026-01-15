@@ -302,15 +302,17 @@ export function Step2TariffSelection({
       </Carousel>
 
       {/* Assignment Modal */}
-      {selectedTariff && (
-        <TariffLineAssignmentModal
-          open={selectedTariffId !== null}
-          onOpenChange={(open) => !open && setSelectedTariffId(null)}
-          tariff={selectedTariff}
-          lines={allLines}
-          onAssignLines={handleAssignLines}
-        />
-      )}
+      <AnimatePresence>
+        {selectedTariff && (
+          <TariffLineAssignmentModal
+            open={selectedTariffId !== null}
+            onOpenChange={(open) => !open && setSelectedTariffId(null)}
+            tariff={selectedTariff}
+            lines={allLines}
+            onAssignLines={handleAssignLines}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Compare Tariffs Modal */}
       <CompareTariffsModal 

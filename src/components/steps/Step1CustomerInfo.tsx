@@ -291,13 +291,15 @@ export function Step1CustomerInfo({
       </AnimatePresence>
 
       {/* Extension Lines Modal */}
-      {showExtensionModal && (
-        <ExtensionLinesModal
-          onClose={() => setShowExtensionModal(false)}
-          onSave={onUpdateExtensionLines}
-          selectedLines={extensionLines}
-        />
-      )}
+      <AnimatePresence>
+        {showExtensionModal && (
+          <ExtensionLinesModal
+            onClose={() => setShowExtensionModal(false)}
+            onSave={onUpdateExtensionLines}
+            selectedLines={extensionLines}
+          />
+        )}
+      </AnimatePresence>
 
       {/* OIB Modal for new customers */}
       <AnimatePresence>
