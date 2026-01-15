@@ -553,66 +553,76 @@ const Index = () => {
           </div>
         </div>
       </div>
-      {deviceListModalFor && (
-        <DeviceListModal
-          onClose={() => setDeviceListModalFor(null)}
-          onSelectDevice={(deviceId, variantId, paymentMethod, monthlyInstallment, screenInsurance) => {
-            setDeviceSlots((prev) => 
-              prev.map((s) => 
-                s.id === deviceListModalFor 
-                  ? { ...s, deviceId, deviceVariantId: variantId, paymentMethod, monthlyInstallment, screenInsurance } 
-                  : s
-              )
-            );
-            setDeviceListModalFor(null);
-          }}
-        />
-      )}
-      {lineTypeSelectionFor && (
-        <LineTypeSelectionModal
-          onClose={() => setLineTypeSelectionFor(null)}
-          onSelect={(lineType) => {
-            if (lineType === "new") {
-              // For new lines, no additional modal needed - just set the type directly
-              updateLine(lineTypeSelectionFor, { lineType: "new" });
-              setLineTypeSelectionFor(null);
-            } else {
-              setLineTypeModalFor({ lineId: lineTypeSelectionFor, lineType });
-              setLineTypeSelectionFor(null);
-            }
-          }}
-        />
-      )}
-      {lineTypeModalFor && lineTypeModalFor.lineType === "mnp" && (
-        <NumberPortingModal
-          current={lines.find(l => l.id === lineTypeModalFor.lineId)!}
-          onClose={() => setLineTypeModalFor(null)}
-          onSave={(data) => {
-            updateLine(lineTypeModalFor.lineId, { lineType: "mnp", ...data });
-            setLineTypeModalFor(null);
-          }}
-        />
-      )}
-      {lineTypeModalFor && lineTypeModalFor.lineType === "pre2post" && (
-        <PrepaidToPostpaidModal
-          current={lines.find(l => l.id === lineTypeModalFor.lineId)!}
-          onClose={() => setLineTypeModalFor(null)}
-          onSave={(data) => {
-            updateLine(lineTypeModalFor.lineId, { lineType: "pre2post", ...data });
-            setLineTypeModalFor(null);
-          }}
-        />
-      )}
-      {lineTypeModalFor && lineTypeModalFor.lineType === "renew" && (
-        <ExistingLineExtensionModal
-          current={lines.find(l => l.id === lineTypeModalFor.lineId)!}
-          onClose={() => setLineTypeModalFor(null)}
-          onSave={(data) => {
-            updateLine(lineTypeModalFor.lineId, { lineType: "renew", ...data });
-            setLineTypeModalFor(null);
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {deviceListModalFor && (
+          <DeviceListModal
+            onClose={() => setDeviceListModalFor(null)}
+            onSelectDevice={(deviceId, variantId, paymentMethod, monthlyInstallment, screenInsurance) => {
+              setDeviceSlots((prev) => 
+                prev.map((s) => 
+                  s.id === deviceListModalFor 
+                    ? { ...s, deviceId, deviceVariantId: variantId, paymentMethod, monthlyInstallment, screenInsurance } 
+                    : s
+                )
+              );
+              setDeviceListModalFor(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {lineTypeSelectionFor && (
+          <LineTypeSelectionModal
+            onClose={() => setLineTypeSelectionFor(null)}
+            onSelect={(lineType) => {
+              if (lineType === "new") {
+                // For new lines, no additional modal needed - just set the type directly
+                updateLine(lineTypeSelectionFor, { lineType: "new" });
+                setLineTypeSelectionFor(null);
+              } else {
+                setLineTypeModalFor({ lineId: lineTypeSelectionFor, lineType });
+                setLineTypeSelectionFor(null);
+              }
+            }}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {lineTypeModalFor && lineTypeModalFor.lineType === "mnp" && (
+          <NumberPortingModal
+            current={lines.find(l => l.id === lineTypeModalFor.lineId)!}
+            onClose={() => setLineTypeModalFor(null)}
+            onSave={(data) => {
+              updateLine(lineTypeModalFor.lineId, { lineType: "mnp", ...data });
+              setLineTypeModalFor(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {lineTypeModalFor && lineTypeModalFor.lineType === "pre2post" && (
+          <PrepaidToPostpaidModal
+            current={lines.find(l => l.id === lineTypeModalFor.lineId)!}
+            onClose={() => setLineTypeModalFor(null)}
+            onSave={(data) => {
+              updateLine(lineTypeModalFor.lineId, { lineType: "pre2post", ...data });
+              setLineTypeModalFor(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {lineTypeModalFor && lineTypeModalFor.lineType === "renew" && (
+          <ExistingLineExtensionModal
+            current={lines.find(l => l.id === lineTypeModalFor.lineId)!}
+            onClose={() => setLineTypeModalFor(null)}
+            onSave={(data) => {
+              updateLine(lineTypeModalFor.lineId, { lineType: "renew", ...data });
+              setLineTypeModalFor(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
       <AnimatePresence>
         {showHeaderAuthModal && (
           <AuthModal

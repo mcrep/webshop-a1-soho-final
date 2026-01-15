@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { devices } from "@/data/catalog";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -261,13 +262,15 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
       </div>
 
       {/* Device Detail Modal */}
-      {selectedDevice && (
-        <DeviceDetailModal
-          device={selectedDevice}
-          onClose={() => setSelectedDevice(null)}
-          onSelectDevice={onSelectDevice}
-        />
-      )}
+      <AnimatePresence>
+        {selectedDevice && (
+          <DeviceDetailModal
+            device={selectedDevice}
+            onClose={() => setSelectedDevice(null)}
+            onSelectDevice={onSelectDevice}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }
