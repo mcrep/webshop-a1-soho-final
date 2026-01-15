@@ -187,5 +187,4 @@ export const lineTypes: LineTypeOpt[] = [
   { id: "new", name: "Nova linija" },
   { id: "pre2post", name: "Prelazak s bonova na pretplatu" },
   { id: "mnp", name: "Prijenos broja s druge mreže" },
-  { id: "renew", name: "Produljenje postojeće linije" },
 ];

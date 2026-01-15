@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { X, Plus, ArrowLeftRight, RefreshCw, Phone } from "lucide-react";
+import { X, Plus, ArrowLeftRight, Phone } from "lucide-react";
 import { lineTypes } from "@/data/catalog";
 
 type Props = {
@@ -12,14 +12,12 @@ const lineTypeIcons: Record<string, React.ReactNode> = {
   new: <Plus size={20} />,
   pre2post: <ArrowLeftRight size={20} />,
   mnp: <Phone size={20} />,
-  renew: <RefreshCw size={20} />,
 };
 
 const lineTypeDescriptions: Record<string, string> = {
   new: "Aktivirajte potpuno novu mobilnu liniju s novim brojem.",
   pre2post: "Prebacite postojeći A1 prepaid broj na pretplatu.",
   mnp: "Prenesite broj s druge mreže na A1 uz zadržavanje broja.",
-  renew: "Produljite ugovor za postojeću A1 liniju uz nove pogodnosti.",
 };
 
 export function LineTypeSelectionModal({ currentLineType, onClose, onSelect }: Props) {
