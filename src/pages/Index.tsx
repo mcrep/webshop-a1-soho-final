@@ -460,21 +460,21 @@ const Index = () => {
         isLoggedIn={isLoggedIn}
         onLogout={handleLogout}
       />
-      {showWallet && (
-        <WalletBanner
-          total={walletTotal}
-          used={walletUsed}
-          remaining={walletRemaining}
-          showDetails={showWalletDetails}
-          tariffCredit={tariffCredit}
-          noDeviceBonus={noDeviceWalletBonus}
-          linesWithoutDevices={linesWithoutDevices}
-          selectedLines={lineAssignments.length}
-          maxLines={isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines}
-        />
-      )}
-      <div className="flex">
+      <div className="flex pt-[73px]">
         <div className="mx-auto max-w-6xl px-4 w-full">
+          {showWallet && (
+            <WalletBanner
+              total={walletTotal}
+              used={walletUsed}
+              remaining={walletRemaining}
+              showDetails={showWalletDetails}
+              tariffCredit={tariffCredit}
+              noDeviceBonus={noDeviceWalletBonus}
+              linesWithoutDevices={linesWithoutDevices}
+              selectedLines={lineAssignments.length}
+              maxLines={isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines}
+            />
+          )}
           <div className={currentScreen === "Početak" 
             ? "flex items-center min-h-[calc(100vh-73px-96px)]" 
             : "pb-8"
