@@ -138,23 +138,22 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
         className="relative w-full max-w-5xl max-h-[90vh] bg-card rounded-2xl shadow-2xl border border-border overflow-hidden flex flex-col"
       >
         {/* Header with gradient */}
-        <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Scale className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-foreground">Usporedba tarifa</h2>
-                <p className="text-sm text-muted-foreground">Usporedi sve tarife i odaberi najbolju za tebe</p>
-              </div>
+        <div className="relative bg-gradient-to-r from-primary/80 to-primary/60 p-6 text-primary-foreground">
+          <button
+            onClick={() => onOpenChange(false)}
+            className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
+            aria-label="Zatvori"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center">
+              <Scale className="h-6 w-6" />
             </div>
-            <button
-              onClick={() => onOpenChange(false)}
-              className="w-10 h-10 rounded-full bg-muted/50 hover:bg-muted flex items-center justify-center transition-colors"
-            >
-              <X className="w-5 h-5 text-muted-foreground" />
-            </button>
+            <div>
+              <h2 className="text-xl font-bold">Usporedba tarifa</h2>
+              <p className="text-sm opacity-90">Usporedi sve tarife i odaberi najbolju za tebe</p>
+            </div>
           </div>
         </div>
 
