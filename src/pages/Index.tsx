@@ -572,8 +572,14 @@ const Index = () => {
         <LineTypeSelectionModal
           onClose={() => setLineTypeSelectionFor(null)}
           onSelect={(lineType) => {
-            setLineTypeModalFor({ lineId: lineTypeSelectionFor, lineType });
-            setLineTypeSelectionFor(null);
+            if (lineType === "new") {
+              // For new lines, no additional modal needed - just set the type directly
+              updateLine(lineTypeSelectionFor, { lineType: "new" });
+              setLineTypeSelectionFor(null);
+            } else {
+              setLineTypeModalFor({ lineId: lineTypeSelectionFor, lineType });
+              setLineTypeSelectionFor(null);
+            }
           }}
         />
       )}
