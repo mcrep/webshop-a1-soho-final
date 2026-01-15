@@ -1,12 +1,7 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { tariffs } from "@/data/catalog";
-import { Check, X, Wifi, Phone, Globe, Wallet, Tag } from "lucide-react";
+import { Check, X, Wifi, Phone, Globe, Wallet, Tag, Scale } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { motion } from "framer-motion";
 
 type CompareTariffsModalProps = {
   open: boolean;
@@ -116,25 +111,66 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
     },
   ];
 
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[90vh] p-0">
-        <DialogHeader className="p-6 pb-0">
-          <DialogTitle className="text-2xl">Usporedba tarifa</DialogTitle>
-        </DialogHeader>
-        
-        <ScrollArea className="w-full">
-          <div className="p-6 pt-4">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+    >
+      {/* Backdrop */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={() => onOpenChange(false)}
+      />
+      
+      {/* Modal */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        className="relative w-full max-w-5xl max-h-[90vh] bg-card rounded-2xl shadow-2xl border border-border overflow-hidden flex flex-col"
+      >
+        {/* Header with gradient */}
+        <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Scale className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-foreground">Usporedba tarifa</h2>
+                <p className="text-sm text-muted-foreground">Usporedi sve tarife i odaberi najbolju za tebe</p>
+              </div>
+            </div>
+            <button
+              onClick={() => onOpenChange(false)}
+              className="w-10 h-10 rounded-full bg-muted/50 hover:bg-muted flex items-center justify-center transition-colors"
+            >
+              <X className="w-5 h-5 text-muted-foreground" />
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <ScrollArea className="flex-1">
+          <div className="p-6">
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  <th className="text-left p-3 border-b border-border bg-muted/50 sticky left-0 z-10 min-w-[160px]">
+                  <th className="text-left p-3 border-b border-border bg-muted/50 sticky left-0 z-10 min-w-[160px] rounded-tl-lg">
                     Značajka
                   </th>
-                  {sortedTariffs.map((tariff) => (
+                  {sortedTariffs.map((tariff, idx) => (
                     <th 
                       key={tariff.id} 
-                      className="text-center p-3 border-b border-border bg-muted/50 min-w-[120px]"
+                      className={`text-center p-3 border-b border-border bg-muted/50 min-w-[120px] ${idx === sortedTariffs.length - 1 ? 'rounded-tr-lg' : ''}`}
                     >
                       <div className="font-bold text-primary">{tariff.name}</div>
                     </th>
@@ -180,7 +216,17 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-      </DialogContent>
-    </Dialog>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-border bg-muted/30 flex justify-end">
+          <button
+            onClick={() => onOpenChange(false)}
+            className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+          >
+            Zatvori
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }

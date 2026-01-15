@@ -315,10 +315,14 @@ export function Step2TariffSelection({
       </AnimatePresence>
 
       {/* Compare Tariffs Modal */}
-      <CompareTariffsModal 
-        open={showCompareModal} 
-        onOpenChange={setShowCompareModal} 
-      />
+      <AnimatePresence>
+        {showCompareModal && (
+          <CompareTariffsModal 
+            open={showCompareModal} 
+            onOpenChange={setShowCompareModal} 
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
