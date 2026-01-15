@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { mockExistingLines } from "@/data/mock-existing-lines";
 import type { Line } from "@/types";
 
 type ExistingLineExtensionModalProps = {
@@ -8,13 +9,6 @@ type ExistingLineExtensionModalProps = {
   onClose: () => void;
   onSave: (data: Partial<Line>) => void;
 };
-
-// Mock data - zamijeni s pravim podacima iz API-ja
-const mockExistingLines = [
-  { id: "line-1", number: "385912345678", tariff: "Biz M", expires: "15.12.2025" },
-  { id: "line-2", number: "385918765432", tariff: "Biz S", expires: "20.01.2026" },
-  { id: "line-3", number: "385915551234", tariff: "Biz L Global", expires: "05.03.2026" },
-];
 
 export function ExistingLineExtensionModal({ current, onClose, onSave }: ExistingLineExtensionModalProps) {
   const [selectedLineId, setSelectedLineId] = useState<string | undefined>(current.existingLineId);

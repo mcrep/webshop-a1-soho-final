@@ -1,4 +1,5 @@
 import { Plus, X, Check } from "lucide-react";
+import { findExistingLineNumber } from "@/data/mock-existing-lines";
 import type { Line } from "@/types";
 
 type LineTabsProps = {
@@ -20,16 +21,17 @@ export function LineTabs({
   const getLineLabel = (line: Line, index: number) => {
     if (line.portingNumber) return line.portingNumber;
     if (line.prepaidNumber) return line.prepaidNumber;
+
+    if (line.isExtension && line.extensionLabel) return line.extensionLabel;
+
     if (line.existingLineId) {
-      // Mock data for existing lines - should match ExistingLineExtensionModal
-      const existingLines = [
-        { id: "line-1", number: "385912345678" },
-        { id: "line-2", number: "385918765432" },
-        { id: "line-3", number: "385915551234" },
-      ];
-      const existing = existingLines.find(l => l.id === line.existingLineId);
-      if (existing) return existing.number;
+      const existing = findExistingLineNumber(line.existingLineId);
+      if (existing) return existing;
+
+      const asMsisdn = line.existingLineId.replace(/\s/g, "");
+      if (/^\+?\d{6,}$/.test(asMsisdn)) return asMsisdn;
     }
+
     return `Linija ${index + 1}`;
   };
 

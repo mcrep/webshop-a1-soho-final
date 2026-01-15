@@ -2,15 +2,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronDown, ChevronUp, Smartphone, CreditCard, Shield, Wallet, Tag } from "lucide-react";
 import { tariffs, devices } from "@/data/catalog";
+import { findExistingLineNumber } from "@/data/mock-existing-lines";
 import type { Line } from "@/types";
 import { cn } from "@/lib/utils";
 
-// Mock data for existing lines - should match ExistingLineExtensionModal
-const existingLinesData = [
-  { id: "line-1", number: "385912345678" },
-  { id: "line-2", number: "385918765432" },
-  { id: "line-3", number: "385915551234" },
-];
+const formatMsisdn = (value: string) => {
+  const digits = value.replace(/\D/g, "");
+  // HR format: 385 + (2 digits) + (3 digits) + (4 digits)
+  if (digits.startsWith("385") && digits.length === 12) {
+    return `+385 ${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`;
+  }
+  return value;
+};
 
 type Step4Props = {
   lines: Line[];
@@ -83,7 +86,21 @@ export function Step4Summary({
             line.lineType === "mnp" ? "Prijenos broja" :
             line.lineType === "pre2post" ? "S bonova na pretplatu" :
             line.lineType === "renew" ? "Produljenje postojeće linije" : null;
-          
+
+          const existingResolved = findExistingLineNumber(line.existingLineId);
+          const existingFallback = line.existingLineId && /^\+?\d{6,}$/.test(line.existingLineId.replace(/\s/g, ""))
+            ? line.existingLineId
+            : undefined;
+
+          const msisdnRaw =
+            line.portingNumber ??
+            line.prepaidNumber ??
+            (line.isExtension ? line.extensionLabel : undefined) ??
+            existingResolved ??
+            existingFallback;
+
+          const msisdn = msisdnRaw ? formatMsisdn(msisdnRaw) : undefined;
+
           const isExtensionLine = line.isExtension === true;
 
           const isExpanded = expandedLines.has(line.id);
