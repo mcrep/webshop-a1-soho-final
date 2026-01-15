@@ -19,7 +19,7 @@ type HeaderProps = {
 export function Header({ onOpenAuth, lineCount, monthly, onetime, allLinesConfigured, onFinishOrder, currentStep, steps, onStepClick, isLoggedIn, onLogout }: HeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-card shadow-sm border-b border-border">
-      <div className="mx-auto max-w-[1600px] px-4 py-4">
+      <div className="mx-auto max-w-[1600px] px-4 py-2">
         {steps && steps.length > 0 && currentStep && onStepClick ? (
           // Grid layout with stepper in center
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6">
