@@ -5,16 +5,10 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Smartphone, Plus, Gift, Wallet, X } from "lucide-react";
 import { devices, tariffs } from "@/data/catalog";
+import { findExistingLineNumber } from "@/data/mock-existing-lines";
 import { Label } from "@/components/ui/label";
 import { motion, LayoutGroup } from "framer-motion";
 import type { Line } from "@/types";
-
-// Mock data for existing lines - should match ExistingLineExtensionModal
-const existingLinesData = [
-  { id: "line-1", number: "385912345678" },
-  { id: "line-2", number: "385918765432" },
-  { id: "line-3", number: "385915551234" },
-];
 
 type DeviceSlot = {
   id: string;
@@ -47,6 +41,9 @@ type Step3Props = {
 
 // Helper to get the correct label for a slot based on line data
 const getSlotLabel = (slot: DeviceSlot, line: Line | undefined, index: number) => {
+  // For existing (logged-in) lines, the msisdn is already on the slot label
+  if (slot.isExtension && slot.label) return slot.label;
+
   if (line) {
     // Check for porting number (MNP)
     if (line.portingNumber) return line.portingNumber;
@@ -54,12 +51,13 @@ const getSlotLabel = (slot: DeviceSlot, line: Line | undefined, index: number) =
     if (line.prepaidNumber) return line.prepaidNumber;
     // Check for existing line (renew)
     if (line.existingLineId) {
-      const existing = existingLinesData.find(l => l.id === line.existingLineId);
-      if (existing) return existing.number;
+      const existing = findExistingLineNumber(line.existingLineId);
+      if (existing) return existing;
       // If not found in mapping, it might be a direct phone number
       return line.existingLineId;
     }
   }
+
   return `Linija ${index + 1}`;
 };
 
