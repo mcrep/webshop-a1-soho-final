@@ -106,11 +106,14 @@ export function Step4Summary({
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-center">
                       <span className="text-xs font-bold text-primary leading-tight px-1">
                         {(() => {
-                          if ((line.lineType === "renew" || line.lineType === "mnp" || line.lineType === "pre2post") && line.existingLineId) {
-                            // First check if it's an ID that needs mapping
+                          // Check for porting number (MNP)
+                          if (line.portingNumber) return line.portingNumber;
+                          // Check for prepaid number (pre2post)
+                          if (line.prepaidNumber) return line.prepaidNumber;
+                          // Check for existing line (renew)
+                          if (line.existingLineId) {
                             const existing = existingLinesData.find(l => l.id === line.existingLineId);
                             if (existing) return existing.number;
-                            // If not found in mapping, it might be a direct phone number
                             return line.existingLineId;
                           }
                           return `Linija ${index + 1}`;

@@ -509,6 +509,7 @@ const Index = () => {
           {currentScreen === "Uređaji" && (
             <Step3DeviceSelection
               deviceSlots={deviceSlots}
+              lines={lines}
               totalWallet={walletTotal}
               numberOfDevices={numberOfDevices}
               onOpenDeviceModal={setDeviceListModalFor}
