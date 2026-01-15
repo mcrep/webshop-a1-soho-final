@@ -5,6 +5,13 @@ import { tariffs, devices } from "@/data/catalog";
 import type { Line } from "@/types";
 import { cn } from "@/lib/utils";
 
+// Mock data for existing lines - should match ExistingLineExtensionModal
+const existingLinesData = [
+  { id: "line-1", number: "385912345678" },
+  { id: "line-2", number: "385918765432" },
+  { id: "line-3", number: "385915551234" },
+];
+
 type Step4Props = {
   lines: Line[];
   totalMonthly: number;
@@ -98,9 +105,16 @@ export function Step4Summary({
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-center">
                       <span className="text-xs font-bold text-primary leading-tight px-1">
-                        {(line.lineType === "renew" || line.lineType === "mnp" || line.lineType === "pre2post") && line.existingLineId 
-                          ? line.existingLineId 
-                          : `Linija ${index + 1}`}
+                        {(() => {
+                          if ((line.lineType === "renew" || line.lineType === "mnp" || line.lineType === "pre2post") && line.existingLineId) {
+                            // First check if it's an ID that needs mapping
+                            const existing = existingLinesData.find(l => l.id === line.existingLineId);
+                            if (existing) return existing.number;
+                            // If not found in mapping, it might be a direct phone number
+                            return line.existingLineId;
+                          }
+                          return `Linija ${index + 1}`;
+                        })()}
                       </span>
                     </div>
                     <div>
