@@ -201,18 +201,10 @@ export function Step4Summary({
                             <div className="font-semibold">{device?.id !== "no-dev" ? `${device?.brand} ${device?.name}` : "Bez uređaja"}</div>
                           </div>
                           {device?.id !== "no-dev" && (
-                            <div className="text-right text-sm">
-                              {line.devicePayment === "installments" ? (
-                                <>
-                                  <div className="font-semibold">{lineOnetime.toFixed(2)}€</div>
-                                  <div className="text-muted-foreground">upfront</div>
-                                </>
-                              ) : (
-                                <>
-                                  <div className="font-semibold">{devicePrice.toFixed(2)}€</div>
-                                  <div className="text-muted-foreground">MPC</div>
-                                </>
-                              )}
+                            <div className="text-right font-semibold">
+                              {line.devicePayment === "installments" 
+                                ? `${lineOnetime.toFixed(2)}€` 
+                                : `${devicePrice.toFixed(2)}€`}
                             </div>
                           )}
                         </div>
@@ -232,9 +224,6 @@ export function Step4Summary({
                               <div className="font-semibold">
                                 {line.devicePayment === "installments" ? "Plaćanje na rate" : "Jednokratno plaćanje"}
                               </div>
-                              {line.devicePayment === "installments" && (
-                                <div className="text-sm text-muted-foreground">24 mjeseca × {(line.deviceMonthly ?? 0).toFixed(2)}€</div>
-                              )}
                             </div>
                             {line.devicePayment === "installments" ? (
                               <div className="text-right font-semibold">{deviceMonthly.toFixed(2)}€/mj</div>
