@@ -7,6 +7,14 @@ import { Smartphone, Plus, Gift, Wallet, X } from "lucide-react";
 import { devices, tariffs } from "@/data/catalog";
 import { Label } from "@/components/ui/label";
 import { motion, LayoutGroup } from "framer-motion";
+import type { Line } from "@/types";
+
+// Mock data for existing lines - should match ExistingLineExtensionModal
+const existingLinesData = [
+  { id: "line-1", number: "385912345678" },
+  { id: "line-2", number: "385918765432" },
+  { id: "line-3", number: "385915551234" },
+];
 
 type DeviceSlot = {
   id: string;
@@ -24,6 +32,7 @@ type DeviceSlot = {
 
 type Step3Props = {
   deviceSlots: DeviceSlot[];
+  lines: Line[];
   totalWallet: number;
   numberOfDevices: number;
   onOpenDeviceModal: (slotId: string) => void;
@@ -36,8 +45,27 @@ type Step3Props = {
   onBack: () => void;
 };
 
+// Helper to get the correct label for a slot based on line data
+const getSlotLabel = (slot: DeviceSlot, line: Line | undefined, index: number) => {
+  if (line) {
+    // Check for porting number (MNP)
+    if (line.portingNumber) return line.portingNumber;
+    // Check for prepaid number (pre2post)
+    if (line.prepaidNumber) return line.prepaidNumber;
+    // Check for existing line (renew)
+    if (line.existingLineId) {
+      const existing = existingLinesData.find(l => l.id === line.existingLineId);
+      if (existing) return existing.number;
+      // If not found in mapping, it might be a direct phone number
+      return line.existingLineId;
+    }
+  }
+  return `Linija ${index + 1}`;
+};
+
 export function Step3DeviceSelection({
   deviceSlots,
+  lines,
   totalWallet,
   numberOfDevices,
   onOpenDeviceModal,
@@ -103,10 +131,15 @@ export function Step3DeviceSelection({
       <LayoutGroup>
         {/* Active slots - full cards */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {activeSlots.map((slot) => {
+          {activeSlots.map((slot, slotIndex) => {
             const device = devices.find((d) => d.id === slot.deviceId);
             const variant = device?.variants?.find((v) => v.id === slot.deviceVariantId);
             const tariff = tariffs.find((t) => t.id === slot.tariffId);
+            
+            // Find the corresponding line to get the MSISDN
+            const lineIndex = deviceSlots.findIndex(s => s.id === slot.id);
+            const line = lines[lineIndex];
+            const displayLabel = getSlotLabel(slot, line, lineIndex);
             
             const devicePrice = variant?.upfront || device?.upfront || 0;
             const deviceCost = device && slot.paymentMethod === "upfront" ? devicePrice : 0;
@@ -139,7 +172,7 @@ export function Step3DeviceSelection({
                       {slot.isExtension ? 'Produljenje' : 'Nova linija'}
                     </span>
                   </div>
-                  <div className="font-bold text-lg mt-1">{slot.label}</div>
+                  <div className="font-bold text-lg mt-1">{displayLabel}</div>
                   <div className="text-sm text-muted-foreground">Tarifa: {tariff?.name || "Unknown"}</div>
                 </div>
 
@@ -312,6 +345,11 @@ export function Step3DeviceSelection({
                 const currentActiveCount = deviceSlots.filter(s => s.isActive).length;
                 const canToggleOn = currentActiveCount < numberOfDevices;
                 const linesSelected = currentActiveCount === numberOfDevices;
+                
+                // Find the corresponding line to get the MSISDN
+                const lineIndex = deviceSlots.findIndex(s => s.id === slot.id);
+                const line = lines[lineIndex];
+                const displayLabel = getSlotLabel(slot, line, lineIndex);
 
                 return (
                   <motion.div
@@ -331,7 +369,7 @@ export function Step3DeviceSelection({
                         <Smartphone className="w-4 h-4 text-muted-foreground" />
                       </div>
                       <div>
-                        <div className="font-medium text-sm">{slot.label}</div>
+                        <div className="font-medium text-sm">{displayLabel}</div>
                         <div className="text-xs text-muted-foreground">{tariff?.name || "Unknown"}</div>
                       </div>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${slot.isExtension ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
