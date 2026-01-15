@@ -257,7 +257,7 @@ export function Step4Summary({
                     )}
 
                     {/* Wallet Discount */}
-                    {line.walletUse && line.walletUse > 0 && (
+                    {device?.id !== "no-dev" && line.walletUse !== undefined && line.walletUse > 0 && (
                       <div className="space-y-3">
                         <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">A1 Wallet popust</h4>
                         <div className="bg-primary/5 rounded-xl p-3 border border-primary/20">
