@@ -119,29 +119,20 @@ export function Step4Summary({
                 onClick={() => toggleLine(line.id)}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-center">
-                      <span className="text-xs font-bold text-primary leading-tight px-1">
-                        {(() => {
-                          // Check for porting number (MNP)
-                          if (line.portingNumber) return line.portingNumber;
-                          // Check for prepaid number (pre2post)
-                          if (line.prepaidNumber) return line.prepaidNumber;
-                          // Check for existing line (renew)
-                          if (line.existingLineId) {
-                            const existing = existingLinesData.find(l => l.id === line.existingLineId);
-                            if (existing) return existing.number;
-                            return line.existingLineId;
-                          }
-                          return `Linija ${index + 1}`;
-                        })()}
-                      </span>
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
+                      <span className="text-sm font-semibold text-foreground">{index + 1}</span>
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-lg">{tariff?.name}</h3>
+
+                    <div className="min-w-0">
+                      <div className={cn(
+                        "text-lg font-semibold tracking-tight truncate",
+                        msisdn ? "font-mono" : ""
+                      )}>
+                        {msisdn ?? tariff?.name ?? `Linija ${index + 1}`}
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground truncate">
+                        {msisdn ? `${tariff?.name} • ` : ""}
                         {device?.id !== "no-dev" ? `${device?.brand} ${device?.name}` : "Bez uređaja"}
                       </p>
                     </div>
