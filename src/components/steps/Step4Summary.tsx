@@ -129,11 +129,10 @@ export function Step4Summary({
                         "text-lg font-semibold tracking-tight truncate",
                         msisdn ? "font-mono" : ""
                       )}>
-                        {msisdn ?? tariff?.name ?? `Linija ${index + 1}`}
+                        {msisdn ?? (isExtensionLine ? `Linija ${index + 1}` : `Nova linija ${index + 1}`)}
                       </div>
                       <p className="text-sm text-muted-foreground truncate">
-                        {msisdn ? `${tariff?.name} • ` : ""}
-                        {device?.id !== "no-dev" ? `${device?.brand} ${device?.name}` : "Bez uređaja"}
+                        {tariff?.name} • {device?.id !== "no-dev" ? `${device?.brand} ${device?.name}` : "Bez uređaja"}
                       </p>
                     </div>
                   </div>
