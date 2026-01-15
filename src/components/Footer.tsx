@@ -21,7 +21,7 @@ export function Footer({
   backLabel = "Natrag"
 }: FooterProps) {
   return (
-    <footer className="fixed bottom-0 left-0 right-0 bg-card shadow-sm border-t border-border z-50">
+    <footer className="fixed bottom-0 left-0 right-0 bg-card shadow-sm border-t border-border z-40">
       <div className="mx-auto max-w-[1600px] px-4 py-4">
         <div className="flex items-center justify-between">
           <div>
