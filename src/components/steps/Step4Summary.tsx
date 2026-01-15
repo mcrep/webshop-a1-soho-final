@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronDown, ChevronUp, Smartphone, CreditCard, Shield, Wallet, Tag } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Smartphone, CreditCard, Shield, Wallet, Tag, AlertTriangle } from "lucide-react";
 import { tariffs, devices } from "@/data/catalog";
 import { findExistingLineNumber } from "@/data/mock-existing-lines";
 import type { Line } from "@/types";
@@ -34,8 +34,20 @@ export function Step4Summary({
   onFinish,
   onOpenLineTypeModal,
 }: Step4Props) {
-  const [expandedLines, setExpandedLines] = useState<Set<string>>(new Set());
-  const allLinesConfigured = lines.every((line) => line.lineType !== null);
+  // Find unconfigured non-extension lines
+  const unconfiguredLineIds = useMemo(() => {
+    return lines
+      .filter((line) => !line.isExtension && line.lineType === null)
+      .map((line) => line.id);
+  }, [lines]);
+
+  // Auto-expand unconfigured lines initially
+  const [expandedLines, setExpandedLines] = useState<Set<string>>(
+    () => new Set(unconfiguredLineIds)
+  );
+  
+  const allLinesConfigured = lines.every((line) => line.isExtension || line.lineType !== null);
+  const unconfiguredCount = unconfiguredLineIds.length;
 
   const toggleLine = (lineId: string) => {
     setExpandedLines((prev) => {
@@ -55,6 +67,16 @@ export function Step4Summary({
         <h1 className="text-3xl font-bold mb-2">Sažetak narudžbe</h1>
         <p className="text-muted-foreground">Korak 4 od 4 - Pregled i finalizacija</p>
       </div>
+
+      {/* Warning Banner */}
+      {!allLinesConfigured && (
+        <div className="flex items-center gap-3 p-4 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-700 dark:text-orange-400 animate-fade-in">
+          <AlertTriangle className="shrink-0" size={20} />
+          <p className="text-sm font-medium">
+            Molimo odaberite vrstu linije za {unconfiguredCount} {unconfiguredCount === 1 ? "liniju" : unconfiguredCount < 5 ? "linije" : "linija"} prije završetka narudžbe.
+          </p>
+        </div>
+      )}
 
       <div className="space-y-4">
         {lines.map((line, index) => {
@@ -105,12 +127,17 @@ export function Step4Summary({
 
           const isExpanded = expandedLines.has(line.id);
 
+          const needsLineType = !isExtensionLine && line.lineType === null;
+
           return (
             <div
               key={line.id}
               className={cn(
-                "rounded-2xl border border-border bg-card shadow-sm overflow-hidden transition-all duration-200",
-                isExpanded && "ring-2 ring-primary/20"
+                "rounded-2xl border bg-card shadow-sm overflow-hidden transition-all duration-200",
+                needsLineType 
+                  ? "border-orange-500/50 ring-2 ring-orange-500/20" 
+                  : "border-border",
+                isExpanded && !needsLineType && "ring-2 ring-primary/20"
               )}
             >
               {/* Card Header - Always Visible */}
@@ -153,24 +180,30 @@ export function Step4Summary({
 
               {/* Line Type Selection - Only for non-extension lines */}
               {!isExtensionLine && (
-                <div className="px-4 pb-4 border-t border-border bg-muted/5">
-                  <div className="flex items-center justify-between py-3">
+                <div className={cn(
+                  "px-4 pb-4 border-t bg-muted/5",
+                  needsLineType ? "border-orange-500/30" : "border-border"
+                )}>
+                  <div className={cn(
+                    "flex items-center justify-between py-3 rounded-lg px-2 -mx-2",
+                    needsLineType && "animate-pulse bg-orange-500/5"
+                  )}>
                     <div className="flex items-center gap-3">
                       <div className={cn(
                         "w-8 h-8 rounded-lg flex items-center justify-center",
-                        line.lineType ? "bg-primary/10" : "bg-destructive/10"
+                        line.lineType ? "bg-primary/10" : "bg-orange-500/20"
                       )}>
                         {line.lineType ? (
                           <Check size={16} className="text-primary" />
                         ) : (
-                          <span className="text-destructive font-bold text-sm">!</span>
+                          <AlertTriangle size={16} className="text-orange-600" />
                         )}
                       </div>
                       <div>
                         <h4 className="font-medium text-sm">Vrsta linije</h4>
                         <p className={cn(
                           "text-sm",
-                          line.lineType ? "text-primary font-medium" : "text-destructive"
+                          line.lineType ? "text-primary font-medium" : "text-orange-600 font-medium"
                         )}>
                           {line.lineType ? lineTypeName : "Obavezno odaberite vrstu linije"}
                         </p>
@@ -179,6 +212,9 @@ export function Step4Summary({
                     <Button
                       variant={line.lineType ? "outline" : "default"}
                       size="sm"
+                      className={cn(
+                        !line.lineType && "bg-orange-500 hover:bg-orange-600 text-white"
+                      )}
                       onClick={(e) => {
                         e.stopPropagation();
                         onOpenLineTypeModal(line.id);
@@ -325,6 +361,13 @@ export function Step4Summary({
       <div className="text-sm text-muted-foreground text-center">
         *Sve cijene su bez PDV-a
       </div>
+
+      {/* Disabled Button Helper Text */}
+      {!allLinesConfigured && (
+        <div className="text-center text-sm text-orange-600 dark:text-orange-400">
+          Gumb "Završi narudžbu" bit će dostupan nakon odabira vrste za sve linije.
+        </div>
+      )}
     </div>
   );
 }
