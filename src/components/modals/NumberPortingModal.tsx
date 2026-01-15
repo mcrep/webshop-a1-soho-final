@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { X, Calendar as CalendarIcon } from "lucide-react";
+import { motion } from "framer-motion";
+import { X, Phone, Calendar as CalendarIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,18 @@ export function NumberPortingModal({ current, onClose, onSave }: NumberPortingMo
     current.portingTime || "morning"
   );
 
+  const formatPhoneDisplay = (phone: string) => {
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 5) return `${digits.slice(0, 2)} ${digits.slice(2)}`;
+    return `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
+  };
+
+  const handlePhoneChange = (setter: (val: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/\D/g, "").slice(0, 9);
+    setter(rawValue);
+  };
+
   const handleSave = () => {
     onSave({
       portingNumber,
@@ -61,71 +74,123 @@ export function NumberPortingModal({ current, onClose, onSave }: NumberPortingMo
     onClose();
   };
 
+  const isValid = portingNumber.length >= 8 && portingFromNetwork !== "";
+
   return (
-    <div className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
-      <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="relative bg-card border border-border rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
-        <div className="bg-card border-b border-border px-6 py-4 flex items-center justify-between rounded-t-2xl flex-shrink-0">
-          <h2 className="text-xl font-semibold">Prijenos broja s druge mreže</h2>
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <motion.div
+        className="bg-background rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col overflow-hidden"
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="relative bg-gradient-to-r from-primary/80 to-primary/60 p-6 text-primary-foreground shrink-0">
           <button
             onClick={onClose}
-            className="h-8 w-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors"
+            className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
             aria-label="Zatvori"
           >
-            <X size={20} />
+            <X className="h-5 w-5" />
           </button>
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center">
+              <Phone className="h-6 w-6" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold">Prijenos broja</h2>
+              <p className="text-sm opacity-90">Prenesite broj s druge mreže na A1</p>
+            </div>
+          </div>
         </div>
 
-        <div className="p-6 space-y-6 overflow-y-auto flex-1">
-          {/* Broj koji se prenosi */}
+        {/* Content - Scrollable */}
+        <div className="p-6 space-y-5 overflow-y-auto flex-1">
+          {/* Phone Number */}
           <div className="space-y-2">
-            <Label htmlFor="portingNumber">Broj koji se prenosi</Label>
-            <Input
-              id="portingNumber"
-              value={portingNumber}
-              onChange={(e) => setPortingNumber(e.target.value)}
-              placeholder="Unesite broj"
-            />
+            <Label htmlFor="portingNumber">Broj koji se prenosi *</Label>
+            <div className="flex items-center rounded-xl border border-border bg-card focus-within:ring-2 focus-within:ring-primary">
+              <span className="pl-3 pr-1 text-muted-foreground select-none">+385</span>
+              <input
+                id="portingNumber"
+                value={formatPhoneDisplay(portingNumber)}
+                onChange={handlePhoneChange(setPortingNumber)}
+                inputMode="tel"
+                className="flex-1 p-3 pl-1 bg-transparent outline-none"
+                placeholder="9X XXX XXXX"
+              />
+            </div>
           </div>
 
-          {/* Vrsta broja */}
-          <div className="space-y-2">
-            <Label>Vrsta broja koji se prenosi</Label>
-            <Select value={portingNumberType} onValueChange={(v) => setPortingNumberType(v as "prepaid" | "postpaid")}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="prepaid">Prepaid</SelectItem>
-                <SelectItem value="postpaid">Postpaid</SelectItem>
-              </SelectContent>
-            </Select>
+          {/* Two columns for desktop */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Vrsta broja */}
+            <div className="space-y-2">
+              <Label>Vrsta broja</Label>
+              <Select value={portingNumberType} onValueChange={(v) => setPortingNumberType(v as "prepaid" | "postpaid")}>
+                <SelectTrigger className="rounded-xl">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="prepaid">Prepaid (bonovi)</SelectItem>
+                  <SelectItem value="postpaid">Postpaid (pretplata)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* S koje mreže */}
+            <div className="space-y-2">
+              <Label>S koje mreže *</Label>
+              <Select value={portingFromNetwork} onValueChange={(v) => setPortingFromNetwork(v as "ht" | "telemach")}>
+                <SelectTrigger className="rounded-xl">
+                  <SelectValue placeholder="Odaberite mrežu" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ht">Hrvatski Telekom</SelectItem>
+                  <SelectItem value="telemach">Telemach</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Tip korisnika */}
           <div className="space-y-2">
-            <Label>Tip korisnika</Label>
-            <RadioGroup value={portingCustomerType} onValueChange={(v) => setPortingCustomerType(v as "business" | "private")}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="business" id="business" />
-                <Label htmlFor="business" className="cursor-pointer font-normal">Poslovni</Label>
-              </div>
+            <Label>Tip korisnika kod postojećeg operatora</Label>
+            <RadioGroup 
+              value={portingCustomerType} 
+              onValueChange={(v) => setPortingCustomerType(v as "business" | "private")}
+              className="flex gap-4"
+            >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="private" id="private" />
                 <Label htmlFor="private" className="cursor-pointer font-normal">Privatni</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="business" id="business" />
+                <Label htmlFor="business" className="cursor-pointer font-normal">Poslovni</Label>
               </div>
             </RadioGroup>
           </div>
 
           {/* Naziv korisnika */}
           <div className="space-y-2">
-            <Label htmlFor="customerName">Naziv korisnika</Label>
+            <Label htmlFor="customerName">
+              {portingCustomerType === "business" ? "Naziv tvrtke" : "Ime i prezime"}
+            </Label>
             <Input
               id="customerName"
               value={portingCustomerName}
               onChange={(e) => setPortingCustomerName(e.target.value)}
-              placeholder="Ime i prezime / Naziv tvrtke"
+              placeholder={portingCustomerType === "business" ? "Naziv tvrtke d.o.o." : "Ime Prezime"}
+              className="rounded-xl"
             />
           </div>
 
@@ -135,8 +200,9 @@ export function NumberPortingModal({ current, onClose, onSave }: NumberPortingMo
             <Input
               id="oib"
               value={portingOib}
-              onChange={(e) => setPortingOib(e.target.value)}
-              placeholder="Unesite OIB"
+              onChange={(e) => setPortingOib(e.target.value.replace(/\D/g, "").slice(0, 11))}
+              placeholder="12345678901"
+              className="rounded-xl"
               maxLength={11}
             />
           </div>
@@ -148,89 +214,94 @@ export function NumberPortingModal({ current, onClose, onSave }: NumberPortingMo
               id="address"
               value={portingAddress}
               onChange={(e) => setPortingAddress(e.target.value)}
-              placeholder="Ulica i broj, Grad"
+              placeholder="Ulica i kućni broj, Poštanski broj Grad"
+              className="rounded-xl"
             />
           </div>
 
           {/* Kontakt broj */}
           <div className="space-y-2">
             <Label htmlFor="contactNumber">Kontakt broj</Label>
-            <Input
-              id="contactNumber"
-              value={portingContactNumber}
-              onChange={(e) => setPortingContactNumber(e.target.value)}
-              placeholder="Unesite kontakt broj"
-            />
+            <div className="flex items-center rounded-xl border border-border bg-card focus-within:ring-2 focus-within:ring-primary">
+              <span className="pl-3 pr-1 text-muted-foreground select-none">+385</span>
+              <input
+                id="contactNumber"
+                value={formatPhoneDisplay(portingContactNumber)}
+                onChange={handlePhoneChange(setPortingContactNumber)}
+                inputMode="tel"
+                className="flex-1 p-3 pl-1 bg-transparent outline-none"
+                placeholder="9X XXX XXXX"
+              />
+            </div>
           </div>
 
-          {/* Datum početka prijenosa */}
-          <div className="space-y-2">
-            <Label>Datum početka prijenosa</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !portingStartDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {portingStartDate ? format(portingStartDate, "dd.MM.yyyy") : "Odaberite datum"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={portingStartDate}
-                  onSelect={setPortingStartDate}
-                  initialFocus
-                  className="pointer-events-auto"
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
+          {/* Datum i vrijeme prijenosa */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-2">
+              <Label>Datum početka prijenosa</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal rounded-xl",
+                      !portingStartDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {portingStartDate ? format(portingStartDate, "dd.MM.yyyy") : "Odaberite datum"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={portingStartDate}
+                    onSelect={setPortingStartDate}
+                    initialFocus
+                    className="pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
 
-          {/* S koje mreže */}
-          <div className="space-y-2">
-            <Label>S koje mreže se broj prenosi</Label>
-            <Select value={portingFromNetwork} onValueChange={(v) => setPortingFromNetwork(v as "ht" | "telemach")}>
-              <SelectTrigger>
-                <SelectValue placeholder="Odaberite mrežu" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ht">Hrvatski Telekom</SelectItem>
-                <SelectItem value="telemach">Telemach</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Vrijeme prijenosa */}
-          <div className="space-y-2">
-            <Label>Vrijeme prijenosa</Label>
-            <RadioGroup value={portingTime} onValueChange={(v) => setPortingTime(v as "morning" | "afternoon")}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="morning" id="morning" />
-                <Label htmlFor="morning" className="cursor-pointer font-normal">Ujutro</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="afternoon" id="afternoon" />
-                <Label htmlFor="afternoon" className="cursor-pointer font-normal">Popodne</Label>
-              </div>
-            </RadioGroup>
+            <div className="space-y-2">
+              <Label>Vrijeme prijenosa</Label>
+              <RadioGroup 
+                value={portingTime} 
+                onValueChange={(v) => setPortingTime(v as "morning" | "afternoon")}
+                className="flex gap-4 h-10 items-center"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="morning" id="morning" />
+                  <Label htmlFor="morning" className="cursor-pointer font-normal">Ujutro</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="afternoon" id="afternoon" />
+                  <Label htmlFor="afternoon" className="cursor-pointer font-normal">Popodne</Label>
+                </div>
+              </RadioGroup>
+            </div>
           </div>
         </div>
 
-        <div className="bg-card border-t border-border px-6 py-4 flex gap-3 justify-end rounded-b-2xl flex-shrink-0">
-          <Button variant="outline" onClick={onClose}>
+        {/* Footer */}
+        <div className="p-6 pt-0 flex flex-col sm:flex-row gap-3 shrink-0 border-t border-border bg-background">
+          <Button
+            variant="outline"
+            className="flex-1"
+            onClick={onClose}
+          >
             Odustani
           </Button>
-          <Button onClick={handleSave}>
+          <Button
+            className="flex-1"
+            onClick={handleSave}
+            disabled={!isValid}
+          >
             Spremi
           </Button>
         </div>
-      </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
