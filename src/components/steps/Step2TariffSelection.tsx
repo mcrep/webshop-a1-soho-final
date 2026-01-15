@@ -34,16 +34,11 @@ export function Step2TariffSelection({
   const [selectedTariffId, setSelectedTariffId] = useState<string | null>(null);
   const [showCompareModal, setShowCompareModal] = useState(false);
 
-  // Sort tariffs to show Perfect, Ideal, and Master Biz first
+  // Sort tariffs from most expensive to cheapest (by original price)
   const displayedTariffs = [...tariffs].sort((a, b) => {
-    const priority = ['perfect-biz', 'ideal-biz', 'master-biz'];
-    const aIndex = priority.indexOf(a.id);
-    const bIndex = priority.indexOf(b.id);
-    
-    if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
-    if (aIndex !== -1) return -1;
-    if (bIndex !== -1) return 1;
-    return 0;
+    const aPrice = a.originalMonthly ?? a.monthly;
+    const bPrice = b.originalMonthly ?? b.monthly;
+    return bPrice - aPrice;
   });
 
   // Build lines for assignment modal
@@ -183,11 +178,6 @@ export function Step2TariffSelection({
                 <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
                   +{tariff.walletCredit}€ A1 Wallet
                 </div>
-                {tariff.id === 'perfect-biz' && (
-                  <Badge className="absolute top-4 left-4 bg-gray-500 text-white hover:bg-gray-600">
-                    Preporučeno
-                  </Badge>
-                )}
                 <h3 className="text-xl font-bold mb-2 mt-6">{tariff.name}</h3>
                 
                 {/* Savings Badge */}
