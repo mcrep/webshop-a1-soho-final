@@ -96,19 +96,16 @@ export function Step4Summary({
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <span className="text-lg font-bold text-primary">{index + 1}</span>
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-center">
+                      <span className="text-xs font-bold text-primary leading-tight px-1">
+                        {(line.lineType === "renew" || line.lineType === "mnp" || line.lineType === "pre2post") && line.existingLineId 
+                          ? line.existingLineId 
+                          : `Linija ${index + 1}`}
+                      </span>
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-lg">
-                          {tariff?.name}
-                          <span className="ml-2 text-muted-foreground font-normal">
-                            {line.lineType === "renew" && line.existingLineId 
-                              ? line.existingLineId 
-                              : `Linija ${index + 1}`}
-                          </span>
-                        </h3>
+                        <h3 className="font-semibold text-lg">{tariff?.name}</h3>
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {device?.id !== "no-dev" ? `${device?.brand} ${device?.name}` : "Bez uređaja"}
@@ -278,8 +275,7 @@ export function Step4Summary({
                               <Shield size={18} className="text-green-600" />
                             </div>
                             <div className="flex-1">
-                              <div className="font-semibold">Zaštita ekrana</div>
-                              <div className="text-sm text-muted-foreground">Pokriva slučajna oštećenja</div>
+                              <div className="font-semibold">Osiguranje ekrana</div>
                             </div>
                             <div className="text-right font-semibold">4.99€/mj</div>
                           </div>
