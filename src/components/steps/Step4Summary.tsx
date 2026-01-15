@@ -12,6 +12,10 @@ const formatMsisdn = (value: string) => {
   if (digits.startsWith("385") && digits.length === 12) {
     return `+385 ${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`;
   }
+  // Local format without country code: 9X XXX XXXX (8-9 digits)
+  if (digits.length >= 8 && digits.length <= 9 && digits.startsWith("9")) {
+    return `+385 ${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
+  }
   return value;
 };
 
