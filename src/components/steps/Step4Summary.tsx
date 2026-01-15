@@ -101,11 +101,17 @@ export function Step4Summary({
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-lg">{tariff?.name}</h3>
+                        <h3 className="font-semibold text-lg">
+                          {tariff?.name}
+                          <span className="ml-2 text-muted-foreground font-normal">
+                            {line.lineType === "renew" && line.existingLineId 
+                              ? line.existingLineId 
+                              : `Linija ${index + 1}`}
+                          </span>
+                        </h3>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        {device?.id !== "no-dev" ? device?.name : "Bez uređaja"}
-                        {variant && ` • ${variant.color}`}
+                        {device?.id !== "no-dev" ? `${device?.brand} ${device?.name}` : "Bez uređaja"}
                       </p>
                     </div>
                   </div>
@@ -180,7 +186,6 @@ export function Step4Summary({
                           </div>
                           <div className="flex-1">
                             <div className="font-semibold">{tariff?.name}</div>
-                            <div className="text-sm text-muted-foreground">{tariff?.data} • {tariff?.voice}</div>
                           </div>
                           <div className="text-right font-semibold">{tariffMonthly.toFixed(2)}€/mj</div>
                         </div>
@@ -196,15 +201,21 @@ export function Step4Summary({
                             <Smartphone size={18} className="text-foreground" />
                           </div>
                           <div className="flex-1">
-                            <div className="font-semibold">{device?.id !== "no-dev" ? device?.name : "Bez uređaja"}</div>
-                            {variant && (
-                              <div className="text-sm text-muted-foreground">{variant.color} • {variant.memory}</div>
-                            )}
+                            <div className="font-semibold">{device?.id !== "no-dev" ? `${device?.brand} ${device?.name}` : "Bez uređaja"}</div>
                           </div>
                           {device?.id !== "no-dev" && (
                             <div className="text-right text-sm">
-                              <div className="font-semibold">{devicePrice.toFixed(2)}€</div>
-                              <div className="text-muted-foreground">puna cijena</div>
+                              {line.devicePayment === "installments" ? (
+                                <>
+                                  <div className="font-semibold">{lineOnetime.toFixed(2)}€</div>
+                                  <div className="text-muted-foreground">upfront</div>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="font-semibold">{devicePrice.toFixed(2)}€</div>
+                                  <div className="text-muted-foreground">MPC</div>
+                                </>
+                              )}
                             </div>
                           )}
                         </div>
