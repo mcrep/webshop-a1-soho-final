@@ -152,34 +152,31 @@ export function Step4Summary({
                 </div>
               </div>
 
-              {/* Line Type Selection - Always Visible */}
-              <div className="px-4 pb-4 border-t border-border bg-muted/5">
-                <div className="flex items-center justify-between py-3">
-                  <div className="flex items-center gap-3">
-                    <div className={cn(
-                      "w-8 h-8 rounded-lg flex items-center justify-center",
-                      line.lineType ? "bg-primary/10" : "bg-destructive/10"
-                    )}>
-                      {line.lineType ? (
-                        <Check size={16} className="text-primary" />
-                      ) : (
-                        <span className="text-destructive font-bold text-sm">!</span>
-                      )}
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-sm">Vrsta linije</h4>
-                      <p className={cn(
-                        "text-sm",
-                        line.lineType ? "text-primary font-medium" : "text-destructive"
+              {/* Line Type Selection - Only for non-extension lines */}
+              {!isExtensionLine && (
+                <div className="px-4 pb-4 border-t border-border bg-muted/5">
+                  <div className="flex items-center justify-between py-3">
+                    <div className="flex items-center gap-3">
+                      <div className={cn(
+                        "w-8 h-8 rounded-lg flex items-center justify-center",
+                        line.lineType ? "bg-primary/10" : "bg-destructive/10"
                       )}>
-                        {line.lineType ? lineTypeName : "Obavezno odaberite vrstu linije"}
-                        {isExtensionLine && line.extensionLabel && (
-                          <span className="ml-2 text-muted-foreground">({line.extensionLabel})</span>
+                        {line.lineType ? (
+                          <Check size={16} className="text-primary" />
+                        ) : (
+                          <span className="text-destructive font-bold text-sm">!</span>
                         )}
-                      </p>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm">Vrsta linije</h4>
+                        <p className={cn(
+                          "text-sm",
+                          line.lineType ? "text-primary font-medium" : "text-destructive"
+                        )}>
+                          {line.lineType ? lineTypeName : "Obavezno odaberite vrstu linije"}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  {!isExtensionLine && (
                     <Button
                       variant={line.lineType ? "outline" : "default"}
                       size="sm"
@@ -190,9 +187,9 @@ export function Step4Summary({
                     >
                       {line.lineType ? "Promijeni" : "Odaberi vrstu"}
                     </Button>
-                  )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Expanded Details */}
               {isExpanded && (
