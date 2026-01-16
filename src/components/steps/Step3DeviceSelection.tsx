@@ -8,6 +8,7 @@ import { devices, tariffs } from "@/data/catalog";
 import { findExistingLineNumber } from "@/data/mock-existing-lines";
 import { Label } from "@/components/ui/label";
 import { motion, LayoutGroup } from "framer-motion";
+import { StatusNotification } from "@/components/StatusNotification";
 import type { Line } from "@/types";
 
 type DeviceSlot = {
@@ -108,22 +109,21 @@ export function Step3DeviceSelection({
     return `${count} linija na kojima`;
   };
 
-  let title = "";
+  // Status message logic
+  const isComplete = canProceed;
+  let statusMessage = "";
   if (activeCount < numberOfDevices) {
-    // Phase 1: Need to activate more lines
-    title = `Odaberite ${getLineText(remainingLinesToActivate)} želite uzeti uređaje`;
+    statusMessage = `Molimo odaberite ${getLineText(remainingLinesToActivate)} želite uzeti uređaje.`;
   } else if (!allActiveDevicesSelected) {
-    // Phase 2: Lines activated, need to select devices
-    title = `Odaberite ${remainingDevicesToSelect} ${remainingDevicesToSelect === 1 ? 'uređaj' : 'uređaja'}`;
+    statusMessage = `Molimo odaberite ${remainingDevicesToSelect} ${remainingDevicesToSelect === 1 ? 'uređaj' : 'uređaja'} prije završetka narudžbe.`;
   } else {
-    // Phase 3: All done
-    title = "Odabrani uređaji";
+    statusMessage = "Svi uređaji su uspješno odabrani!";
   }
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <div className="text-center my-8">
-        <h1 className="text-3xl font-bold">{title}</h1>
+      <div className="my-6 px-4">
+        <StatusNotification message={statusMessage} isComplete={isComplete} />
       </div>
 
       <LayoutGroup>

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TariffLineAssignmentModal, type LineForAssignment } from "@/components/modals/TariffLineAssignmentModal";
 import { CompareTariffsModal } from "@/components/modals/CompareTariffsModal";
+import { StatusNotification } from "@/components/StatusNotification";
 import type { ExtensionLineWithTariff } from "@/types";
 
 type LineAssignment = {
@@ -127,20 +128,20 @@ export function Step2TariffSelection({
     return `${count} mobilnih linija`;
   };
 
-  const getTitle = () => {
-    if (assignedCount === totalLines) return "Odabrali ste sve tarife!";
-    return `Potrebno je dodijeliti neku od navedenih tarifa na ${getLineDeclension(unassignedLines.length)}`;
-  };
+  const isComplete = assignedCount === totalLines;
+  const statusMessage = isComplete 
+    ? "Odabrali ste tarife za sve linije!" 
+    : `Molimo odaberite tarifu za ${getLineDeclension(unassignedLines.length)} prije završetka narudžbe.`;
 
   const selectedTariff = tariffs.find(t => t.id === selectedTariffId);
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <div className="text-center my-8">
-        <h1 className="text-3xl font-bold">{getTitle()}</h1>
+      <div className="my-6 px-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <StatusNotification message={statusMessage} isComplete={isComplete} />
         <Button 
           variant="outline" 
-          className="mt-4 gap-2"
+          className="gap-2 shrink-0"
           onClick={() => setShowCompareModal(true)}
         >
           <Scale className="h-4 w-4" />
