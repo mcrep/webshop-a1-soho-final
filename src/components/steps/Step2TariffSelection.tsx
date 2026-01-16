@@ -145,8 +145,8 @@ export function Step2TariffSelection({
   const selectedTariff = tariffs.find(t => t.id === selectedTariffId);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      <div className="my-6 px-4 space-y-4">
+    <div className="max-w-6xl mx-auto px-4 space-y-6">
+      <div className="my-6 space-y-4">
         <StatusNotification message={statusMessage} isComplete={isComplete} />
         <div className="flex justify-end">
           <Button 
@@ -161,7 +161,7 @@ export function Step2TariffSelection({
       </div>
 
       {/* Tariff Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {displayedTariffs.map((tariff) => {
             const assignedToThis = getAssignedCount(tariff.id);
             const hasAssignments = assignedToThis > 0;
