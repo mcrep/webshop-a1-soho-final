@@ -177,7 +177,7 @@ export function Step2TariffSelection({
                     ? "cursor-not-allowed border-border" 
                     : hasAssignments 
                       ? "border-primary cursor-pointer" 
-                      : "border-border hover:border-primary/30 hover:bg-accent/50 cursor-pointer",
+                      : "border-border hover:border-primary/50 cursor-pointer",
                   shakingTariffId === tariff.id && "animate-shake"
                 )}
                 animate={{
