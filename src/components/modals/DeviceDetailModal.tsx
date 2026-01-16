@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -62,56 +62,59 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
 
   return (
     <motion.div 
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-[110] flex items-center justify-center bg-black/50 backdrop-blur-sm"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
       <motion.div 
-        className="w-full max-w-6xl mx-4 rounded-2xl bg-card shadow-2xl border border-border overflow-hidden max-h-[90vh] flex flex-col"
+        className="w-full max-w-6xl mx-4 rounded-2xl bg-background shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
         onClick={(e) => e.stopPropagation()}
       >
-          {/* Header */}
-          <div className="p-6 flex items-center justify-between border-b border-border">
+        {/* Header */}
+        <div className="relative bg-gradient-to-r from-primary/80 to-primary/60 p-6 text-primary-foreground">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center">
+              <Smartphone className="h-6 w-6" />
+            </div>
             <div>
-              <h2 className="font-bold text-2xl flex items-center gap-3">
+              <h2 className="text-xl font-bold flex items-center gap-3 flex-wrap">
                 {device.brand} {device.name}
                 {device.energyClass && (
-                  <Badge variant="outline" className="text-sm font-normal flex items-center gap-2">
+                  <Badge variant="secondary" className="text-xs font-normal bg-white/20 text-primary-foreground border-0">
                     Energetski razred: {device.energyClass}
-                    {device.availability && (
-                      <>
-                        <div className={`w-2 h-2 rounded-full ${
-                          device.availability === "available" ? "bg-green-500" :
-                          device.availability === "on-request" ? "bg-orange-500" :
-                          "bg-red-500"
-                        }`} />
-                        <span>
-                          {device.availability === "available" ? "Dostupan" :
-                           device.availability === "on-request" ? "Na upit" :
-                           "Nedostupan"}
-                        </span>
-                      </>
-                    )}
                   </Badge>
+                )}
+                {device.availability && (
+                  <span className="flex items-center gap-1.5 text-sm font-normal">
+                    <span className={`w-2 h-2 rounded-full ${
+                      device.availability === "available" ? "bg-green-400" :
+                      device.availability === "on-request" ? "bg-orange-400" :
+                      "bg-red-400"
+                    }`} />
+                    {device.availability === "available" ? "Dostupan" :
+                     device.availability === "on-request" ? "Na upit" :
+                     "Nedostupan"}
+                  </span>
                 )}
               </h2>
               {device.description && (
-                <p className="text-sm text-muted-foreground mt-2">{device.description}</p>
+                <p className="text-sm opacity-90 mt-1">{device.description}</p>
               )}
             </div>
-            <button
-              onClick={onClose}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <X size={24} />
-            </button>
           </div>
+        </div>
 
           {/* Content */}
           <div className="flex-1 overflow-auto">
