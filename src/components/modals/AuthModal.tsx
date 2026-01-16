@@ -140,20 +140,14 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
           >
             <X className="h-5 w-5" />
           </button>
-          
-          {/* Back button row */}
           {view !== "select" && (
-            <div className="mb-4">
-              <button
-                onClick={handleBack}
-                className="p-2 -ml-2 rounded-full hover:bg-white/20 transition-colors"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </button>
-            </div>
+            <button
+              onClick={handleBack}
+              className="absolute top-4 left-4 p-2 rounded-full hover:bg-white/20 transition-colors"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
           )}
-          
-          {/* Icon and title */}
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center">
               <LogIn className="h-6 w-6" />
