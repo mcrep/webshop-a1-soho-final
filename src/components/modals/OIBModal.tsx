@@ -94,7 +94,7 @@ export function OIBModal({ onClose, onSubmit }: OIBModalProps) {
               <Building2 className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="text-xl font-bold">Podaci o tvrtki</h2>
+              <h2 className="text-xl font-bold">Želite li personaliziranu ponudu?</h2>
               <p className="text-sm opacity-90">Novi poslovni korisnik</p>
             </div>
           </div>
