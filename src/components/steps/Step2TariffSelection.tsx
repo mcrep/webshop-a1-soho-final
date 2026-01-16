@@ -148,7 +148,7 @@ export function Step2TariffSelection({
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="my-6 px-4 space-y-4">
         <StatusNotification message={statusMessage} isComplete={isComplete} />
-        <div>
+        <div className="flex justify-end">
           <Button 
             variant="outline" 
             className="gap-2"
