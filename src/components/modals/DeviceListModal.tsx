@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { devices } from "@/data/catalog";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Smartphone } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -55,25 +55,39 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
 
   return (
     <>
-      <div className="fixed inset-0 z-[100]">
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
-        <div className="absolute inset-0 grid place-items-center p-4">
-          <div className="w-full max-w-7xl rounded-2xl bg-card shadow-xl border border-border overflow-hidden max-h-[90vh] flex flex-col">
-            {/* Header */}
-            <div className="p-4 flex items-center justify-between border-b border-border bg-muted/30">
-              <div>
-                <h2 className="font-semibold text-lg">Svi uređaji</h2>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Odaberi uređaj za detaljnu konfiguraciju
-                </p>
+      <motion.div 
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      >
+        <motion.div 
+          className="w-full max-w-7xl mx-4 rounded-2xl bg-background shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+          initial={{ scale: 0.9, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.9, opacity: 0, y: 20 }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="relative bg-gradient-to-r from-primary/80 to-primary/60 p-6 text-primary-foreground">
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center">
+                <Smartphone className="h-6 w-6" />
               </div>
-              <button
-                onClick={onClose}
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X size={20} />
-              </button>
+              <div>
+                <h2 className="text-xl font-bold">Svi uređaji</h2>
+                <p className="text-sm opacity-90">Odaberi uređaj za detaljnu konfiguraciju</p>
+              </div>
             </div>
+          </div>
 
             {/* Main Content */}
             <div className="flex-1 overflow-hidden flex">
@@ -257,9 +271,8 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Device Detail Modal */}
       <AnimatePresence>
