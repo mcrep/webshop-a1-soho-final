@@ -15,6 +15,13 @@ const getLinePlural = (n: number) => {
   return "novih mobilnih linija";
 };
 
+// Pluralization for extension lines (without "novu/nove/novih")
+const getExtensionLinePlural = (n: number) => {
+  if (n === 1) return "mobilnu liniju";
+  if (n >= 2 && n <= 4) return "mobilne linije";
+  return "mobilnih linija";
+};
+
 const getDevicePlural = (n: number) => {
   if (n === 1) return "mobilni uređaj";
   if (n >= 2 && n <= 4) return "mobilna uređaja";
@@ -242,7 +249,7 @@ export function Step1CustomerInfo({
                 >
                   <AnimatedNumber value={extensionLines.length} className="text-5xl font-bold text-primary" />
                 </Button>
-                <h3 className="text-lg font-semibold"><AnimatedText text={getLinePlural(extensionLines.length)} /></h3>
+                <h3 className="text-lg font-semibold"><AnimatedText text={getExtensionLinePlural(extensionLines.length)} /></h3>
               </div>
             </CardContent>
           </Card>
