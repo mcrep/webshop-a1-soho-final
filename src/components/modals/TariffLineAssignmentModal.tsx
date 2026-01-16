@@ -16,7 +16,6 @@ export type LineForAssignment = {
 };
 
 type TariffLineAssignmentModalProps = {
-  open: boolean;
   onOpenChange: (open: boolean) => void;
   tariff: Tariff;
   lines: LineForAssignment[];
@@ -24,7 +23,6 @@ type TariffLineAssignmentModalProps = {
 };
 
 export function TariffLineAssignmentModal({
-  open,
   onOpenChange,
   tariff,
   lines,
@@ -36,12 +34,10 @@ export function TariffLineAssignmentModal({
   // Track selected lines (starts with currently assigned)
   const [selectedLineIds, setSelectedLineIds] = useState<string[]>(currentlyAssigned);
 
-  // Reset selection when modal opens
+  // Reset selection when modal opens (modal is mounted only when open)
   useEffect(() => {
-    if (open) {
-      setSelectedLineIds(currentlyAssigned);
-    }
-  }, [open, currentlyAssigned.join(',')]);
+    setSelectedLineIds(currentlyAssigned);
+  }, [tariff.id, currentlyAssigned.join(",")]);
 
   const toggleLine = (lineId: string) => {
     setSelectedLineIds(prev => 
@@ -66,137 +62,133 @@ export function TariffLineAssignmentModal({
   const extensionLinesList = availableLines.filter(l => l.isExtension);
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={handleClose}
+    >
+      <motion.div
+        className="bg-background rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="relative bg-gradient-to-r from-primary/80 to-primary/60 p-6 text-primary-foreground">
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <div className="flex items-center gap-3">
+            <motion.div 
+              className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center"
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.1, type: "spring", stiffness: 400, damping: 20 }}
+            >
+              <Phone className="h-6 w-6" />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.15 }}
+            >
+              <h2 className="text-xl font-bold">{tariff.name}</h2>
+              <p className="text-sm opacity-90">
+                {tariff.monthly.toFixed(2)}€/mj
+              </p>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <motion.div 
+          className="p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={handleClose}
+          transition={{ delay: 0.2 }}
         >
-          <motion.div
-            className="bg-background rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="relative bg-gradient-to-r from-primary/80 to-primary/60 p-6 text-primary-foreground">
-              <button
-                onClick={handleClose}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
-              <div className="flex items-center gap-3">
-                <motion.div 
-                  className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center"
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.1, type: "spring", stiffness: 400, damping: 20 }}
-                >
-                  <Phone className="h-6 w-6" />
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.15 }}
-                >
-                  <h2 className="text-xl font-bold">{tariff.name}</h2>
-                  <p className="text-sm opacity-90">
-                    {tariff.monthly.toFixed(2)}€/mj
-                  </p>
-                </motion.div>
-              </div>
+          <p className="text-muted-foreground mb-6">
+            Odaberite linije koje želite dodijeliti ovoj tarifi:
+          </p>
+
+          {availableLines.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              Sve linije su već dodijeljene drugim tarifama.
             </div>
-
-            {/* Content */}
-            <motion.div 
-              className="p-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <p className="text-muted-foreground mb-6">
-                Odaberite linije koje želite dodijeliti ovoj tarifi:
-              </p>
-
-              {availableLines.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  Sve linije su već dodijeljene drugim tarifama.
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {/* New Lines */}
-                  {newLines.length > 0 && (
-                    <div>
-                      <h4 className="text-sm font-medium text-muted-foreground mb-2">Nove linije</h4>
-                      <div className="space-y-2">
-                        {newLines.map((line, index) => (
-                          <motion.div
-                            key={line.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.25 + index * 0.05 }}
-                          >
-                            <LineCheckbox
-                              line={line}
-                              isSelected={selectedLineIds.includes(line.id)}
-                              onToggle={() => toggleLine(line.id)}
-                            />
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Extension Lines */}
-                  {extensionLinesList.length > 0 && (
-                    <div>
-                      <h4 className="text-sm font-medium text-muted-foreground mb-2">Produljenje postojećih linija</h4>
-                      <div className="space-y-2">
-                        {extensionLinesList.map((line, index) => (
-                          <motion.div
-                            key={line.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.25 + (newLines.length + index) * 0.05 }}
-                          >
-                            <LineCheckbox
-                              line={line}
-                              isSelected={selectedLineIds.includes(line.id)}
-                              onToggle={() => toggleLine(line.id)}
-                            />
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+          ) : (
+            <div className="space-y-4">
+              {/* New Lines */}
+              {newLines.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-2">Nove linije</h4>
+                  <div className="space-y-2">
+                    {newLines.map((line, index) => (
+                      <motion.div
+                        key={line.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.25 + index * 0.05 }}
+                      >
+                        <LineCheckbox
+                          line={line}
+                          isSelected={selectedLineIds.includes(line.id)}
+                          onToggle={() => toggleLine(line.id)}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
               )}
-            </motion.div>
 
-            {/* Footer */}
-            <motion.div
-              className="p-6 pt-0 flex flex-col sm:flex-row gap-3"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Button variant="outline" className="flex-1" onClick={handleClose}>
-                Odustani
-              </Button>
-              <Button className="flex-1" onClick={handleConfirm}>
-                Potvrdi ({selectedLineIds.length})
-              </Button>
-            </motion.div>
-          </motion.div>
+              {/* Extension Lines */}
+              {extensionLinesList.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-2">Produljenje postojećih linija</h4>
+                  <div className="space-y-2">
+                    {extensionLinesList.map((line, index) => (
+                      <motion.div
+                        key={line.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.25 + (newLines.length + index) * 0.05 }}
+                      >
+                        <LineCheckbox
+                          line={line}
+                          isSelected={selectedLineIds.includes(line.id)}
+                          onToggle={() => toggleLine(line.id)}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </motion.div>
-      )}
-    </AnimatePresence>
+
+        {/* Footer */}
+        <motion.div
+          className="p-6 pt-0 flex flex-col sm:flex-row gap-3"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Button variant="outline" className="flex-1" onClick={handleClose}>
+            Odustani
+          </Button>
+          <Button className="flex-1" onClick={handleConfirm}>
+            Potvrdi ({selectedLineIds.length})
+          </Button>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }
 
