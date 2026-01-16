@@ -146,18 +146,19 @@ export function Step2TariffSelection({
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <div className="my-6 px-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="my-6 px-4 space-y-4">
         <StatusNotification message={statusMessage} isComplete={isComplete} />
-        <Button 
-          variant="outline" 
-          className="gap-2 shrink-0"
-          onClick={() => setShowCompareModal(true)}
-        >
-          <Scale className="h-4 w-4" />
-          Usporedi tarife
-        </Button>
+        <div>
+          <Button 
+            variant="outline" 
+            className="gap-2"
+            onClick={() => setShowCompareModal(true)}
+          >
+            <Scale className="h-4 w-4" />
+            Usporedi tarife
+          </Button>
+        </div>
       </div>
-
 
       {/* Tariff Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
