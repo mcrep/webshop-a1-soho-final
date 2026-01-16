@@ -460,7 +460,7 @@ const Index = () => {
         isLoggedIn={isLoggedIn}
         onLogout={handleLogout}
       />
-      <div className="flex pt-[73px]">
+      <div className="flex pt-[57px]">
         <div className="mx-auto max-w-6xl px-4 w-full">
           {showWallet && (
             <WalletBanner
