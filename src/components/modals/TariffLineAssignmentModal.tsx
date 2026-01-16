@@ -65,8 +65,6 @@ export function TariffLineAssignmentModal({
   const newLines = availableLines.filter(l => !l.isExtension);
   const extensionLinesList = availableLines.filter(l => l.isExtension);
 
-  if (!open) return null;
-
   return (
     <AnimatePresence>
       {open && (
