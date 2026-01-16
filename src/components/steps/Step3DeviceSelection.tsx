@@ -121,8 +121,8 @@ export function Step3DeviceSelection({
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      <div className="my-6 px-4">
+    <div className="w-full space-y-6">
+      <div className="my-6">
         <StatusNotification message={statusMessage} isComplete={isComplete} />
       </div>
 
