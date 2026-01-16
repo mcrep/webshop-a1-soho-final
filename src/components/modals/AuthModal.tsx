@@ -148,7 +148,7 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
               <ArrowLeft className="h-5 w-5" />
             </button>
           )}
-          <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-3 ${view !== "select" ? "pl-12" : ""}`}>
             <div className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center">
               <LogIn className="h-6 w-6" />
             </div>
