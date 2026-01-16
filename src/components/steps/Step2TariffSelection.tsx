@@ -34,6 +34,12 @@ export function Step2TariffSelection({
 }: Step2Props) {
   const [selectedTariffId, setSelectedTariffId] = useState<string | null>(null);
   const [showCompareModal, setShowCompareModal] = useState(false);
+  const [shakingTariffId, setShakingTariffId] = useState<string | null>(null);
+
+  const handleDisabledClick = (tariffId: string) => {
+    setShakingTariffId(tariffId);
+    setTimeout(() => setShakingTariffId(null), 500);
+  };
 
   // Sort tariffs from most expensive to cheapest (by original price)
   const displayedTariffs = [...tariffs].sort((a, b) => {
@@ -69,7 +75,10 @@ export function Step2TariffSelection({
 
   // Handle tariff click - simplified for single line
   const handleTariffClick = (tariffId: string, isDisabled: boolean, hasAssignments: boolean) => {
-    if (isDisabled) return;
+    if (isDisabled) {
+      handleDisabledClick(tariffId);
+      return;
+    }
     
     // Single line: directly assign if unassigned, otherwise open modal to allow removal
     if (isSingleLine) {
@@ -167,7 +176,8 @@ export function Step2TariffSelection({
                     ? "cursor-not-allowed border-border" 
                     : hasAssignments 
                       ? "border-primary cursor-pointer" 
-                      : "border-border hover:border-primary/30 hover:bg-accent/50 cursor-pointer"
+                      : "border-border hover:border-primary/30 hover:bg-accent/50 cursor-pointer",
+                  shakingTariffId === tariff.id && "animate-shake"
                 )}
                 animate={{
                   opacity: isDisabled ? 0.5 : 1,
