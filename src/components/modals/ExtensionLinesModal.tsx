@@ -146,10 +146,7 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
         </div>
 
         {/* Footer */}
-        <div className="border-t border-border px-6 py-4 flex items-center justify-between bg-background">
-          <div className="text-sm text-muted-foreground">
-            Odabrano: {selected.length} {selected.length === 1 ? "linija" : "linija"}
-          </div>
+        <div className="border-t border-border px-6 py-4 flex justify-end bg-background">
           <div className="flex gap-3">
             <Button variant="outline" onClick={onClose} className="rounded-2xl">
               Odustani
