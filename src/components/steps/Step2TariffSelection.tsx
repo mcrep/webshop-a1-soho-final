@@ -293,9 +293,8 @@ export function Step2TariffSelection({
 
       {/* Assignment Modal */}
       <AnimatePresence>
-        {selectedTariff && (
+        {selectedTariffId && selectedTariff && (
           <TariffLineAssignmentModal
-            open={selectedTariffId !== null}
             onOpenChange={(open) => !open && setSelectedTariffId(null)}
             tariff={selectedTariff}
             lines={allLines}
