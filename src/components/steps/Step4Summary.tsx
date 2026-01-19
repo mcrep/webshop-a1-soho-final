@@ -45,9 +45,9 @@ export function Step4Summary({
       .map((line) => line.id);
   }, [lines]);
 
-  // Auto-expand unconfigured lines initially
+  // All lines start collapsed
   const [expandedLines, setExpandedLines] = useState<Set<string>>(
-    () => new Set(unconfiguredLineIds)
+    () => new Set()
   );
   
   const allLinesConfigured = lines.every((line) => line.isExtension || line.lineType !== null);
@@ -138,10 +138,8 @@ export function Step4Summary({
               key={line.id}
               className={cn(
                 "rounded-2xl border bg-card shadow-sm overflow-hidden transition-all duration-200",
-                needsLineType 
-                  ? "border-orange-500/50 ring-2 ring-orange-500/20" 
-                  : "border-border",
-                isExpanded && !needsLineType && "ring-2 ring-primary/20"
+                "border-border",
+                isExpanded && "ring-2 ring-primary/20"
               )}
             >
               {/* Card Header - Always Visible */}
