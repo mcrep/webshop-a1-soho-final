@@ -187,14 +187,14 @@ export function Step2TariffSelection({
                 transition={{ duration: 0.3, ease: "easeOut" }}
                 onClick={() => handleTariffClick(tariff.id, isDisabled, hasAssignments)}
               >
-                <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold">
+                <div className="absolute top-4 right-4 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 px-3 py-1 rounded-full text-xs font-semibold">
                   +{tariff.walletCredit}€ A1 Wallet
                 </div>
                 <h3 className="text-xl font-bold mb-2 mt-6">{tariff.name}</h3>
                 
                 {/* Savings Badge */}
                 {tariff.originalMonthly && tariff.originalMonthly > tariff.monthly && (
-                  <div className="inline-flex items-center gap-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2.5 py-1 rounded-full text-xs font-semibold mb-2">
+                  <div className="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 rounded-full text-xs font-semibold mb-2">
                     <Tag className="h-3 w-3" />
                     Ušteda {((tariff.originalMonthly - tariff.monthly) / tariff.originalMonthly * 100).toFixed(0)}%
                   </div>
