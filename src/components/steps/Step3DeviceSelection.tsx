@@ -121,11 +121,11 @@ export function Step3DeviceSelection({
   }
 
   return (
-    <div className="w-full space-y-6">
-      <div className="mt-6 mb-4">
-        <div className={!isComplete ? 'visible' : 'invisible'}>
+    <div className="w-full">
+      <div className={`${!isComplete ? 'mt-6 mb-6' : 'mt-6'}`}>
+        {!isComplete && (
           <StatusNotification message={statusMessage} isComplete={isComplete} />
-        </div>
+        )}
       </div>
 
       <LayoutGroup>
