@@ -122,7 +122,7 @@ export function Step3DeviceSelection({
 
   return (
     <div className="w-full space-y-6">
-      <div className="my-6">
+      <div className="mt-6 mb-4">
         <div className={!isComplete ? 'visible' : 'invisible'}>
           <StatusNotification message={statusMessage} isComplete={isComplete} />
         </div>
