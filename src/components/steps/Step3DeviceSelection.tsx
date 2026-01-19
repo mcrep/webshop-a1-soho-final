@@ -122,9 +122,11 @@ export function Step3DeviceSelection({
 
   return (
     <div className="w-full space-y-6">
-      <div className="my-6">
-        <StatusNotification message={statusMessage} isComplete={isComplete} />
-      </div>
+      {!isComplete && (
+        <div className="my-6">
+          <StatusNotification message={statusMessage} isComplete={isComplete} />
+        </div>
+      )}
 
       <LayoutGroup>
         {/* Active slots - full cards */}
