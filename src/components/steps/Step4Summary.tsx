@@ -72,15 +72,6 @@ export function Step4Summary({
         <p className="text-muted-foreground">Korak 4 od 4 - Pregled i finalizacija</p>
       </div>
 
-      {/* Warning Banner */}
-      {!allLinesConfigured && (
-        <div className="flex items-center gap-3 p-4 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-700 dark:text-orange-400 animate-fade-in">
-          <AlertTriangle className="shrink-0" size={20} />
-          <p className="text-sm font-medium">
-            Molimo odaberite vrstu linije za {unconfiguredCount} {unconfiguredCount === 1 ? "liniju" : unconfiguredCount < 5 ? "linije" : "linija"} prije završetka narudžbe.
-          </p>
-        </div>
-      )}
 
       <div className="space-y-4">
         {lines.map((line, index) => {
