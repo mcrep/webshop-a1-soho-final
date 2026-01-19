@@ -383,21 +383,6 @@ export function Step3DeviceSelection({
                         <span className="text-sm font-medium">+{tariff?.noDeviceWalletBonus || 0}€ dodatnog bonusa za tarifu bez uređaja</span>
                       </div>
                     )}
-
-                    {/* Activate button */}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={!canToggleOn}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (canToggleOn) onToggleSlot(slot.id);
-                      }}
-                      className="gap-1"
-                    >
-                      <Plus className="w-4 h-4" />
-                      Uređaj
-                    </Button>
                   </motion.div>
                 );
               })}
