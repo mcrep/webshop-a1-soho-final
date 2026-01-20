@@ -52,7 +52,7 @@ export function WalletBanner({
     <div 
       className="border-l border-r border-b border-border rounded-b-2xl sticky top-[57px] z-40"
       style={{
-        background: 'linear-gradient(to bottom, hsl(var(--card)) 0%, #fff1f1 100%)'
+        background: '#7A8EFF'
       }}
     >
       <div className="mx-auto max-w-6xl px-4 py-6">
