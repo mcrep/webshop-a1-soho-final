@@ -199,9 +199,9 @@ export function Step2TariffSelection({
                   
                   {/* Wallet Badge - Top Right */}
                   <div 
-                    className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold text-[#4A5DB8]"
+                    className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold text-white"
                     style={{
-                      background: 'linear-gradient(to right, #7A8EFF, #E2ECFF)'
+                      background: 'linear-gradient(to right, #3F1EE2, #E2ECFF)'
                     }}
                   >
                     +{tariff.walletCredit}€ A1 Wallet
