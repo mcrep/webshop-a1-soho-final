@@ -145,7 +145,7 @@ export function Step2TariffSelection({
   const selectedTariff = tariffs.find(t => t.id === selectedTariffId);
 
   return (
-    <div className="w-full pt-6">
+    <div className="w-full py-6">
       {/* Tariff Cards Container */}
       <div className="bg-card rounded-2xl p-6">
         {/* Header row */}
