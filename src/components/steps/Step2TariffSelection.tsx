@@ -236,27 +236,17 @@ export function Step2TariffSelection({
                     </div>
                   </div>
 
-                  {/* Assignment indicator */}
-                  <div className="flex justify-center mt-6">
-                    <div className={cn(
-                      "inline-flex items-center gap-2 px-4 py-2 rounded-full transition-colors text-center",
-                      hasAssignments 
-                        ? "bg-primary text-primary-foreground" 
-                        : isDisabled
-                          ? "border-2 border-muted text-muted-foreground bg-transparent"
-                          : "border-2 border-primary text-primary bg-transparent"
-                    )}>
-                      <Users className="h-4 w-4" />
-                      <span className="font-semibold text-sm">
-                        {hasAssignments 
-                          ? `${assignedToThis} ${assignedToThis === 1 ? 'linija' : assignedToThis < 5 ? 'linije' : 'linija'}`
-                          : isDisabled
-                            ? 'Sve linije su dodijeljene'
-                            : 'Dodijeli linije'
-                        }
-                      </span>
+                  {/* Assignment indicator - only show when has assignments */}
+                  {hasAssignments && (
+                    <div className="flex justify-center mt-6">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground">
+                        <Users className="h-4 w-4" />
+                        <span className="font-semibold text-sm">
+                          {assignedToThis} {assignedToThis === 1 ? 'linija' : assignedToThis < 5 ? 'linije' : 'linija'}
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Show assigned lines preview */}
                   {hasAssignments && (
