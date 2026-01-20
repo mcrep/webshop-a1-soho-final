@@ -35,22 +35,22 @@ export function Header({ onOpenAuth, lineCount, monthly, onetime, allLinesConfig
                   <button
                     onClick={() => onStepClick(step.number)}
                     disabled={step.number > currentStep}
-                    className={`group flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all ${
+                    className={`group flex items-center gap-2 px-3 py-1.5 rounded-full transition-all border ${
                       currentStep === step.number
-                        ? "bg-primary text-primary-foreground"
+                        ? "bg-transparent border-primary text-primary"
                         : step.number < currentStep
-                        ? "bg-primary/10 text-primary hover:bg-primary/20"
-                        : "bg-muted text-muted-foreground cursor-not-allowed"
+                        ? "bg-muted border-muted text-muted-foreground hover:bg-muted/80"
+                        : "bg-transparent border-transparent text-muted-foreground cursor-not-allowed"
                     }`}
                     title={`Korak ${step.number}: ${step.name}`}
                   >
                     <div
                       className={`h-5 w-5 rounded-full grid place-items-center text-xs font-semibold border ${
                         currentStep === step.number
-                          ? "border-primary-foreground"
+                          ? "border-primary text-primary"
                           : step.number < currentStep
-                          ? "border-primary"
-                          : "border-border"
+                          ? "border-muted-foreground/50 text-muted-foreground"
+                          : "border-muted-foreground/30 text-muted-foreground"
                       }`}
                     >
                       {step.number < currentStep ? <Check size={12} /> : step.number}
