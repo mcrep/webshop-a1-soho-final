@@ -162,136 +162,138 @@ export function Step2TariffSelection({
         </div>
       </div>
 
-      {/* Tariff Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {displayedTariffs.map((tariff) => {
-            const assignedToThis = getAssignedCount(tariff.id);
-            const hasAssignments = assignedToThis > 0;
-            const allLinesAssigned = unassignedLines.length === 0;
-            const isDisabled = allLinesAssigned && !hasAssignments;
+      {/* Tariff Cards Container */}
+      <div className="bg-card rounded-2xl p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {displayedTariffs.map((tariff) => {
+              const assignedToThis = getAssignedCount(tariff.id);
+              const hasAssignments = assignedToThis > 0;
+              const allLinesAssigned = unassignedLines.length === 0;
+              const isDisabled = allLinesAssigned && !hasAssignments;
 
-            return (
-              <motion.div 
-                key={tariff.id}
-                className={cn(
-                  "rounded-2xl border-2 bg-card p-6 shadow-sm relative h-full transition-all duration-300",
-                  isDisabled 
-                    ? "cursor-not-allowed border-border" 
-                    : hasAssignments 
-                      ? "border-primary cursor-pointer" 
-                      : "border-border hover:border-primary/50 cursor-pointer",
-                  shakingTariffId === tariff.id && "animate-shake"
-                )}
-                animate={{
-                  opacity: isDisabled ? 0.5 : 1,
-                  scale: isDisabled ? 0.98 : 1,
-                }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                onClick={() => handleTariffClick(tariff.id, isDisabled, hasAssignments)}
-              >
-                {/* Savings Badge - Top Left */}
-                {tariff.originalMonthly && tariff.originalMonthly > tariff.monthly && (
-                  <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-muted text-muted-foreground px-3 py-1 rounded-full text-xs font-semibold">
-                    <Tag className="h-3 w-3" />
-                    Ušteda {((tariff.originalMonthly - tariff.monthly) / tariff.originalMonthly * 100).toFixed(0)}%
-                  </div>
-                )}
-                
-                {/* Wallet Badge - Top Right */}
-                <div className="absolute top-4 right-4 bg-muted text-muted-foreground px-3 py-1 rounded-full text-xs font-semibold">
-                  +{tariff.walletCredit}€ A1 Wallet
-                </div>
-                <h3 className="text-xl font-bold mb-2 mt-6">{tariff.name}</h3>
-                
-                {/* Price Display */}
-                <div className="mb-3">
+              return (
+                <motion.div 
+                  key={tariff.id}
+                  className={cn(
+                    "rounded-2xl border-2 bg-card p-6 shadow-sm relative h-full transition-all duration-300",
+                    isDisabled 
+                      ? "cursor-not-allowed border-border" 
+                      : hasAssignments 
+                        ? "border-primary cursor-pointer" 
+                        : "border-border hover:border-primary/50 cursor-pointer",
+                    shakingTariffId === tariff.id && "animate-shake"
+                  )}
+                  animate={{
+                    opacity: isDisabled ? 0.5 : 1,
+                    scale: isDisabled ? 0.98 : 1,
+                  }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  onClick={() => handleTariffClick(tariff.id, isDisabled, hasAssignments)}
+                >
+                  {/* Savings Badge - Top Left */}
                   {tariff.originalMonthly && tariff.originalMonthly > tariff.monthly && (
-                    <div className="text-sm text-muted-foreground line-through">
-                      {tariff.originalMonthly.toFixed(2)}€/mj
+                    <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-muted text-muted-foreground px-3 py-1 rounded-full text-xs font-semibold">
+                      <Tag className="h-3 w-3" />
+                      Ušteda {((tariff.originalMonthly - tariff.monthly) / tariff.originalMonthly * 100).toFixed(0)}%
                     </div>
                   )}
-                  <div className="text-2xl font-bold text-primary">
-                    {tariff.monthly.toFixed(2)}€<span className="text-sm text-muted-foreground font-normal">/mj</span>
+                  
+                  {/* Wallet Badge - Top Right */}
+                  <div className="absolute top-4 right-4 bg-muted text-muted-foreground px-3 py-1 rounded-full text-xs font-semibold">
+                    +{tariff.walletCredit}€ A1 Wallet
                   </div>
-                </div>
-                
-                <div className="space-y-2 mb-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Wifi className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">{tariff.data}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">{tariff.voice}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Globe className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">{tariff.roaming}</span>
-                  </div>
-                </div>
-
-                {/* Assignment indicator */}
-                <div className="flex justify-center mt-6">
-                  <div className={cn(
-                    "inline-flex items-center gap-2 px-4 py-2 rounded-full transition-colors text-center",
-                    hasAssignments 
-                      ? "bg-primary text-primary-foreground" 
-                      : isDisabled
-                        ? "border-2 border-muted text-muted-foreground bg-transparent"
-                        : "border-2 border-primary text-primary bg-transparent"
-                  )}>
-                    <Users className="h-4 w-4" />
-                    <span className="font-semibold text-sm">
-                      {hasAssignments 
-                        ? `${assignedToThis} ${assignedToThis === 1 ? 'linija' : assignedToThis < 5 ? 'linije' : 'linija'}`
-                        : isDisabled
-                          ? 'Sve linije su dodijeljene'
-                          : 'Dodijeli linije'
-                      }
-                    </span>
-                  </div>
-                </div>
-
-                {/* Show assigned lines preview */}
-                {hasAssignments && (
-                  <div className="mt-4 pt-4 border-t border-border">
-                  <div className="flex flex-wrap gap-1.5">
-                      <AnimatePresence mode="popLayout">
-                        {lineAssignments
-                          .filter(a => a.tariffId === tariff.id)
-                          .map(a => {
-                            const line = allLines.find(l => l.id === a.lineId);
-                            return (
-                              <motion.div
-                                key={a.lineId}
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.8 }}
-                                transition={{ duration: 0.2 }}
-                                layout
-                              >
-                                <Badge 
-                                  variant="outline" 
-                                  className="text-xs pr-1 flex items-center gap-1"
-                                >
-                                  {line?.label}
-                                  <button
-                                    onClick={(e) => handleRemoveLine(a.lineId, e)}
-                                    className="ml-0.5 hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
-                                  >
-                                    <X className="h-3 w-3" />
-                                  </button>
-                                </Badge>
-                              </motion.div>
-                            );
-                          })}
-                      </AnimatePresence>
+                  <h3 className="text-xl font-bold mb-2 mt-6">{tariff.name}</h3>
+                  
+                  {/* Price Display */}
+                  <div className="mb-3">
+                    {tariff.originalMonthly && tariff.originalMonthly > tariff.monthly && (
+                      <div className="text-sm text-muted-foreground line-through">
+                        {tariff.originalMonthly.toFixed(2)}€/mj
+                      </div>
+                    )}
+                    <div className="text-2xl font-bold text-primary">
+                      {tariff.monthly.toFixed(2)}€<span className="text-sm text-muted-foreground font-normal">/mj</span>
                     </div>
                   </div>
-                )}
-              </motion.div>
-            );
-          })}
+                  
+                  <div className="space-y-2 mb-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Wifi className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium">{tariff.data}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium">{tariff.voice}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium">{tariff.roaming}</span>
+                    </div>
+                  </div>
+
+                  {/* Assignment indicator */}
+                  <div className="flex justify-center mt-6">
+                    <div className={cn(
+                      "inline-flex items-center gap-2 px-4 py-2 rounded-full transition-colors text-center",
+                      hasAssignments 
+                        ? "bg-primary text-primary-foreground" 
+                        : isDisabled
+                          ? "border-2 border-muted text-muted-foreground bg-transparent"
+                          : "border-2 border-primary text-primary bg-transparent"
+                    )}>
+                      <Users className="h-4 w-4" />
+                      <span className="font-semibold text-sm">
+                        {hasAssignments 
+                          ? `${assignedToThis} ${assignedToThis === 1 ? 'linija' : assignedToThis < 5 ? 'linije' : 'linija'}`
+                          : isDisabled
+                            ? 'Sve linije su dodijeljene'
+                            : 'Dodijeli linije'
+                        }
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Show assigned lines preview */}
+                  {hasAssignments && (
+                    <div className="mt-4 pt-4 border-t border-border">
+                    <div className="flex flex-wrap gap-1.5">
+                        <AnimatePresence mode="popLayout">
+                          {lineAssignments
+                            .filter(a => a.tariffId === tariff.id)
+                            .map(a => {
+                              const line = allLines.find(l => l.id === a.lineId);
+                              return (
+                                <motion.div
+                                  key={a.lineId}
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  exit={{ opacity: 0, scale: 0.8 }}
+                                  transition={{ duration: 0.2 }}
+                                  layout
+                                >
+                                  <Badge 
+                                    variant="outline" 
+                                    className="text-xs pr-1 flex items-center gap-1"
+                                  >
+                                    {line?.label}
+                                    <button
+                                      onClick={(e) => handleRemoveLine(a.lineId, e)}
+                                      className="ml-0.5 hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
+                                    >
+                                      <X className="h-3 w-3" />
+                                    </button>
+                                  </Badge>
+                                </motion.div>
+                              );
+                            })}
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
+        </div>
       </div>
 
       {/* Assignment Modal */}
