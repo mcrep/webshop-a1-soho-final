@@ -146,11 +146,17 @@ export function Step2TariffSelection({
 
   return (
     <div className="w-full space-y-6">
-      <div className="my-6 space-y-4">
-        {!isComplete && (
+      {!isComplete && (
+        <div className="my-6">
           <StatusNotification message={statusMessage} isComplete={isComplete} />
-        )}
-        <div className="flex justify-end">
+        </div>
+      )}
+
+      {/* Tariff Cards Container */}
+      <div className="bg-card rounded-2xl p-6">
+        {/* Header row */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-foreground">Dodijeli linije</h2>
           <Button 
             variant="outline" 
             className="gap-2"
@@ -160,10 +166,6 @@ export function Step2TariffSelection({
             Usporedi tarife
           </Button>
         </div>
-      </div>
-
-      {/* Tariff Cards Container */}
-      <div className="bg-card rounded-2xl p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {displayedTariffs.map((tariff) => {
               const assignedToThis = getAssignedCount(tariff.id);
