@@ -121,16 +121,20 @@ export function Step3DeviceSelection({
   }
 
   return (
-    <div className="w-full">
-      <div className={`${!isComplete ? 'mt-6 mb-6' : 'mt-6'}`}>
-        {!isComplete && (
-          <StatusNotification message={statusMessage} isComplete={isComplete} />
-        )}
-      </div>
+    <div className="w-full py-6">
+      {/* Device Selection Container */}
+      <div className="bg-card rounded-2xl p-6">
+        {/* Header row */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <Smartphone className="h-5 w-5" />
+            Odaberi uređaje
+          </h2>
+        </div>
 
-      <LayoutGroup>
-        {/* Active slots - full cards */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <LayoutGroup>
+          {/* Active slots - full cards */}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {activeSlots.map((slot, slotIndex) => {
             const device = devices.find((d) => d.id === slot.deviceId);
             const variant = device?.variants?.find((v) => v.id === slot.deviceVariantId);
@@ -389,7 +393,8 @@ export function Step3DeviceSelection({
             </div>
           </motion.div>
         )}
-      </LayoutGroup>
+        </LayoutGroup>
+      </div>
     </div>
   );
 }
