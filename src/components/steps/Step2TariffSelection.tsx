@@ -199,7 +199,7 @@ export function Step2TariffSelection({
                   <div 
                     className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold text-white"
                     style={{
-                      background: 'linear-gradient(to right, #3F1EE2, #E2ECFF)'
+                      background: 'linear-gradient(to right, #3F1EE2, #A8C6FF)'
                     }}
                   >
                     +{tariff.walletCredit}€ A1 Wallet
