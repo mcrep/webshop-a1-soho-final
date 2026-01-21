@@ -171,12 +171,7 @@ export function Step3DeviceSelection({
 
                 {/* Line label and tariff name */}
                 <div className="mb-3 pb-3 border-b border-border pr-8">
-                  <div className="flex items-center gap-2">
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${slot.isExtension ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
-                      {slot.isExtension ? 'Produljenje' : 'Nova linija'}
-                    </span>
-                  </div>
-                  <div className="font-bold text-lg mt-1">{displayLabel}</div>
+                  <div className="font-bold text-lg">{displayLabel}</div>
                   <div className="text-sm text-muted-foreground">Tarifa: {tariff?.name || "Unknown"}</div>
                 </div>
 
