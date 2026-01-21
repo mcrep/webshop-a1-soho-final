@@ -174,14 +174,17 @@ export function Step2TariffSelection({
                 <motion.div 
                   key={tariff.id}
                   className={cn(
-                    "rounded-2xl border-2 bg-card p-6 shadow-sm relative h-full transition-all duration-300",
+                    "rounded-2xl border-2 p-6 shadow-sm relative h-full transition-all duration-300",
                     isDisabled 
-                      ? "cursor-not-allowed border-border" 
+                      ? "cursor-not-allowed border-border bg-card" 
                       : hasAssignments 
-                        ? "border-primary cursor-pointer" 
-                        : "border-border hover:border-primary/50 cursor-pointer",
+                        ? "border-transparent cursor-pointer" 
+                        : "border-border hover:border-foreground cursor-pointer bg-card",
                     shakingTariffId === tariff.id && "animate-shake"
                   )}
+                  style={{
+                    backgroundColor: hasAssignments && !isDisabled ? '#F2F2F2' : undefined
+                  }}
                   animate={{
                     opacity: isDisabled ? 0.5 : 1,
                     scale: isDisabled ? 0.98 : 1,
