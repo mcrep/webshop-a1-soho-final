@@ -363,7 +363,7 @@ export function Step3DeviceSelection({
                     onClick={() => canToggleOn ? onToggleSlot(slot.id) : handleDisabledClick(slot.id)}
                     className={`flex items-center justify-between gap-4 px-4 py-3 rounded-xl border bg-card transition-all ${
                       canToggleOn 
-                        ? "border-border hover:border-primary/50 hover:bg-primary/5 cursor-pointer" 
+                        ? "border-border hover:border-foreground cursor-pointer" 
                         : "border-border/50 opacity-60 cursor-not-allowed"
                     } ${shakingSlotId === slot.id ? "animate-shake" : ""}`}
                   >
