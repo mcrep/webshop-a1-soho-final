@@ -1,6 +1,8 @@
-import { Wallet, Gift, TrendingUp, TrendingDown } from "lucide-react";
+import { useState } from "react";
+import { Wallet, TrendingUp, TrendingDown, Info } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useCountAnimation } from "@/hooks/use-count-animation";
+import { WalletInfoModal } from "@/components/modals/WalletInfoModal";
 
 type WalletBannerProps = {
   total: number;
@@ -25,6 +27,8 @@ export function WalletBanner({
   selectedLines = 0,
   maxLines = 0
 }: WalletBannerProps) {
+  const [infoModalOpen, setInfoModalOpen] = useState(false);
+
   // Animate wallet remaining whenever it changes
   const { value: animatedRemaining, isAnimating, direction } = useCountAnimation({
     value: remaining,
@@ -49,75 +53,69 @@ export function WalletBanner({
   const remainingPercentage = total > 0 ? (animatedRemaining / total) * 100 : 0;
 
   return (
-    <div 
-      className="border-l border-r border-b border-border rounded-b-2xl sticky top-[57px] z-40"
-      style={{
-        background: 'linear-gradient(to bottom, hsl(var(--card)) 0%, #fff1f1 100%)'
-      }}
-    >
-      <div className="mx-auto max-w-6xl px-4 py-6">
-        <div className="flex flex-col gap-4">
-          {/* Header row with icon and title */}
-          <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-full bg-[#A8C6FF]/30 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
-              <Wallet className="w-5 h-5" style={{ color: '#3F1EE2' }} />
+    <>
+      <div 
+        className="border-l border-r border-b border-border rounded-b-2xl sticky top-[57px] z-40"
+        style={{
+          background: 'linear-gradient(to bottom, hsl(var(--card)) 0%, #fff1f1 100%)'
+        }}
+      >
+        <div className="mx-auto max-w-6xl px-4 py-6">
+          <div className="flex flex-col gap-4">
+            {/* Header row with icon and title */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-full bg-[#A8C6FF]/30 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
+                  <Wallet className="w-5 h-5" style={{ color: '#3F1EE2' }} />
+                </div>
+                <h2 className="text-xl font-bold text-foreground">A1 Wallet</h2>
+              </div>
+              <button
+                onClick={() => setInfoModalOpen(true)}
+                className="w-8 h-8 rounded-full bg-muted/50 hover:bg-muted flex items-center justify-center transition-colors"
+                aria-label="Informacije o A1 Wallet"
+              >
+                <Info className="w-4 h-4 text-muted-foreground" />
+              </button>
             </div>
-            <h2 className="text-xl font-bold text-foreground">A1 Wallet</h2>
+
+            {/* Amounts + progress in the same row */}
+            <div className="flex items-center">
+              {/* Left: Available amount */}
+              <div className="flex-shrink-0 pr-4">
+                <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
+                <div className={`text-2xl font-bold ${getAnimationColor()} transition-colors flex items-center`}>
+                  €{animatedRemaining.toFixed(2)}
+                  {isAnimating && direction === "up" && (
+                    <TrendingUp className="w-5 h-5 ml-2 text-green-500 animate-pulse" />
+                  )}
+                  {isAnimating && direction === "down" && (
+                    <TrendingDown className="w-5 h-5 ml-2 text-destructive animate-pulse" />
+                  )}
+                </div>
+              </div>
+
+              {/* Center: Progress bar between the two amounts */}
+              <div className="flex-1">
+                <Progress
+                  value={showDetails ? remainingPercentage : (maxLines > 0 ? (selectedLines / maxLines) * 100 : 0)}
+                  className="h-3"
+                />
+              </div>
+
+              {/* Right: Used amount (only on device screen) */}
+              {showDetails ? (
+                <div className="flex-shrink-0 text-right pl-4">
+                  <div className="text-sm text-muted-foreground mb-1">Iskorišteni iznos</div>
+                  <div className="text-2xl font-bold text-muted-foreground">€{used.toFixed(2)}</div>
+                </div>
+              ) : null}
+            </div>
           </div>
-
-          {/* Amounts + progress in the same row */}
-          <div className="flex items-center">
-            {/* Left: Available amount */}
-            <div className="flex-shrink-0 pr-4">
-              <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
-              <div className={`text-2xl font-bold ${getAnimationColor()} transition-colors flex items-center`}>
-                €{animatedRemaining.toFixed(2)}
-                {isAnimating && direction === "up" && (
-                  <TrendingUp className="w-5 h-5 ml-2 text-green-500 animate-pulse" />
-                )}
-                {isAnimating && direction === "down" && (
-                  <TrendingDown className="w-5 h-5 ml-2 text-destructive animate-pulse" />
-                )}
-              </div>
-            </div>
-
-            {/* Center: Progress bar between the two amounts */}
-            <div className="flex-1">
-              <Progress
-                value={showDetails ? remainingPercentage : (maxLines > 0 ? (selectedLines / maxLines) * 100 : 0)}
-                className="h-3"
-              />
-            </div>
-
-            {/* Right: keep reserved space so the progress always ends where "Iskorišteni iznos" starts */}
-            {showDetails ? (
-              <div className="flex-shrink-0 text-right pl-4">
-                <div className="text-sm text-muted-foreground mb-1">Iskorišteni iznos</div>
-                <div className="text-2xl font-bold text-muted-foreground">€{used.toFixed(2)}</div>
-              </div>
-            ) : null}
-          </div>
-
-          {/* Bonus/Educational text row */}
-          {showDetails ? (
-            linesWithoutDevices > 0 && (
-              <div className="flex items-start gap-2 pt-3 border-t border-border/50">
-                <Gift className="w-4 h-4 text-bonus mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-muted-foreground text-left">
-                  Svaka linija bez uređaja donosi dodatni popust u A1 Wallet. Iznos bonusa ovisi o odabranoj tarifi – veća tarifa znači veći bonus!
-                </p>
-              </div>
-            )
-          ) : (
-            <div className="flex items-start gap-2 pt-3 border-t border-border/50">
-              <Gift className="w-4 h-4 text-bonus mt-0.5 flex-shrink-0" />
-              <p className="text-xs text-muted-foreground text-left">
-                Ovisno o odabranoj tarifi u A1 Wallet dobivate popust koji se može koristiti za umanjenje cijene uređaja.
-              </p>
-            </div>
-          )}
         </div>
       </div>
-    </div>
+
+      <WalletInfoModal open={infoModalOpen} onOpenChange={setInfoModalOpen} />
+    </>
   );
 }
