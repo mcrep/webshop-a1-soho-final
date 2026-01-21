@@ -231,9 +231,6 @@ function LineCheckbox({
           </div>
         )}
       </div>
-      <Badge variant={line.isExtension ? "default" : "secondary"} className="text-xs">
-        {line.isExtension ? "Produljenje" : "Nova"}
-      </Badge>
       <AnimatePresence>
         {isSelected && (
           <motion.div
