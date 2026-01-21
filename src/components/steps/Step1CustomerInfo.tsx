@@ -202,95 +202,98 @@ export function Step1CustomerInfo({
         {/* Combined Lines & Devices Configuration - Single container, no border */}
         <Card className="border-0 shadow-none">
           <CardContent className="p-6 space-y-6">
-            {/* Number of Lines */}
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Smartphone className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="text-lg font-semibold">Želim aktivirati</h3>
-              </div>
-              <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-12 w-12 rounded-full"
-                  onClick={() => onUpdateNumberOfLines(Math.max(0, numberOfLines - 1))}
-                  disabled={numberOfLines <= 0}
-                >
-                  <Minus className="h-5 w-5" />
-                </Button>
-              </motion.div>
-              <div className="text-center min-w-[80px]">
-                <AnimatedNumber value={numberOfLines} className="text-5xl font-bold text-primary" />
-              </div>
-              <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-12 w-12 rounded-full"
-                  onClick={() => onUpdateNumberOfLines(numberOfLines + 1)}
-                >
-                  <Plus className="h-5 w-5" />
-                </Button>
-              </motion.div>
-              <h3 className="text-lg font-semibold"><AnimatedText text={getLinePlural(numberOfLines)} /></h3>
-            </div>
-
-            {/* Extension Lines - Only shown when logged in */}
-            {isLoggedIn && (
-              <div className="flex items-center justify-center gap-3 flex-wrap">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <RefreshCw className="h-5 w-5 text-primary" />
+            {/* Grid layout for consistent alignment */}
+            <div className="flex flex-col items-center gap-6">
+              {/* Number of Lines */}
+              <div className="grid grid-cols-[1fr_auto_auto_auto_1fr] items-center gap-3 w-full max-w-2xl">
+                <div className="flex items-center justify-end gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <Smartphone className="h-5 w-5 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold">i produljiti</h3>
+                  <h3 className="text-lg font-semibold whitespace-nowrap">Želim aktivirati</h3>
                 </div>
-                <Button
-                  variant="outline"
-                  onClick={() => setShowExtensionModal(true)}
-                  className="h-16 min-w-[80px] rounded-full text-5xl font-bold text-primary hover:bg-primary/10"
-                >
-                  <AnimatedNumber value={extensionLines.length} className="text-5xl font-bold text-primary" />
-                </Button>
-                <h3 className="text-lg font-semibold"><AnimatedText text={getExtensionLinePlural(extensionLines.length)} /></h3>
+                <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-12 w-12 rounded-full"
+                    onClick={() => onUpdateNumberOfLines(Math.max(0, numberOfLines - 1))}
+                    disabled={numberOfLines <= 0}
+                  >
+                    <Minus className="h-5 w-5" />
+                  </Button>
+                </motion.div>
+                <div className="text-center w-[80px]">
+                  <AnimatedNumber value={numberOfLines} className="text-5xl font-bold text-primary" />
+                </div>
+                <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-12 w-12 rounded-full"
+                    onClick={() => onUpdateNumberOfLines(numberOfLines + 1)}
+                  >
+                    <Plus className="h-5 w-5" />
+                  </Button>
+                </motion.div>
+                <h3 className="text-lg font-semibold"><AnimatedText text={getLinePlural(numberOfLines)} /></h3>
               </div>
-            )}
 
-            {/* Number of Devices */}
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Smartphone className="h-5 w-5 text-primary" />
+              {/* Extension Lines - Only shown when logged in */}
+              {isLoggedIn && (
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 w-full max-w-2xl">
+                  <div className="flex items-center justify-end gap-3">
+                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <RefreshCw className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold whitespace-nowrap">i produljiti</h3>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowExtensionModal(true)}
+                    className="h-16 w-[80px] rounded-full text-5xl font-bold text-primary hover:bg-primary/10"
+                  >
+                    <AnimatedNumber value={extensionLines.length} className="text-5xl font-bold text-primary" />
+                  </Button>
+                  <h3 className="text-lg font-semibold"><AnimatedText text={getExtensionLinePlural(extensionLines.length)} /></h3>
                 </div>
-                <h3 className="text-lg font-semibold">a uz to želim kupiti</h3>
+              )}
+
+              {/* Number of Devices */}
+              <div className="grid grid-cols-[1fr_auto_auto_auto_1fr] items-center gap-3 w-full max-w-2xl">
+                <div className="flex items-center justify-end gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <Smartphone className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold whitespace-nowrap">a uz to želim kupiti</h3>
+                </div>
+                <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-12 w-12 rounded-full"
+                    onClick={() => onUpdateNumberOfDevices(Math.max(0, numberOfDevices - 1))}
+                    disabled={numberOfDevices <= 0}
+                  >
+                    <Minus className="h-5 w-5" />
+                  </Button>
+                </motion.div>
+                <div className="text-center w-[80px]">
+                  <AnimatedNumber value={numberOfDevices} className="text-5xl font-bold text-primary" />
+                </div>
+                <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-12 w-12 rounded-full"
+                    onClick={() => onUpdateNumberOfDevices(Math.min(maxDevices, numberOfDevices + 1))}
+                    disabled={numberOfDevices >= maxDevices}
+                  >
+                    <Plus className="h-5 w-5" />
+                  </Button>
+                </motion.div>
+                <h3 className="text-lg font-semibold"><AnimatedText text={getDevicePlural(numberOfDevices)} /></h3>
               </div>
-              <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-12 w-12 rounded-full"
-                  onClick={() => onUpdateNumberOfDevices(Math.max(0, numberOfDevices - 1))}
-                  disabled={numberOfDevices <= 0}
-                >
-                  <Minus className="h-5 w-5" />
-                </Button>
-              </motion.div>
-              <div className="text-center min-w-[80px]">
-                <AnimatedNumber value={numberOfDevices} className="text-5xl font-bold text-primary" />
-              </div>
-              <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-12 w-12 rounded-full"
-                  onClick={() => onUpdateNumberOfDevices(Math.min(maxDevices, numberOfDevices + 1))}
-                  disabled={numberOfDevices >= maxDevices}
-                >
-                  <Plus className="h-5 w-5" />
-                </Button>
-              </motion.div>
-              <h3 className="text-lg font-semibold"><AnimatedText text={getDevicePlural(numberOfDevices)} /></h3>
             </div>
           </CardContent>
         </Card>
