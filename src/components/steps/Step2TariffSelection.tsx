@@ -235,18 +235,6 @@ export function Step2TariffSelection({
                     </div>
                   </div>
 
-                  {/* Assignment indicator - only show when has assignments */}
-                  {hasAssignments && (
-                    <div className="flex justify-center mt-6">
-                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground">
-                        <Users className="h-4 w-4" />
-                        <span className="font-semibold text-sm">
-                          {assignedToThis} {assignedToThis === 1 ? 'linija' : assignedToThis < 5 ? 'linije' : 'linija'}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
                   {/* Show assigned lines preview */}
                   {hasAssignments && (
                     <div className="mt-4 pt-4 border-t border-border">
