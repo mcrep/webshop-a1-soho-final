@@ -83,7 +83,7 @@ export function WalletBanner({
                   </div>
                 </div>
 
-                {/* Center: Progress bar (depleting) */}
+                {/* Center: Progress bar (depleting - based on remaining wallet) */}
                 <div className="flex-1">
                   <Progress value={remainingPercentage} className="h-3" />
                 </div>
@@ -106,11 +106,11 @@ export function WalletBanner({
               )}
             </>
           ) : (
-            /* Tariff screen: Only available amount with filling progress */
+            /* Tariff screen: Only available amount with filling progress based on assigned lines */
             <>
               <div className="flex items-center gap-6">
                 {/* Left: Available amount */}
-                <div className="flex-shrink-0">
+                <div className="flex-1">
                   <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
                   <div className={`text-2xl font-bold ${getAnimationColor()} transition-colors flex items-center`}>
                     €{animatedRemaining.toFixed(2)}
@@ -123,10 +123,13 @@ export function WalletBanner({
                   </div>
                 </div>
 
-                {/* Right: Progress bar (filling) */}
+                {/* Center: Progress bar (filling - based on assigned lines) */}
                 <div className="flex-1">
-                  <Progress value={remainingPercentage} className="h-3" />
+                  <Progress value={maxLines > 0 ? (selectedLines / maxLines) * 100 : 0} className="h-3" />
                 </div>
+
+                {/* Right: Empty space for alignment */}
+                <div className="flex-1" />
               </div>
 
               {/* Educational text for tariff screen */}
