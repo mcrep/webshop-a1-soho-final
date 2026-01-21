@@ -1,5 +1,5 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Wallet, Gift, Info } from "lucide-react";
+import { Wallet, Gift, Info, X } from "lucide-react";
+import { motion } from "framer-motion";
 
 type WalletInfoModalProps = {
   open: boolean;
@@ -7,20 +7,40 @@ type WalletInfoModalProps = {
 };
 
 export function WalletInfoModal({ open, onOpenChange }: WalletInfoModalProps) {
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md overflow-hidden p-0">
+    <motion.div 
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={() => onOpenChange(false)}
+    >
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        className="w-full max-w-md mx-4 rounded-2xl bg-background shadow-2xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Gradient Header */}
-        <DialogHeader className="bg-gradient-to-r from-[#3F1EE2]/80 to-[#A8C6FF]/60 p-6 text-white">
+        <div className="relative bg-gradient-to-r from-[#3F1EE2]/80 to-[#A8C6FF]/60 p-6 text-white">
+          <button
+            onClick={() => onOpenChange(false)}
+            className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
               <Wallet className="w-6 h-6 text-white" />
             </div>
-            <DialogTitle className="text-xl font-bold text-white">
-              O A1 Wallet
-            </DialogTitle>
+            <h2 className="text-xl font-bold">O A1 Wallet</h2>
           </div>
-        </DialogHeader>
+        </div>
 
         {/* Content */}
         <div className="p-6 space-y-6">
@@ -48,7 +68,7 @@ export function WalletInfoModal({ open, onOpenChange }: WalletInfoModalProps) {
             </div>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </motion.div>
+    </motion.div>
   );
 }
