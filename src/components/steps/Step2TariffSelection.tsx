@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Wifi, Phone, Globe, Users, X, Scale, Tag } from "lucide-react";
+import { Wifi, Phone, Globe, Users, X, Scale } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { tariffs } from "@/data/catalog";
 import { Badge } from "@/components/ui/badge";
@@ -192,14 +192,6 @@ export function Step2TariffSelection({
                   transition={{ duration: 0.3, ease: "easeOut" }}
                   onClick={() => handleTariffClick(tariff.id, isDisabled, hasAssignments)}
                 >
-                  {/* Savings Badge - Top Left */}
-                  {tariff.originalMonthly && tariff.originalMonthly > tariff.monthly && (
-                    <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-muted text-muted-foreground px-3 py-1 rounded-full text-xs font-semibold">
-                      <Tag className="h-3 w-3" />
-                      Ušteda {((tariff.originalMonthly - tariff.monthly) / tariff.originalMonthly * 100).toFixed(0)}%
-                    </div>
-                  )}
-                  
                   {/* Wallet Badge - Top Right */}
                   <div 
                     className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold text-white"
