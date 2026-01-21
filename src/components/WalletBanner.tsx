@@ -65,10 +65,10 @@ export function WalletBanner({
             <h2 className="text-xl font-bold text-foreground">A1 Wallet</h2>
           </div>
 
-          {/* Amounts row */}
-          <div className="flex items-end justify-between gap-4 mb-2">
+          {/* Amounts + progress in the same row */}
+          <div className="flex items-center gap-6">
             {/* Left: Available amount */}
-            <div>
+            <div className="min-w-[180px] flex-shrink-0">
               <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
               <div className={`text-2xl font-bold ${getAnimationColor()} transition-colors flex items-center`}>
                 €{animatedRemaining.toFixed(2)}
@@ -81,20 +81,24 @@ export function WalletBanner({
               </div>
             </div>
 
-            {/* Right: Used amount (only on device screen) */}
-            {showDetails && (
-              <div className="text-right">
+            {/* Center: Progress bar between the two amounts */}
+            <div className="flex-1">
+              <Progress
+                value={showDetails ? remainingPercentage : (maxLines > 0 ? (selectedLines / maxLines) * 100 : 0)}
+                className="h-3"
+              />
+            </div>
+
+            {/* Right: keep reserved space so the progress always ends where "Iskorišteni iznos" starts */}
+            {showDetails ? (
+              <div className="min-w-[180px] flex-shrink-0 text-right">
                 <div className="text-sm text-muted-foreground mb-1">Iskorišteni iznos</div>
                 <div className="text-2xl font-bold text-muted-foreground">€{used.toFixed(2)}</div>
               </div>
+            ) : (
+              <div className="min-w-[180px] flex-shrink-0" aria-hidden="true" />
             )}
           </div>
-
-          {/* Progress bar - full width */}
-          <Progress 
-            value={showDetails ? remainingPercentage : (maxLines > 0 ? (selectedLines / maxLines) * 100 : 0)} 
-            className="h-3" 
-          />
 
           {/* Bonus/Educational text row */}
           {showDetails ? (
