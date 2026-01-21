@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserPlus, Users, Smartphone, Minus, Plus, Check, RefreshCw } from "lucide-react";
@@ -67,7 +67,7 @@ type Step1Props = {
   isLoggedIn: boolean;
   extensionLines: ExtensionLineWithTariff[];
   companyOIB: string;
-  onUpdateCustomerType: (type: "new" | "existing") => void;
+  onUpdateCustomerType: (type: "new" | "existing" | null) => void;
   onUpdateNumberOfLines: (num: number) => void;
   onUpdateNumberOfDevices: (num: number) => void;
   onLoginSuccess: (identifier: string, type: "email" | "phone") => void;
@@ -92,6 +92,9 @@ export function Step1CustomerInfo({
   onNext,
 }: Step1Props) {
   const [showAuthModal, setShowAuthModal] = useState(false);
+  // Use a ref so we can reliably detect a successful login even when AuthModal
+  // calls onLoginSuccess() and onClose() synchronously in the same tick.
+  const authModalLoginCompletedRef = useRef(false);
   const [showExtensionModal, setShowExtensionModal] = useState(false);
   const [showOIBModal, setShowOIBModal] = useState(false);
   
@@ -166,6 +169,7 @@ export function Step1CustomerInfo({
               <button
                 onClick={() => {
                   if (!isLoggedIn) {
+                    authModalLoginCompletedRef.current = false;
                     setShowAuthModal(true);
                     onUpdateCustomerType("existing");
                   }
@@ -181,7 +185,9 @@ export function Step1CustomerInfo({
                   Postojeći korisnik
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {customerType === "existing" && isLoggedIn ? 'Prijavljeni ste kao tvrtka "Test tvrtka d.o.o."' : "Postojeća tvrtka koja koristi mobilne, fiksne ili ICT usluge u A1 mreži i želi raditi promjene"}
+                  {customerType === "existing" && isLoggedIn
+                    ? 'Dobro došli, tvrtka "Test tvrtka d.o.o."'
+                    : "Postojeća tvrtka koja koristi mobilne, fiksne ili ICT usluge u A1 mreži i želi raditi promjene"}
                 </p>
               </button>
             </div>
@@ -291,12 +297,15 @@ export function Step1CustomerInfo({
           <AuthModal
             onClose={() => {
               setShowAuthModal(false);
+              const didLogin = authModalLoginCompletedRef.current;
+              authModalLoginCompletedRef.current = false;
               // Reset customer type if user cancels without logging in
-              if (!isLoggedIn) {
-                onUpdateCustomerType(null as any);
+              if (!isLoggedIn && !didLogin) {
+                onUpdateCustomerType(null);
               }
             }}
             onLoginSuccess={(identifier, type) => {
+              authModalLoginCompletedRef.current = true;
               onUpdateCustomerType("existing");
               onLoginSuccess(identifier, type);
               setShowAuthModal(false);
