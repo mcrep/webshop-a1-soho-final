@@ -297,6 +297,7 @@ export function Step1CustomerInfo({
               }
             }}
             onLoginSuccess={(identifier, type) => {
+              onUpdateCustomerType("existing");
               onLoginSuccess(identifier, type);
               setShowAuthModal(false);
             }}
