@@ -153,8 +153,8 @@ export function Step1CustomerInfo({
                   isLoggedIn
                     ? "opacity-50 cursor-not-allowed border-border bg-muted"
                     : customerType === "new"
-                    ? "border-primary"
-                    : "border-border hover:border-primary/30 hover:bg-accent/50"
+                    ? "border-border bg-[#F2F2F2]"
+                    : "border-border hover:border-black"
                 }`}
               >
                 <UserPlus className={`h-8 w-8 mx-auto mb-3 ${customerType === "new" ? "text-primary" : "text-muted-foreground"}`} />
@@ -172,8 +172,8 @@ export function Step1CustomerInfo({
                 }}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
                   customerType === "existing"
-                    ? "border-primary"
-                    : "border-border hover:border-primary/30 hover:bg-accent/50"
+                    ? "border-border bg-[#F2F2F2]"
+                    : "border-border hover:border-black"
                 }`}
               >
                 {customerType === "existing" && isLoggedIn ? (
