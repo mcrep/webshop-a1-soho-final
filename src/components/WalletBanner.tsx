@@ -56,92 +56,63 @@ export function WalletBanner({
       }}
     >
       <div className="mx-auto max-w-6xl px-4 py-6">
-        {showDetails ? (
-          <div className="flex flex-col gap-4">
-            {/* Main row */}
-            <div className="flex items-center gap-6">
-              {/* Left: Icon + Remaining (Available) */}
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <div className={`w-10 h-10 rounded-full bg-[#A8C6FF]/30 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
-                  <Wallet className="w-5 h-5" style={{ color: '#3F1EE2' }} />
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
-                  <div className={`text-xl font-bold ${getAnimationColor()} transition-colors`}>
-                    €{animatedRemaining.toFixed(2)}
-                    {isAnimating && direction === "up" && (
-                      <TrendingUp className="inline-block w-4 h-4 ml-1 text-green-500 animate-pulse" />
-                    )}
-                    {isAnimating && direction === "down" && (
-                      <TrendingDown className="inline-block w-4 h-4 ml-1 text-destructive animate-pulse" />
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Center: Progress bar */}
-              <div className="flex-1">
-                <Progress value={remainingPercentage} className="h-3" />
-              </div>
-
-              {/* Right: Used amount */}
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <div>
-                  <div className="text-xs text-muted-foreground">A1 Wallet iskorišteno</div>
-                  <div className="text-xl font-bold text-muted-foreground">€{used.toFixed(2)}</div>
-                </div>
-              </div>
+        <div className="flex flex-col gap-4">
+          {/* Header row with icon and title */}
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-full bg-[#A8C6FF]/30 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
+              <Wallet className="w-5 h-5" style={{ color: '#3F1EE2' }} />
             </div>
-
-            {/* Bonus explanation row */}
-            {showDetails && linesWithoutDevices > 0 && (
-              <div className="flex items-start gap-2 pt-3 border-t border-border/50">
-                <Gift className="w-4 h-4 text-bonus mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-muted-foreground text-left">
-                  Svaka linija bez uređaja donosi dodatni popust u A1 Wallet. Iznos bonusa ovisi o odabranoj tarifi – veća tarifa znači veći bonus!
-                </p>
-              </div>
-            )}
+            <h2 className="text-xl font-bold text-foreground">A1 Wallet</h2>
           </div>
-        ) : (
-          <div className="flex flex-col gap-4">
-            {/* Main row with wallet and lines progress */}
-            <div className="flex items-center gap-6">
-              {/* Left: Icon + Remaining (Available) */}
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <div className={`w-10 h-10 rounded-full bg-[#A8C6FF]/30 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
-                  <Wallet className="w-5 h-5" style={{ color: '#3F1EE2' }} />
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
-                  <div className={`text-xl font-bold ${getAnimationColor()}`}>
-                    €{animatedRemaining.toFixed(2)}
-                    {isAnimating && direction === "up" && (
-                      <TrendingUp className="inline-block w-4 h-4 ml-1 text-green-500 animate-pulse" />
-                    )}
-                    {isAnimating && direction === "down" && (
-                      <TrendingDown className="inline-block w-4 h-4 ml-1 text-destructive animate-pulse" />
-                    )}
-                  </div>
-                </div>
-              </div>
 
-              {/* Center: Lines progress bar */}
-              {maxLines > 0 && (
-                <div className="flex-1">
-                  <Progress value={(selectedLines / maxLines) * 100} className="h-3" />
-                </div>
-              )}
+          {/* Amounts row */}
+          <div className="flex items-center gap-6">
+            {/* Left: Available amount */}
+            <div className="flex-1">
+              <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
+              <div className={`text-2xl font-bold ${getAnimationColor()} transition-colors flex items-center`}>
+                €{animatedRemaining.toFixed(2)}
+                {isAnimating && direction === "up" && (
+                  <TrendingUp className="w-5 h-5 ml-2 text-green-500 animate-pulse" />
+                )}
+                {isAnimating && direction === "down" && (
+                  <TrendingDown className="w-5 h-5 ml-2 text-destructive animate-pulse" />
+                )}
+              </div>
             </div>
-            {/* Educational text for tariff screen */}
+
+            {/* Center: Progress bar */}
+            <div className="flex-1">
+              <Progress value={remainingPercentage} className="h-3" />
+            </div>
+
+            {/* Right: Used amount */}
+            <div className="flex-1 text-right">
+              <div className="text-sm text-muted-foreground mb-1">Iskorišteni iznos</div>
+              <div className="text-2xl font-bold text-muted-foreground">€{used.toFixed(2)}</div>
+            </div>
+          </div>
+
+          {/* Bonus explanation row */}
+          {showDetails && linesWithoutDevices > 0 && (
+            <div className="flex items-start gap-2 pt-3 border-t border-border/50">
+              <Gift className="w-4 h-4 text-bonus mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-muted-foreground text-left">
+                Svaka linija bez uređaja donosi dodatni popust u A1 Wallet. Iznos bonusa ovisi o odabranoj tarifi – veća tarifa znači veći bonus!
+              </p>
+            </div>
+          )}
+
+          {/* Educational text for tariff screen */}
+          {!showDetails && (
             <div className="flex items-start gap-2 pt-3 border-t border-border/50">
               <Gift className="w-4 h-4 text-bonus mt-0.5 flex-shrink-0" />
               <p className="text-xs text-muted-foreground text-left">
                 Ovisno o odabranoj tarifi u A1 Wallet dobivate popust koji se može koristiti za umanjenje cijene uređaja.
               </p>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
