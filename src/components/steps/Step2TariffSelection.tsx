@@ -192,6 +192,9 @@ export function Step2TariffSelection({
                   transition={{ duration: 0.3, ease: "easeOut" }}
                   onClick={() => handleTariffClick(tariff.id, isDisabled, hasAssignments)}
                 >
+                  {/* Tariff Name - Top Left */}
+                  <h3 className="absolute top-4 left-4 text-xl font-bold">{tariff.name}</h3>
+                  
                   {/* Wallet Badge - Top Right */}
                   <div 
                     className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold text-white"
@@ -201,10 +204,9 @@ export function Step2TariffSelection({
                   >
                     +{tariff.walletCredit}€ A1 Wallet
                   </div>
-                  <h3 className="text-xl font-bold mb-2 mt-6">{tariff.name}</h3>
                   
                   {/* Price Display */}
-                  <div className="mb-3">
+                  <div className="mt-12 mb-6">
                     {tariff.originalMonthly && tariff.originalMonthly > tariff.monthly && (
                       <div className="text-sm text-muted-foreground line-through">
                         {tariff.originalMonthly.toFixed(2)}€/mj
@@ -215,7 +217,8 @@ export function Step2TariffSelection({
                     </div>
                   </div>
                   
-                  <div className="space-y-2 mb-4 text-sm">
+                  {/* Features */}
+                  <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
                       <Wifi className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">{tariff.data}</span>
