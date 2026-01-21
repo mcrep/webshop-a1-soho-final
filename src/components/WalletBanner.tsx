@@ -65,10 +65,10 @@ export function WalletBanner({
             <h2 className="text-xl font-bold text-foreground">A1 Wallet</h2>
           </div>
 
-          {/* Amounts row - same structure for both screens */}
-          <div className="flex items-center gap-6">
+          {/* Amounts row */}
+          <div className="flex items-end justify-between gap-4 mb-2">
             {/* Left: Available amount */}
-            <div className="w-[200px] flex-shrink-0">
+            <div>
               <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
               <div className={`text-2xl font-bold ${getAnimationColor()} transition-colors flex items-center`}>
                 €{animatedRemaining.toFixed(2)}
@@ -81,24 +81,20 @@ export function WalletBanner({
               </div>
             </div>
 
-            {/* Center: Progress bar */}
-            <div className="flex-1">
-              <Progress 
-                value={showDetails ? remainingPercentage : (maxLines > 0 ? (selectedLines / maxLines) * 100 : 0)} 
-                className="h-3" 
-              />
-            </div>
-
             {/* Right: Used amount (only on device screen) */}
-            <div className="w-[200px] flex-shrink-0 text-right">
-              {showDetails ? (
-                <>
-                  <div className="text-sm text-muted-foreground mb-1">Iskorišteni iznos</div>
-                  <div className="text-2xl font-bold text-muted-foreground">€{used.toFixed(2)}</div>
-                </>
-              ) : null}
-            </div>
+            {showDetails && (
+              <div className="text-right">
+                <div className="text-sm text-muted-foreground mb-1">Iskorišteni iznos</div>
+                <div className="text-2xl font-bold text-muted-foreground">€{used.toFixed(2)}</div>
+              </div>
+            )}
           </div>
+
+          {/* Progress bar - full width */}
+          <Progress 
+            value={showDetails ? remainingPercentage : (maxLines > 0 ? (selectedLines / maxLines) * 100 : 0)} 
+            className="h-3" 
+          />
 
           {/* Bonus/Educational text row */}
           {showDetails ? (
