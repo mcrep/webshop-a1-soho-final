@@ -144,7 +144,7 @@ export function Step1CustomerInfo({
               <h3 className="text-lg font-semibold">Ja sam</h3>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <button
+              <motion.button
                 onClick={() => {
                   if (!isLoggedIn) {
                     onUpdateCustomerType("new");
@@ -154,18 +154,23 @@ export function Step1CustomerInfo({
                 disabled={isLoggedIn}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
                   isLoggedIn
-                    ? "opacity-50 cursor-not-allowed border-border bg-muted"
+                    ? "cursor-not-allowed border-border bg-card"
                     : customerType === "new"
                     ? "border-transparent bg-[#F2F2F2]"
                     : "border-border hover:border-black"
                 }`}
+                animate={{
+                  opacity: isLoggedIn ? 0.5 : 1,
+                  scale: isLoggedIn ? 0.98 : 1,
+                }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               >
                 <UserPlus className={`h-8 w-8 mx-auto mb-3 ${customerType === "new" ? "text-primary" : "text-muted-foreground"}`} />
                 <p className={`font-semibold ${customerType === "new" ? "text-accent-foreground" : "text-foreground"}`}>
                   Novi korisnik
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">Nova tvrtka koja ne koristi usluge u A1 mreži i želi aktivirati nove usluge</p>
-              </button>
+              </motion.button>
               <button
                 onClick={() => {
                   if (!isLoggedIn) {
