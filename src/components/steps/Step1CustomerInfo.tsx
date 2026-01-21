@@ -206,10 +206,7 @@ export function Step1CustomerInfo({
             <div className="flex flex-col items-center gap-6">
               {/* Number of Lines */}
               <div className="grid grid-cols-[1fr_auto_auto_auto_1fr] items-center gap-3 w-full max-w-2xl">
-                <div className="flex items-center justify-end gap-3">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Smartphone className="h-5 w-5 text-primary" />
-                  </div>
+                <div className="flex items-center justify-end">
                   <h3 className="text-lg font-semibold whitespace-nowrap">Želim aktivirati</h3>
                 </div>
                 <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
@@ -242,10 +239,7 @@ export function Step1CustomerInfo({
               {/* Extension Lines - Only shown when logged in */}
               {isLoggedIn && (
                 <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 w-full max-w-2xl">
-                  <div className="flex items-center justify-end gap-3">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <RefreshCw className="h-5 w-5 text-primary" />
-                    </div>
+                  <div className="flex items-center justify-end">
                     <h3 className="text-lg font-semibold whitespace-nowrap">i produljiti</h3>
                   </div>
                   <Button
@@ -261,10 +255,7 @@ export function Step1CustomerInfo({
 
               {/* Number of Devices */}
               <div className="grid grid-cols-[1fr_auto_auto_auto_1fr] items-center gap-3 w-full max-w-2xl">
-                <div className="flex items-center justify-end gap-3">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Smartphone className="h-5 w-5 text-primary" />
-                  </div>
+                <div className="flex items-center justify-end">
                   <h3 className="text-lg font-semibold whitespace-nowrap">a uz to želim kupiti</h3>
                 </div>
                 <motion.div whileTap={{ scale: 0.85 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
