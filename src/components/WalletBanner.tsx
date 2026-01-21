@@ -62,8 +62,8 @@ export function WalletBanner({
             <div className="flex items-center gap-6">
               {/* Left: Icon + Remaining (Available) */}
               <div className="flex items-center gap-3 flex-shrink-0">
-                <div className={`w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
-                  <Wallet className="w-5 h-5 text-primary" />
+                <div className={`w-10 h-10 rounded-full bg-[#3F1EE2]/10 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
+                  <Wallet className="w-5 h-5" style={{ fill: '#3F1EE2', color: '#A8C6FF' }} />
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
@@ -109,8 +109,8 @@ export function WalletBanner({
             <div className="flex items-center gap-6">
               {/* Left: Icon + Remaining (Available) */}
               <div className="flex items-center gap-3 flex-shrink-0">
-                <div className={`w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
-                  <Wallet className="w-5 h-5 text-primary" />
+                <div className={`w-10 h-10 rounded-full bg-[#3F1EE2]/10 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
+                  <Wallet className="w-5 h-5" style={{ fill: '#3F1EE2', color: '#A8C6FF' }} />
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground">A1 Wallet dostupno</div>
