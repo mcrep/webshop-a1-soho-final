@@ -167,8 +167,8 @@ export function Step1CustomerInfo({
                 onClick={() => {
                   if (!isLoggedIn) {
                     setShowAuthModal(true);
+                    onUpdateCustomerType("existing");
                   }
-                  onUpdateCustomerType("existing");
                 }}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
                   customerType === "existing"
@@ -176,11 +176,7 @@ export function Step1CustomerInfo({
                     : "border-border hover:border-black"
                 }`}
               >
-                {customerType === "existing" && isLoggedIn ? (
-                  <Check className="h-8 w-8 mx-auto mb-3 text-green-500" />
-                ) : (
-                  <Users className={`h-8 w-8 mx-auto mb-3 ${customerType === "existing" ? "text-primary" : "text-muted-foreground"}`} />
-                )}
+                <Users className={`h-8 w-8 mx-auto mb-3 ${customerType === "existing" ? "text-primary" : "text-muted-foreground"}`} />
                 <p className={`font-semibold ${customerType === "existing" ? "text-accent-foreground" : "text-foreground"}`}>
                   Postojeći korisnik
                 </p>
@@ -293,7 +289,13 @@ export function Step1CustomerInfo({
       <AnimatePresence>
         {showAuthModal && (
           <AuthModal
-            onClose={() => setShowAuthModal(false)}
+            onClose={() => {
+              setShowAuthModal(false);
+              // Reset customer type if user cancels without logging in
+              if (!isLoggedIn) {
+                onUpdateCustomerType(null as any);
+              }
+            }}
             onLoginSuccess={(identifier, type) => {
               onLoginSuccess(identifier, type);
               setShowAuthModal(false);
