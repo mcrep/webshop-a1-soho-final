@@ -153,7 +153,7 @@ export function Step1CustomerInfo({
                   isLoggedIn
                     ? "opacity-50 cursor-not-allowed border-border bg-muted"
                     : customerType === "new"
-                    ? "border-border bg-[#F2F2F2]"
+                    ? "border-transparent bg-[#F2F2F2]"
                     : "border-border hover:border-black"
                 }`}
               >
@@ -172,7 +172,7 @@ export function Step1CustomerInfo({
                 }}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
                   customerType === "existing"
-                    ? "border-border bg-[#F2F2F2]"
+                    ? "border-transparent bg-[#F2F2F2]"
                     : "border-border hover:border-black"
                 }`}
               >
