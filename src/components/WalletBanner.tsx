@@ -65,81 +65,58 @@ export function WalletBanner({
             <h2 className="text-xl font-bold text-foreground">A1 Wallet</h2>
           </div>
 
-          {showDetails ? (
-            /* Device screen: Show both amounts with depleting progress */
-            <>
-              <div className="flex items-center gap-6">
-                {/* Left: Available amount */}
-                <div className="flex-1">
-                  <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
-                  <div className={`text-2xl font-bold ${getAnimationColor()} transition-colors flex items-center`}>
-                    €{animatedRemaining.toFixed(2)}
-                    {isAnimating && direction === "up" && (
-                      <TrendingUp className="w-5 h-5 ml-2 text-green-500 animate-pulse" />
-                    )}
-                    {isAnimating && direction === "down" && (
-                      <TrendingDown className="w-5 h-5 ml-2 text-destructive animate-pulse" />
-                    )}
-                  </div>
-                </div>
+          {/* Amounts row - same structure for both screens */}
+          <div className="flex items-center gap-6">
+            {/* Left: Available amount */}
+            <div className="w-[200px] flex-shrink-0">
+              <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
+              <div className={`text-2xl font-bold ${getAnimationColor()} transition-colors flex items-center`}>
+                €{animatedRemaining.toFixed(2)}
+                {isAnimating && direction === "up" && (
+                  <TrendingUp className="w-5 h-5 ml-2 text-green-500 animate-pulse" />
+                )}
+                {isAnimating && direction === "down" && (
+                  <TrendingDown className="w-5 h-5 ml-2 text-destructive animate-pulse" />
+                )}
+              </div>
+            </div>
 
-                {/* Center: Progress bar (depleting - based on remaining wallet) */}
-                <div className="flex-1">
-                  <Progress value={remainingPercentage} className="h-3" />
-                </div>
+            {/* Center: Progress bar */}
+            <div className="flex-1">
+              <Progress 
+                value={showDetails ? remainingPercentage : (maxLines > 0 ? (selectedLines / maxLines) * 100 : 0)} 
+                className="h-3" 
+              />
+            </div>
 
-                {/* Right: Used amount */}
-                <div className="flex-1 text-right">
+            {/* Right: Used amount (only on device screen) */}
+            <div className="w-[200px] flex-shrink-0 text-right">
+              {showDetails ? (
+                <>
                   <div className="text-sm text-muted-foreground mb-1">Iskorišteni iznos</div>
                   <div className="text-2xl font-bold text-muted-foreground">€{used.toFixed(2)}</div>
-                </div>
-              </div>
+                </>
+              ) : null}
+            </div>
+          </div>
 
-              {/* Bonus explanation row */}
-              {linesWithoutDevices > 0 && (
-                <div className="flex items-start gap-2 pt-3 border-t border-border/50">
-                  <Gift className="w-4 h-4 text-bonus mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-muted-foreground text-left">
-                    Svaka linija bez uređaja donosi dodatni popust u A1 Wallet. Iznos bonusa ovisi o odabranoj tarifi – veća tarifa znači veći bonus!
-                  </p>
-                </div>
-              )}
-            </>
-          ) : (
-            /* Tariff screen: Only available amount with filling progress based on assigned lines */
-            <>
-              <div className="flex items-center gap-6">
-                {/* Left: Available amount */}
-                <div className="flex-1">
-                  <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
-                  <div className={`text-2xl font-bold ${getAnimationColor()} transition-colors flex items-center`}>
-                    €{animatedRemaining.toFixed(2)}
-                    {isAnimating && direction === "up" && (
-                      <TrendingUp className="w-5 h-5 ml-2 text-green-500 animate-pulse" />
-                    )}
-                    {isAnimating && direction === "down" && (
-                      <TrendingDown className="w-5 h-5 ml-2 text-destructive animate-pulse" />
-                    )}
-                  </div>
-                </div>
-
-                {/* Center: Progress bar (filling - based on assigned lines) */}
-                <div className="flex-1">
-                  <Progress value={maxLines > 0 ? (selectedLines / maxLines) * 100 : 0} className="h-3" />
-                </div>
-
-                {/* Right: Empty space for alignment */}
-                <div className="flex-1" />
-              </div>
-
-              {/* Educational text for tariff screen */}
+          {/* Bonus/Educational text row */}
+          {showDetails ? (
+            linesWithoutDevices > 0 && (
               <div className="flex items-start gap-2 pt-3 border-t border-border/50">
                 <Gift className="w-4 h-4 text-bonus mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-muted-foreground text-left">
-                  Ovisno o odabranoj tarifi u A1 Wallet dobivate popust koji se može koristiti za umanjenje cijene uređaja.
+                  Svaka linija bez uređaja donosi dodatni popust u A1 Wallet. Iznos bonusa ovisi o odabranoj tarifi – veća tarifa znači veći bonus!
                 </p>
               </div>
-            </>
+            )
+          ) : (
+            <div className="flex items-start gap-2 pt-3 border-t border-border/50">
+              <Gift className="w-4 h-4 text-bonus mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-muted-foreground text-left">
+                Ovisno o odabranoj tarifi u A1 Wallet dobivate popust koji se može koristiti za umanjenje cijene uređaja.
+              </p>
+            </div>
           )}
         </div>
       </div>
