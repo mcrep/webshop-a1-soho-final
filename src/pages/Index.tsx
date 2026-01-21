@@ -344,15 +344,11 @@ const Index = () => {
   };
 
   const handleDeliveryNext = () => {
-    console.log("Narudžba završena!", { 
-      lines, 
-      totalMonthly, 
-      totalOnetime, 
-      verificationData, 
-      deliveryData, 
-      paymentData,
-      companyOIB: customerType === "new" ? companyOIB : undefined,
-    });
+    // Order data is ready for backend submission
+    // In production, this would send to a secure API endpoint
+    if (import.meta.env.DEV) {
+      console.log("Narudžba završena - development mode");
+    }
   };
 
   const handleFinish = () => {
