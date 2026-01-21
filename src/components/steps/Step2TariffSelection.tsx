@@ -150,10 +150,12 @@ export function Step2TariffSelection({
       <div className="bg-card rounded-2xl p-6">
         {/* Header row */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Dodijeli linije
-          </h2>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#F2F2F2] flex items-center justify-center">
+              <Users className="h-5 w-5 text-foreground" />
+            </div>
+            <h2 className="text-xl font-bold text-foreground">Dodijeli linije</h2>
+          </div>
           <Button 
             variant="outline" 
             className="gap-2"

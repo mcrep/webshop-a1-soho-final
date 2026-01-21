@@ -65,8 +65,8 @@ export function WalletBanner({
             {/* Header row with icon and title */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full bg-[#A8C6FF]/30 flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
-                  <Wallet className="w-5 h-5" style={{ color: '#3F1EE2' }} />
+              <div className={`w-10 h-10 rounded-full bg-[#F2F2F2] flex items-center justify-center ${isAnimating ? "animate-pulse" : ""}`}>
+                <Wallet className="w-5 h-5" style={{ color: '#3F1EE2' }} />
                 </div>
                 <h2 className="text-xl font-bold text-foreground">A1 Wallet</h2>
               </div>
