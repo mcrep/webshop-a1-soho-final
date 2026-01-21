@@ -66,7 +66,7 @@ export function WalletBanner({
           </div>
 
           {/* Amounts + progress in the same row */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center">
             {/* Left: Available amount */}
             <div className="min-w-[180px] flex-shrink-0">
               <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
