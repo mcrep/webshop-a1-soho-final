@@ -131,8 +131,8 @@ export function Step1CustomerInfo({
 
       {/* Configuration Cards */}
       <div className="space-y-6 mb-8 max-w-6xl mx-auto px-4">
-        {/* Customer Type Card */}
-        <Card className="border-2 hover:border-primary/50 transition-all duration-300">
+        {/* Customer Type Card - No border/hover */}
+        <Card className="border-0 shadow-none">
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -192,9 +192,10 @@ export function Step1CustomerInfo({
           </CardContent>
         </Card>
 
-        {/* Number of Lines Card */}
-        <Card className="border-2 hover:border-primary/50 transition-all duration-300">
-          <CardContent className="p-6">
+        {/* Combined Lines & Devices Configuration - Single container, no border */}
+        <Card className="border-0 shadow-none">
+          <CardContent className="p-6 space-y-6">
+            {/* Number of Lines */}
             <div className="flex items-center justify-center gap-3 flex-wrap">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -228,13 +229,9 @@ export function Step1CustomerInfo({
               </motion.div>
               <h3 className="text-lg font-semibold"><AnimatedText text={getLinePlural(numberOfLines)} /></h3>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Extension Lines Card - Only shown when logged in */}
-        {isLoggedIn && (
-          <Card className="border-2 hover:border-primary/50 transition-all duration-300">
-            <CardContent className="p-6">
+            {/* Extension Lines - Only shown when logged in */}
+            {isLoggedIn && (
               <div className="flex items-center justify-center gap-3 flex-wrap">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -251,13 +248,9 @@ export function Step1CustomerInfo({
                 </Button>
                 <h3 className="text-lg font-semibold"><AnimatedText text={getExtensionLinePlural(extensionLines.length)} /></h3>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            )}
 
-        {/* Number of Devices Card */}
-        <Card className="border-2 hover:border-primary/50 transition-all duration-300">
-          <CardContent className="p-6">
+            {/* Number of Devices */}
             <div className="flex items-center justify-center gap-3 flex-wrap">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
