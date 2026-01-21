@@ -158,7 +158,8 @@ export function Step3DeviceSelection({
                 key={slot.id}
                 layout
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="rounded-2xl border-2 bg-card p-6 shadow-sm flex flex-col border-border hover:border-primary/50 relative"
+                className="rounded-2xl border-2 border-transparent p-6 shadow-sm flex flex-col hover:border-foreground relative"
+                style={{ backgroundColor: '#F2F2F2' }}
               >
                 {/* Close button */}
                 <button
