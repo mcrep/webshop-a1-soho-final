@@ -103,8 +103,8 @@ export function WalletBanner({
                 />
               </div>
 
-              {/* Right: Used amount - always reserve space for consistent progress bar width */}
-              <div className="flex-shrink-0 text-right pl-4 w-[140px]">
+              {/* Right: Used amount - aligned with info icon above */}
+              <div className="flex-shrink-0 text-right pl-4 min-w-[140px]">
                 {showDetails && (
                   <>
                     <div className="text-sm text-muted-foreground mb-1">Iskorišteni iznos</div>
