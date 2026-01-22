@@ -82,7 +82,7 @@ export function WalletBanner({
             {/* Amounts + progress in the same row */}
             <div className="flex items-center">
               {/* Left: Available amount - aligned with icon above (w-10 + gap-3 = ~52px) */}
-              <div className="flex-shrink-0 pr-4 pl-[52px]">
+              <div className="flex-shrink-0 pr-4">
                 <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
                 <div className={`text-2xl font-bold ${getAnimationColor()} transition-colors flex items-center`}>
                   €{animatedRemaining.toFixed(2)}
