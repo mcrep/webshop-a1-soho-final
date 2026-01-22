@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Wallet, TrendingUp, TrendingDown, Info } from "lucide-react";
+import { Wallet, Info } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useCountAnimation } from "@/hooks/use-count-animation";
 import { WalletInfoModal } from "@/components/modals/WalletInfoModal";
@@ -79,14 +79,8 @@ export function WalletBanner({
               {/* Left: Available amount */}
               <div className="flex-shrink-0 pr-4 min-w-[140px]">
                 <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
-                <div className="text-2xl font-bold text-primary transition-colors flex items-center">
-                  €{animatedRemaining.toFixed(2)}
-                  {isAnimatingRemaining && directionRemaining === "up" && (
-                    <TrendingUp className="w-5 h-5 ml-2 text-primary animate-pulse" />
-                  )}
-                  {isAnimatingRemaining && directionRemaining === "down" && (
-                    <TrendingDown className="w-5 h-5 ml-2 text-primary animate-pulse" />
-                  )}
+                <div className="text-2xl font-bold text-primary transition-colors">
+                  {animatedRemaining.toFixed(2)} €
                 </div>
               </div>
 
@@ -103,14 +97,8 @@ export function WalletBanner({
                 {showDetails && (
                   <>
                     <div className="text-sm text-muted-foreground mb-1">Iskorišteni iznos</div>
-                    <div className="text-2xl font-bold text-muted-foreground transition-colors flex items-center justify-end">
-                      €{animatedUsed.toFixed(2)}
-                      {isAnimatingUsed && directionUsed === "up" && (
-                        <TrendingUp className="w-5 h-5 ml-2 text-muted-foreground animate-pulse" />
-                      )}
-                      {isAnimatingUsed && directionUsed === "down" && (
-                        <TrendingDown className="w-5 h-5 ml-2 text-muted-foreground animate-pulse" />
-                      )}
+                    <div className="text-2xl font-bold text-muted-foreground transition-colors">
+                      {animatedUsed.toFixed(2)} €
                     </div>
                   </>
                 )}
