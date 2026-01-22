@@ -30,25 +30,20 @@ export function WalletBanner({
   const [infoModalOpen, setInfoModalOpen] = useState(false);
 
   // Animate wallet remaining whenever it changes
-  const { value: animatedRemaining, isAnimating, direction } = useCountAnimation({
+  const { value: animatedRemaining, isAnimating: isAnimatingRemaining, direction: directionRemaining } = useCountAnimation({
     value: remaining,
     duration: 600,
     enabled: true,
   });
 
-  // Conditional styling based on remaining amount and animation direction
-  const getAnimationColor = () => {
-    if (isAnimating && direction === "up") return "text-green-600";
-    if (isAnimating && direction === "down") return "text-destructive";
-    return getRemainingTextColor();
-  };
+  // Animate used amount whenever it changes
+  const { value: animatedUsed, isAnimating: isAnimatingUsed, direction: directionUsed } = useCountAnimation({
+    value: used,
+    duration: 600,
+    enabled: true,
+  });
 
-  const getRemainingTextColor = () => {
-    const remainingPercentage = (remaining / total) * 100;
-    if (remainingPercentage < 10) return "text-destructive";
-    if (remainingPercentage < 30) return "text-orange-500";
-    return "text-primary";
-  };
+  const isAnimating = isAnimatingRemaining || isAnimatingUsed;
 
   const remainingPercentage = total > 0 ? (animatedRemaining / total) * 100 : 0;
 
@@ -81,16 +76,16 @@ export function WalletBanner({
 
             {/* Amounts + progress in the same row */}
             <div className="flex items-center">
-              {/* Left: Available amount - aligned with icon above (w-10 + gap-3 = ~52px) */}
+              {/* Left: Available amount */}
               <div className="flex-shrink-0 pr-4 min-w-[140px]">
                 <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
-                <div className={`text-2xl font-bold ${getAnimationColor()} transition-colors flex items-center`}>
+                <div className="text-2xl font-bold text-primary transition-colors flex items-center">
                   €{animatedRemaining.toFixed(2)}
-                  {isAnimating && direction === "up" && (
-                    <TrendingUp className="w-5 h-5 ml-2 text-green-500 animate-pulse" />
+                  {isAnimatingRemaining && directionRemaining === "up" && (
+                    <TrendingUp className="w-5 h-5 ml-2 text-primary animate-pulse" />
                   )}
-                  {isAnimating && direction === "down" && (
-                    <TrendingDown className="w-5 h-5 ml-2 text-destructive animate-pulse" />
+                  {isAnimatingRemaining && directionRemaining === "down" && (
+                    <TrendingDown className="w-5 h-5 ml-2 text-primary animate-pulse" />
                   )}
                 </div>
               </div>
@@ -108,7 +103,15 @@ export function WalletBanner({
                 {showDetails && (
                   <>
                     <div className="text-sm text-muted-foreground mb-1">Iskorišteni iznos</div>
-                    <div className="text-2xl font-bold text-muted-foreground">€{used.toFixed(2)}</div>
+                    <div className="text-2xl font-bold text-muted-foreground transition-colors flex items-center justify-end">
+                      €{animatedUsed.toFixed(2)}
+                      {isAnimatingUsed && directionUsed === "up" && (
+                        <TrendingUp className="w-5 h-5 ml-2 text-muted-foreground animate-pulse" />
+                      )}
+                      {isAnimatingUsed && directionUsed === "down" && (
+                        <TrendingDown className="w-5 h-5 ml-2 text-muted-foreground animate-pulse" />
+                      )}
+                    </div>
                   </>
                 )}
               </div>
