@@ -34,7 +34,12 @@ export function Footer({
           </div>
           <div>
             {showNext && onNext && (
-              <Button onClick={onNext} disabled={nextDisabled} size="lg">
+              <Button 
+                onClick={onNext} 
+                disabled={nextDisabled} 
+                size="lg"
+                className={nextDisabled ? "bg-white border border-border text-muted-foreground hover:bg-white disabled:opacity-100" : ""}
+              >
                 {nextLabel}
                 <ArrowRight className="ml-2" size={18} />
               </Button>
