@@ -166,7 +166,7 @@ export function Step1CustomerInfo({
                 transition={{ duration: 0.3, ease: "easeOut" }}
               >
                 <UserPlus className={`h-8 w-8 mx-auto mb-3 ${customerType === "new" ? "text-primary" : "text-muted-foreground"}`} />
-                <p className={`font-semibold ${customerType === "new" ? "text-accent-foreground" : "text-foreground"}`}>
+                <p className={`font-semibold ${customerType === "new" ? "text-primary" : "text-foreground"}`}>
                   Novi korisnik
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">Nova tvrtka koja ne koristi usluge u A1 mreži i želi aktivirati nove usluge</p>
@@ -186,7 +186,7 @@ export function Step1CustomerInfo({
                 }`}
               >
                 <Users className={`h-8 w-8 mx-auto mb-3 ${customerType === "existing" ? "text-primary" : "text-muted-foreground"}`} />
-                <p className={`font-semibold ${customerType === "existing" ? "text-accent-foreground" : "text-foreground"}`}>
+                <p className={`font-semibold ${customerType === "existing" ? "text-primary" : "text-foreground"}`}>
                   Postojeći korisnik
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
