@@ -126,10 +126,12 @@ export function Step3DeviceSelection({
       <div className="bg-card rounded-2xl p-6">
         {/* Header row */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-            <Smartphone className="h-5 w-5" />
-            Odaberi uređaje
-          </h2>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <Smartphone className="h-5 w-5 text-primary" />
+            </div>
+            <h2 className="text-xl font-bold text-foreground">Odaberi uređaje</h2>
+          </div>
         </div>
 
         <LayoutGroup>
