@@ -81,8 +81,8 @@ export function WalletBanner({
 
             {/* Amounts + progress in the same row */}
             <div className="flex items-center">
-              {/* Left: Available amount */}
-              <div className="flex-shrink-0 pr-4">
+              {/* Left: Available amount - aligned with icon above (w-10 + gap-3 = ~52px) */}
+              <div className="flex-shrink-0 pr-4 pl-[52px]">
                 <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
                 <div className={`text-2xl font-bold ${getAnimationColor()} transition-colors flex items-center`}>
                   €{animatedRemaining.toFixed(2)}
@@ -103,13 +103,15 @@ export function WalletBanner({
                 />
               </div>
 
-              {/* Right: Used amount (only on device screen) */}
-              {showDetails ? (
-                <div className="flex-shrink-0 text-right pl-4">
-                  <div className="text-sm text-muted-foreground mb-1">Iskorišteni iznos</div>
-                  <div className="text-2xl font-bold text-muted-foreground">€{used.toFixed(2)}</div>
-                </div>
-              ) : null}
+              {/* Right: Used amount - always reserve space for consistent progress bar width */}
+              <div className="flex-shrink-0 text-right pl-4 w-[140px]">
+                {showDetails && (
+                  <>
+                    <div className="text-sm text-muted-foreground mb-1">Iskorišteni iznos</div>
+                    <div className="text-2xl font-bold text-muted-foreground">€{used.toFixed(2)}</div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
