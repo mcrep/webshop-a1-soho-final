@@ -195,7 +195,7 @@ export function Step3DeviceSelection({
                     </div>
                   ) : (
                     <>
-                      <div className="w-32 h-32 rounded-3xl bg-muted flex items-center justify-center transition-all duration-300 group-hover:bg-primary/10">
+                      <div className="w-32 h-32 rounded-3xl bg-muted border-2 border-transparent flex items-center justify-center transition-all duration-300 group-hover:border-primary">
                         <Smartphone className="w-16 h-16 transition-all duration-300 text-muted-foreground/40 group-hover:text-primary group-hover:scale-110" />
                       </div>
                       <div className="text-center">
