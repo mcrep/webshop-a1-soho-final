@@ -173,7 +173,7 @@ export function Step3DeviceSelection({
                 {/* Line label and tariff name */}
                 <div className="mb-3 pb-3 border-b border-border pr-8">
                   <div className="font-bold text-lg">{displayLabel}</div>
-                  <div className="text-sm text-muted-foreground">Tarifa: {tariff?.name || "Unknown"}</div>
+                  <div className="text-sm text-muted-foreground">{tariff?.name || "Unknown"}</div>
                 </div>
 
                 {/* Device selection */}
@@ -195,7 +195,7 @@ export function Step3DeviceSelection({
                     </div>
                   ) : (
                     <>
-                      <div className="w-32 h-32 rounded-3xl bg-muted border-2 border-transparent flex items-center justify-center transition-all duration-300 group-hover:border-primary">
+                      <div className="w-32 h-32 rounded-3xl bg-muted flex items-center justify-center transition-all duration-300">
                         <Smartphone className="w-16 h-16 transition-all duration-300 text-muted-foreground/40 group-hover:text-primary group-hover:scale-110" />
                       </div>
                       <div className="text-center">
