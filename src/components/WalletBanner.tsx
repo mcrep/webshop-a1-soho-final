@@ -3,6 +3,7 @@ import { Wallet, Info } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useCountAnimation } from "@/hooks/use-count-animation";
 import { WalletInfoModal } from "@/components/modals/WalletInfoModal";
+import { AnimatePresence } from "framer-motion";
 
 type WalletBannerProps = {
   total: number;
@@ -108,7 +109,11 @@ export function WalletBanner({
         </div>
       </div>
 
-      <WalletInfoModal open={infoModalOpen} onOpenChange={setInfoModalOpen} />
+      <AnimatePresence>
+        {infoModalOpen && (
+          <WalletInfoModal open={infoModalOpen} onOpenChange={setInfoModalOpen} />
+        )}
+      </AnimatePresence>
     </>
   );
 }
