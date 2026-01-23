@@ -179,9 +179,12 @@ export function Step3DeviceSelection({
                       {tariff?.name || "Unknown"}
                     </span>
                     {device && (
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-muted text-sm font-medium">
+                      <button
+                        onClick={() => onOpenDeviceModal(slot.id)}
+                        className="inline-flex items-center px-2.5 py-1 rounded-md bg-muted text-sm font-medium hover:bg-muted/70 transition-colors cursor-pointer"
+                      >
                         {device.brand} {device.name}
-                      </span>
+                      </button>
                     )}
                   </div>
                 </div>
