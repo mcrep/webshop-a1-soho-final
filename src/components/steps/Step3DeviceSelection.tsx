@@ -186,13 +186,10 @@ export function Step3DeviceSelection({
                     <div className="text-center">
                       <div className="font-bold text-lg mb-1">{device.brand} {device.name}</div>
                       {variant && (
-                        <div className="text-xs text-muted-foreground mb-1">
+                        <div className="text-xs text-muted-foreground">
                           {variant.color} • {variant.memory}
                         </div>
                       )}
-                      <div className="text-xs text-primary font-medium mt-2 group-hover:underline">
-                        Klikni za promjenu
-                      </div>
                     </div>
                   ) : (
                     <>
@@ -212,10 +209,6 @@ export function Step3DeviceSelection({
                     {/* Wallet usage - show for upfront payment */}
                     {slot.paymentMethod === "upfront" && (
                       <div className="space-y-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium">Jednokratna cijena:</span>
-                          <span className="font-bold">{devicePrice.toFixed(2)}€</span>
-                        </div>
                         
                         <div className="rounded-lg border-2 border-primary/30 bg-primary/5 p-3 space-y-3">
                           <div className="flex items-center gap-2 text-primary">
@@ -255,10 +248,6 @@ export function Step3DeviceSelection({
                     {/* Wallet usage for installments - on upfront portion only */}
                     {slot.paymentMethod === "installments" && (
                       <div className="space-y-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium">Jednokratna cijena:</span>
-                          <span className="font-bold">{Math.max(0, devicePrice - (slot.monthlyInstallment * 24)).toFixed(2)}€</span>
-                        </div>
 
                         {(() => {
                           const upfrontCost = Math.max(0, devicePrice - (slot.monthlyInstallment * 24));
