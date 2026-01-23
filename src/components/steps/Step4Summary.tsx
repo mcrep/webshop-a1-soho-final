@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronDown, ChevronUp, Smartphone, CreditCard, Shield, Wallet, Tag, AlertTriangle } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Smartphone, CreditCard, Shield, Wallet, Tag, AlertTriangle, X } from "lucide-react";
 import { tariffs, devices } from "@/data/catalog";
 import { findExistingLineNumber } from "@/data/mock-existing-lines";
 import type { Line } from "@/types";
@@ -165,15 +165,19 @@ export function Step4Summary({
                         {/* Line Type: Button or Badge */}
                         {!isExtensionLine && (
                           line.lineType ? (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onOpenLineTypeModal(line.id);
-                              }}
-                              className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors cursor-pointer"
-                            >
+                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
                               {lineTypeName}
-                            </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onUpdateLine(line.id, { lineType: null, portingNumber: undefined, prepaidNumber: undefined });
+                                }}
+                                className="ml-1 p-0.5 rounded-full hover:bg-foreground/10 transition-colors"
+                                aria-label="Ukloni odabir"
+                              >
+                                <X size={12} className="text-muted-foreground" />
+                              </button>
+                            </span>
                           ) : (
                             <button
                               onClick={(e) => {
