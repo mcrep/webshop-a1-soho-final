@@ -147,7 +147,7 @@ export function Step4Summary({
                         "text-lg font-semibold tracking-tight truncate",
                         msisdn ? "font-mono" : ""
                       )}>
-                        {msisdn ?? (isExtensionLine ? `Linija ${index + 1}` : `Nova linija ${index + 1}`)}
+                        {msisdn ?? `Nova linija ${index + 1}`}
                       </div>
                       
                       {/* Badge row: Tariff, Device, Line Type */}

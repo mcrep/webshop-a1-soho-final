@@ -110,7 +110,7 @@ const Index = () => {
             paymentMethod: "installments",
             screenInsurance: true,
             monthlyInstallment: 1,
-            label: `Linija ${newLineIndex}`,
+            label: `Nova linija ${newLineIndex}`,
             isExtension: false,
           });
           newLineIndex++;

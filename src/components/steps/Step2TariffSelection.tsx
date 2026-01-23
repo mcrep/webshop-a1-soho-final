@@ -53,7 +53,7 @@ export function Step2TariffSelection({
     // New lines
     ...Array.from({ length: numberOfLines }, (_, i) => ({
       id: `new-line-${i + 1}`,
-      label: `Linija ${i + 1}`,
+      label: `Nova linija ${i + 1}`,
       isExtension: false,
       assignedTariffId: lineAssignments.find(a => a.lineId === `new-line-${i + 1}`)?.tariffId ?? null,
     })),

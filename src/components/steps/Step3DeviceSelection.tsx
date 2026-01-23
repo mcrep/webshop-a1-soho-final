@@ -59,7 +59,7 @@ const getSlotLabel = (slot: DeviceSlot, line: Line | undefined, index: number) =
     }
   }
 
-  return `Linija ${index + 1}`;
+  return `Nova linija ${index + 1}`;
 };
 
 export function Step3DeviceSelection({
