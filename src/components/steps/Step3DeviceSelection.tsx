@@ -189,30 +189,20 @@ export function Step3DeviceSelection({
                   </div>
                 </div>
 
-                {/* Device selection */}
-                <button
-                  onClick={() => onOpenDeviceModal(slot.id)}
-                  className="flex flex-col items-center gap-4 mb-4 group"
-                >
-                  {device ? (
-                    <div className="text-center">
-                      {variant && (
-                        <div className="text-xs text-muted-foreground">
-                          {variant.color} • {variant.memory}
-                        </div>
-                      )}
+                {/* Device selection - only show when no device selected */}
+                {!device && (
+                  <button
+                    onClick={() => onOpenDeviceModal(slot.id)}
+                    className="flex flex-col items-center gap-4 mb-4 group"
+                  >
+                    <div className="w-32 h-32 rounded-3xl bg-muted flex items-center justify-center transition-all duration-300">
+                      <Smartphone className="w-16 h-16 transition-all duration-300 text-muted-foreground/40 group-hover:text-primary group-hover:scale-110" />
                     </div>
-                  ) : (
-                    <>
-                      <div className="w-32 h-32 rounded-3xl bg-muted flex items-center justify-center transition-all duration-300">
-                        <Smartphone className="w-16 h-16 transition-all duration-300 text-muted-foreground/40 group-hover:text-primary group-hover:scale-110" />
-                      </div>
-                      <div className="text-center">
-                        <div className="font-semibold text-muted-foreground transition-colors duration-300 group-hover:text-primary">Odaberi uređaj</div>
-                      </div>
-                    </>
-                  )}
-                </button>
+                    <div className="text-center">
+                      <div className="font-semibold text-muted-foreground transition-colors duration-300 group-hover:text-primary">Odaberi uređaj</div>
+                    </div>
+                  </button>
+                )}
 
                 {/* Configuration - only show when device selected */}
                 {device && (
