@@ -127,18 +127,15 @@ export function Step4Summary({
             <div
               key={line.id}
               className={cn(
-                "rounded-2xl border bg-card shadow-sm overflow-hidden transition-all duration-200",
-                isExpanded ? "border-muted-foreground" : "border-border"
+                "rounded-2xl border-2 bg-card shadow-sm overflow-hidden transition-all duration-200 cursor-pointer",
+                isExpanded 
+                  ? "border-muted-foreground" 
+                  : "border-transparent hover:border-foreground"
               )}
+              onClick={() => toggleLine(line.id)}
             >
               {/* Card Header - Always Visible */}
-              <div
-                className={cn(
-                  "p-4 cursor-pointer transition-all",
-                  !isExpanded && "hover:ring-2 hover:ring-foreground hover:ring-inset"
-                )}
-                onClick={() => toggleLine(line.id)}
-              >
+              <div className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 min-w-0">
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
