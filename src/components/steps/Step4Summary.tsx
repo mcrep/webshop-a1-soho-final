@@ -68,8 +68,7 @@ export function Step4Summary({
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="text-center my-8">
-        <h1 className="text-3xl font-bold mb-2">Sažetak narudžbe</h1>
-        <p className="text-muted-foreground">Korak 4 od 4 - Pregled i finalizacija</p>
+        <h1 className="text-3xl font-bold">Sažetak narudžbe</h1>
       </div>
 
 
@@ -129,13 +128,15 @@ export function Step4Summary({
               key={line.id}
               className={cn(
                 "rounded-2xl border bg-card shadow-sm overflow-hidden transition-all duration-200",
-                "border-border",
-                isExpanded && "ring-2 ring-primary/20"
+                isExpanded ? "border-muted-foreground" : "border-border"
               )}
             >
               {/* Card Header - Always Visible */}
               <div
-                className="p-4 cursor-pointer hover:bg-muted/30 transition-colors"
+                className={cn(
+                  "p-4 cursor-pointer transition-all",
+                  !isExpanded && "hover:ring-2 hover:ring-foreground hover:ring-inset"
+                )}
                 onClick={() => toggleLine(line.id)}
               >
                 <div className="flex items-center justify-between">
@@ -336,16 +337,6 @@ export function Step4Summary({
         </div>
       </div>
 
-      <div className="text-sm text-muted-foreground text-center">
-        *Sve cijene su bez PDV-a
-      </div>
-
-      {/* Disabled Button Helper Text */}
-      {!allLinesConfigured && (
-        <div className="text-center text-sm text-orange-600 dark:text-orange-400">
-          Gumb "Završi narudžbu" bit će dostupan nakon odabira vrste za sve linije.
-        </div>
-      )}
     </div>
   );
 }
