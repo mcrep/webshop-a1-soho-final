@@ -210,8 +210,8 @@ export function Step3DeviceSelection({
                     {slot.paymentMethod === "upfront" && (
                       <div className="space-y-3">
                         
-                        <div className="rounded-lg border-2 border-primary/30 bg-primary/5 p-3 space-y-3">
-                          <div className="flex items-center gap-2 text-primary">
+                        <div className="rounded-lg border-2 p-3 space-y-3" style={{ borderColor: '#3F1EE2', backgroundColor: 'rgba(63, 30, 226, 0.05)' }}>
+                          <div className="flex items-center gap-2" style={{ color: '#3F1EE2' }}>
                             <Wallet className="h-4 w-4 shrink-0" />
                             <span className="text-sm font-semibold">Umanji cijenu uređaja korištenjem A1 Wallet popusta</span>
                           </div>
@@ -230,9 +230,10 @@ export function Step3DeviceSelection({
                                 onUpdateWalletUse(slot.id, value);
                               }}
                               placeholder="0"
-                              className="text-center text-3xl font-bold h-14 bg-background border-2 border-primary/20 focus:border-primary pr-10"
+                              className="text-center text-4xl font-bold h-16 bg-background border-2 pr-12"
+                              style={{ borderColor: 'rgba(63, 30, 226, 0.3)', color: '#3F1EE2' }}
                             />
-                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
+                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-lg font-medium" style={{ color: '#3F1EE2' }}>€</span>
                           </div>
                         </div>
 
@@ -256,8 +257,8 @@ export function Step3DeviceSelection({
                             totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
                           );
                           return (
-                            <div className="rounded-lg border-2 border-primary/30 bg-primary/5 p-3 space-y-3">
-                              <div className="flex items-center gap-2 text-primary">
+                            <div className="rounded-lg border-2 p-3 space-y-3" style={{ borderColor: '#3F1EE2', backgroundColor: 'rgba(63, 30, 226, 0.05)' }}>
+                              <div className="flex items-center gap-2" style={{ color: '#3F1EE2' }}>
                                 <Wallet className="h-4 w-4 shrink-0" />
                                 <span className="text-sm font-semibold">Umanji cijenu uređaja korištenjem A1 Wallet popusta</span>
                               </div>
@@ -276,9 +277,10 @@ export function Step3DeviceSelection({
                                     onUpdateWalletUse(slot.id, value);
                                   }}
                                   placeholder="0"
-                                  className="text-center text-3xl font-bold h-14 bg-background border-2 border-primary/20 focus:border-primary pr-10"
+                                  className="text-center text-4xl font-bold h-16 bg-background border-2 pr-12"
+                                  style={{ borderColor: 'rgba(63, 30, 226, 0.3)', color: '#3F1EE2' }}
                                 />
-                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-lg font-medium" style={{ color: '#3F1EE2' }}>€</span>
                               </div>
                             </div>
                           );
