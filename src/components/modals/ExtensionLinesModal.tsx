@@ -63,7 +63,7 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        className="w-full max-w-lg mx-4 rounded-2xl bg-background shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+        className="w-full max-w-lg mx-4 rounded-2xl bg-card shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -146,7 +146,7 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
         </div>
 
         {/* Footer */}
-        <div className="border-t border-border px-6 py-4 flex justify-end bg-background">
+        <div className="border-t border-border px-6 py-4 flex justify-end bg-card">
           <div className="flex gap-3">
             <Button variant="outline" onClick={onClose} className="rounded-2xl">
               Odustani
