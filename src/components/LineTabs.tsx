@@ -32,7 +32,7 @@ export function LineTabs({
       if (/^\+?\d{6,}$/.test(asMsisdn)) return asMsisdn;
     }
 
-    return `Linija ${index + 1}`;
+    return `Nova linija ${index + 1}`;
   };
 
   // Check if line has all required parameters
