@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { X, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { validateOIB } from "@/lib/utils";
 
 type OIBModalProps = {
   onClose: () => void;
@@ -12,35 +13,6 @@ type OIBModalProps = {
 export function OIBModal({ onClose, onSubmit }: OIBModalProps) {
   const [oib, setOib] = useState("");
   const [error, setError] = useState("");
-
-  const validateOIB = (value: string): boolean => {
-    // OIB must be exactly 11 digits
-    if (!/^\d{11}$/.test(value)) {
-      return false;
-    }
-
-    // MOD 11,10 algorithm for Croatian OIB validation
-    let remainder = 10;
-    
-    for (let i = 0; i < 10; i++) {
-      const digit = parseInt(value[i], 10);
-      remainder = remainder + digit;
-      remainder = remainder % 10;
-      if (remainder === 0) {
-        remainder = 10;
-      }
-      remainder = remainder * 2;
-      remainder = remainder % 11;
-    }
-
-    let controlDigit = 11 - remainder;
-    if (controlDigit === 10) {
-      controlDigit = 0;
-    }
-
-    const lastDigit = parseInt(value[10], 10);
-    return controlDigit === lastDigit;
-  };
 
   const handleSubmit = () => {
     if (!oib.trim()) {
