@@ -85,7 +85,7 @@ export function NumberPortingModal({ current, onClose, onSave }: NumberPortingMo
       onClick={onClose}
     >
       <motion.div
-        className="bg-background rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col overflow-hidden"
+        className="bg-card rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col overflow-hidden"
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -285,7 +285,7 @@ export function NumberPortingModal({ current, onClose, onSave }: NumberPortingMo
         </div>
 
         {/* Footer */}
-        <div className="p-6 pt-0 flex flex-col sm:flex-row gap-3 shrink-0 border-t border-border bg-background">
+        <div className="p-6 pt-0 flex flex-col sm:flex-row gap-3 shrink-0 border-t border-border bg-card">
           <Button
             variant="outline"
             className="flex-1"

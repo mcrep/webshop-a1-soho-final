@@ -135,7 +135,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        className="relative w-full max-w-5xl max-h-[90vh] bg-background rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+        className="relative w-full max-w-5xl max-h-[90vh] bg-card rounded-2xl shadow-2xl overflow-hidden flex flex-col"
       >
         {/* Header with gradient */}
         <div className="relative bg-gradient-to-r from-primary/80 to-primary/60 p-6 text-primary-foreground">
