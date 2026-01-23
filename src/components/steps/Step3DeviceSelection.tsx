@@ -172,7 +172,7 @@ export function Step3DeviceSelection({
                 </button>
 
                 {/* Line label and badges */}
-                <div className="mb-3 pb-3 border-b border-border pr-8">
+                <div className="mb-3 pr-8">
                   <div className="font-bold text-lg mb-2">{displayLabel}</div>
                   <div className="flex flex-wrap gap-2">
                     <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-muted text-sm font-medium">
