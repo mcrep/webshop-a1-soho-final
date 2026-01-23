@@ -155,13 +155,12 @@ export function Step3DeviceSelection({
             );
             const maxWalletForDevice = Math.min(deviceCost, totalWallet - otherUsage);
 
-            return (
+              return (
               <motion.div
                 key={slot.id}
                 layout
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="rounded-2xl border-2 border-transparent p-6 shadow-sm flex flex-col hover:border-foreground relative"
-                style={{ backgroundColor: '#F2F2F2' }}
+                className="rounded-2xl border-2 border-border bg-card p-6 shadow-sm flex flex-col hover:border-foreground relative transition-colors"
               >
                 {/* Close button */}
                 <button
