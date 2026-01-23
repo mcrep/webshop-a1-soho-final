@@ -79,8 +79,8 @@ export function WalletBanner({
             <div className="flex items-center">
               {/* Left: Available amount */}
               <div className="flex-shrink-0 pr-4 min-w-[140px]">
-                <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
-                <div className="text-2xl font-bold text-primary transition-colors">
+              <div className="text-sm text-muted-foreground mb-1">Dostupan iznos</div>
+                <div className="text-2xl font-bold transition-colors" style={{ color: '#3F1EE2' }}>
                   {animatedRemaining.toFixed(2)} €
                 </div>
               </div>
