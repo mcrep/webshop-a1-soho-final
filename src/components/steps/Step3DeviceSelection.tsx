@@ -230,8 +230,8 @@ export function Step3DeviceSelection({
                                 onUpdateWalletUse(slot.id, value);
                               }}
                               placeholder="0"
-                              className="text-center text-lg font-bold h-12 bg-background border-2 pr-10"
-                              style={{ borderColor: 'rgba(63, 30, 226, 0.3)', color: '#3F1EE2' }}
+                              className="text-center text-lg font-bold h-12 bg-background border-2 pr-10 focus:ring-0 focus:ring-offset-0"
+                              style={{ borderColor: 'rgba(63, 30, 226, 0.3)', color: '#3F1EE2', outline: 'none', boxShadow: 'none' }}
                             />
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 font-medium" style={{ color: '#3F1EE2' }}>€</span>
                           </div>
@@ -277,8 +277,8 @@ export function Step3DeviceSelection({
                                     onUpdateWalletUse(slot.id, value);
                                   }}
                                   placeholder="0"
-                                  className="text-center text-lg font-bold h-12 bg-background border-2 pr-10"
-                                  style={{ borderColor: 'rgba(63, 30, 226, 0.3)', color: '#3F1EE2' }}
+                                  className="text-center text-lg font-bold h-12 bg-background border-2 pr-10 focus:ring-0 focus:ring-offset-0"
+                                  style={{ borderColor: 'rgba(63, 30, 226, 0.3)', color: '#3F1EE2', outline: 'none', boxShadow: 'none' }}
                                 />
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 font-medium" style={{ color: '#3F1EE2' }}>€</span>
                               </div>
