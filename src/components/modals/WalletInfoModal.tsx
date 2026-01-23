@@ -21,7 +21,7 @@ export function WalletInfoModal({ open, onOpenChange }: WalletInfoModalProps) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        className="w-full max-w-md mx-4 rounded-2xl bg-background shadow-2xl overflow-hidden"
+        className="w-full max-w-md mx-4 rounded-2xl bg-card shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Gradient Header */}
