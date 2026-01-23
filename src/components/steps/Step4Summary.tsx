@@ -144,16 +144,48 @@ export function Step4Summary({
                       <span className="text-sm font-semibold text-foreground">{index + 1}</span>
                     </div>
 
-                    <div className="min-w-0">
+                    <div className="min-w-0 space-y-2">
                       <div className={cn(
                         "text-lg font-semibold tracking-tight truncate",
                         msisdn ? "font-mono" : ""
                       )}>
                         {msisdn ?? (isExtensionLine ? `Linija ${index + 1}` : `Nova linija ${index + 1}`)}
                       </div>
-                      <p className="text-sm text-muted-foreground truncate">
-                        {tariff?.name} • {device?.id !== "no-dev" ? `${device?.brand} ${device?.name}` : "Bez uređaja"}
-                      </p>
+                      
+                      {/* Badge row: Tariff, Device, Line Type */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
+                          {tariff?.name}
+                        </span>
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
+                          {device?.id !== "no-dev" ? `${device?.brand} ${device?.name}` : "Bez uređaja"}
+                        </span>
+                        
+                        {/* Line Type: Button or Badge */}
+                        {!isExtensionLine && (
+                          line.lineType ? (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onOpenLineTypeModal(line.id);
+                              }}
+                              className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors cursor-pointer"
+                            >
+                              {lineTypeName}
+                            </button>
+                          ) : (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onOpenLineTypeModal(line.id);
+                              }}
+                              className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                            >
+                              Odaberi vrstu
+                            </button>
+                          )
+                        )}
+                      </div>
                     </div>
                   </div>
                   
@@ -171,53 +203,6 @@ export function Step4Summary({
                 </div>
               </div>
 
-              {/* Line Type Selection - Only for non-extension lines */}
-              {!isExtensionLine && (
-                <div className={cn(
-                  "px-4 pb-4 border-t bg-muted/5",
-                  needsLineType ? "border-orange-500/30" : "border-border"
-                )}>
-                  <div className={cn(
-                    "flex items-center justify-between py-3 rounded-lg px-2 -mx-2",
-                    needsLineType && "animate-pulse bg-orange-500/5"
-                  )}>
-                    <div className="flex items-center gap-3">
-                      <div className={cn(
-                        "w-8 h-8 rounded-lg flex items-center justify-center",
-                        line.lineType ? "bg-primary/10" : "bg-orange-500/20"
-                      )}>
-                        {line.lineType ? (
-                          <Check size={16} className="text-primary" />
-                        ) : (
-                          <AlertTriangle size={16} className="text-orange-600" />
-                        )}
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-sm">Vrsta linije</h4>
-                        <p className={cn(
-                          "text-sm",
-                          line.lineType ? "text-primary font-medium" : "text-orange-600 font-medium"
-                        )}>
-                          {line.lineType ? lineTypeName : "Obavezno odaberite vrstu linije"}
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      variant={line.lineType ? "outline" : "default"}
-                      size="sm"
-                      className={cn(
-                        !line.lineType && "bg-orange-500 hover:bg-orange-600 text-white"
-                      )}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onOpenLineTypeModal(line.id);
-                      }}
-                    >
-                      {line.lineType ? "Promijeni" : "Odaberi vrstu"}
-                    </Button>
-                  </div>
-                </div>
-              )}
 
               {/* Expanded Details */}
               {isExpanded && (
