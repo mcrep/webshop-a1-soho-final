@@ -69,7 +69,7 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
       onClick={onClose}
     >
       <motion.div 
-        className="w-full max-w-6xl mx-4 rounded-2xl bg-background shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+        className="w-full max-w-6xl mx-4 rounded-2xl bg-card shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
