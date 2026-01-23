@@ -171,10 +171,19 @@ export function Step3DeviceSelection({
                   <X className="h-5 w-5" />
                 </button>
 
-                {/* Line label and tariff name */}
+                {/* Line label and badges */}
                 <div className="mb-3 pb-3 border-b border-border pr-8">
-                  <div className="font-bold text-lg">{displayLabel}</div>
-                  <div className="text-sm text-muted-foreground">{tariff?.name || "Unknown"}</div>
+                  <div className="font-bold text-lg mb-2">{displayLabel}</div>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-muted text-sm font-medium">
+                      {tariff?.name || "Unknown"}
+                    </span>
+                    {device && (
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-muted text-sm font-medium">
+                        {device.brand} {device.name}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* Device selection */}
@@ -184,7 +193,6 @@ export function Step3DeviceSelection({
                 >
                   {device ? (
                     <div className="text-center">
-                      <div className="font-bold text-lg mb-1">{device.brand} {device.name}</div>
                       {variant && (
                         <div className="text-xs text-muted-foreground">
                           {variant.color} • {variant.memory}
