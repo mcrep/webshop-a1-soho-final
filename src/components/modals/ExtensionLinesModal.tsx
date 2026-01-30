@@ -110,10 +110,10 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
               <motion.button
                 key={line.id}
                 onClick={() => handleToggleLine(line.id)}
-                className={`w-full rounded-2xl border px-4 py-4 text-left transition-all flex items-start gap-3 ${
+                className={`w-full rounded-xl border-2 px-4 py-4 text-left transition-all flex items-start gap-3 ${
                   selected.includes(line.id)
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:bg-muted"
+                    ? "bg-[#F2F2F2] border-transparent"
+                    : "border-border hover:border-foreground"
                 }`}
                 variants={{
                   hidden: { opacity: 0, x: -20 },
@@ -122,7 +122,7 @@ export function ExtensionLinesModal({ onClose, onSave, selectedLines }: Extensio
               >
                 <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
                   selected.includes(line.id)
-                    ? "border-primary bg-primary text-primary-foreground"
+                    ? "border-foreground bg-foreground text-background"
                     : "border-muted-foreground/30"
                 }`}>
                   {selected.includes(line.id) && (
