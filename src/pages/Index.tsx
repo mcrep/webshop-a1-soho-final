@@ -91,9 +91,10 @@ const Index = () => {
     const slots: DeviceSlot[] = [];
     let newLineIndex = 1;
     
-    // Calculate total lines to determine if single-line flow
+    // Calculate total lines to determine auto-activation
     const totalLines = lineAssignments.length;
-    const isSingleLine = totalLines === 1;
+    // Auto-activate all slots when number of devices equals total lines
+    const shouldAutoActivate = numberOfDevices > 0 && numberOfDevices === totalLines;
     
     // Add slots from new line assignments
     lineAssignments
@@ -105,8 +106,8 @@ const Index = () => {
             deviceId: null,
             walletUse: 0,
             tariffId: assignment.tariffId,
-            // Auto-activate for single line with devices
-            isActive: isSingleLine && numberOfDevices > 0,
+            // Auto-activate when devices equals lines
+            isActive: shouldAutoActivate,
             paymentMethod: "installments",
             screenInsurance: true,
             monthlyInstallment: 1,
@@ -129,8 +130,8 @@ const Index = () => {
               deviceId: null,
               walletUse: 0,
               tariffId: assignment.tariffId,
-              // Auto-activate for single line with devices
-              isActive: isSingleLine && numberOfDevices > 0,
+              // Auto-activate when devices equals lines
+              isActive: shouldAutoActivate,
               paymentMethod: "installments",
               screenInsurance: true,
               monthlyInstallment: 1,
