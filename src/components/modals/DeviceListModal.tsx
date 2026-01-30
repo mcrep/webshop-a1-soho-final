@@ -226,7 +226,7 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
                         <button
                           key={device.id}
                           onClick={() => handleDeviceClick(device)}
-                          className="group p-4 rounded-xl border border-border bg-card hover:bg-muted/50 hover:border-primary transition-all text-left"
+                          className="group p-4 rounded-xl border border-border bg-card hover:border-foreground transition-all text-left"
                         >
                           <div className="aspect-square rounded-lg overflow-hidden mb-3 bg-muted/30">
                             <img
