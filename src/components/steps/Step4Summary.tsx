@@ -129,7 +129,7 @@ export function Step4Summary({
               className={cn(
                 "rounded-2xl border-2 bg-card shadow-sm overflow-hidden transition-all duration-200 cursor-pointer",
                 isExpanded 
-                  ? "border-muted-foreground" 
+                  ? "border-border" 
                   : "border-transparent hover:border-foreground"
               )}
               onClick={() => toggleLine(line.id)}
