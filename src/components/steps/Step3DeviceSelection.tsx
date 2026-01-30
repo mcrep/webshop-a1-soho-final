@@ -211,7 +211,7 @@ export function Step3DeviceSelection({
                     {slot.paymentMethod === "upfront" && (
                       <div className="space-y-3">
                         
-                        <div className="flex items-center justify-between gap-4 rounded-lg p-3">
+                        <div className="flex items-center justify-between gap-4 py-2">
                           <span className="text-sm font-semibold" style={{ color: '#3F1EE2' }}>Umanji cijenu uređaja:</span>
                           <div className="relative w-36">
                             <Input
@@ -257,7 +257,7 @@ export function Step3DeviceSelection({
                             totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
                           );
                           return (
-                            <div className="flex items-center justify-between gap-4 rounded-lg p-3">
+                            <div className="flex items-center justify-between gap-4 py-2">
                               <span className="text-sm font-semibold" style={{ color: '#3F1EE2' }}>Umanji cijenu uređaja:</span>
                               <div className="relative w-36">
                                 <Input
