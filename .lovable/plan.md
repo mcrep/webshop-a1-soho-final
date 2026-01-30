@@ -1,34 +1,102 @@
 
 
-# Izmjena hover boje za outline/ghost gumbe
+# Usklađivanje dizajna ExtensionLinesModal i TariffLineAssignmentModal
 
-## Problem
+## Cilj
 
-Trenutno `outline` i `ghost` varijante gumba koriste `hover:bg-accent` koja je definirana kao roza/crvenkasta boja (`5 79% 88%`).
+Uskladiti vizualni dizajn modala za odabir linija s već usklađenim modalima za uređaje (DeviceListModal i DeviceDetailModal).
 
-## Rješenje
+## Dizajn principi iz Device modala
 
-Promijenit ću hover pozadinu na neutralnu sivu boju umjesto roza tona. Koristit ću postojeću `muted` boju koja je već definirana kao neutralna siva (`210 40% 96%`).
+| Element | Stil |
+|---------|------|
+| **Hover stanje** | `border-border hover:border-foreground` (crni border) |
+| **Selektirano** | `bg-[#F2F2F2] border-transparent` |
+| **Neselektirano** | `border-border` |
+| **Animacije** | Framer Motion spring animacije |
 
-## Promjene
+## Promjene po modalima
 
-**Datoteka:** `src/components/ui/button.tsx`
+### 1. ExtensionLinesModal.tsx
 
-| Varijanta | Prije | Poslije |
-|-----------|-------|---------|
-| `outline` | `hover:bg-accent hover:text-accent-foreground` | `hover:bg-muted hover:text-foreground` |
-| `ghost` | `hover:bg-accent hover:text-accent-foreground` | `hover:bg-muted hover:text-foreground` |
+**Linija kartice (line 113-117):**
+```text
+Prije:
+- Selektirano: "border-primary bg-primary/5"
+- Neselektirano: "border-border hover:bg-muted"
 
-## Vizualni rezultat
+Poslije:
+- Selektirano: "bg-[#F2F2F2] border-transparent"
+- Neselektirano: "border-border hover:border-foreground"
+```
 
-- **Prije**: Hover daje roza/crvenkasti ton
-- **Poslije**: Hover daje neutralnu sivu pozadinu (ista kao `--muted: 210 40% 96%`)
+**Checkbox kružić (line 123-127):**
+```text
+Prije:
+- Selektirano: "border-primary bg-primary text-primary-foreground"
+- Neselektirano: "border-muted-foreground/30"
 
-## Napomena
+Poslije:
+- Selektirano: "border-foreground bg-foreground text-background"
+- Neselektirano: "border-muted-foreground/30"
+```
 
-Ova promjena utječe na sve `outline` i `ghost` gumbe u aplikaciji, uključujući:
-- "Natrag" gumb u footeru
-- Gumbi za odabir količine (+/-)
-- Dropdown okidači
-- Sve ostale ghost/outline gumbe
+### 2. TariffLineAssignmentModal.tsx
+
+**LineCheckbox komponenta (line 207-219):**
+```text
+Prije:
+- Selektirano: "border-primary bg-primary/5"
+- Neselektirano: "hover:border-primary/30 hover:bg-accent/50"
+- Animacija: borderColor na primary
+
+Poslije:
+- Selektirano: "bg-[#F2F2F2] border-transparent"
+- Neselektirano: "border-border hover:border-foreground"
+- Animacija: uklonjena (nepotrebna s novim stilom)
+```
+
+**Checkbox komponenta:**
+- Zamijeniti `<Checkbox>` s prilagođenim kružićem kao u ExtensionLinesModal
+- Koristiti crnu boju za označeno stanje umjesto primary
+
+**Check ikona (line 234-244):**
+```text
+Prije: "text-primary"
+Poslije: "text-foreground"
+```
+
+## Vizualni pregled
+
+```text
++--------------------------------------------------+
+|  [Gradient Header - ostaje isti]                 |
++--------------------------------------------------+
+|                                                  |
+|  Opis tekst...                                   |
+|                                                  |
+|  +--------------------------------------------+  |
+|  | ○  Linija 1                                |  |  <- Neselektirano
+|  |    Tarifa: Biz M                           |  |     border-border
+|  +--------------------------------------------+  |     hover:border-foreground (crni)
+|                                                  |
+|  +--------------------------------------------+  |
+|  | ●  385912345678                        ✓   |  |  <- Selektirano
+|  |    Tarifa: Biz S                           |  |     bg-[#F2F2F2]
+|  +--------------------------------------------+  |     border-transparent
+|                                                  |
++--------------------------------------------------+
+|  [Odustani]              [Potvrdi (1)]          |
++--------------------------------------------------+
+```
+
+## Dodatne prilagodbe
+
+1. **Ukloniti whileHover/whileTap scale animacije** iz TariffLineAssignmentModal jer Device modali ih ne koriste
+2. **Konzistentni border-radius**: Koristiti `rounded-xl` za kartice linija (kao DeviceDetailModal)
+
+## Datoteke za izmjenu
+
+1. `src/components/modals/ExtensionLinesModal.tsx`
+2. `src/components/modals/TariffLineAssignmentModal.tsx`
 
