@@ -154,8 +154,8 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                         onClick={() => setSelectedImageIndex(idx)}
                         className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
                           idx === selectedImageIndex
-                            ? "border-primary scale-105"
-                            : "border-border hover:border-primary/50"
+                            ? "bg-[#F2F2F2] border-transparent"
+                            : "border-border hover:border-foreground"
                         }`}
                       >
                         <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-contain" />
@@ -180,8 +180,8 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                             onClick={() => handleColorChange(color)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition-all ${
                               selectedColor === color
-                                ? "border-primary bg-primary/5"
-                                : "border-border hover:border-primary/50"
+                                ? "bg-[#F2F2F2] border-transparent"
+                                : "border-border hover:border-foreground"
                             }`}
                           >
                             <div
@@ -207,8 +207,8 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                           onClick={() => handleMemoryChange(memory)}
                           className={`px-6 py-3 rounded-lg border-2 font-semibold transition-all ${
                             selectedMemory === memory
-                              ? "border-primary bg-primary/5"
-                              : "border-border hover:border-primary/50"
+                              ? "bg-[#F2F2F2] border-transparent"
+                              : "border-border hover:border-foreground"
                           }`}
                         >
                           {memory}
@@ -245,7 +245,7 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
 
                 {/* Installment Configuration */}
                 {paymentMethod === "installments" && (
-                  <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-border">
+                  <div className="space-y-3 p-4 rounded-xl bg-[#F2F2F2]">
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">
                         Iznos rate: €{monthlyInstallment}/mj
@@ -267,7 +267,7 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                 )}
 
                 {/* Pricing */}
-                <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-border">
+                <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Jednokratni iznos:</span>
                     <span className="text-2xl font-bold">
@@ -292,41 +292,26 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                 {device.specs && (
                   <div className="space-y-3">
                     <Label className="text-base font-semibold">Tehničke karakteristike</Label>
-                    <div className="space-y-2">
-                      <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/20">
-                        <div className="w-2 h-2 rounded-full bg-primary mt-1.5" />
-                        <div className="flex-1">
-                          <div className="text-xs text-muted-foreground">Zaslon</div>
-                          <div className="text-sm font-medium">{device.specs.display}</div>
-                        </div>
+                    <div className="divide-y divide-border">
+                      <div className="py-2 flex justify-between">
+                        <span className="text-sm text-muted-foreground">Zaslon</span>
+                        <span className="text-sm font-medium text-right">{device.specs.display}</span>
                       </div>
-                      <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/20">
-                        <div className="w-2 h-2 rounded-full bg-primary mt-1.5" />
-                        <div className="flex-1">
-                          <div className="text-xs text-muted-foreground">Procesor</div>
-                          <div className="text-sm font-medium">{device.specs.processor}</div>
-                        </div>
+                      <div className="py-2 flex justify-between">
+                        <span className="text-sm text-muted-foreground">Procesor</span>
+                        <span className="text-sm font-medium text-right">{device.specs.processor}</span>
                       </div>
-                      <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/20">
-                        <div className="w-2 h-2 rounded-full bg-primary mt-1.5" />
-                        <div className="flex-1">
-                          <div className="text-xs text-muted-foreground">Kamera</div>
-                          <div className="text-sm font-medium">{device.specs.camera}</div>
-                        </div>
+                      <div className="py-2 flex justify-between">
+                        <span className="text-sm text-muted-foreground">Kamera</span>
+                        <span className="text-sm font-medium text-right">{device.specs.camera}</span>
                       </div>
-                      <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/20">
-                        <div className="w-2 h-2 rounded-full bg-primary mt-1.5" />
-                        <div className="flex-1">
-                          <div className="text-xs text-muted-foreground">Baterija</div>
-                          <div className="text-sm font-medium">{device.specs.battery}</div>
-                        </div>
+                      <div className="py-2 flex justify-between">
+                        <span className="text-sm text-muted-foreground">Baterija</span>
+                        <span className="text-sm font-medium text-right">{device.specs.battery}</span>
                       </div>
-                      <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/20">
-                        <div className="w-2 h-2 rounded-full bg-primary mt-1.5" />
-                        <div className="flex-1">
-                          <div className="text-xs text-muted-foreground">Težina</div>
-                          <div className="text-sm font-medium">{device.specs.weight}</div>
-                        </div>
+                      <div className="py-2 flex justify-between">
+                        <span className="text-sm text-muted-foreground">Težina</span>
+                        <span className="text-sm font-medium text-right">{device.specs.weight}</span>
                       </div>
                     </div>
                   </div>
