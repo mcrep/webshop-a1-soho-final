@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 import { Check, Phone, X } from "lucide-react";
 import type { Tariff } from "@/types";
 import { cn } from "@/lib/utils";
@@ -205,24 +203,27 @@ function LineCheckbox({
     <motion.div
       onClick={onToggle}
       className={cn(
-        "flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-colors",
+        "flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all",
         isSelected 
-          ? "border-primary bg-primary/5" 
-          : "border-border hover:border-primary/30 hover:bg-accent/50"
+          ? "bg-[#F2F2F2] border-transparent" 
+          : "border-border hover:border-foreground"
       )}
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
-      animate={isSelected ? { 
-        borderColor: "hsl(var(--primary))",
-        backgroundColor: "hsl(var(--primary) / 0.05)"
-      } : {}}
-      transition={{ duration: 0.15 }}
     >
-      <Checkbox 
-        checked={isSelected} 
-        onCheckedChange={onToggle}
-        className="pointer-events-none"
-      />
+      <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+        isSelected
+          ? "border-foreground bg-foreground text-background"
+          : "border-muted-foreground/30"
+      }`}>
+        {isSelected && (
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", damping: 15, stiffness: 300 }}
+          >
+            <Check size={14} />
+          </motion.div>
+        )}
+      </div>
       <div className="flex-1">
         <div className="font-medium">{line.label}</div>
         {line.currentTariff && (
@@ -239,7 +240,7 @@ function LineCheckbox({
             exit={{ scale: 0, opacity: 0 }}
             transition={{ type: "spring", stiffness: 500, damping: 25 }}
           >
-            <Check className="h-5 w-5 text-primary" />
+            <Check className="h-5 w-5 text-foreground" />
           </motion.div>
         )}
       </AnimatePresence>
