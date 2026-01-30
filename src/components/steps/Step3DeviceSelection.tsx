@@ -214,9 +214,9 @@ export function Step3DeviceSelection({
                         <div className="flex items-center justify-between gap-4 rounded-lg p-3" style={{ backgroundColor: 'rgba(63, 30, 226, 0.05)' }}>
                           <div className="flex items-center gap-2" style={{ color: '#3F1EE2' }}>
                             <Wallet className="h-4 w-4 shrink-0" />
-                            <span className="text-sm font-semibold">Umanji cijenu s A1 Walletom</span>
+                            <span className="text-sm font-semibold">Umanji cijenu uređaja:</span>
                           </div>
-                          <div className="relative w-28">
+                          <div className="relative w-36">
                             <Input
                               id={`wallet-${slot.id}`}
                               type="number"
@@ -261,9 +261,9 @@ export function Step3DeviceSelection({
                             <div className="flex items-center justify-between gap-4 rounded-lg p-3" style={{ backgroundColor: 'rgba(63, 30, 226, 0.05)' }}>
                               <div className="flex items-center gap-2" style={{ color: '#3F1EE2' }}>
                                 <Wallet className="h-4 w-4 shrink-0" />
-                                <span className="text-sm font-semibold">Umanji cijenu s A1 Walletom</span>
+                                <span className="text-sm font-semibold">Umanji cijenu uređaja:</span>
                               </div>
-                              <div className="relative w-28">
+                              <div className="relative w-36">
                                 <Input
                                   id={`wallet-inst-${slot.id}`}
                                   type="number"
