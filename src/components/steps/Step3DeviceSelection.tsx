@@ -231,8 +231,8 @@ export function Step3DeviceSelection({
                                 onUpdateWalletUse(slot.id, value);
                               }}
                               placeholder="0"
-                              className="text-center text-lg font-bold h-12 bg-background border-2 pr-10 focus:ring-0 focus:ring-offset-0"
-                              style={{ borderColor: 'rgba(63, 30, 226, 0.3)', color: '#3F1EE2', outline: 'none', boxShadow: 'none' }}
+                                  className="text-center text-xl font-bold h-12 bg-background border-2 pr-10 focus:ring-0 focus:ring-offset-0"
+                                  style={{ borderColor: 'rgba(63, 30, 226, 0.3)', color: '#3F1EE2', outline: 'none', boxShadow: 'none' }}
                             />
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 font-medium" style={{ color: '#3F1EE2' }}>€</span>
                           </div>
@@ -240,7 +240,7 @@ export function Step3DeviceSelection({
 
                         <div className="flex justify-between items-center pt-2 border-t border-border">
                           <span className="text-sm font-medium">Ukupna cijena uređaja:</span>
-                          <span className="font-bold text-lg text-primary">
+                          <span className="font-bold text-xl text-foreground">
                             {Math.max(0, devicePrice - slot.walletUse).toFixed(2)}€
                           </span>
                         </div>
@@ -278,7 +278,7 @@ export function Step3DeviceSelection({
                                     onUpdateWalletUse(slot.id, value);
                                   }}
                                   placeholder="0"
-                                  className="text-center text-lg font-bold h-12 bg-background border-2 pr-10 focus:ring-0 focus:ring-offset-0"
+                                  className="text-center text-xl font-bold h-12 bg-background border-2 pr-10 focus:ring-0 focus:ring-offset-0"
                                   style={{ borderColor: 'rgba(63, 30, 226, 0.3)', color: '#3F1EE2', outline: 'none', boxShadow: 'none' }}
                                 />
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 font-medium" style={{ color: '#3F1EE2' }}>€</span>
@@ -287,9 +287,9 @@ export function Step3DeviceSelection({
                           );
                         })()}
 
-                        <div className="flex justify-between items-center pt-2 border-t border-border">
+                                <div className="flex justify-between items-center pt-2 border-t border-border">
                           <span className="text-sm font-medium">Ukupna cijena uređaja:</span>
-                          <span className="font-bold text-lg text-primary">
+                          <span className="font-bold text-xl text-foreground">
                             {Math.max(0, devicePrice - (slot.monthlyInstallment * 24) - slot.walletUse).toFixed(2)}€
                           </span>
                         </div>
