@@ -26,7 +26,7 @@ export function Footer({
         <div className="flex items-center justify-between">
           <div>
             {showBack && onBack && (
-              <Button onClick={onBack} variant="outline" size="lg" className="hover:bg-transparent hover:text-primary hover:border-primary">
+              <Button onClick={onBack} variant="outline" size="lg">
                 <ArrowLeft className="mr-2" size={18} />
                 {backLabel}
               </Button>
