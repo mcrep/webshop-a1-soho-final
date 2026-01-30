@@ -5,6 +5,7 @@ import { tariffs, devices } from "@/data/catalog";
 import { findExistingLineNumber } from "@/data/mock-existing-lines";
 import type { Line } from "@/types";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 const formatMsisdn = (value: string) => {
   const digits = value.replace(/\D/g, "");
@@ -207,72 +208,82 @@ export function Step4Summary({
 
 
               {/* Expanded Details */}
-              {isExpanded && (
-                <div className="border-t border-border p-4 space-y-4">
-                  
-                  {/* PAKET sekcija */}
-                  <div className="space-y-2">
-                    <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                      Paket
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">{tariff?.name}</span>
-                      <span className="font-semibold">{tariffMonthly.toFixed(2)}€/mj</span>
-                    </div>
-                  </div>
-
-                  {/* Separator */}
-                  {device?.id !== "no-dev" && <div className="border-t border-border" />}
-
-                  {/* UREĐAJ sekcija */}
-                  {device?.id !== "no-dev" && (
-                    <div className="space-y-2">
-                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                        Uređaj
-                      </div>
+              <AnimatePresence initial={false}>
+                {isExpanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="overflow-hidden"
+                  >
+                    <div className="border-t border-border p-4 space-y-4">
                       
-                      {/* Naziv uređaja s varijantom */}
-                      <div className="font-medium">
-                        {device?.brand} {device?.name}
-                        {variant && ` · ${variant.color} · ${variant.memory}`}
-                      </div>
-
-                      {/* Podstavke s uvlakom */}
-                      <div className="pl-4 space-y-1 text-sm">
-                        {/* Način plaćanja */}
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">
-                            {line.devicePayment === "installments" 
-                              ? "Plaćanje na rate (24 mj)" 
-                              : "Jednokratno plaćanje"}
-                          </span>
-                          <span>
-                            {line.devicePayment === "installments" 
-                              ? `${deviceMonthly.toFixed(2)}€/mj` 
-                              : `${lineOnetime.toFixed(2)}€`}
-                          </span>
+                      {/* PAKET sekcija */}
+                      <div className="space-y-2">
+                        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                          Paket
                         </div>
-
-                        {/* A1 Wallet popust - jedina stavka u boji */}
-                        {line.walletUse > 0 && (
-                          <div className="flex justify-between text-primary">
-                            <span>A1 Wallet popust</span>
-                            <span className="font-semibold">−{line.walletUse.toFixed(2)}€</span>
-                          </div>
-                        )}
-
-                        {/* Osiguranje ekrana */}
-                        {line.screenInsurance && (
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Osiguranje ekrana</span>
-                            <span>4.99€/mj</span>
-                          </div>
-                        )}
+                        <div className="flex justify-between items-center">
+                          <span className="font-medium">{tariff?.name}</span>
+                          <span className="font-semibold">{tariffMonthly.toFixed(2)}€/mj</span>
+                        </div>
                       </div>
+
+                      {/* Separator */}
+                      {device?.id !== "no-dev" && <div className="border-t border-border" />}
+
+                      {/* UREĐAJ sekcija */}
+                      {device?.id !== "no-dev" && (
+                        <div className="space-y-2">
+                          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                            Uređaj
+                          </div>
+                          
+                          {/* Naziv uređaja s varijantom */}
+                          <div className="font-medium">
+                            {device?.brand} {device?.name}
+                            {variant && ` · ${variant.color} · ${variant.memory}`}
+                          </div>
+
+                          {/* Podstavke s uvlakom */}
+                          <div className="pl-4 space-y-1 text-sm">
+                            {/* Način plaćanja */}
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">
+                                {line.devicePayment === "installments" 
+                                  ? "Plaćanje na rate (24 mj)" 
+                                  : "Jednokratno plaćanje"}
+                              </span>
+                              <span>
+                                {line.devicePayment === "installments" 
+                                  ? `${deviceMonthly.toFixed(2)}€/mj` 
+                                  : `${lineOnetime.toFixed(2)}€`}
+                              </span>
+                            </div>
+
+                            {/* A1 Wallet popust - jedina stavka u boji */}
+                            {line.walletUse > 0 && (
+                              <div className="flex justify-between text-primary">
+                                <span>A1 Wallet popust</span>
+                                <span className="font-semibold">−{line.walletUse.toFixed(2)}€</span>
+                              </div>
+                            )}
+
+                            {/* Osiguranje ekrana */}
+                            {line.screenInsurance && (
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">Osiguranje ekrana</span>
+                                <span>4.99€/mj</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           );
         })}
