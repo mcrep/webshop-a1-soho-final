@@ -240,9 +240,11 @@ export function Step3DeviceSelection({
 
                         <div className="flex justify-between items-center pt-2 border-t border-border">
                           <span className="text-sm font-medium">Ukupna cijena uređaja:</span>
-                          <span className="font-bold text-xl text-foreground">
-                            {Math.max(0, devicePrice - slot.walletUse).toFixed(2)}€
-                          </span>
+                          <div className="w-36 text-right">
+                            <span className="font-bold text-xl text-foreground">
+                              {Math.max(0, devicePrice - slot.walletUse).toFixed(2)}€
+                            </span>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -287,11 +289,13 @@ export function Step3DeviceSelection({
                           );
                         })()}
 
-                                <div className="flex justify-between items-center pt-2 border-t border-border">
+                        <div className="flex justify-between items-center pt-2 border-t border-border">
                           <span className="text-sm font-medium">Ukupna cijena uređaja:</span>
-                          <span className="font-bold text-xl text-foreground">
-                            {Math.max(0, devicePrice - (slot.monthlyInstallment * 24) - slot.walletUse).toFixed(2)}€
-                          </span>
+                          <div className="w-36 text-right">
+                            <span className="font-bold text-xl text-foreground">
+                              {Math.max(0, devicePrice - (slot.monthlyInstallment * 24) - slot.walletUse).toFixed(2)}€
+                            </span>
+                          </div>
                         </div>
                       </div>
                     )}
