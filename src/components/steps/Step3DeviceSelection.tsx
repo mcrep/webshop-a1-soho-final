@@ -211,12 +211,12 @@ export function Step3DeviceSelection({
                     {slot.paymentMethod === "upfront" && (
                       <div className="space-y-3">
                         
-                        <div className="rounded-lg p-3 space-y-3" style={{ backgroundColor: 'rgba(63, 30, 226, 0.05)' }}>
+                        <div className="flex items-center justify-between gap-4 rounded-lg p-3" style={{ backgroundColor: 'rgba(63, 30, 226, 0.05)' }}>
                           <div className="flex items-center gap-2" style={{ color: '#3F1EE2' }}>
                             <Wallet className="h-4 w-4 shrink-0" />
-                            <span className="text-sm font-semibold">Umanji cijenu uređaja korištenjem A1 Wallet popusta</span>
+                            <span className="text-sm font-semibold">Umanji cijenu s A1 Walletom</span>
                           </div>
-                          <div className="relative">
+                          <div className="relative w-28">
                             <Input
                               id={`wallet-${slot.id}`}
                               type="number"
@@ -231,10 +231,10 @@ export function Step3DeviceSelection({
                                 onUpdateWalletUse(slot.id, value);
                               }}
                               placeholder="0"
-                                  className="text-center font-bold h-12 bg-background border-2 pr-10 focus:ring-0 focus:ring-offset-0"
-                                  style={{ borderColor: 'rgba(63, 30, 226, 0.3)', color: '#3F1EE2', outline: 'none', boxShadow: 'none', fontSize: '1.25rem' }}
+                              className="text-right font-bold h-10 bg-background border-2 pr-8 focus:ring-0 focus:ring-offset-0"
+                              style={{ borderColor: 'rgba(63, 30, 226, 0.3)', color: '#3F1EE2', outline: 'none', boxShadow: 'none', fontSize: '1.25rem' }}
                             />
-                            <span className="absolute right-3 top-1/2 -translate-y-1/2 font-medium" style={{ color: '#3F1EE2' }}>€</span>
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 font-bold" style={{ color: '#3F1EE2', fontSize: '1.25rem' }}>€</span>
                           </div>
                         </div>
 
@@ -258,12 +258,12 @@ export function Step3DeviceSelection({
                             totalWallet - deviceSlots.reduce((sum, s) => sum + (s.id === slot.id ? 0 : s.walletUse), 0)
                           );
                           return (
-                            <div className="rounded-lg p-3 space-y-3" style={{ backgroundColor: 'rgba(63, 30, 226, 0.05)' }}>
+                            <div className="flex items-center justify-between gap-4 rounded-lg p-3" style={{ backgroundColor: 'rgba(63, 30, 226, 0.05)' }}>
                               <div className="flex items-center gap-2" style={{ color: '#3F1EE2' }}>
                                 <Wallet className="h-4 w-4 shrink-0" />
-                                <span className="text-sm font-semibold">Umanji cijenu uređaja korištenjem A1 Wallet popusta</span>
+                                <span className="text-sm font-semibold">Umanji cijenu s A1 Walletom</span>
                               </div>
-                              <div className="relative">
+                              <div className="relative w-28">
                                 <Input
                                   id={`wallet-inst-${slot.id}`}
                                   type="number"
@@ -278,10 +278,10 @@ export function Step3DeviceSelection({
                                     onUpdateWalletUse(slot.id, value);
                                   }}
                                   placeholder="0"
-                                  className="text-center font-bold h-12 bg-background border-2 pr-10 focus:ring-0 focus:ring-offset-0"
+                                  className="text-right font-bold h-10 bg-background border-2 pr-8 focus:ring-0 focus:ring-offset-0"
                                   style={{ borderColor: 'rgba(63, 30, 226, 0.3)', color: '#3F1EE2', outline: 'none', boxShadow: 'none', fontSize: '1.25rem' }}
                                 />
-                                <span className="absolute right-3 top-1/2 -translate-y-1/2 font-medium" style={{ color: '#3F1EE2' }}>€</span>
+                                <span className="absolute right-3 top-1/2 -translate-y-1/2 font-bold" style={{ color: '#3F1EE2', fontSize: '1.25rem' }}>€</span>
                               </div>
                             </div>
                           );
