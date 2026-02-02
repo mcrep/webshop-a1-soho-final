@@ -255,20 +255,16 @@ export function Step4Summary({
                         <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
                           Tarifa
                         </div>
-                        {/* Red 1: Naziv tarife + puna cijena (ako ima popust) ili trenutna cijena */}
+                        {/* Red 1: Naziv tarife + puna cijena */}
                         <div className="flex justify-between items-center">
                           <span className="font-medium">{tariff?.name}</span>
-                          {tariff?.originalMonthly && tariff.originalMonthly > tariffMonthly ? (
-                            <span className="text-muted-foreground line-through">{tariff.originalMonthly.toFixed(2)}€/mj</span>
-                          ) : (
-                            <span className="font-semibold">{tariffMonthly.toFixed(2)}€/mj</span>
-                          )}
+                          <span>{tariff?.originalMonthly ? tariff.originalMonthly.toFixed(2) : tariffMonthly.toFixed(2)}€/mj</span>
                         </div>
                         
-                        {/* Red 2: Popust (ako postoji) */}
+                        {/* Red 2: Popust na tarifu (ako postoji) */}
                         {tariff?.originalMonthly && tariff.originalMonthly > tariffMonthly && (
-                          <div className="flex justify-between text-primary">
-                            <span>Popust</span>
+                          <div className="flex justify-between">
+                            <span>Popust na tarifu</span>
                             <span className="font-semibold">−{(tariff.originalMonthly - tariffMonthly).toFixed(2)}€/mj</span>
                           </div>
                         )}
@@ -295,7 +291,7 @@ export function Step4Summary({
 
                           {/* Red 2: A1 Wallet popust (ako postoji) */}
                           {line.walletUse > 0 && (
-                            <div className="flex justify-between text-primary">
+                            <div className="flex justify-between">
                               <span>A1 Wallet popust</span>
                               <span className="font-semibold">−{line.walletUse.toFixed(2)}€</span>
                             </div>
