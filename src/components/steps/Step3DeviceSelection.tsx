@@ -345,7 +345,7 @@ export function Step3DeviceSelection({
                     layout
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     onClick={() => canToggleOn ? onToggleSlot(slot.id) : handleDisabledClick(slot.id)}
-                    className={`flex items-center justify-between gap-4 px-4 py-3 rounded-xl border bg-card transition-all ${
+                    className={`flex items-center justify-between gap-4 px-4 py-3 rounded-xl border-2 bg-card transition-all ${
                       canToggleOn 
                         ? "border-border hover:border-foreground cursor-pointer" 
                         : "border-border/50 opacity-60 cursor-not-allowed"
