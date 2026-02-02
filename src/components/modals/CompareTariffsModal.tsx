@@ -38,9 +38,9 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       group: "price",
       render: (tariff) => {
         if (tariff.originalMonthly && tariff.originalMonthly > tariff.monthly) {
-          const savingsPercent = ((tariff.originalMonthly - tariff.monthly) / tariff.originalMonthly * 100).toFixed(0);
+          const savings = (tariff.originalMonthly - tariff.monthly).toFixed(2);
           return (
-            <span className="text-primary font-semibold text-xs sm:text-sm">-{savingsPercent}%</span>
+            <span className="text-xs sm:text-sm">-€{savings}</span>
           );
         }
         return <span className="text-muted-foreground">—</span>;
