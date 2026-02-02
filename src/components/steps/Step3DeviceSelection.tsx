@@ -306,11 +306,9 @@ export function Step3DeviceSelection({
                           onCheckedChange={(checked) => onUpdateInsurance(slot.id, checked)}
                         />
                       </div>
-                      {slot.screenInsurance && (
-                        <p className="text-xs text-muted-foreground pl-3">
-                          Uz uređaj je aktivirano osiguranje ekrana s mjesečnom naknadom 4,19€
-                        </p>
-                      )}
+                      <p className={`text-xs text-muted-foreground pl-3 transition-opacity ${slot.screenInsurance ? 'opacity-100' : 'opacity-0'}`}>
+                        Uz uređaj je aktivirano osiguranje ekrana s mjesečnom naknadom 4,19€
+                      </p>
                     </div>
                   </div>
                 )}
