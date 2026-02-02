@@ -10,10 +10,11 @@ import type { VerificationData } from "@/types";
 type Step5VerificationProps = {
   data: VerificationData | null;
   onUpdate: (data: VerificationData) => void;
+  initialCompanyOib?: string;
 };
 
-export function Step5Verification({ data, onUpdate }: Step5VerificationProps) {
-  const [companyOib, setCompanyOib] = useState(data?.companyOib || "");
+export function Step5Verification({ data, onUpdate, initialCompanyOib }: Step5VerificationProps) {
+  const [companyOib, setCompanyOib] = useState(data?.companyOib || initialCompanyOib || "");
   const [firstName, setFirstName] = useState(data?.authorizedPerson.firstName || "");
   const [lastName, setLastName] = useState(data?.authorizedPerson.lastName || "");
   const [personalOib, setPersonalOib] = useState(data?.authorizedPerson.oib || "");
