@@ -14,46 +14,36 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
 
   const features = [
     { 
-      key: "monthly", 
+      key: "originalMonthly", 
       label: "Mjesečna cijena", 
       icon: null,
-      render: (tariff: typeof tariffs[0]) => {
-        if (tariff.originalMonthly && tariff.originalMonthly > tariff.monthly) {
-          return (
-            <div className="flex flex-col items-center gap-0.5">
-              <span className="text-sm text-muted-foreground line-through">
-                €{tariff.originalMonthly.toFixed(2)}
-              </span>
-              <span className="font-bold text-primary text-lg">
-                €{tariff.monthly.toFixed(2)}
-              </span>
-            </div>
-          );
-        }
-        return <span className="font-bold text-primary text-lg">€{tariff.monthly.toFixed(2)}</span>;
-      }
+      render: (tariff: typeof tariffs[0]) => (
+        <span className="font-medium">€{(tariff.originalMonthly || tariff.monthly).toFixed(2)}</span>
+      )
     },
     { 
-      key: "savings", 
-      label: "Ušteda", 
+      key: "discount", 
+      label: "Popust", 
       icon: Tag,
       render: (tariff: typeof tariffs[0]) => {
         if (tariff.originalMonthly && tariff.originalMonthly > tariff.monthly) {
           const savingsPercent = ((tariff.originalMonthly - tariff.monthly) / tariff.originalMonthly * 100).toFixed(0);
-          const savingsAmount = (tariff.originalMonthly - tariff.monthly).toFixed(2);
           return (
-            <div className="inline-flex flex-col items-center gap-1">
-              <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full text-xs font-semibold">
-                -{savingsPercent}%
-              </span>
-              <span className="text-xs text-muted-foreground">
-                €{savingsAmount}/mj
-              </span>
-            </div>
+            <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full text-xs font-semibold">
+              -{savingsPercent}%
+            </span>
           );
         }
         return <span className="text-muted-foreground">—</span>;
       }
+    },
+    { 
+      key: "yourPrice", 
+      label: "Vaša cijena", 
+      icon: null,
+      render: (tariff: typeof tariffs[0]) => (
+        <span className="font-bold text-primary text-lg">€{tariff.monthly.toFixed(2)}</span>
+      )
     },
     { 
       key: "data", 
@@ -75,39 +65,15 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
     },
     { 
       key: "walletCredit", 
-      label: "A1 Wallet kredit", 
+      label: "A1 Wallet popust", 
       icon: Wallet,
       render: (tariff: typeof tariffs[0]) => `€${tariff.walletCredit}`
     },
     { 
       key: "noDeviceWalletBonus", 
-      label: "Bonus bez uređaja", 
+      label: "A1 Wallet bonus bez uređaja", 
       icon: Wallet,
       render: (tariff: typeof tariffs[0]) => `+€${tariff.noDeviceWalletBonus}`
-    },
-    { 
-      key: "unlimitedData", 
-      label: "Neograničeni internet", 
-      icon: null,
-      render: (tariff: typeof tariffs[0]) => tariff.data === "Neograničeno"
-    },
-    { 
-      key: "unlimitedVoice", 
-      label: "Neograničeni pozivi", 
-      icon: null,
-      render: (tariff: typeof tariffs[0]) => tariff.voice.toLowerCase().includes("neograničen")
-    },
-    { 
-      key: "euRoaming", 
-      label: "EU roaming uključen", 
-      icon: null,
-      render: (tariff: typeof tariffs[0]) => tariff.roaming.includes("EU")
-    },
-    { 
-      key: "regionRoaming", 
-      label: "Regionalni roaming", 
-      icon: null,
-      render: (tariff: typeof tariffs[0]) => tariff.roaming.includes("Regija")
     },
   ];
 
