@@ -144,18 +144,18 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
         </div>
 
         {/* Content */}
-        <ScrollArea className="flex-1">
-          <div className="p-6">
+        <ScrollArea className="flex-1 overflow-auto">
+          <div className="p-6 min-w-max">
             <table className="w-full border-collapse">
-              <thead>
+              <thead className="sticky top-0 z-20">
                 <tr>
-                  <th className="text-left p-4 border-b-2 border-border bg-muted/30 sticky left-0 z-10 min-w-[180px] rounded-tl-lg">
+                  <th className="text-left p-4 border-b-2 border-border bg-card sticky left-0 z-30 min-w-[180px] rounded-tl-lg">
                     <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Značajka</span>
                   </th>
                   {sortedTariffs.map((tariff, idx) => (
                     <th 
                       key={tariff.id} 
-                      className={`text-center p-4 border-b-2 border-border bg-muted/30 min-w-[130px] ${idx === sortedTariffs.length - 1 ? 'rounded-tr-lg' : ''}`}
+                      className={`text-center p-4 border-b-2 border-border bg-card min-w-[130px] ${idx === sortedTariffs.length - 1 ? 'rounded-tr-lg' : ''}`}
                     >
                       <div className="font-bold text-lg text-foreground">{tariff.name}</div>
                     </th>
@@ -170,7 +170,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
                       feature.isGroupEnd ? 'border-b-2 border-border' : 'border-b border-border/50'
                     }`}
                   >
-                    <td className="p-4 font-medium flex items-center gap-2.5 sticky left-0 bg-inherit z-10">
+                    <td className="p-4 font-medium flex items-center gap-2.5 sticky left-0 bg-card z-10">
                       {feature.icon && <feature.icon className="h-4 w-4 text-muted-foreground shrink-0" />}
                       <span className="text-sm">{feature.label}</span>
                     </td>
