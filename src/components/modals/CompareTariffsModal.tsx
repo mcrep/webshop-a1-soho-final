@@ -148,9 +148,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
             <table className="w-full border-collapse table-fixed">
               <thead className="sticky top-0 z-20">
                 <tr>
-                  <th className="text-left p-2 sm:p-3 border-b-2 border-border bg-card w-[100px] sm:w-[160px]">
-                    <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wide">Značajka</span>
-                  </th>
+                  <th className="p-2 sm:p-3 border-b-2 border-border bg-card w-[100px] sm:w-[160px]" />
                   {sortedTariffs.map((tariff) => (
                     <th 
                       key={tariff.id} 
