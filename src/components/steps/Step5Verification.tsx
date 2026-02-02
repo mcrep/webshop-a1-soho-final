@@ -2,10 +2,23 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { validateOIB } from "@/lib/utils";
-import { Check, X, Upload } from "lucide-react";
+import { Check, X, Upload, ChevronDown } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { VerificationData } from "@/types";
+
+// Dummy data - will be replaced with API call later
+const authorizedPersons = [
+  { id: "1", firstName: "Ivan", lastName: "Horvat", oib: "12345678903" },
+  { id: "2", firstName: "Ana", lastName: "Kovačević", oib: "98765432104" },
+  { id: "3", firstName: "Marko", lastName: "Babić", oib: "45678901237" },
+];
 
 type Step5VerificationProps = {
   data: VerificationData | null;
@@ -15,8 +28,7 @@ type Step5VerificationProps = {
 
 export function Step5Verification({ data, onUpdate, initialCompanyOib }: Step5VerificationProps) {
   const [companyOib, setCompanyOib] = useState(data?.companyOib || initialCompanyOib || "");
-  const [firstName, setFirstName] = useState(data?.authorizedPerson.firstName || "");
-  const [lastName, setLastName] = useState(data?.authorizedPerson.lastName || "");
+  const [selectedPersonId, setSelectedPersonId] = useState<string>("");
   const [personalOib, setPersonalOib] = useState(data?.authorizedPerson.oib || "");
   const [contactNumber, setContactNumber] = useState(data?.authorizedPerson.contactNumber || "");
   const [contactEmail, setContactEmail] = useState(data?.authorizedPerson.contactEmail || "");
@@ -26,14 +38,23 @@ export function Step5Verification({ data, onUpdate, initialCompanyOib }: Step5Ve
   const isCompanyOibValid = companyOib.length === 11 && validateOIB(companyOib);
   const showDetails = isCompanyOibValid;
   const isPersonalOibValid = personalOib.length === 11 && validateOIB(personalOib);
+  
+  const selectedPerson = authorizedPersons.find(p => p.id === selectedPersonId);
+
+  // Auto-fill OIB when person is selected
+  useEffect(() => {
+    if (selectedPerson) {
+      setPersonalOib(selectedPerson.oib);
+    }
+  }, [selectedPerson]);
 
   useEffect(() => {
-    if (isCompanyOibValid && firstName && lastName && isPersonalOibValid && contactNumber && contactEmail && idCardFront && idCardBack) {
+    if (isCompanyOibValid && selectedPerson && isPersonalOibValid && contactNumber && contactEmail && idCardFront && idCardBack) {
       onUpdate({
         companyOib,
         authorizedPerson: {
-          firstName,
-          lastName,
+          firstName: selectedPerson.firstName,
+          lastName: selectedPerson.lastName,
           oib: personalOib,
           contactNumber,
           contactEmail,
@@ -42,7 +63,7 @@ export function Step5Verification({ data, onUpdate, initialCompanyOib }: Step5Ve
         idCardBack,
       });
     }
-  }, [companyOib, firstName, lastName, personalOib, contactNumber, contactEmail, idCardFront, idCardBack, isCompanyOibValid, isPersonalOibValid, onUpdate]);
+  }, [companyOib, selectedPerson, personalOib, contactNumber, contactEmail, idCardFront, idCardBack, isCompanyOibValid, isPersonalOibValid, onUpdate]);
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 pt-8">
@@ -86,23 +107,20 @@ export function Step5Verification({ data, onUpdate, initialCompanyOib }: Step5Ve
           <Card className="p-6">
             <h3 className="text-xl font-semibold mb-4">Podaci ovlaštene osobe</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="first-name">Ime *</Label>
-                <Input
-                  id="first-name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="Unesite ime"
-                />
-              </div>
-              <div>
-                <Label htmlFor="last-name">Prezime *</Label>
-                <Input
-                  id="last-name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Unesite prezime"
-                />
+              <div className="md:col-span-2">
+                <Label htmlFor="authorized-person">Ovlaštena osoba *</Label>
+                <Select value={selectedPersonId} onValueChange={setSelectedPersonId}>
+                  <SelectTrigger className="w-full mt-1.5">
+                    <SelectValue placeholder="Odaberite ovlaštenu osobu" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card">
+                    {authorizedPersons.map((person) => (
+                      <SelectItem key={person.id} value={person.id}>
+                        {person.firstName} {person.lastName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="personal-oib">OIB osobe *</Label>
@@ -110,10 +128,15 @@ export function Step5Verification({ data, onUpdate, initialCompanyOib }: Step5Ve
                   <Input
                     id="personal-oib"
                     value={personalOib}
-                    onChange={(e) => setPersonalOib(e.target.value.replace(/\D/g, "").slice(0, 11))}
+                    onChange={(e) => {
+                      if (!selectedPerson) {
+                        setPersonalOib(e.target.value.replace(/\D/g, "").slice(0, 11));
+                      }
+                    }}
                     placeholder="Unesite 11 znamenki OIB-a"
                     maxLength={11}
                     className="flex-1"
+                    disabled={!!selectedPerson}
                   />
                   {personalOib.length === 11 && (
                     <div className="flex items-center justify-center w-8 h-8">
