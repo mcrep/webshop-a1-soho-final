@@ -13,10 +13,12 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
   const sortedTariffs = [...tariffs].sort((a, b) => a.monthly - b.monthly);
 
   const features = [
+    // Grupa: Cijene
     { 
       key: "originalMonthly", 
       label: "Mjesečna cijena", 
       icon: null,
+      group: "price",
       render: (tariff: typeof tariffs[0]) => (
         <span className="font-medium">€{(tariff.originalMonthly || tariff.monthly).toFixed(2)}</span>
       )
@@ -25,6 +27,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       key: "discount", 
       label: "Popust", 
       icon: Tag,
+      group: "price",
       render: (tariff: typeof tariffs[0]) => {
         if (tariff.originalMonthly && tariff.originalMonthly > tariff.monthly) {
           const savingsPercent = ((tariff.originalMonthly - tariff.monthly) / tariff.originalMonthly * 100).toFixed(0);
@@ -41,38 +44,50 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       key: "yourPrice", 
       label: "Vaša cijena", 
       icon: null,
+      group: "price",
       render: (tariff: typeof tariffs[0]) => (
         <span className="font-bold text-primary text-lg">€{tariff.monthly.toFixed(2)}</span>
       )
     },
+    // Separator
+    { key: "separator1", isSeparator: true },
+    // Grupa: Značajke
     { 
       key: "data", 
       label: "Podatkovni promet", 
       icon: Wifi,
+      group: "features",
       render: (tariff: typeof tariffs[0]) => tariff.data
     },
     { 
       key: "voice", 
       label: "Pozivi i SMS", 
       icon: Phone,
+      group: "features",
       render: (tariff: typeof tariffs[0]) => tariff.voice
     },
     { 
       key: "roaming", 
       label: "Roaming", 
       icon: Globe,
+      group: "features",
       render: (tariff: typeof tariffs[0]) => tariff.roaming
     },
+    // Separator
+    { key: "separator2", isSeparator: true },
+    // Grupa: A1 Wallet
     { 
       key: "walletCredit", 
       label: "A1 Wallet popust", 
       icon: Wallet,
+      group: "wallet",
       render: (tariff: typeof tariffs[0]) => `€${tariff.walletCredit}`
     },
     { 
       key: "noDeviceWalletBonus", 
       label: "A1 Wallet bonus bez uređaja", 
       icon: Wallet,
+      group: "wallet",
       render: (tariff: typeof tariffs[0]) => `+€${tariff.noDeviceWalletBonus}`
     },
   ];
@@ -143,39 +158,51 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
                 </tr>
               </thead>
               <tbody>
-                {features.map((feature, idx) => (
-                  <tr key={feature.key} className={idx % 2 === 0 ? "bg-background" : "bg-muted/30"}>
-                    <td className="p-3 border-b border-border font-medium flex items-center gap-2 sticky left-0 bg-inherit z-10">
-                      {feature.icon && <feature.icon className="h-4 w-4 text-muted-foreground" />}
-                      {feature.label}
-                    </td>
-                    {sortedTariffs.map((tariff) => {
-                      const value = feature.render(tariff);
-                      const isBoolean = typeof value === "boolean";
-                      
-                      return (
+                {features.map((feature) => {
+                  // Render separator row
+                  if ('isSeparator' in feature && feature.isSeparator) {
+                    return (
+                      <tr key={feature.key}>
                         <td 
-                          key={tariff.id} 
-                          className="p-3 border-b border-border text-center"
-                        >
-                          {isBoolean ? (
-                            value ? (
-                              <Check className="h-5 w-5 text-green-500 mx-auto" />
+                          colSpan={sortedTariffs.length + 1} 
+                          className="h-3 bg-muted/50"
+                        />
+                      </tr>
+                    );
+                  }
+
+                  return (
+                    <tr key={feature.key} className="bg-background hover:bg-muted/20 transition-colors">
+                      <td className="p-3 border-b border-border font-medium flex items-center gap-2 sticky left-0 bg-inherit z-10">
+                        {feature.icon && <feature.icon className="h-4 w-4 text-muted-foreground" />}
+                        {feature.label}
+                      </td>
+                      {sortedTariffs.map((tariff) => {
+                        const value = feature.render(tariff);
+                        const isBoolean = typeof value === "boolean";
+                        
+                        return (
+                          <td 
+                            key={tariff.id} 
+                            className="p-3 border-b border-border text-center"
+                          >
+                            {isBoolean ? (
+                              value ? (
+                                <Check className="h-5 w-5 text-green-500 mx-auto" />
+                              ) : (
+                                <X className="h-5 w-5 text-muted-foreground/40 mx-auto" />
+                              )
+                            ) : typeof value === 'object' ? (
+                              value
                             ) : (
-                              <X className="h-5 w-5 text-muted-foreground/40 mx-auto" />
-                            )
-                          ) : typeof value === 'object' ? (
-                            value
-                          ) : (
-                            <span className={feature.key === "monthly" ? "font-bold text-primary text-lg" : ""}>
-                              {value}
-                            </span>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
+                              <span>{value}</span>
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
