@@ -259,6 +259,20 @@ export function Step4Summary({
                           <span className="font-medium">{tariff?.name}</span>
                           <span className="font-semibold">{tariffMonthly.toFixed(2)}€/mj</span>
                         </div>
+                        
+                        {/* Popust na tarifu */}
+                        {tariff?.originalMonthly && tariff.originalMonthly > tariffMonthly && (
+                          <div className="pl-4 space-y-1 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Puna cijena</span>
+                              <span className="text-muted-foreground line-through">{tariff.originalMonthly.toFixed(2)}€/mj</span>
+                            </div>
+                            <div className="flex justify-between text-primary">
+                              <span>Popust</span>
+                              <span className="font-semibold">−{(tariff.originalMonthly - tariffMonthly).toFixed(2)}€/mj</span>
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Separator */}
