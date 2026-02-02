@@ -250,10 +250,10 @@ export function Step4Summary({
                   >
                     <div className="border-t border-border p-4 space-y-4">
                       
-                      {/* PAKET sekcija */}
+                      {/* TARIFA sekcija */}
                       <div className="space-y-2">
                         <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                          Paket
+                          Tarifa
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="font-medium">{tariff?.name}</span>
