@@ -1,6 +1,5 @@
 import { tariffs } from "@/data/catalog";
 import { X, Wifi, Phone, Globe, Wallet, Scale } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 
 type CompareTariffsModalProps = {
@@ -144,13 +143,13 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
         </div>
 
         {/* Content */}
-        <ScrollArea className="flex-1">
+        <div className="flex-1 overflow-y-auto">
           <div className="p-3 sm:p-6">
             <table className="w-full border-collapse table-fixed">
               <thead className="sticky top-0 z-20">
                 <tr>
-                  <th className="text-left p-2 sm:p-3 border-b-2 border-border bg-card w-[120px] sm:w-[160px]">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Značajka</span>
+                  <th className="text-left p-2 sm:p-3 border-b-2 border-border bg-card w-[100px] sm:w-[160px]">
+                    <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wide">Značajka</span>
                   </th>
                   {sortedTariffs.map((tariff) => (
                     <th 
@@ -189,7 +188,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
               </tbody>
             </table>
           </div>
-        </ScrollArea>
+        </div>
 
         {/* Footer */}
         <div className="p-3 sm:p-4 border-t border-border bg-muted/30 flex justify-end">
