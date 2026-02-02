@@ -1,11 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-
-const fadeScaleVariants = {
-  initial: { opacity: 0, scale: 0.95 },
-  animate: { opacity: 1, scale: 1 },
-  exit: { opacity: 0, scale: 0.95 }
-};
+import { AnimatePresence } from "framer-motion";
 import { Header } from "@/components/Header";
 import { WalletBanner } from "@/components/WalletBanner";
 import { StepIndicator } from "@/components/StepIndicator";
@@ -478,93 +472,83 @@ const Index = () => {
               maxLines={isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines}
             />
           )}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentScreen}
-              variants={fadeScaleVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.25, ease: "easeOut" }}
-              className={currentScreen === "Početak" 
-                ? "flex items-center min-h-[calc(100vh-73px-96px)]" 
-                : "pb-8"
-              }
-            >
-              {currentScreen === "Početak" && (
-                <Step1CustomerInfo
-                  customerType={customerType}
-                  numberOfLines={numberOfLines}
-                  numberOfDevices={numberOfDevices}
-                  isLoggedIn={isLoggedIn}
-                  extensionLines={extensionLines}
-                  companyOIB={companyOIB}
-                  onUpdateCustomerType={setCustomerType}
-                  onUpdateNumberOfLines={setNumberOfLines}
-                  onUpdateNumberOfDevices={setNumberOfDevices}
-                  onLoginSuccess={handleLoginSuccess}
-                  onUpdateExtensionLines={setExtensionLines}
-                  onUpdateCompanyOIB={setCompanyOIB}
-                  onNext={handleStep1Next}
-                />
-              )}
-              {currentScreen === "Tarife" && (
-                <Step2TariffSelection
-                  numberOfLines={numberOfLines}
-                  extensionLines={extensionLines}
-                  lineAssignments={lineAssignments}
-                  onUpdateLineAssignments={updateLineAssignments}
-                  onNext={handleTariffNext}
-                  onBack={() => setCurrentStep(1)}
-                />
-              )}
-              {currentScreen === "Uređaji" && (
-                <Step3DeviceSelection
-                  deviceSlots={deviceSlots}
-                  lines={lines}
-                  totalWallet={walletTotal}
-                  numberOfDevices={numberOfDevices}
-                  onOpenDeviceModal={setDeviceListModalFor}
-                  onToggleSlot={handleToggleSlot}
-                  onUpdatePaymentMethod={handleUpdatePaymentMethod}
-                  onUpdateWalletUse={handleUpdateWalletUse}
-                  onUpdateInsurance={handleUpdateInsurance}
-                  onUpdateMonthlyInstallment={handleUpdateMonthlyInstallment}
-                  onNext={handleDeviceNext}
-                  onBack={() => setCurrentStep(getStepNumberForScreen("Tarife"))}
-                />
-              )}
-              {currentScreen === "Sažetak" && (
-                <Step4Summary
-                  lines={lines}
-                  totalMonthly={totalMonthly}
-                  totalOnetime={totalOnetime}
-                  onUpdateLine={updateLine}
-                  onBack={() => {
-                    const prevStep = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
-                    setCurrentStep(prevStep);
-                  }}
-                  onFinish={handleFinish}
-                  onOpenLineTypeModal={setLineTypeSelectionFor}
-                />
-              )}
-              {currentScreen === "Verifikacija" && (
-                <Step5Verification
-                  data={verificationData}
-                  onUpdate={setVerificationData}
-                  initialCompanyOib={companyOIB}
-                />
-              )}
-              {currentScreen === "Isporuka" && (
-                <Step6DeliveryPayment
-                  deliveryData={deliveryData}
-                  paymentData={paymentData}
-                  onUpdateDelivery={setDeliveryData}
-                  onUpdatePayment={setPaymentData}
-                />
-              )}
-            </motion.div>
-          </AnimatePresence>
+          <div className={currentScreen === "Početak" 
+            ? "flex items-center min-h-[calc(100vh-73px-96px)]" 
+            : "pb-8"
+          }>
+            {currentScreen === "Početak" && (
+            <Step1CustomerInfo
+              customerType={customerType}
+              numberOfLines={numberOfLines}
+              numberOfDevices={numberOfDevices}
+              isLoggedIn={isLoggedIn}
+              extensionLines={extensionLines}
+              companyOIB={companyOIB}
+              onUpdateCustomerType={setCustomerType}
+              onUpdateNumberOfLines={setNumberOfLines}
+              onUpdateNumberOfDevices={setNumberOfDevices}
+              onLoginSuccess={handleLoginSuccess}
+              onUpdateExtensionLines={setExtensionLines}
+              onUpdateCompanyOIB={setCompanyOIB}
+              onNext={handleStep1Next}
+            />
+          )}
+          {currentScreen === "Tarife" && (
+            <Step2TariffSelection
+              numberOfLines={numberOfLines}
+              extensionLines={extensionLines}
+              lineAssignments={lineAssignments}
+              onUpdateLineAssignments={updateLineAssignments}
+              onNext={handleTariffNext}
+              onBack={() => setCurrentStep(1)}
+            />
+          )}
+          {currentScreen === "Uređaji" && (
+            <Step3DeviceSelection
+              deviceSlots={deviceSlots}
+              lines={lines}
+              totalWallet={walletTotal}
+              numberOfDevices={numberOfDevices}
+              onOpenDeviceModal={setDeviceListModalFor}
+              onToggleSlot={handleToggleSlot}
+              onUpdatePaymentMethod={handleUpdatePaymentMethod}
+              onUpdateWalletUse={handleUpdateWalletUse}
+              onUpdateInsurance={handleUpdateInsurance}
+              onUpdateMonthlyInstallment={handleUpdateMonthlyInstallment}
+              onNext={handleDeviceNext}
+              onBack={() => setCurrentStep(getStepNumberForScreen("Tarife"))}
+            />
+          )}
+          {currentScreen === "Sažetak" && (
+            <Step4Summary
+              lines={lines}
+              totalMonthly={totalMonthly}
+              totalOnetime={totalOnetime}
+              onUpdateLine={updateLine}
+              onBack={() => {
+                const prevStep = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
+                setCurrentStep(prevStep);
+              }}
+              onFinish={handleFinish}
+              onOpenLineTypeModal={setLineTypeSelectionFor}
+            />
+          )}
+{currentScreen === "Verifikacija" && (
+            <Step5Verification
+              data={verificationData}
+              onUpdate={setVerificationData}
+              initialCompanyOib={companyOIB}
+            />
+          )}
+          {currentScreen === "Isporuka" && (
+            <Step6DeliveryPayment
+              deliveryData={deliveryData}
+              paymentData={paymentData}
+              onUpdateDelivery={setDeliveryData}
+              onUpdatePayment={setPaymentData}
+            />
+            )}
+          </div>
         </div>
       </div>
       <AnimatePresence>
