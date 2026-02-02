@@ -213,7 +213,7 @@ export function Step3DeviceSelection({
                         
                         <div className="flex items-center justify-between gap-4 py-2">
                           <span className="text-sm font-semibold" style={{ color: '#3F1EE2' }}>Umanji cijenu uređaja:</span>
-                            <div className="relative w-24">
+                            <div className="relative w-28">
                             <Input
                               id={`wallet-${slot.id}`}
                               type="number"
@@ -237,7 +237,7 @@ export function Step3DeviceSelection({
 
                         <div className="flex justify-between items-center pt-2 border-t border-border">
                           <span className="text-sm font-medium">Ukupna cijena uređaja:</span>
-                            <div className="w-24 text-right">
+                            <div className="w-28 text-right">
                             <span className="font-bold text-xl text-foreground">
                               {Math.max(0, devicePrice - slot.walletUse).toFixed(2)}€
                             </span>
@@ -259,7 +259,7 @@ export function Step3DeviceSelection({
                           return (
                             <div className="flex items-center justify-between gap-4 py-2">
                               <span className="text-sm font-semibold" style={{ color: '#3F1EE2' }}>Umanji cijenu uređaja:</span>
-                              <div className="relative w-24">
+                              <div className="relative w-28">
                                 <Input
                                   id={`wallet-inst-${slot.id}`}
                                   type="number"
@@ -285,7 +285,7 @@ export function Step3DeviceSelection({
 
                         <div className="flex justify-between items-center pt-2 border-t border-border">
                           <span className="text-sm font-medium">Ukupna cijena uređaja:</span>
-                          <div className="w-24 text-right">
+                          <div className="w-28 text-right">
                             <span className="font-bold text-xl text-foreground">
                               {Math.max(0, devicePrice - (slot.monthlyInstallment * 24) - slot.walletUse).toFixed(2)}€
                             </span>
