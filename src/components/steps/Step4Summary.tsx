@@ -66,12 +66,43 @@ export function Step4Summary({
     });
   };
 
+  const allExpanded = lines.length > 0 && lines.every((line) => expandedLines.has(line.id));
+
+  const toggleAll = () => {
+    if (allExpanded) {
+      setExpandedLines(new Set());
+    } else {
+      setExpandedLines(new Set(lines.map((line) => line.id)));
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="text-center my-8">
         <h1 className="text-3xl font-bold">Sažetak narudžbe</h1>
       </div>
 
+      {/* Expand/Collapse All Button */}
+      {lines.length > 1 && (
+        <div className="flex justify-end">
+          <button
+            onClick={toggleAll}
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {allExpanded ? (
+              <>
+                <ChevronUp size={16} />
+                Skupi sve
+              </>
+            ) : (
+              <>
+                <ChevronDown size={16} />
+                Proširi sve
+              </>
+            )}
+          </button>
+        </div>
+      )}
 
       <div className="space-y-4">
         {lines.map((line, index) => {
