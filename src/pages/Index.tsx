@@ -472,19 +472,16 @@ const Index = () => {
               maxLines={isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines}
             />
           )}
-          <div className="relative overflow-hidden">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={currentScreen}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15, ease: "easeInOut" }}
-                className={currentScreen === "Početak" 
-                  ? "flex items-center min-h-[calc(100vh-73px-96px)]" 
-                  : "pb-8"
-                }
-              >
+          <motion.div
+            key={currentScreen}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className={currentScreen === "Početak" 
+              ? "flex items-center min-h-[calc(100vh-73px-96px)]" 
+              : "pb-8"
+            }
+          >
                 {currentScreen === "Početak" && (
                   <Step1CustomerInfo
                     customerType={customerType}
@@ -557,9 +554,7 @@ const Index = () => {
                     onUpdatePayment={setPaymentData}
                   />
                 )}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          </motion.div>
         </div>
       </div>
       <AnimatePresence>
