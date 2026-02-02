@@ -289,6 +289,14 @@ export function Step4Summary({
                             <span>{devicePrice.toFixed(2)}€</span>
                           </div>
 
+                          {/* Red 2: Mjesečna rata (ako je plaćanje na rate) */}
+                          {line.devicePayment === "installments" && deviceMonthly > 0 && (
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Mjesečna rata (24 mj)</span>
+                              <span>{deviceMonthly.toFixed(2)}€/mj</span>
+                            </div>
+                          )}
+
                           {/* Red 2: A1 Wallet popust (ako postoji) */}
                           {line.walletUse > 0 && (
                             <div className="flex justify-between">
