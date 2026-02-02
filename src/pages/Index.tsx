@@ -533,10 +533,11 @@ const Index = () => {
               onOpenLineTypeModal={setLineTypeSelectionFor}
             />
           )}
-          {currentScreen === "Verifikacija" && (
+{currentScreen === "Verifikacija" && (
             <Step5Verification
               data={verificationData}
               onUpdate={setVerificationData}
+              initialCompanyOib={companyOIB}
             />
           )}
           {currentScreen === "Isporuka" && (
