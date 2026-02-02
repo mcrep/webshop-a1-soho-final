@@ -1,58 +1,41 @@
 
 
-# Plan: Redizajn tablice Usporedba tarifa
+## Reorganizacija prikaza u proširenom pogledu (Step 4 Summary)
 
-## Trenutni problemi
-- Separatori izgledaju kao prazni redovi bez jasne namjene
-- Nedostaje vizualna hijerarhija između grupa podataka
-- Popust badge je u zelenoj boji koja odskače od A1 brand palete
-- Tablica je prilično "ravna" bez jasne strukture
+### Cilj
+Pojednostaviti i ujednačiti prikaz detalja tarife i uređaja u proširenom pogledu svake linije.
 
-## Prijedlozi za poboljšanje
+### Nova struktura
 
-### Opcija A: Minimalistički pristup (preporučeno)
-- Ukloniti separatore kao prazne retke
-- Dodati suptilne horizontalne linije samo ispod "Vaša cijena" i "Roaming" redaka (border-b-2)
-- Popust prikazati kao jednostavan crveni tekst (-21%) bez badge-a
-- "Vaša cijena" istaknuti s većom veličinom fonta i bold stilom u crvenoj boji
+#### TARIFA sekcija
+| Lijevo | Desno |
+|--------|-------|
+| Naziv tarife (npr. "Perfect Biz") | Puna cijena (npr. ~~42.99€/mj~~) |
+| Popust | −10.06€/mj (u primary boji) |
 
-### Opcija B: Grupirana struktura
-- Dodati nazive grupa kao zaglavlja ("CIJENE", "ZNAČAJKE", "A1 WALLET")
-- Svaka grupa ima blagi background (#f8f8f8)
-- Čišći vizualni prijelazi između sekcija
+#### UREĐAJ sekcija
+| Lijevo | Desno |
+|--------|-------|
+| Uređaj + varijanta (npr. "Apple iPhone 15 · Blue · 256GB") | Jednokratna cijena* |
+| A1 Wallet popust | −XX.XX€ (u primary boji) |
+| Osiguranje ekrana | 4.99€/mj |
 
-### Opcija C: Kartica stil
-- Svaki stupac tarife kao zasebna kartica
-- Hover efekt koji ističe cijeli stupac
-- Gornji dio kartice s nazivom tarife i cijenom
+*Jednokratna cijena:
+- Ako **upfront plaćanje** → MPC cijena uređaja
+- Ako **rate** → Upfront dio (razlika između MPC i ukupnih rata)
 
-## Preporučeni dizajn (Opcija A - minimalistički)
+### Tehnički detalji
 
-```text
-+------------------+----------+----------+----------+
-| Značajka         | Entry Biz| Easy Biz | ...      |
-+------------------+----------+----------+----------+
-| Mjesečna cijena  | €17.99   | €22.99   | ...      |
-| Popust           | -21%     | -24%     | ...      | ← crveni tekst
-| Vaša cijena      | €14.20   | €17.51   | ...      | ← bold, veći font
-+==================+----------+----------+----------+ ← deblji separator
-| Podatkovni promet| 1 GB     | 5 GB     | ...      |
-| Pozivi i SMS     | 200 min  | Neogr.   | ...      |
-| Roaming          | HR       | HR       | ...      |
-+==================+----------+----------+----------+ ← deblji separator
-| A1 Wallet popust | €10      | €35      | ...      |
-| Wallet bonus     | +€5      | +€10     | ...      |
-+------------------+----------+----------+----------+
-```
+**Datoteka:** `src/components/steps/Step4Summary.tsx`
 
-## Tehnička implementacija
+**Promjene u TARIFA sekciji:**
+- Prvi red: naziv tarife + `originalMonthly` (precrtano, muted boja)
+- Drugi red: "Popust" + razlika u primary boji
+- Ako nema popusta (originalMonthly == monthly), prikazati samo naziv + trenutnu cijenu
 
-1. **Ukloniti separatore kao zasebne retke** - zamijeniti s border-b-2 na određenim redcima
-2. **Stilizirati popust** - jednostavan crveni tekst umjesto zelenog badge-a
-3. **Poboljšati tipografiju** - jasnija razlika između labela i vrijednosti
-4. **Dodati hover efekt na stupce** - suptilni background highlight
-5. **Poboljšati zaglavlje tarifa** - veći font, možda s malim badge-om za popularnu tarifu
-
-## Datoteke za izmjenu
-- `src/components/modals/CompareTariffsModal.tsx`
+**Promjene u UREĐAJ sekciji:**
+- Ukloniti red "Plaćanje na rate / Jednokratno plaćanje"
+- Prvi red: naziv uređaja s varijantom + jednokratna cijena (devicePrice ili lineOnetime ovisno o načinu plaćanja)
+- Drugi red: A1 Wallet popust (ako postoji)
+- Treći red: Osiguranje ekrana (ako je uključeno)
 
