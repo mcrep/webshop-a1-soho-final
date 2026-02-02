@@ -1,41 +1,66 @@
 
+## Implementacija Fade + Scale animacije za prijelaz između ekrana
 
-## Reorganizacija prikaza u proširenom pogledu (Step 4 Summary)
+### Opis
+Implementirat ćemo glatku animaciju prijelaza između koraka gdje trenutni ekran izbljeđuje i lagano se smanjuje, dok se novi pojavljuje s blagim povećanjem.
 
-### Cilj
-Pojednostaviti i ujednačiti prikaz detalja tarife i uređaja u proširenom pogledu svake linije.
-
-### Nova struktura
-
-#### TARIFA sekcija
-| Lijevo | Desno |
-|--------|-------|
-| Naziv tarife (npr. "Perfect Biz") | Puna cijena (npr. ~~42.99€/mj~~) |
-| Popust | −10.06€/mj (u primary boji) |
-
-#### UREĐAJ sekcija
-| Lijevo | Desno |
-|--------|-------|
-| Uređaj + varijanta (npr. "Apple iPhone 15 · Blue · 256GB") | Jednokratna cijena* |
-| A1 Wallet popust | −XX.XX€ (u primary boji) |
-| Osiguranje ekrana | 4.99€/mj |
-
-*Jednokratna cijena:
-- Ako **upfront plaćanje** → MPC cijena uređaja
-- Ako **rate** → Upfront dio (razlika između MPC i ukupnih rata)
+### Vizualni efekt
+```text
+┌───────────┐          ┌───────────┐
+│  Korak 1  │  fade    │  Korak 2  │
+│  scale ↓  │  ────>   │  scale ↑  │
+│  opacity↓ │          │  opacity↑ │
+└───────────┘          └───────────┘
+```
 
 ### Tehnički detalji
 
-**Datoteka:** `src/components/steps/Step4Summary.tsx`
+**Datoteka:** `src/pages/Index.tsx`
 
-**Promjene u TARIFA sekciji:**
-- Prvi red: naziv tarife + `originalMonthly` (precrtano, muted boja)
-- Drugi red: "Popust" + razlika u primary boji
-- Ako nema popusta (originalMonthly == monthly), prikazati samo naziv + trenutnu cijenu
+**Promjene:**
 
-**Promjene u UREĐAJ sekciji:**
-- Ukloniti red "Plaćanje na rate / Jednokratno plaćanje"
-- Prvi red: naziv uređaja s varijantom + jednokratna cijena (devicePrice ili lineOnetime ovisno o načinu plaćanja)
-- Drugi red: A1 Wallet popust (ako postoji)
-- Treći red: Osiguranje ekrana (ako je uključeno)
+1. **Import motion iz framer-motion**
+   - Već postoji `AnimatePresence`, dodat ćemo `motion`
 
+2. **Kreirati animacijske varijante**
+   - `initial`: scale 0.95, opacity 0
+   - `animate`: scale 1, opacity 1
+   - `exit`: scale 0.95, opacity 0
+
+3. **Omotati sadržaj koraka u motion.div**
+   - Koristiti `AnimatePresence` s `mode="wait"` da se čeka završetak exit animacije
+   - `key={currentStep}` za triggiranje animacije pri promjeni koraka
+
+4. **Postavke animacije**
+   - Trajanje: 250ms
+   - Easing: ease-out za prirodan osjećaj
+
+**Primjer koda:**
+```tsx
+import { motion, AnimatePresence } from "framer-motion";
+
+const fadeScaleVariants = {
+  initial: { opacity: 0, scale: 0.95 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.95 }
+};
+
+// U renderiranju:
+<AnimatePresence mode="wait">
+  <motion.div
+    key={currentStep}
+    variants={fadeScaleVariants}
+    initial="initial"
+    animate="animate"
+    exit="exit"
+    transition={{ duration: 0.25, ease: "easeOut" }}
+  >
+    {currentScreen === "Početak" && <Step1CustomerInfo ... />}
+    {currentScreen === "Tarife" && <Step2TariffSelection ... />}
+    {/* ... ostali koraci */}
+  </motion.div>
+</AnimatePresence>
+```
+
+### Rezultat
+Svaki prijelaz između koraka imat će profesionalnu, glatku animaciju koja daje osjećaj poliranosti bez usporavanja korisničkog iskustva.
