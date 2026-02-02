@@ -257,7 +257,7 @@ export function Step4Summary({
                         </div>
                         {/* Red 1: Naziv tarife + puna cijena */}
                         <div className="flex justify-between items-center">
-                          <span className="font-medium">{tariff?.name}</span>
+                          <span className="font-semibold">{tariff?.name}</span>
                           <span>{tariff?.originalMonthly ? tariff.originalMonthly.toFixed(2) : tariffMonthly.toFixed(2)}€/mj</span>
                         </div>
                         
@@ -265,7 +265,7 @@ export function Step4Summary({
                         {tariff?.originalMonthly && tariff.originalMonthly > tariffMonthly && (
                           <div className="flex justify-between">
                             <span>Popust na tarifu</span>
-                            <span className="font-semibold">−{(tariff.originalMonthly - tariffMonthly).toFixed(2)}€/mj</span>
+                            <span>−{(tariff.originalMonthly - tariffMonthly).toFixed(2)}€/mj</span>
                           </div>
                         )}
                       </div>
@@ -282,7 +282,7 @@ export function Step4Summary({
                           
                           {/* Red 1: Naziv uređaja s varijantom + jednokratna cijena */}
                           <div className="flex justify-between items-center">
-                            <span className="font-medium">
+                            <span className="font-semibold">
                               {device?.brand} {device?.name}
                               {variant && ` · ${variant.color} · ${variant.memory}`}
                             </span>
@@ -292,23 +292,23 @@ export function Step4Summary({
                           {/* Red 2: Mjesečna rata (ako je plaćanje na rate) */}
                           {line.devicePayment === "installments" && deviceMonthly > 0 && (
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Mjesečna rata (24 mj)</span>
+                              <span>Mjesečna rata (24 mj)</span>
                               <span>{deviceMonthly.toFixed(2)}€/mj</span>
                             </div>
                           )}
 
-                          {/* Red 2: A1 Wallet popust (ako postoji) */}
+                          {/* Red 3: A1 Wallet popust (ako postoji) */}
                           {line.walletUse > 0 && (
                             <div className="flex justify-between">
                               <span>A1 Wallet popust</span>
-                              <span className="font-semibold">−{line.walletUse.toFixed(2)}€</span>
+                              <span>−{line.walletUse.toFixed(2)}€</span>
                             </div>
                           )}
 
-                          {/* Red 3: Osiguranje ekrana (ako je uključeno) */}
+                          {/* Red 4: Osiguranje ekrana (ako je uključeno) */}
                           {line.screenInsurance && (
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Osiguranje ekrana</span>
+                              <span>Osiguranje ekrana</span>
                               <span>4.99€/mj</span>
                             </div>
                           )}
