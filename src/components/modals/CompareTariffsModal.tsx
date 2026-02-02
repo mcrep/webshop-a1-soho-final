@@ -1,5 +1,5 @@
 import { tariffs } from "@/data/catalog";
-import { Check, X, Wifi, Phone, Globe, Wallet, Tag, Scale } from "lucide-react";
+import { X, Wifi, Phone, Globe, Wallet, Scale } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 
@@ -8,33 +8,40 @@ type CompareTariffsModalProps = {
   onOpenChange: (open: boolean) => void;
 };
 
+type FeatureRow = {
+  key: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }> | null;
+  group: "price" | "features" | "wallet";
+  render: (tariff: typeof tariffs[0]) => React.ReactNode;
+  isGroupEnd?: boolean;
+};
+
 export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalProps) {
   // Sort tariffs by price
   const sortedTariffs = [...tariffs].sort((a, b) => a.monthly - b.monthly);
 
-  const features = [
+  const features: FeatureRow[] = [
     // Grupa: Cijene
     { 
       key: "originalMonthly", 
       label: "Mjesečna cijena", 
       icon: null,
       group: "price",
-      render: (tariff: typeof tariffs[0]) => (
-        <span className="font-medium">€{(tariff.originalMonthly || tariff.monthly).toFixed(2)}</span>
+      render: (tariff) => (
+        <span className="text-muted-foreground">€{(tariff.originalMonthly || tariff.monthly).toFixed(2)}</span>
       )
     },
     { 
       key: "discount", 
       label: "Popust", 
-      icon: Tag,
+      icon: null,
       group: "price",
-      render: (tariff: typeof tariffs[0]) => {
+      render: (tariff) => {
         if (tariff.originalMonthly && tariff.originalMonthly > tariff.monthly) {
           const savingsPercent = ((tariff.originalMonthly - tariff.monthly) / tariff.originalMonthly * 100).toFixed(0);
           return (
-            <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full text-xs font-semibold">
-              -{savingsPercent}%
-            </span>
+            <span className="text-primary font-semibold">-{savingsPercent}%</span>
           );
         }
         return <span className="text-muted-foreground">—</span>;
@@ -45,50 +52,48 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       label: "Vaša cijena", 
       icon: null,
       group: "price",
-      render: (tariff: typeof tariffs[0]) => (
-        <span className="font-bold text-primary text-lg">€{tariff.monthly.toFixed(2)}</span>
+      isGroupEnd: true,
+      render: (tariff) => (
+        <span className="font-bold text-primary text-xl">€{tariff.monthly.toFixed(2)}</span>
       )
     },
-    // Separator
-    { key: "separator1", isSeparator: true },
     // Grupa: Značajke
     { 
       key: "data", 
       label: "Podatkovni promet", 
       icon: Wifi,
       group: "features",
-      render: (tariff: typeof tariffs[0]) => tariff.data
+      render: (tariff) => <span className="font-medium">{tariff.data}</span>
     },
     { 
       key: "voice", 
       label: "Pozivi i SMS", 
       icon: Phone,
       group: "features",
-      render: (tariff: typeof tariffs[0]) => tariff.voice
+      render: (tariff) => <span className="font-medium">{tariff.voice}</span>
     },
     { 
       key: "roaming", 
       label: "Roaming", 
       icon: Globe,
       group: "features",
-      render: (tariff: typeof tariffs[0]) => tariff.roaming
+      isGroupEnd: true,
+      render: (tariff) => <span className="font-medium">{tariff.roaming}</span>
     },
-    // Separator
-    { key: "separator2", isSeparator: true },
     // Grupa: A1 Wallet
     { 
       key: "walletCredit", 
       label: "A1 Wallet popust", 
       icon: Wallet,
       group: "wallet",
-      render: (tariff: typeof tariffs[0]) => `€${tariff.walletCredit}`
+      render: (tariff) => <span className="font-medium text-[#3F1EE2]">€{tariff.walletCredit}</span>
     },
     { 
       key: "noDeviceWalletBonus", 
       label: "A1 Wallet bonus bez uređaja", 
       icon: Wallet,
       group: "wallet",
-      render: (tariff: typeof tariffs[0]) => `+€${tariff.noDeviceWalletBonus}`
+      render: (tariff) => <span className="font-medium text-[#3F1EE2]">+€{tariff.noDeviceWalletBonus}</span>
     },
   ];
 
@@ -144,65 +149,41 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  <th className="text-left p-3 border-b border-border bg-muted/50 sticky left-0 z-10 min-w-[160px] rounded-tl-lg">
-                    Značajka
+                  <th className="text-left p-4 border-b-2 border-border bg-muted/30 sticky left-0 z-10 min-w-[180px] rounded-tl-lg">
+                    <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Značajka</span>
                   </th>
                   {sortedTariffs.map((tariff, idx) => (
                     <th 
                       key={tariff.id} 
-                      className={`text-center p-3 border-b border-border bg-muted/50 min-w-[120px] ${idx === sortedTariffs.length - 1 ? 'rounded-tr-lg' : ''}`}
+                      className={`text-center p-4 border-b-2 border-border bg-muted/30 min-w-[130px] ${idx === sortedTariffs.length - 1 ? 'rounded-tr-lg' : ''}`}
                     >
-                      <div className="font-bold text-primary">{tariff.name}</div>
+                      <div className="font-bold text-lg text-foreground">{tariff.name}</div>
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {features.map((feature) => {
-                  // Render separator row
-                  if ('isSeparator' in feature && feature.isSeparator) {
-                    return (
-                      <tr key={feature.key}>
-                        <td 
-                          colSpan={sortedTariffs.length + 1} 
-                          className="h-3 bg-muted/50"
-                        />
-                      </tr>
-                    );
-                  }
-
-                  return (
-                    <tr key={feature.key} className="bg-background hover:bg-muted/20 transition-colors">
-                      <td className="p-3 border-b border-border font-medium flex items-center gap-2 sticky left-0 bg-inherit z-10">
-                        {feature.icon && <feature.icon className="h-4 w-4 text-muted-foreground" />}
-                        {feature.label}
+                {features.map((feature) => (
+                  <tr 
+                    key={feature.key} 
+                    className={`bg-background hover:bg-muted/30 transition-colors ${
+                      feature.isGroupEnd ? 'border-b-2 border-border' : 'border-b border-border/50'
+                    }`}
+                  >
+                    <td className="p-4 font-medium flex items-center gap-2.5 sticky left-0 bg-inherit z-10">
+                      {feature.icon && <feature.icon className="h-4 w-4 text-muted-foreground shrink-0" />}
+                      <span className="text-sm">{feature.label}</span>
+                    </td>
+                    {sortedTariffs.map((tariff) => (
+                      <td 
+                        key={tariff.id} 
+                        className="p-4 text-center"
+                      >
+                        {feature.render(tariff)}
                       </td>
-                      {sortedTariffs.map((tariff) => {
-                        const value = feature.render(tariff);
-                        const isBoolean = typeof value === "boolean";
-                        
-                        return (
-                          <td 
-                            key={tariff.id} 
-                            className="p-3 border-b border-border text-center"
-                          >
-                            {isBoolean ? (
-                              value ? (
-                                <Check className="h-5 w-5 text-green-500 mx-auto" />
-                              ) : (
-                                <X className="h-5 w-5 text-muted-foreground/40 mx-auto" />
-                              )
-                            ) : typeof value === 'object' ? (
-                              value
-                            ) : (
-                              <span>{value}</span>
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
+                    ))}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
