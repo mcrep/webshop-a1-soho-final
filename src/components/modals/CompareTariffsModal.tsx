@@ -1,5 +1,5 @@
 import { tariffs } from "@/data/catalog";
-import { X, Wifi, Phone, Globe, Wallet, Scale } from "lucide-react";
+import { X, Wifi, Phone, Globe, Wallet, Scale, Receipt, Tag, BadgeEuro } from "lucide-react";
 import { motion } from "framer-motion";
 
 type CompareTariffsModalProps = {
@@ -25,7 +25,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
     { 
       key: "originalMonthly", 
       label: "Mjesečna cijena", 
-      icon: null,
+      icon: Receipt,
       group: "price",
       render: (tariff) => (
         <span className="text-muted-foreground text-xs sm:text-sm">€{(tariff.originalMonthly || tariff.monthly).toFixed(2)}</span>
@@ -34,7 +34,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
     { 
       key: "discount", 
       label: "Popust", 
-      icon: null,
+      icon: Tag,
       group: "price",
       render: (tariff) => {
         if (tariff.originalMonthly && tariff.originalMonthly > tariff.monthly) {
@@ -49,7 +49,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
     { 
       key: "yourPrice", 
       label: "Vaša cijena", 
-      icon: null,
+      icon: BadgeEuro,
       group: "price",
       isGroupEnd: true,
       render: (tariff) => (
