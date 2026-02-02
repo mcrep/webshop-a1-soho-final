@@ -251,26 +251,25 @@ export function Step4Summary({
                     <div className="border-t border-border p-4 space-y-4">
                       
                       {/* TARIFA sekcija */}
-                      <div className="space-y-2">
-                        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                      <div className="space-y-1">
+                        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
                           Tarifa
                         </div>
+                        {/* Red 1: Naziv tarife + puna cijena (ako ima popust) ili trenutna cijena */}
                         <div className="flex justify-between items-center">
                           <span className="font-medium">{tariff?.name}</span>
-                          <span className="font-semibold">{tariffMonthly.toFixed(2)}€/mj</span>
+                          {tariff?.originalMonthly && tariff.originalMonthly > tariffMonthly ? (
+                            <span className="text-muted-foreground line-through">{tariff.originalMonthly.toFixed(2)}€/mj</span>
+                          ) : (
+                            <span className="font-semibold">{tariffMonthly.toFixed(2)}€/mj</span>
+                          )}
                         </div>
                         
-                        {/* Popust na tarifu */}
+                        {/* Red 2: Popust (ako postoji) */}
                         {tariff?.originalMonthly && tariff.originalMonthly > tariffMonthly && (
-                          <div className="pl-4 space-y-1 text-sm">
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Puna cijena</span>
-                              <span className="text-muted-foreground line-through">{tariff.originalMonthly.toFixed(2)}€/mj</span>
-                            </div>
-                            <div className="flex justify-between text-primary">
-                              <span>Popust</span>
-                              <span className="font-semibold">−{(tariff.originalMonthly - tariffMonthly).toFixed(2)}€/mj</span>
-                            </div>
+                          <div className="flex justify-between text-primary">
+                            <span>Popust</span>
+                            <span className="font-semibold">−{(tariff.originalMonthly - tariffMonthly).toFixed(2)}€/mj</span>
                           </div>
                         )}
                       </div>
@@ -280,49 +279,35 @@ export function Step4Summary({
 
                       {/* UREĐAJ sekcija */}
                       {device?.id !== "no-dev" && (
-                        <div className="space-y-2">
-                          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                        <div className="space-y-1">
+                          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
                             Uređaj
                           </div>
                           
-                          {/* Naziv uređaja s varijantom */}
-                          <div className="font-medium">
-                            {device?.brand} {device?.name}
-                            {variant && ` · ${variant.color} · ${variant.memory}`}
+                          {/* Red 1: Naziv uređaja s varijantom + jednokratna cijena */}
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium">
+                              {device?.brand} {device?.name}
+                              {variant && ` · ${variant.color} · ${variant.memory}`}
+                            </span>
+                            <span>{devicePrice.toFixed(2)}€</span>
                           </div>
 
-                          {/* Podstavke s uvlakom */}
-                          <div className="pl-4 space-y-1 text-sm">
-                            {/* Način plaćanja */}
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">
-                                {line.devicePayment === "installments" 
-                                  ? "Plaćanje na rate (24 mj)" 
-                                  : "Jednokratno plaćanje"}
-                              </span>
-                              <span>
-                                {line.devicePayment === "installments" 
-                                  ? `${deviceMonthly.toFixed(2)}€/mj` 
-                                  : `${lineOnetime.toFixed(2)}€`}
-                              </span>
+                          {/* Red 2: A1 Wallet popust (ako postoji) */}
+                          {line.walletUse > 0 && (
+                            <div className="flex justify-between text-primary">
+                              <span>A1 Wallet popust</span>
+                              <span className="font-semibold">−{line.walletUse.toFixed(2)}€</span>
                             </div>
+                          )}
 
-                            {/* A1 Wallet popust - jedina stavka u boji */}
-                            {line.walletUse > 0 && (
-                              <div className="flex justify-between text-primary">
-                                <span>A1 Wallet popust</span>
-                                <span className="font-semibold">−{line.walletUse.toFixed(2)}€</span>
-                              </div>
-                            )}
-
-                            {/* Osiguranje ekrana */}
-                            {line.screenInsurance && (
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">Osiguranje ekrana</span>
-                                <span>4.99€/mj</span>
-                              </div>
-                            )}
-                          </div>
+                          {/* Red 3: Osiguranje ekrana (ako je uključeno) */}
+                          {line.screenInsurance && (
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Osiguranje ekrana</span>
+                              <span>4.99€/mj</span>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
