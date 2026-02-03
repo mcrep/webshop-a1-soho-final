@@ -185,12 +185,12 @@ export function PrepaidToPostpaidModal({ current, onClose, onSave }: PrepaidToPo
                     disabled={isVerifying}
                   >
                     <InputOTPGroup>
-                      <InputOTPSlot index={0} />
-                      <InputOTPSlot index={1} />
-                      <InputOTPSlot index={2} />
-                      <InputOTPSlot index={3} />
-                      <InputOTPSlot index={4} />
-                      <InputOTPSlot index={5} />
+                      <InputOTPSlot index={0} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={1} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={2} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={3} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={4} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={5} className="h-14 w-12 rounded-xl border-border text-xl" />
                     </InputOTPGroup>
                   </InputOTP>
                   
