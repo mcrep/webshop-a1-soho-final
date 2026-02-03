@@ -158,13 +158,7 @@ export function Step4Summary({
           return (
             <div
               key={line.id}
-              className={cn(
-                "rounded-2xl border-2 bg-card shadow-sm overflow-hidden transition-all duration-200 cursor-pointer",
-                isExpanded 
-                  ? "border-border" 
-                  : "border-transparent hover:border-foreground"
-              )}
-              onClick={() => toggleLine(line.id)}
+              className="rounded-2xl border-2 border-border bg-card shadow-sm overflow-hidden"
             >
               {/* Card Header - Always Visible */}
               <div className="p-4">
@@ -230,9 +224,13 @@ export function Step4Summary({
                         <div className="text-sm text-muted-foreground">+ {lineOnetime.toFixed(2)}€ jednokratno</div>
                       )}
                     </div>
-                    <div className="text-muted-foreground">
+                    <button
+                      onClick={() => toggleLine(line.id)}
+                      className="p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground"
+                      aria-label={isExpanded ? "Skupi" : "Proširi"}
+                    >
                       {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                    </div>
+                    </button>
                   </div>
                 </div>
               </div>
