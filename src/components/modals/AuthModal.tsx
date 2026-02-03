@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { User, Phone, ArrowLeft, X, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { motion, AnimatePresence } from "framer-motion";
 
 type AuthModalProps = {
@@ -23,6 +24,7 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [loginPhoneNumber, setLoginPhoneNumber] = useState("");
   const [code, setCode] = useState("");
+  const otpInputRef = useRef<HTMLInputElement>(null);
 
   const formatPhoneDisplay = (phone: string) => {
     // Format: 9X XXX XXXX (2 3 4 pattern)
@@ -76,6 +78,26 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
     }
   };
 
+  // Auto-submit when OTP is complete
+  useEffect(() => {
+    if (code.length === 6) {
+      if (view === "otp") {
+        handleOTPSubmit();
+      } else if (view === "login-otp") {
+        handleLoginOTPSubmit();
+      }
+    }
+  }, [code, view]);
+
+  // Auto-focus OTP input when entering OTP views
+  useEffect(() => {
+    if (view === "otp" || view === "login-otp") {
+      setTimeout(() => {
+        otpInputRef.current?.focus();
+      }, 100);
+    }
+  }, [view]);
+
   const handleBack = () => {
     if (view === "otp") {
       setView("phone-input");
@@ -93,26 +115,6 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
       setLoginPhoneNumber("");
       setCode("");
     }
-  };
-
-  const handleOTPChange = (i: number, val: string) => {
-    const v = (val || "").replace(/\D/g, "").slice(0, 1);
-    const chars = (code || "").split("");
-    chars[i] = v;
-    const next = chars.join("").slice(0, 6);
-    setCode(next);
-  };
-
-  const handleOTPKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, i: number) => {
-    if (e.key === "Backspace" && !code[i] && i > 0) {
-      const prev = document.getElementById(`auth-otp-${i - 1}`) as HTMLInputElement | null;
-      prev?.focus();
-    }
-  };
-
-  const focusNext = (i: number) => {
-    const next = document.getElementById(`auth-otp-${i + 1}`) as HTMLInputElement | null;
-    next?.focus();
   };
 
   return (
@@ -317,22 +319,22 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                   Poslali smo ti šesteroznamenkasti kod SMS-om na {maskPhoneNumber(phoneNumber)}
                 </p>
                 
-                <div className="flex gap-3 justify-center">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <input
-                      key={i}
-                      id={`auth-otp-${i}`}
-                      inputMode="numeric"
-                      maxLength={1}
-                      value={code[i] || ""}
-                      onChange={(e) => {
-                        handleOTPChange(i, e.target.value);
-                        if (e.target.value) focusNext(i);
-                      }}
-                      onKeyDown={(e) => handleOTPKeyDown(e, i)}
-                      className="h-14 w-12 rounded-xl border border-border text-center text-xl bg-card focus:ring-2 focus:ring-primary outline-none"
-                    />
-                  ))}
+                <div className="flex justify-center">
+                  <InputOTP
+                    maxLength={6}
+                    value={code}
+                    onChange={setCode}
+                    ref={otpInputRef}
+                  >
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={1} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={2} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={3} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={4} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={5} className="h-14 w-12 rounded-xl border-border text-xl" />
+                    </InputOTPGroup>
+                  </InputOTP>
                 </div>
 
                 <div className="flex items-center justify-between mt-2">
@@ -360,22 +362,22 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
                   Poslali smo ti šesteroznamenkasti kod SMS-om na {maskPhoneNumber(loginPhoneNumber)}
                 </p>
                 
-                <div className="flex gap-3 justify-center">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <input
-                      key={i}
-                      id={`auth-otp-${i}`}
-                      inputMode="numeric"
-                      maxLength={1}
-                      value={code[i] || ""}
-                      onChange={(e) => {
-                        handleOTPChange(i, e.target.value);
-                        if (e.target.value) focusNext(i);
-                      }}
-                      onKeyDown={(e) => handleOTPKeyDown(e, i)}
-                      className="h-14 w-12 rounded-xl border border-border text-center text-xl bg-card focus:ring-2 focus:ring-primary outline-none"
-                    />
-                  ))}
+                <div className="flex justify-center">
+                  <InputOTP
+                    maxLength={6}
+                    value={code}
+                    onChange={setCode}
+                    ref={otpInputRef}
+                  >
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={1} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={2} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={3} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={4} className="h-14 w-12 rounded-xl border-border text-xl" />
+                      <InputOTPSlot index={5} className="h-14 w-12 rounded-xl border-border text-xl" />
+                    </InputOTPGroup>
+                  </InputOTP>
                 </div>
 
                 <div className="flex items-center justify-between mt-2">
