@@ -220,26 +220,28 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
 
                 {/* Payment Method Selection */}
                 <div className="space-y-3">
-                  <Label className="text-base font-semibold">Način plaćanja:</Label>
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      variant={paymentMethod === "upfront" ? "default" : "outline"}
-                      size="sm"
+                  <Label className="text-base font-semibold">Način plaćanja</Label>
+                  <div className="flex flex-wrap gap-3">
+                    <button
                       onClick={() => setPaymentMethod("upfront")}
-                      className="flex-1"
+                      className={`px-6 py-3 rounded-lg border-2 font-semibold transition-all ${
+                        paymentMethod === "upfront"
+                          ? "bg-[#F2F2F2] border-transparent"
+                          : "border-border hover:border-foreground"
+                      }`}
                     >
                       Jednokratno
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={paymentMethod === "installments" ? "default" : "outline"}
-                      size="sm"
+                    </button>
+                    <button
                       onClick={() => setPaymentMethod("installments")}
-                      className="flex-1"
+                      className={`px-6 py-3 rounded-lg border-2 font-semibold transition-all ${
+                        paymentMethod === "installments"
+                          ? "bg-[#F2F2F2] border-transparent"
+                          : "border-border hover:border-foreground"
+                      }`}
                     >
                       Rate
-                    </Button>
+                    </button>
                   </div>
                 </div>
 
