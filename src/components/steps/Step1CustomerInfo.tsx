@@ -245,7 +245,7 @@ export function Step1CustomerInfo({
                   <Button
                     variant="outline"
                     onClick={() => setShowExtensionModal(true)}
-                    className="h-16 w-[80px] rounded-full text-5xl font-bold text-primary hover:bg-primary/10"
+                    className="h-16 w-[80px] rounded-full text-5xl font-bold text-primary hover:bg-muted"
                   >
                     <AnimatedNumber value={extensionLines.length} className="text-5xl font-bold text-primary" />
                   </Button>
