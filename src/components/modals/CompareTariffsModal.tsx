@@ -28,7 +28,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       icon: Receipt,
       group: "price",
       render: (tariff) => (
-        <span className="text-muted-foreground text-xs sm:text-sm">€{(tariff.originalMonthly || tariff.monthly).toFixed(2)}</span>
+        <span className="text-foreground text-xs sm:text-sm">€{(tariff.originalMonthly || tariff.monthly).toFixed(2)}</span>
       )
     },
     { 
@@ -40,10 +40,10 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
         if (tariff.originalMonthly && tariff.originalMonthly > tariff.monthly) {
           const savings = (tariff.originalMonthly - tariff.monthly).toFixed(2);
           return (
-            <span className="text-xs sm:text-sm">-€{savings}</span>
+            <span className="text-foreground text-xs sm:text-sm">-€{savings}</span>
           );
         }
-        return <span className="text-muted-foreground">—</span>;
+        return <span className="text-foreground text-xs sm:text-sm">—</span>;
       }
     },
     { 
@@ -53,7 +53,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       group: "price",
       isGroupEnd: true,
       render: (tariff) => (
-        <span className="font-bold text-primary text-base sm:text-lg">€{tariff.monthly.toFixed(2)}</span>
+        <span className="font-bold text-primary text-xs sm:text-sm">€{tariff.monthly.toFixed(2)}</span>
       )
     },
     // Grupa: Značajke
@@ -62,14 +62,14 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       label: "Podatkovni promet", 
       icon: Wifi,
       group: "features",
-      render: (tariff) => <span className="font-medium text-xs sm:text-sm">{tariff.data}</span>
+      render: (tariff) => <span className="text-foreground text-xs sm:text-sm">{tariff.data}</span>
     },
     { 
       key: "voice", 
       label: "Pozivi i SMS", 
       icon: Phone,
       group: "features",
-      render: (tariff) => <span className="font-medium text-xs sm:text-sm">{tariff.voice}</span>
+      render: (tariff) => <span className="text-foreground text-xs sm:text-sm">{tariff.voice}</span>
     },
     { 
       key: "roaming", 
@@ -77,7 +77,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       icon: Globe,
       group: "features",
       isGroupEnd: true,
-      render: (tariff) => <span className="font-medium text-xs sm:text-sm">{tariff.roaming}</span>
+      render: (tariff) => <span className="text-foreground text-xs sm:text-sm">{tariff.roaming}</span>
     },
     // Grupa: A1 Wallet
     { 
@@ -85,14 +85,14 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       label: "A1 Wallet popust", 
       icon: Wallet,
       group: "wallet",
-      render: (tariff) => <span className="font-medium text-[#3F1EE2] text-xs sm:text-sm">€{tariff.walletCredit}</span>
+      render: (tariff) => <span className="text-foreground text-xs sm:text-sm">€{tariff.walletCredit}</span>
     },
     { 
       key: "noDeviceWalletBonus", 
       label: "Wallet bonus", 
       icon: Wallet,
       group: "wallet",
-      render: (tariff) => <span className="font-medium text-[#3F1EE2] text-xs sm:text-sm">+€{tariff.noDeviceWalletBonus}</span>
+      render: (tariff) => <span className="text-foreground text-xs sm:text-sm">+€{tariff.noDeviceWalletBonus}</span>
     },
   ];
 
