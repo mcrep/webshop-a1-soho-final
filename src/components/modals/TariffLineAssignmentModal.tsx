@@ -112,7 +112,7 @@ export function TariffLineAssignmentModal({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <p className="text-muted-foreground mb-6">
+          <p className="text-foreground mb-6">
             Odaberite linije koje želite dodijeliti ovoj tarifi:
           </p>
 
