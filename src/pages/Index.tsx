@@ -177,22 +177,31 @@ const Index = () => {
     setDeviceSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, monthlyInstallment: amount } : s)));
   };
 
+  const getDefaultSimType = (deviceId: string | null | undefined): "esim" | "physical" => {
+    if (!deviceId || deviceId === "no-dev") return "esim";
+    const dev = devices.find((d) => d.id === deviceId);
+    return dev?.esimSupport ? "esim" : "physical";
+  };
+
   const generateLinesFromConfiguration = () => {
-    const newLines: Line[] = deviceSlots.map((slot) => ({
-      id: rid(),
-      tariffId: slot.tariffId,
-      deviceId: slot.isActive && slot.deviceId ? slot.deviceId : "no-dev",
-      deviceVariantId: slot.isActive && slot.deviceVariantId ? slot.deviceVariantId : null,
-      devicePayment: slot.paymentMethod,
-      deviceMonthly: slot.paymentMethod === "installments" ? slot.monthlyInstallment : null,
-      addonIds: [],
-      lineType: slot.isExtension ? "renew" : null,
-      walletUse: slot.walletUse,
-      screenInsurance: slot.screenInsurance,
-      isExtension: slot.isExtension,
-      extensionLabel: slot.isExtension ? slot.label : undefined,
-      simType: "physical",
-    }));
+    const newLines: Line[] = deviceSlots.map((slot) => {
+      const effectiveDeviceId = slot.isActive && slot.deviceId ? slot.deviceId : "no-dev";
+      return {
+        id: rid(),
+        tariffId: slot.tariffId,
+        deviceId: effectiveDeviceId,
+        deviceVariantId: slot.isActive && slot.deviceVariantId ? slot.deviceVariantId : null,
+        devicePayment: slot.paymentMethod,
+        deviceMonthly: slot.paymentMethod === "installments" ? slot.monthlyInstallment : null,
+        addonIds: [],
+        lineType: slot.isExtension ? "renew" : null,
+        walletUse: slot.walletUse,
+        screenInsurance: slot.screenInsurance,
+        isExtension: slot.isExtension,
+        extensionLabel: slot.isExtension ? slot.label : undefined,
+        simType: getDefaultSimType(effectiveDeviceId),
+      };
+    });
     setLines(newLines);
   };
 
@@ -325,7 +334,7 @@ const Index = () => {
         screenInsurance: false,
         isExtension: slot.isExtension,
         extensionLabel: slot.isExtension ? slot.label : undefined,
-        simType: "physical",
+        simType: "esim",
       }));
       setLines(newLines);
     }

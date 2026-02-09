@@ -70,6 +70,7 @@ export type Device = {
     battery: string;
     weight: string;
   };
+  esimSupport?: boolean;
   energyClass?: string;
   availability?: "available" | "on-request" | "unavailable";
 };
