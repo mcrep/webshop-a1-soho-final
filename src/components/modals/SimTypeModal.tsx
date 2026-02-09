@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Smartphone, X } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+import { Smartphone, X, Check } from "lucide-react";
 
 type SimTypeModalProps = {
   open: boolean;
@@ -10,8 +9,6 @@ type SimTypeModalProps = {
 };
 
 export function SimTypeModal({ open, currentType, onSelect, onClose }: SimTypeModalProps) {
-  const isEsim = currentType === "esim";
-
   return (
     <AnimatePresence>
       {open && (
@@ -51,45 +48,56 @@ export function SimTypeModal({ open, currentType, onSelect, onClose }: SimTypeMo
             </div>
 
             {/* Content */}
-            <div className="p-6 space-y-6">
-              {/* Toggle */}
-              <div className="flex items-center justify-between p-4 rounded-xl bg-muted/50">
-                <div>
-                  <p className="font-semibold text-foreground">
-                    {isEsim ? "eSIM aktiviran" : "Fizička SIM kartica"}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {isEsim ? "Digitalna SIM kartica" : "Klasična SIM kartica"}
-                  </p>
+            <div className="p-6 space-y-3">
+              {/* eSIM card */}
+              <button
+                onClick={() => onSelect("esim")}
+                className={`w-full text-left p-4 rounded-xl border-2 transition-colors ${
+                  currentType === "esim"
+                    ? "bg-[#F2F2F2] border-transparent"
+                    : "border-border hover:border-foreground"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-semibold text-foreground">eSIM</h3>
+                  {currentType === "esim" && (
+                    <div className="w-5 h-5 rounded-full bg-foreground flex items-center justify-center">
+                      <Check size={12} className="text-background" />
+                    </div>
+                  )}
                 </div>
-                <Switch
-                  checked={isEsim}
-                  onCheckedChange={(checked) => onSelect(checked ? "esim" : "physical")}
-                />
-              </div>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Digitalna SIM kartica ugrađena u uređaj</li>
+                  <li>• Aktivacija putem QR koda — bez čekanja dostave</li>
+                  <li>• Mogućnost korištenja dual SIM-a</li>
+                  <li>• Podržana na novijim uređajima (iPhone, Samsung, Pixel)</li>
+                </ul>
+              </button>
 
-              {/* Descriptions */}
-              <div className="space-y-4">
-                <div className={`p-4 rounded-xl border-2 transition-colors ${isEsim ? "border-primary bg-primary/5" : "border-border"}`}>
-                  <h3 className="font-semibold text-foreground mb-1">eSIM</h3>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Digitalna SIM kartica ugrađena u uređaj</li>
-                    <li>• Aktivacija putem QR koda — bez čekanja dostave</li>
-                    <li>• Mogućnost korištenja dual SIM-a</li>
-                    <li>• Podržana na novijim uređajima (iPhone, Samsung, Pixel)</li>
-                  </ul>
+              {/* Physical SIM card */}
+              <button
+                onClick={() => onSelect("physical")}
+                className={`w-full text-left p-4 rounded-xl border-2 transition-colors ${
+                  currentType === "physical"
+                    ? "bg-[#F2F2F2] border-transparent"
+                    : "border-border hover:border-foreground"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-semibold text-foreground">Fizička SIM kartica</h3>
+                  {currentType === "physical" && (
+                    <div className="w-5 h-5 rounded-full bg-foreground flex items-center justify-center">
+                      <Check size={12} className="text-background" />
+                    </div>
+                  )}
                 </div>
-
-                <div className={`p-4 rounded-xl border-2 transition-colors ${!isEsim ? "border-primary bg-primary/5" : "border-border"}`}>
-                  <h3 className="font-semibold text-foreground mb-1">Fizička SIM kartica</h3>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Klasična nano/micro SIM kartica</li>
-                    <li>• Dostava poštom ili preuzimanje u A1 centru</li>
-                    <li>• Kompatibilna sa svim uređajima</li>
-                    <li>• Jednostavno prebacivanje između uređaja</li>
-                  </ul>
-                </div>
-              </div>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Klasična nano/micro SIM kartica</li>
+                  <li>• Dostava poštom ili preuzimanje u A1 centru</li>
+                  <li>• Kompatibilna sa svim uređajima</li>
+                  <li>• Jednostavno prebacivanje između uređaja</li>
+                </ul>
+              </button>
             </div>
 
             {/* Footer */}
