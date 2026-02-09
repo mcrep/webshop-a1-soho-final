@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { Smartphone, Plus, Gift, Wallet, X } from "lucide-react";
+import { Smartphone, Plus, Gift, Wallet, X, RefreshCw } from "lucide-react";
 import { devices, tariffs } from "@/data/catalog";
 import { findExistingLineNumber } from "@/data/mock-existing-lines";
 import { Label } from "@/components/ui/label";
@@ -181,9 +181,10 @@ export function Step3DeviceSelection({
                     {device && (
                       <button
                         onClick={() => onOpenDeviceModal(slot.id)}
-                        className="inline-flex items-center px-2.5 py-1 rounded-md bg-muted text-sm font-medium hover:bg-muted/70 transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-muted text-sm font-medium hover:bg-muted/70 transition-colors cursor-pointer"
                       >
                         {device.brand} {device.name}
+                        <RefreshCw size={12} className="text-muted-foreground" />
                       </button>
                     )}
                   </div>
