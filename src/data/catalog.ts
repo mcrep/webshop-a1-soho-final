@@ -89,6 +89,7 @@ export const devices: Device[] = [
     image: iphone15,
     images: [iphone15, iphone15, iphone15, iphone15, iphone15],
     description: "iPhone 15 donosi Dynamic Island, 48MP kameru i USB-C priključak u elegantnome dizajnu.",
+    esimSupport: true,
     energyClass: "A++",
     availability: "available",
     specs: {
@@ -120,6 +121,7 @@ export const devices: Device[] = [
     image: galaxyS24,
     images: [galaxyS24, galaxyS24, galaxyS24, galaxyS24, galaxyS24],
     description: "Galaxy S24 s Dynamic AMOLED 2X zaslonom, Exynos 2400 procesorom i Galaxy AI značajkama.",
+    esimSupport: true,
     energyClass: "A+",
     availability: "on-request",
     specs: {
@@ -148,6 +150,7 @@ export const devices: Device[] = [
     image: pixel8,
     images: [pixel8, pixel8, pixel8, pixel8, pixel8],
     description: "Google Pixel 8 s Tensor G3 čipom, izvanrednom kamerom i čistim Android iskustvom.",
+    esimSupport: false,
     energyClass: "A+",
     availability: "unavailable",
     specs: {
