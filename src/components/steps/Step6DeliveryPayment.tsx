@@ -21,6 +21,8 @@ export function Step6DeliveryPayment({
   const [street, setStreet] = useState(deliveryData?.postalAddress?.street || "");
   const [city, setCity] = useState(deliveryData?.postalAddress?.city || "");
   const [postalCode, setPostalCode] = useState(deliveryData?.postalAddress?.postalCode || "");
+  const [contactPerson, setContactPerson] = useState(deliveryData?.contactPerson || "");
+  const [contactPhone, setContactPhone] = useState(deliveryData?.contactPhone || "");
   const [paymentMethod, setPaymentMethod] = useState<"invoice" | "card">(
     paymentData?.method || "invoice"
   );
@@ -34,9 +36,11 @@ export function Step6DeliveryPayment({
           city,
           postalCode,
         },
+        contactPerson,
+        contactPhone,
       });
     }
-  }, [street, city, postalCode, onUpdateDelivery]);
+  }, [street, city, postalCode, contactPerson, contactPhone, onUpdateDelivery]);
 
   useEffect(() => {
     onUpdatePayment({
@@ -83,6 +87,28 @@ export function Step6DeliveryPayment({
                 onChange={(e) => setPostalCode(e.target.value.replace(/\D/g, "").slice(0, 5))}
                 placeholder="10000"
                 maxLength={5}
+                className="mt-2"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="contact-person">Kontakt osoba na lokaciji</Label>
+              <Input
+                id="contact-person"
+                value={contactPerson}
+                onChange={(e) => setContactPerson(e.target.value)}
+                placeholder="Ime i prezime"
+                className="mt-2"
+              />
+            </div>
+            <div>
+              <Label htmlFor="contact-phone">Kontakt broj</Label>
+              <Input
+                id="contact-phone"
+                value={contactPhone}
+                onChange={(e) => setContactPhone(e.target.value.replace(/[^0-9+\s]/g, ""))}
+                placeholder="+385 91 234 5678"
                 className="mt-2"
               />
             </div>
