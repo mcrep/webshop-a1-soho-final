@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, X } from "lucide-react";
+import { ChevronDown, ChevronUp, X, RefreshCw } from "lucide-react";
 import { tariffs, devices } from "@/data/catalog";
 import { findExistingLineNumber } from "@/data/mock-existing-lines";
 import type { Line } from "@/types";
@@ -231,7 +231,7 @@ export function Step4Summary({
                               className="ml-1 p-0.5 rounded-full hover:bg-foreground/10 transition-colors"
                               aria-label="Promijeni vrstu SIM kartice"
                             >
-                              <X size={12} className="text-muted-foreground" />
+                              <RefreshCw size={12} className="text-muted-foreground" />
                             </button>
                           </span>
                         )}
