@@ -190,8 +190,25 @@ export function Step4Summary({
                           {device?.id !== "no-dev" ? `${device?.brand} ${device?.name}` : "Bez uređaja"}
                         </span>
                         
-                        {/* Line Type: Button or Badge */}
-                        {!isExtensionLine && (
+                        {/* SIM Type: only for non-renew lines */}
+                        {line.lineType !== "renew" && (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
+                            {line.simType === "esim" ? "eSIM" : "Fizički SIM"}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSimModalLineId(line.id);
+                              }}
+                              className="ml-1 p-0.5 rounded-full hover:bg-foreground/10 transition-colors"
+                              aria-label="Promijeni vrstu SIM kartice"
+                            >
+                              <RefreshCw size={12} className="text-muted-foreground" />
+                            </button>
+                          </span>
+                        )}
+
+                        {/* Line Type */}
+                        {!line.isExtension && (
                           line.lineType ? (
                             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
                               {lineTypeName}
@@ -217,23 +234,6 @@ export function Step4Summary({
                               Odaberi vrstu
                             </button>
                           )
-                        )}
-                        
-                        {/* SIM Type: only for non-renew lines */}
-                        {line.lineType !== "renew" && (
-                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
-                            {line.simType === "esim" ? "eSIM" : "Fizički SIM"}
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSimModalLineId(line.id);
-                              }}
-                              className="ml-1 p-0.5 rounded-full hover:bg-foreground/10 transition-colors"
-                              aria-label="Promijeni vrstu SIM kartice"
-                            >
-                              <RefreshCw size={12} className="text-muted-foreground" />
-                            </button>
-                          </span>
                         )}
                       </div>
                     </div>
