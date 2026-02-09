@@ -107,6 +107,8 @@ export type DeliveryData = {
     city: string;
     postalCode: string;
   };
+  contactPerson?: string;
+  contactPhone?: string;
 };
 
 export type PaymentData = {
