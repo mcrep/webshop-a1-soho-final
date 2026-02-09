@@ -221,31 +221,19 @@ export function Step4Summary({
                         
                         {/* SIM Type: only for non-renew lines */}
                         {line.lineType !== "renew" && (
-                          line.simType && line.simType !== "physical" ? (
-                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
-                              eSIM
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSimModalLineId(line.id);
-                                }}
-                                className="ml-1 p-0.5 rounded-full hover:bg-foreground/10 transition-colors"
-                                aria-label="Promijeni vrstu SIM kartice"
-                              >
-                                <X size={12} className="text-muted-foreground" />
-                              </button>
-                            </span>
-                          ) : (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
+                            {line.simType === "esim" ? "eSIM" : "Fizički SIM"}
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setSimModalLineId(line.id);
                               }}
-                              className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                              className="ml-1 p-0.5 rounded-full hover:bg-foreground/10 transition-colors"
+                              aria-label="Promijeni vrstu SIM kartice"
                             >
-                              Vrsta SIM-a
+                              <X size={12} className="text-muted-foreground" />
                             </button>
-                          )
+                          </span>
                         )}
                       </div>
                     </div>
