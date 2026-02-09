@@ -21,6 +21,7 @@ export type Line = {
   completed?: boolean;
   isExtension?: boolean;
   extensionLabel?: string;
+  simType?: "esim" | "physical";
   // Number porting data (mnp)
   portingNumber?: string;
   portingNumberType?: "prepaid" | "postpaid";

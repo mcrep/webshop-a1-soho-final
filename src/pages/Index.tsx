@@ -191,6 +191,7 @@ const Index = () => {
       screenInsurance: slot.screenInsurance,
       isExtension: slot.isExtension,
       extensionLabel: slot.isExtension ? slot.label : undefined,
+      simType: "physical",
     }));
     setLines(newLines);
   };
@@ -324,6 +325,7 @@ const Index = () => {
         screenInsurance: false,
         isExtension: slot.isExtension,
         extensionLabel: slot.isExtension ? slot.label : undefined,
+        simType: "physical",
       }));
       setLines(newLines);
     }

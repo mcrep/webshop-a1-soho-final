@@ -51,6 +51,9 @@ export function Step4Summary({
     () => new Set()
   );
   
+  // SIM type picker state
+  const [simPickerLineId, setSimPickerLineId] = useState<string | null>(null);
+  
   const allLinesConfigured = lines.every((line) => line.isExtension || line.lineType !== null);
   const unconfiguredCount = unconfiguredLineIds.length;
 
@@ -213,7 +216,57 @@ export function Step4Summary({
                             </button>
                           )
                         )}
+                        
+                        {/* SIM Type Badge */}
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
+                          {line.simType === "esim" ? "eSIM" : "Fizička SIM"}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSimPickerLineId(simPickerLineId === line.id ? null : line.id);
+                            }}
+                            className="ml-1 p-0.5 rounded-full hover:bg-foreground/10 transition-colors"
+                            aria-label="Promijeni vrstu SIM kartice"
+                          >
+                            <X size={12} className="text-muted-foreground" />
+                          </button>
+                        </span>
                       </div>
+                      
+                      {/* SIM Type Picker */}
+                      {simPickerLineId === line.id && (
+                        <div className="mt-3 p-3 bg-muted/50 rounded-lg">
+                          <p className="text-sm text-foreground mb-2">Odaberi vrstu SIM kartice:</p>
+                          <div className="flex gap-4">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="radio"
+                                name={`sim-type-${line.id}`}
+                                checked={line.simType !== "esim"}
+                                onChange={() => {
+                                  onUpdateLine(line.id, { simType: "physical" });
+                                  setSimPickerLineId(null);
+                                }}
+                                className="accent-primary"
+                              />
+                              <span className="text-sm">Fizička SIM kartica</span>
+                            </label>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="radio"
+                                name={`sim-type-${line.id}`}
+                                checked={line.simType === "esim"}
+                                onChange={() => {
+                                  onUpdateLine(line.id, { simType: "esim" });
+                                  setSimPickerLineId(null);
+                                }}
+                                className="accent-primary"
+                              />
+                              <span className="text-sm">eSIM</span>
+                            </label>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                   
@@ -312,6 +365,21 @@ export function Step4Summary({
                           )}
                         </div>
                       )}
+
+                      {/* Separator */}
+                      <div className="border-t border-border" />
+
+                      {/* SIM kartica sekcija */}
+                      <div className="space-y-1">
+                        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                          SIM kartica
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="font-semibold">
+                            {line.simType === "esim" ? "eSIM" : "Fizička SIM kartica"}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </motion.div>
                 )}
