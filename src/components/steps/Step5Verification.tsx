@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { validateOIB } from "@/lib/utils";
-import { Check, X, Upload, ChevronDown } from "lucide-react";
+import { Check, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -32,8 +32,8 @@ export function Step5Verification({ data, onUpdate, initialCompanyOib }: Step5Ve
   const [personalOib, setPersonalOib] = useState(data?.authorizedPerson.oib || "");
   const [contactNumber, setContactNumber] = useState(data?.authorizedPerson.contactNumber || "");
   const [contactEmail, setContactEmail] = useState(data?.authorizedPerson.contactEmail || "");
-  const [idCardFront, setIdCardFront] = useState<File | null>(data?.idCardFront || null);
-  const [idCardBack, setIdCardBack] = useState<File | null>(data?.idCardBack || null);
+
+
 
   const isCompanyOibValid = companyOib.length === 11 && validateOIB(companyOib);
   const showDetails = isCompanyOibValid;
@@ -49,7 +49,7 @@ export function Step5Verification({ data, onUpdate, initialCompanyOib }: Step5Ve
   }, [selectedPerson]);
 
   useEffect(() => {
-    if (isCompanyOibValid && selectedPerson && isPersonalOibValid && contactNumber && contactEmail && idCardFront && idCardBack) {
+    if (isCompanyOibValid && selectedPerson && isPersonalOibValid && contactNumber && contactEmail) {
       onUpdate({
         companyOib,
         authorizedPerson: {
@@ -59,11 +59,9 @@ export function Step5Verification({ data, onUpdate, initialCompanyOib }: Step5Ve
           contactNumber,
           contactEmail,
         },
-        idCardFront,
-        idCardBack,
       });
     }
-  }, [companyOib, selectedPerson, personalOib, contactNumber, contactEmail, idCardFront, idCardBack, isCompanyOibValid, isPersonalOibValid, onUpdate]);
+  }, [companyOib, selectedPerson, personalOib, contactNumber, contactEmail, isCompanyOibValid, isPersonalOibValid, onUpdate]);
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 pt-8">
@@ -175,57 +173,6 @@ export function Step5Verification({ data, onUpdate, initialCompanyOib }: Step5Ve
             </div>
           </Card>
 
-          <Card className="p-6">
-            <h3 className="text-xl font-semibold mb-4">Osobna iskaznica</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="id-front">Prednja strana *</Label>
-                <div className="mt-2">
-                  <label
-                    htmlFor="id-front"
-                    className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-primary transition-colors"
-                  >
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <Upload className="w-8 h-8 mb-2 text-muted-foreground" />
-                      <p className="text-sm text-muted-foreground">
-                        {idCardFront ? idCardFront.name : "Kliknite za upload"}
-                      </p>
-                    </div>
-                    <input
-                      id="id-front"
-                      type="file"
-                      className="hidden"
-                      accept="image/*"
-                      onChange={(e) => setIdCardFront(e.target.files?.[0] || null)}
-                    />
-                  </label>
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="id-back">Stražnja strana *</Label>
-                <div className="mt-2">
-                  <label
-                    htmlFor="id-back"
-                    className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-primary transition-colors"
-                  >
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <Upload className="w-8 h-8 mb-2 text-muted-foreground" />
-                      <p className="text-sm text-muted-foreground">
-                        {idCardBack ? idCardBack.name : "Kliknite za upload"}
-                      </p>
-                    </div>
-                    <input
-                      id="id-back"
-                      type="file"
-                      className="hidden"
-                      accept="image/*"
-                      onChange={(e) => setIdCardBack(e.target.files?.[0] || null)}
-                    />
-                  </label>
-                </div>
-              </div>
-            </div>
-          </Card>
         </div>
       )}
     </div>
