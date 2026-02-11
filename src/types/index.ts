@@ -95,8 +95,6 @@ export type VerificationData = {
     contactNumber: string;
     contactEmail: string;
   };
-  idCardFront: File | null;
-  idCardBack: File | null;
 };
 
 export type DeliveryData = {
