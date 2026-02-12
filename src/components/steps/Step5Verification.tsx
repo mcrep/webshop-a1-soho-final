@@ -3,7 +3,8 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { validateOIB } from "@/lib/utils";
-import { Check, X } from "lucide-react";
+import { Check, X, Info } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Select,
   SelectContent,
@@ -172,6 +173,13 @@ export function Step5Verification({ data, onUpdate, initialCompanyOib }: Step5Ve
               </div>
             </div>
           </Card>
+
+          <Alert className="border-primary/30 bg-primary/5">
+            <Info className="h-4 w-4 text-primary" />
+            <AlertDescription>
+              Ovlaštena osoba bit će verificirana skeniranjem osobne iskaznice nakon završetka narudžbe.
+            </AlertDescription>
+          </Alert>
 
         </div>
       )}
