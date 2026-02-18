@@ -12,9 +12,10 @@ type Step7Props = {
   onAdjustOffer: () => void;
   onRetryPayment: () => void;
   onPayCard: () => void;
+  onStartOver: () => void;
 };
 
-export function Step7OrderProcessing({ state, onAdjustOffer, onRetryPayment, onPayCard }: Step7Props) {
+export function Step7OrderProcessing({ state, onAdjustOffer, onRetryPayment, onPayCard, onStartOver }: Step7Props) {
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvv, setCardCvv] = useState("");
@@ -197,6 +198,9 @@ export function Step7OrderProcessing({ state, onAdjustOffer, onRetryPayment, onP
                 <p className="text-sm text-muted-foreground">
                   Potvrdni email s detaljima narudžbe bit će poslan na vašu email adresu. Hvala na povjerenju!
                 </p>
+                <Button onClick={onStartOver} variant="outline" size="lg" className="mt-4">
+                  Nova narudžba
+                </Button>
               </div>
             </Card>
           </motion.div>
