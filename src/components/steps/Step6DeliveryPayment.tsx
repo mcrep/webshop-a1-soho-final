@@ -49,7 +49,7 @@ export function Step6DeliveryPayment({
   }, [paymentMethod, onUpdatePayment]);
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 pt-8">
+    <div className="w-full space-y-6 pt-8">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold mb-2">Isporuka i plaćanje</h2>
         <p className="text-muted-foreground">Unesite adresu za isporuku i odaberite način plaćanja</p>
