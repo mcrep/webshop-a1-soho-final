@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { WalletBanner } from "@/components/WalletBanner";
 import { StepIndicator } from "@/components/StepIndicator";
 import { Footer } from "@/components/Footer";
+import { Step7OrderProcessing } from "@/components/steps/Step7OrderProcessing";
 import { Step1CustomerInfo } from "@/components/steps/Step1CustomerInfo";
 import { Step2TariffSelection } from "@/components/steps/Step2TariffSelection";
 import { Step3DeviceSelection } from "@/components/steps/Step3DeviceSelection";
@@ -17,7 +18,7 @@ import { PrepaidToPostpaidModal } from "@/components/modals/PrepaidToPostpaidMod
 import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExtensionModal";
 import { AuthModal } from "@/components/modals/AuthModal";
 import { tariffs, devices } from "@/data/catalog";
-import type { Line, VerificationData, DeliveryData, PaymentData, ExtensionLineWithTariff } from "@/types";
+import type { Line, VerificationData, DeliveryData, PaymentData, ExtensionLineWithTariff, OrderProcessingState } from "@/types";
 import { toast } from "@/hooks/use-toast";
 
 function rid() {
@@ -62,6 +63,7 @@ const Index = () => {
   const [verificationData, setVerificationData] = useState<VerificationData | null>(null);
   const [deliveryData, setDeliveryData] = useState<DeliveryData | null>(null);
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
+  const [orderProcessingState, setOrderProcessingState] = useState<OrderProcessingState | null>(null);
 
   const steps = useMemo(() => {
     const dynamicSteps = [{ number: 1, name: "Početak" }];
@@ -356,11 +358,41 @@ const Index = () => {
   };
 
   const handleDeliveryNext = () => {
-    // Order data is ready for backend submission
-    // In production, this would send to a secure API endpoint
-    if (import.meta.env.DEV) {
-      console.log("Narudžba završena - development mode");
-    }
+    // Start credit check
+    setOrderProcessingState("credit-check");
+    setTimeout(() => {
+      const passed = Math.random() < 0.7; // 70% pass rate for demo
+      if (passed) {
+        if (paymentData?.method === "card") {
+          setOrderProcessingState("card-payment");
+        } else {
+          setOrderProcessingState("success");
+        }
+      } else {
+        setOrderProcessingState("credit-denied");
+      }
+    }, 2000);
+  };
+
+  const handleAdjustOffer = () => {
+    setOrderProcessingState(null);
+    setCurrentStep(getStepNumberForScreen("Sažetak"));
+  };
+
+  const handleRetryPayment = () => {
+    setOrderProcessingState("card-payment");
+  };
+
+  const handlePayCard = () => {
+    setOrderProcessingState("credit-check");
+    setTimeout(() => {
+      const success = Math.random() < 0.8; // 80% success for demo
+      if (success) {
+        setOrderProcessingState("success");
+      } else {
+        setOrderProcessingState("payment-error");
+      }
+    }, 1500);
   };
 
   const handleFinish = () => {
@@ -562,6 +594,14 @@ const Index = () => {
           </div>
         </div>
       </div>
+      {orderProcessingState && (
+        <Step7OrderProcessing
+          state={orderProcessingState}
+          onAdjustOffer={handleAdjustOffer}
+          onRetryPayment={handleRetryPayment}
+          onPayCard={handlePayCard}
+        />
+      )}
       <AnimatePresence>
         {deviceListModalFor && (
           <DeviceListModal
@@ -644,7 +684,7 @@ const Index = () => {
           />
         )}
       </AnimatePresence>
-      <Footer {...getFooterProps()} />
+      {!orderProcessingState && <Footer {...getFooterProps()} />}
     </div>
   );
 };
