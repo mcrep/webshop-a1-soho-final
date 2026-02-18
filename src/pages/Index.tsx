@@ -377,7 +377,10 @@ const Index = () => {
 
   const handleAdjustOffer = () => {
     setOrderProcessingState(null);
-    setCurrentStep(getStepNumberForScreen("Sažetak"));
+    setCardAttempts(0);
+    // Vrati na Uređaje ako postoje, inače na Tarife
+    const target = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
+    setCurrentStep(target);
   };
 
   const handleRetryPayment = () => {
@@ -396,6 +399,23 @@ const Index = () => {
         setOrderProcessingState("payment-error");
       }
     }, 1500);
+  };
+
+  const handleStartOver = () => {
+    setOrderProcessingState(null);
+    setCurrentStep(1);
+    setCustomerType(null);
+    setNumberOfLines(0);
+    setNumberOfDevices(0);
+    setLineAssignments([]);
+    setDeviceSlots([]);
+    setLines([]);
+    setVerificationData(null);
+    setDeliveryData(null);
+    setPaymentData(null);
+    setCardAttempts(0);
+    setExtensionLines([]);
+    setCompanyOIB("");
   };
 
   const handleFinish = () => {
@@ -603,6 +623,7 @@ const Index = () => {
           onAdjustOffer={handleAdjustOffer}
           onRetryPayment={handleRetryPayment}
           onPayCard={handlePayCard}
+          onStartOver={handleStartOver}
         />
       )}
       <AnimatePresence>
