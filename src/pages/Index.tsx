@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { WalletBanner } from "@/components/WalletBanner";
 import { StepIndicator } from "@/components/StepIndicator";
@@ -617,15 +617,25 @@ const Index = () => {
           </div>
         </div>
       </div>
-      {orderProcessingState && (
-        <Step7OrderProcessing
-          state={orderProcessingState}
-          onAdjustOffer={handleAdjustOffer}
-          onRetryPayment={handleRetryPayment}
-          onPayCard={handlePayCard}
-          onStartOver={handleStartOver}
-        />
-      )}
+      <AnimatePresence>
+        {orderProcessingState && (
+          <motion.div
+            key="order-processing-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.3, ease: "easeInOut" } }}
+            transition={{ duration: 0.2 }}
+          >
+            <Step7OrderProcessing
+              state={orderProcessingState}
+              onAdjustOffer={handleAdjustOffer}
+              onRetryPayment={handleRetryPayment}
+              onPayCard={handlePayCard}
+              onStartOver={handleStartOver}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <AnimatePresence>
         {deviceListModalFor && (
           <DeviceListModal
