@@ -64,6 +64,7 @@ const Index = () => {
   const [deliveryData, setDeliveryData] = useState<DeliveryData | null>(null);
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
   const [orderProcessingState, setOrderProcessingState] = useState<OrderProcessingState | null>(null);
+  const [cardAttempts, setCardAttempts] = useState(0);
 
   const steps = useMemo(() => {
     const dynamicSteps = [{ number: 1, name: "Početak" }];
@@ -358,18 +359,18 @@ const Index = () => {
   };
 
   const handleDeliveryNext = () => {
-    // Start credit check
     setOrderProcessingState("credit-check");
     setTimeout(() => {
-      const passed = Math.random() < 0.7; // 70% pass rate for demo
-      if (passed) {
-        if (paymentData?.method === "card") {
-          setOrderProcessingState("card-payment");
-        } else {
-          setOrderProcessingState("success");
-        }
-      } else {
+      // HARDCODED SCENARIOS:
+      // 1 linija = credit denied
+      // 2+ linije + kartica = card-payment (pa payment-error na plati)
+      // ostalo = success
+      if (lines.length === 1) {
         setOrderProcessingState("credit-denied");
+      } else if (paymentData?.method === "card") {
+        setOrderProcessingState("card-payment");
+      } else {
+        setOrderProcessingState("success");
       }
     }, 2000);
   };
@@ -385,9 +386,11 @@ const Index = () => {
 
   const handlePayCard = () => {
     setOrderProcessingState("credit-check");
+    const attempt = cardAttempts + 1;
+    setCardAttempts(attempt);
     setTimeout(() => {
-      const success = Math.random() < 0.8; // 80% success for demo
-      if (success) {
+      // HARDCODED: prvi pokušaj fejla, drugi uspije
+      if (attempt >= 2) {
         setOrderProcessingState("success");
       } else {
         setOrderProcessingState("payment-error");
