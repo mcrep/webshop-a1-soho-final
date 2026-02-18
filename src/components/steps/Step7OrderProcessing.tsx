@@ -54,7 +54,7 @@ export function Step7OrderProcessing({ state, onAdjustOffer, onRetryPayment, onP
             exit={{ opacity: 0, y: -20 }}
             className="w-full max-w-md"
           >
-            <Card className="p-8 border-destructive/50 bg-destructive/5">
+            <Card className="p-8 border-destructive/30">
               <div className="text-center space-y-4">
                 <div className="mx-auto w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
                   <AlertTriangle className="h-8 w-8 text-destructive" />
@@ -151,7 +151,7 @@ export function Step7OrderProcessing({ state, onAdjustOffer, onRetryPayment, onP
             exit={{ opacity: 0, y: -20 }}
             className="w-full max-w-md"
           >
-            <Card className="p-8 border-destructive/50 bg-destructive/5">
+            <Card className="p-8 border-destructive/30">
               <div className="text-center space-y-4">
                 <div className="mx-auto w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
                   <XCircle className="h-8 w-8 text-destructive" />
@@ -181,7 +181,7 @@ export function Step7OrderProcessing({ state, onAdjustOffer, onRetryPayment, onP
             exit={{ opacity: 0 }}
             className="w-full max-w-md"
           >
-            <Card className="p-8 border-green-500/50 bg-green-50 dark:bg-green-950/20">
+            <Card className="p-8 border-green-500/30">
               <div className="text-center space-y-4">
                 <motion.div
                   initial={{ scale: 0 }}
