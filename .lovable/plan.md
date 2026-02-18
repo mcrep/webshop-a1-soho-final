@@ -1,63 +1,70 @@
 
 
-## Discount Banner on Device Images
+## Flow nakon klika "Zavrsi narudzbu" -- Credit Check, Placanje i Rezultat
 
-### Overview
-Adding a red discount banner overlaid on device photos (matching the reference screenshot style) in both the Device List Modal and Device Detail Modal. The discount is driven by a new `mpcOverride` field on each device -- the final price displayed becomes `upfront - mpcOverride`.
+### Pregled
 
-### Data Model Change
+Nakon sto korisnik klikne "Zavrsi narudzbu" na koraku Isporuka, pokrece se sljedeci tok:
 
-**`src/types/index.ts`** -- Add optional `mpcOverride` to `Device` type:
-- `mpcOverride?: number` -- the discount amount in EUR
+1. **Credit check** (simuliran) -- prikazuje se loading ekran
+2. Ako je **pozitivan**:
+   - Ako je placanje **fakturom** -- direktno prikazuje success ekran
+   - Ako je placanje **karticom** -- otvara se ekran za unos kartice, pa success ili error
+3. Ako je **negativan** -- prikazuje se error ekran s opcijom da se korisnik vrati u flow i prilagodi ponudu
 
-**`src/types/index.ts`** -- Add optional `mpcOverride` to `DeviceVariant` type as well, so discounts can vary per variant (color/memory combo).
+### Novi korak: Step 7 -- Obrada narudzbe
 
-**`src/data/catalog.ts`** -- Add sample `mpcOverride` values to devices and their variants. For example:
-- iPhone 15: `mpcOverride: 124` (and corresponding per-variant values)
-- Galaxy S24: `mpcOverride: 80`
-- Pixel 8: `mpcOverride: 50`
-
-### UI Changes
-
-#### 1. Device List Modal (`src/components/modals/DeviceListModal.tsx`)
-
-On each device card, overlay a red discount badge in the bottom-right corner of the device image (matching the reference: red background, white text, "-XX EUR" format):
+Dodaje se novi "virtualni" korak koji nije vidljiv u step indicatoru, vec je fullscreen overlay s razlicitim stanjima:
 
 ```text
-+---------------------------+
-|                           |
-|     [device photo]        |
-|                    +------+
-|                    |-124 EUR|
-+--------------------+------+
-| Brand                     |
-| Name                      |
-| EUR XXX (was EUR YYY)     |
-+---------------------------+
+Stanja:
+  "credit-check"  -->  spinner + "Provjeravamo vasu narudzbu..."
+  "credit-denied"  -->  error kartica s opisom + gumb "Prilagodi ponudu"
+  "card-payment"   -->  forma za unos kartice (dummy)
+  "payment-error"  -->  error kartica + gumb "Pokusaj ponovo" ili "Prilagodi ponudu"
+  "success"        -->  success kartica s potvrdom narudzbe
 ```
 
-- Show the banner only when `device.mpcOverride > 0`
-- Update the price display: show the original `upfront` crossed out, and the discounted price (`upfront - mpcOverride`) as the main price
+### Korisnicko iskustvo
 
-#### 2. Device Detail Modal (`src/components/modals/DeviceDetailModal.tsx`)
+**Credit check pozitivan + faktura:**
+- Loading (2s simulacija) --> Success ekran ("Vasa narudzba je zaprimljena!")
 
-- Same red discount badge overlaid on the main gallery image (bottom-right corner)
-- The badge amount updates based on the selected variant's `mpcOverride` (falling back to the device-level value)
-- Update all pricing calculations to use `upfront - mpcOverride` as the base price
-- Show original price crossed out next to the discounted price in the pricing section
+**Credit check pozitivan + kartica:**
+- Loading (2s) --> Ekran za karticu --> Klik "Plati" --> Loading (1s) --> Success ili Payment Error
 
-### Visual Style (matching reference)
-- Badge: `bg-primary text-white font-bold` (A1 red)
-- Position: `absolute bottom-4 right-4`
-- Text format: `-{amount} EUR`
-- Rounded corners, padding for readability
-- No rotation or skew -- clean rectangular badge like in the screenshot
+**Credit check negativan:**
+- Loading (2s) --> Error ekran ("Nije moguce obraditi narudzbu u trenutnoj konfiguraciji")
+- Gumb "Prilagodi ponudu" vraca korisnika na korak Sazet tak gdje moze mijenjati uredaje, rate itd.
 
-### Technical Details
+**Payment error:**
+- Error ekran s opcijama "Pokusaj ponovo" (vraca na karticu) ili "Prilagodi ponudu" (vraca u flow)
 
-Files to modify:
-1. `src/types/index.ts` -- add `mpcOverride` to `Device` and `DeviceVariant`
-2. `src/data/catalog.ts` -- add sample discount values
-3. `src/components/modals/DeviceListModal.tsx` -- discount badge on card image + updated pricing
-4. `src/components/modals/DeviceDetailModal.tsx` -- discount badge on gallery image + updated pricing calculations
+### Tehnicki detalji
+
+**Nove datoteke:**
+1. `src/components/steps/Step7OrderProcessing.tsx` -- komponenta s svim stanjima (credit-check, credit-denied, card-payment, payment-error, success)
+
+**Izmjene u postojecim datotekama:**
+
+1. **`src/pages/Index.tsx`**:
+   - Dodati novo stanje `orderProcessingState` za pracenje stanja obrade
+   - `handleDeliveryNext` pokrece credit check (setTimeout simulacija)
+   - Dodati renderiranje Step7 komponente
+   - Funkcija `handleAdjustOffer` vraca korisnika na korak Sazetak
+   - Funkcija `handleRetryPayment` vraca na card-payment stanje
+
+2. **`src/types/index.ts`**:
+   - Dodati tip `OrderProcessingState = "credit-check" | "credit-denied" | "card-payment" | "payment-error" | "success"`
+
+**Komponenta Step7OrderProcessing:**
+- `credit-check`: Animirani spinner (framer-motion) s tekstom "Provjeravamo..."
+- `credit-denied`: Crvena kartica s ikonom AlertTriangle, opis problema, gumb "Prilagodi ponudu"
+- `card-payment`: Dummy forma (broj kartice, datum, CVV) s gumbom "Plati"
+- `payment-error`: Crvena kartica s opisom greske, dva gumba
+- `success`: Zelena kartica s CheckCircle ikonom, broj narudzbe, poruka potvrde
+
+**Simulacija credit checka:**
+- Random rezultat (npr. 70% prolazi, 30% ne) za demo svrhe
+- setTimeout od 2 sekunde za simulaciju API poziva
 
