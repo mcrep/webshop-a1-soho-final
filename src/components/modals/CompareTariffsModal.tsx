@@ -47,6 +47,15 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       }
     },
     { 
+      key: "mozaik", 
+      label: "Mozaik", 
+      icon: Tag,
+      group: "price",
+      render: (tariff) => (
+        <span className="text-foreground text-xs sm:text-sm">€1.00</span>
+      )
+    },
+    { 
       key: "yourPrice", 
       label: "Vaša cijena", 
       icon: BadgeEuro,
