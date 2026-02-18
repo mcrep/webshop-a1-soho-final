@@ -85,6 +85,7 @@ export const devices: Device[] = [
     name: "iPhone 15",
     upfront: 799,
     installment: 25,
+    mpcOverride: 124,
     emoji: "📱",
     image: iphone15,
     images: [iphone15, iphone15, iphone15, iphone15, iphone15],
@@ -100,15 +101,15 @@ export const devices: Device[] = [
       weight: "171 grama"
     },
     variants: [
-      { id: "iph-15-128-black", color: "Midnight Black", colorHex: "#1a1a1a", memory: "128GB", upfront: 799, installment: 25 },
-      { id: "iph-15-128-blue", color: "Blue", colorHex: "#4a90e2", memory: "128GB", upfront: 799, installment: 25 },
-      { id: "iph-15-128-pink", color: "Pink", colorHex: "#ffb3c6", memory: "128GB", upfront: 799, installment: 25 },
-      { id: "iph-15-256-black", color: "Midnight Black", colorHex: "#1a1a1a", memory: "256GB", upfront: 899, installment: 28 },
-      { id: "iph-15-256-blue", color: "Blue", colorHex: "#4a90e2", memory: "256GB", upfront: 899, installment: 28 },
-      { id: "iph-15-256-pink", color: "Pink", colorHex: "#ffb3c6", memory: "256GB", upfront: 899, installment: 28 },
-      { id: "iph-15-512-black", color: "Midnight Black", colorHex: "#1a1a1a", memory: "512GB", upfront: 1099, installment: 30 },
-      { id: "iph-15-512-blue", color: "Blue", colorHex: "#4a90e2", memory: "512GB", upfront: 1099, installment: 30 },
-      { id: "iph-15-512-pink", color: "Pink", colorHex: "#ffb3c6", memory: "512GB", upfront: 1099, installment: 30 },
+      { id: "iph-15-128-black", color: "Midnight Black", colorHex: "#1a1a1a", memory: "128GB", upfront: 799, installment: 25, mpcOverride: 124 },
+      { id: "iph-15-128-blue", color: "Blue", colorHex: "#4a90e2", memory: "128GB", upfront: 799, installment: 25, mpcOverride: 124 },
+      { id: "iph-15-128-pink", color: "Pink", colorHex: "#ffb3c6", memory: "128GB", upfront: 799, installment: 25, mpcOverride: 124 },
+      { id: "iph-15-256-black", color: "Midnight Black", colorHex: "#1a1a1a", memory: "256GB", upfront: 899, installment: 28, mpcOverride: 150 },
+      { id: "iph-15-256-blue", color: "Blue", colorHex: "#4a90e2", memory: "256GB", upfront: 899, installment: 28, mpcOverride: 150 },
+      { id: "iph-15-256-pink", color: "Pink", colorHex: "#ffb3c6", memory: "256GB", upfront: 899, installment: 28, mpcOverride: 150 },
+      { id: "iph-15-512-black", color: "Midnight Black", colorHex: "#1a1a1a", memory: "512GB", upfront: 1099, installment: 30, mpcOverride: 200 },
+      { id: "iph-15-512-blue", color: "Blue", colorHex: "#4a90e2", memory: "512GB", upfront: 1099, installment: 30, mpcOverride: 200 },
+      { id: "iph-15-512-pink", color: "Pink", colorHex: "#ffb3c6", memory: "512GB", upfront: 1099, installment: 30, mpcOverride: 200 },
     ]
   },
   {
@@ -117,6 +118,7 @@ export const devices: Device[] = [
     name: "Galaxy S24",
     upfront: 699,
     installment: 25,
+    mpcOverride: 80,
     emoji: "📱",
     image: galaxyS24,
     images: [galaxyS24, galaxyS24, galaxyS24, galaxyS24, galaxyS24],
@@ -132,12 +134,12 @@ export const devices: Device[] = [
       weight: "168 grama"
     },
     variants: [
-      { id: "sgs-24-128-black", color: "Phantom Black", colorHex: "#000000", memory: "128GB", upfront: 699, installment: 25 },
-      { id: "sgs-24-128-cream", color: "Cream", colorHex: "#f5f5dc", memory: "128GB", upfront: 699, installment: 25 },
-      { id: "sgs-24-128-violet", color: "Violet", colorHex: "#8b7d9b", memory: "128GB", upfront: 699, installment: 25 },
-      { id: "sgs-24-256-black", color: "Phantom Black", colorHex: "#000000", memory: "256GB", upfront: 799, installment: 28 },
-      { id: "sgs-24-256-cream", color: "Cream", colorHex: "#f5f5dc", memory: "256GB", upfront: 799, installment: 28 },
-      { id: "sgs-24-256-violet", color: "Violet", colorHex: "#8b7d9b", memory: "256GB", upfront: 799, installment: 28 },
+      { id: "sgs-24-128-black", color: "Phantom Black", colorHex: "#000000", memory: "128GB", upfront: 699, installment: 25, mpcOverride: 80 },
+      { id: "sgs-24-128-cream", color: "Cream", colorHex: "#f5f5dc", memory: "128GB", upfront: 699, installment: 25, mpcOverride: 80 },
+      { id: "sgs-24-128-violet", color: "Violet", colorHex: "#8b7d9b", memory: "128GB", upfront: 699, installment: 25, mpcOverride: 80 },
+      { id: "sgs-24-256-black", color: "Phantom Black", colorHex: "#000000", memory: "256GB", upfront: 799, installment: 28, mpcOverride: 100 },
+      { id: "sgs-24-256-cream", color: "Cream", colorHex: "#f5f5dc", memory: "256GB", upfront: 799, installment: 28, mpcOverride: 100 },
+      { id: "sgs-24-256-violet", color: "Violet", colorHex: "#8b7d9b", memory: "256GB", upfront: 799, installment: 28, mpcOverride: 100 },
     ]
   },
   {
@@ -146,6 +148,7 @@ export const devices: Device[] = [
     name: "Pixel 8",
     upfront: 649,
     installment: 25,
+    mpcOverride: 50,
     emoji: "📱",
     image: pixel8,
     images: [pixel8, pixel8, pixel8, pixel8, pixel8],
@@ -161,12 +164,12 @@ export const devices: Device[] = [
       weight: "187 grama"
     },
     variants: [
-      { id: "pix-8-128-obsidian", color: "Obsidian", colorHex: "#1c1c1c", memory: "128GB", upfront: 649, installment: 25 },
-      { id: "pix-8-128-hazel", color: "Hazel", colorHex: "#8b7355", memory: "128GB", upfront: 649, installment: 25 },
-      { id: "pix-8-128-rose", color: "Rose", colorHex: "#e8a9a9", memory: "128GB", upfront: 649, installment: 25 },
-      { id: "pix-8-256-obsidian", color: "Obsidian", colorHex: "#1c1c1c", memory: "256GB", upfront: 749, installment: 27 },
-      { id: "pix-8-256-hazel", color: "Hazel", colorHex: "#8b7355", memory: "256GB", upfront: 749, installment: 27 },
-      { id: "pix-8-256-rose", color: "Rose", colorHex: "#e8a9a9", memory: "256GB", upfront: 749, installment: 27 },
+      { id: "pix-8-128-obsidian", color: "Obsidian", colorHex: "#1c1c1c", memory: "128GB", upfront: 649, installment: 25, mpcOverride: 50 },
+      { id: "pix-8-128-hazel", color: "Hazel", colorHex: "#8b7355", memory: "128GB", upfront: 649, installment: 25, mpcOverride: 50 },
+      { id: "pix-8-128-rose", color: "Rose", colorHex: "#e8a9a9", memory: "128GB", upfront: 649, installment: 25, mpcOverride: 50 },
+      { id: "pix-8-256-obsidian", color: "Obsidian", colorHex: "#1c1c1c", memory: "256GB", upfront: 749, installment: 27, mpcOverride: 70 },
+      { id: "pix-8-256-hazel", color: "Hazel", colorHex: "#8b7355", memory: "256GB", upfront: 749, installment: 27, mpcOverride: 70 },
+      { id: "pix-8-256-rose", color: "Rose", colorHex: "#e8a9a9", memory: "256GB", upfront: 749, installment: 27, mpcOverride: 70 },
     ]
   },
   {
