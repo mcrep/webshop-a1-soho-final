@@ -128,3 +128,5 @@ export type ExtensionLineWithTariff = {
   currentTariff: string;
   newTariffId: string | null;
 };
+
+export type OrderProcessingState = "credit-check" | "credit-denied" | "card-payment" | "payment-error" | "success";
