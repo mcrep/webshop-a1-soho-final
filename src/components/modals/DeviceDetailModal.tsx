@@ -59,6 +59,8 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
 
   const upfront = selectedVariant?.upfront || device.upfront;
   const maxInstallment = selectedVariant?.installment || device.installment;
+  const discount = selectedVariant?.mpcOverride ?? device.mpcOverride ?? 0;
+  const finalUpfront = upfront - discount;
 
   return (
     <motion.div 
@@ -127,6 +129,11 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                     alt={`${device.name} ${selectedImageIndex + 1}`}
                     className="w-full h-full object-contain"
                   />
+                  {discount > 0 && (
+                    <div className="absolute bottom-4 right-4 bg-primary text-primary-foreground font-bold text-base px-4 py-2 rounded-lg shadow-md">
+                      -{discount} EUR
+                    </div>
+                  )}
                   {images.length > 1 && (
                     <>
                       <button
@@ -272,11 +279,16 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Jednokratni iznos:</span>
-                    <span className="text-2xl font-bold">
-                      {paymentMethod === "upfront" 
-                        ? `€${upfront}` 
-                        : `€${Math.max(0, upfront - (monthlyInstallment * 24)).toFixed(2)}`}
-                    </span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-2xl font-bold">
+                        {paymentMethod === "upfront" 
+                          ? `€${finalUpfront}` 
+                          : `€${Math.max(0, finalUpfront - (monthlyInstallment * 24)).toFixed(2)}`}
+                      </span>
+                      {discount > 0 && paymentMethod === "upfront" && (
+                        <span className="text-base text-muted-foreground line-through">€{upfront}</span>
+                      )}
+                    </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Iznos rate:</span>

@@ -5,6 +5,7 @@ export type DeviceVariant = {
   memory: string;
   upfront: number;
   installment: number;
+  mpcOverride?: number;
 };
 
 export type Line = {
@@ -73,6 +74,7 @@ export type Device = {
   esimSupport?: boolean;
   energyClass?: string;
   availability?: "available" | "on-request" | "unavailable";
+  mpcOverride?: number;
 };
 
 export type Addon = {

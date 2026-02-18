@@ -228,18 +228,30 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
                           onClick={() => handleDeviceClick(device)}
                           className="group p-4 rounded-xl border border-border bg-card hover:border-foreground transition-all text-left"
                         >
-                          <div className="aspect-square rounded-lg overflow-hidden mb-3 bg-muted/30">
+                          <div className="relative aspect-square rounded-lg overflow-hidden mb-3 bg-muted/30">
                             <img
                               src={device.image}
                               alt={device.name}
                               className="w-full h-full object-contain group-hover:scale-105 transition-transform"
                             />
+                            {device.mpcOverride && device.mpcOverride > 0 && (
+                              <div className="absolute bottom-3 right-3 bg-primary text-primary-foreground font-bold text-sm px-3 py-1.5 rounded-lg shadow-md">
+                                -{device.mpcOverride} EUR
+                              </div>
+                            )}
                           </div>
                           <div className="space-y-1">
                             <div className="text-xs text-muted-foreground">{device.brand}</div>
                             <div className="font-semibold">{device.name}</div>
                             <div className="flex items-baseline gap-2">
-                              <span className="text-lg font-bold text-primary">€{device.upfront}</span>
+                              {device.mpcOverride && device.mpcOverride > 0 ? (
+                                <>
+                                  <span className="text-lg font-bold text-primary">€{device.upfront - device.mpcOverride}</span>
+                                  <span className="text-sm text-muted-foreground line-through">€{device.upfront}</span>
+                                </>
+                              ) : (
+                                <span className="text-lg font-bold text-primary">€{device.upfront}</span>
+                              )}
                               <span className="text-xs text-muted-foreground">
                                 ili do €{device.installment}/mj
                               </span>
