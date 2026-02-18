@@ -52,7 +52,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       icon: Tag,
       group: "price",
       render: (tariff) => (
-        <span className="text-foreground text-xs sm:text-sm">€1.00</span>
+        <span className="text-foreground text-xs sm:text-sm">-€1.00</span>
       )
     },
     { 
@@ -62,7 +62,7 @@ export function CompareTariffsModal({ open, onOpenChange }: CompareTariffsModalP
       group: "price",
       isGroupEnd: true,
       render: (tariff) => (
-        <span className="font-bold text-primary text-xs sm:text-sm">€{tariff.monthly.toFixed(2)}</span>
+        <span className="font-bold text-primary text-xs sm:text-sm">€{(tariff.monthly - 1).toFixed(2)}</span>
       )
     },
     // Grupa: Značajke
