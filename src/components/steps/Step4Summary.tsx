@@ -1,12 +1,13 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, X, RefreshCw } from "lucide-react";
+import { ChevronDown, ChevronUp, X, RefreshCw, Download, CheckCircle } from "lucide-react";
 import { tariffs, devices } from "@/data/catalog";
 import { findExistingLineNumber } from "@/data/mock-existing-lines";
 import type { Line } from "@/types";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { SimTypeModal } from "@/components/modals/SimTypeModal";
+import jsPDF from "jspdf";
 
 const formatMsisdn = (value: string) => {
   const digits = value.replace(/\D/g, "");
@@ -29,6 +30,8 @@ type Step4Props = {
   onBack: () => void;
   onFinish: () => void;
   onOpenLineTypeModal: (lineId: string) => void;
+  contractDownloaded: boolean;
+  onContractDownload: () => void;
 };
 
 export function Step4Summary({
@@ -39,6 +42,8 @@ export function Step4Summary({
   onBack,
   onFinish,
   onOpenLineTypeModal,
+  contractDownloaded,
+  onContractDownload,
 }: Step4Props) {
   // Find unconfigured non-extension lines
   const unconfiguredLineIds = useMemo(() => {
@@ -79,6 +84,47 @@ export function Step4Summary({
     } else {
       setExpandedLines(new Set(lines.map((line) => line.id)));
     }
+  };
+
+  const handleDownloadContract = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Sazetak ugovora", 20, 20);
+    doc.setFontSize(11);
+    let y = 35;
+
+    lines.forEach((line, index) => {
+      const tariff = tariffs.find((t) => t.id === line.tariffId);
+      const device = devices.find((d) => d.id === line.deviceId);
+      const variant = device?.variants?.find((v) => v.id === line.deviceVariantId);
+
+      doc.setFontSize(13);
+      doc.text(`Linija ${index + 1}`, 20, y);
+      y += 8;
+      doc.setFontSize(10);
+      doc.text(`Tarifa: ${tariff?.name ?? "-"}`, 25, y); y += 6;
+      if (device && device.id !== "no-dev") {
+        doc.text(`Uredaj: ${device.brand} ${device.name}${variant ? ` - ${variant.color} ${variant.memory}` : ""}`, 25, y); y += 6;
+      }
+      const lineTypeName = line.lineType === "new" ? "Nova linija" :
+        line.lineType === "mnp" ? "Prijenos broja" :
+        line.lineType === "pre2post" ? "S bonova na pretplatu" :
+        line.lineType === "renew" ? "Produljenje postojece linije" : "-";
+      doc.text(`Vrsta: ${lineTypeName}`, 25, y); y += 6;
+      doc.text(`SIM: ${line.simType === "esim" ? "eSIM" : "Fizicki SIM"}`, 25, y); y += 10;
+
+      if (y > 270) { doc.addPage(); y = 20; }
+    });
+
+    y += 5;
+    doc.setFontSize(12);
+    doc.text(`Ukupno mjesecno: ${totalMonthly.toFixed(2)} EUR`, 20, y); y += 7;
+    doc.text(`Ukupno jednokratno: ${totalOnetime.toFixed(2)} EUR`, 20, y); y += 7;
+    doc.setFontSize(9);
+    doc.text("Sve cijene su bez PDV-a.", 20, y);
+
+    doc.save("sazetak-ugovora.pdf");
+    onContractDownload();
   };
 
   return (
@@ -353,6 +399,38 @@ export function Step4Summary({
             </div>
           );
         })}
+      </div>
+
+      {/* Download Contract Button */}
+      <div className="rounded-2xl border-2 border-border bg-card p-6">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-semibold mb-1">Sažetak ugovora</h3>
+            <p className="text-sm text-muted-foreground">
+              {contractDownloaded 
+                ? "Sažetak ugovora je preuzet. Možete nastaviti dalje." 
+                : "Preuzmite sažetak ugovora prije nastavka."}
+            </p>
+          </div>
+          <Button
+            onClick={handleDownloadContract}
+            variant={contractDownloaded ? "outline" : "default"}
+            size="lg"
+            className="shrink-0"
+          >
+            {contractDownloaded ? (
+              <>
+                <CheckCircle size={18} className="mr-2" />
+                Preuzeto
+              </>
+            ) : (
+              <>
+                <Download size={18} className="mr-2" />
+                Preuzmi sažetak ugovora
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* Totals Card */}
