@@ -65,6 +65,7 @@ const Index = () => {
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
   const [orderProcessingState, setOrderProcessingState] = useState<OrderProcessingState | null>(null);
   const [cardAttempts, setCardAttempts] = useState(0);
+  const [contractDownloaded, setContractDownloaded] = useState(false);
 
   const steps = useMemo(() => {
     const dynamicSteps = [{ number: 1, name: "Početak" }];
@@ -442,7 +443,7 @@ const Index = () => {
         const allActiveDevicesSelected = activeSlots.every((slot) => slot.deviceId !== null);
         return correctNumberOfDevices && allActiveDevicesSelected;
       })(),
-      "Sažetak": allLinesConfigured,
+      "Sažetak": allLinesConfigured && contractDownloaded,
       "Verifikacija": verificationData !== null,
       "Isporuka": deliveryData !== null && paymentData !== null
     };
@@ -597,6 +598,8 @@ const Index = () => {
               }}
               onFinish={handleFinish}
               onOpenLineTypeModal={setLineTypeSelectionFor}
+              contractDownloaded={contractDownloaded}
+              onContractDownload={() => setContractDownloaded(true)}
             />
           )}
 {currentScreen === "Verifikacija" && (
