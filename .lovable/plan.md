@@ -1,70 +1,175 @@
 
+# Plan: Virtualni prodajni predstavnik "Snježana"
 
-## Flow nakon klika "Zavrsi narudzbu" -- Credit Check, Placanje i Rezultat
+AI agent koji vodi korisnika kroz cijeli A1 Biz flow razgovorom (tekst + glas) i na kraju kreira narudžbu — bez da korisnik prolazi kroz 7 koraka ručno.
 
-### Pregled
+---
 
-Nakon sto korisnik klikne "Zavrsi narudzbu" na koraku Isporuka, pokrece se sljedeci tok:
+## 1. UI komponente
 
-1. **Credit check** (simuliran) -- prikazuje se loading ekran
-2. Ako je **pozitivan**:
-   - Ako je placanje **fakturom** -- direktno prikazuje success ekran
-   - Ako je placanje **karticom** -- otvara se ekran za unos kartice, pa success ili error
-3. Ako je **negativan** -- prikazuje se error ekran s opcijom da se korisnik vrati u flow i prilagodi ponudu
+### 1.1 Plutajući balončić (FAB)
+- Fiksiran u donjem desnom kutu, `z-50`, vidljiv na svim stranicama
+- Avatar Snježane + suptilni "puls" animacija (framer-motion) da privuče pažnju
+- Mali badge "Trebate pomoć? 👋" koji se pojavi nakon 10s neaktivnosti
+- Klik → otvara modal
 
-### Novi korak: Step 7 -- Obrada narudzbe
+### 1.2 Glavni chat modal
+Veliki centriran modal (max-w-5xl, h-[85vh]), dva stupca:
 
-Dodaje se novi "virtualni" korak koji nije vidljiv u step indicatoru, vec je fullscreen overlay s razlicitim stanjima:
+**Lijevi stupac (40%) — Avatar Snježane**
+- Generirani avatar (premium image, professional female sales rep, A1 brendiranje)
+- Stanje: idle / sluša (mic ikona pulsira) / govori (waveform animacija) / razmišlja (shimmer)
+- Ispod avatara: ime "Snježana", uloga "Vaš prodajni savjetnik", indikator statusa
+- "Quick actions" gumbi: "Resetiraj razgovor", "Predaj ljudskom agentu" (mock)
 
-```text
-Stanja:
-  "credit-check"  -->  spinner + "Provjeravamo vasu narudzbu..."
-  "credit-denied"  -->  error kartica s opisom + gumb "Prilagodi ponudu"
-  "card-payment"   -->  forma za unos kartice (dummy)
-  "payment-error"  -->  error kartica + gumb "Pokusaj ponovo" ili "Prilagodi ponudu"
-  "success"        -->  success kartica s potvrdom narudzbe
+**Desni stupac (60%) — Chat + composer**
+- AI Elements: `Conversation`, `Message`, `MessageResponse`, `PromptInput`
+- Tool execution prikazi (npr. "Pretražujem tarife...", "Provjeravam OIB...") kao tool accordion
+- Composer: textarea + mic gumb + send gumb
+- Mic gumb → ElevenLabs realtime STT (push-to-talk ili VAD)
+- Opcionalno: TTS readback Snježaninih odgovora (ElevenLabs ženski hr glas)
+
+### 1.3 Sidecar "Live narudžba"
+Iznad chata mali collapsible panel koji u realnom vremenu pokazuje što je AI zaključao:
+- Tip korisnika, OIB/tvrtka, broj linija, odabrane tarife, uređaji, dostava, plaćanje
+- Vizualna potvrda korisniku da AI "razumije" — gradi povjerenje
+
+---
+
+## 2. Tok razgovora (AI orchestration)
+
+Snježana ima jasan **system prompt** koji ju vodi kroz iste korake kao postojeći flow:
+
+1. **Pozdrav + identifikacija** — "Jeste li već A1 poslovni korisnik ili novi klijent?"
+2. **Ako postojeći** → tool `request_login` (otvara postojeći AuthModal kroz custom event, AI čeka rezultat)
+3. **Ako novi** → pita OIB → tool `verify_oib`
+4. **Potrebe** — broj linija, broj uređaja, koliko zaposlenika putuje, koliko podataka treba
+5. **Preporuka tarife** — tool `recommend_tariff` analizira potrebe i predlaže s objašnjenjem
+6. **Uređaji** — pita treba li uređaj, za koga (iOS/Android), budžet → tool `recommend_devices`
+7. **Per-liniju konfiguracija** — tip linije (nova/MNP/pre2post), eSIM/fizička, porting podaci
+8. **Sažetak** — prikaže "Live narudžbu", pita za potvrdu
+9. **Verifikacija** (za nove) — ovlaštena osoba: ime, OIB, kontakt
+10. **Dostava** — A1 centar ili pošta
+11. **Plaćanje** — račun ili kartica
+12. **Finalizacija** — tool `submit_order` pokreće postojeći Step7OrderProcessing tijek
+
+AI uvijek mora moći **preskočiti naprijed/nazad** ako korisnik kaže "promijeni mi tarifu" ili "dodaj još jednu liniju".
+
+---
+
+## 3. Backend / AI sloj
+
+### 3.1 Lovable Cloud edge funkcija `chat-with-snjezana`
+- Koristi Lovable AI Gateway (`google/gemini-3-flash-preview` kao default — brz i jeftin za chat)
+- `streamText` + `toUIMessageStreamResponse`
+- Šalje cijelu povijest razgovora svaki put
+- System prompt sadrži: persona Snježane, katalog tarifa/uređaja, business rules, korake flow-a
+
+### 3.2 AI Tools (AI SDK `tool()` s Zod schemom)
+
+| Tool | Što radi |
+|---|---|
+| `verify_oib` | MOD 11,10 validacija + (mock) registar lookup |
+| `request_login` | Šalje event frontendu da otvori AuthModal, čeka rezultat |
+| `list_tariffs` | Vraća katalog tarifa s cijenama |
+| `recommend_tariff` | Na temelju potreba korisnika preporuči konkretnu tarifu + obrazloženje |
+| `list_devices` | Vraća uređaje (filtriranje po brendu/budžetu) |
+| `recommend_devices` | Preporuka uređaja |
+| `update_order_draft` | Ažurira "Live narudžba" panel (Zustand store) |
+| `calculate_total` | Mjesečno + jednokratno + wallet odbitak |
+| `submit_order` | **needsApproval: true** — pokreće finalizaciju, korisnik mora kliknuti potvrdu |
+
+Sve tool execution dešava se serverski osim `request_login` i `submit_order` koji emitiraju eventove na frontend.
+
+### 3.3 Edge funkcija `elevenlabs-stt-token`
+- Generira single-use token za ElevenLabs realtime transcription (`scribe_v2_realtime`)
+- Klijent koristi `@elevenlabs/react` `useScribe` hook za diktiranje
+- Token traje 15 min, generira se po potrebi
+
+### 3.4 (Opcionalno) Edge funkcija `elevenlabs-tts`
+- Snježanini odgovori se mogu čitati naglas (hr ženski glas)
+- Streaming audio response
+
+---
+
+## 4. State management
+
+Zustand store `useOrderDraft`:
+```
+{ customerType, oib, companyName, lines[], delivery, payment, totals }
 ```
 
-### Korisnicko iskustvo
+- AI tools pišu u ovaj store
+- Sidecar "Live narudžba" čita iz njega
+- Na `submit_order` se mapira u postojeći `Step7OrderProcessing` payload — tako reusamo cijelu postojeću logiku finalizacije bez duplikacije
 
-**Credit check pozitivan + faktura:**
-- Loading (2s simulacija) --> Success ekran ("Vasa narudzba je zaprimljena!")
+---
 
-**Credit check pozitivan + kartica:**
-- Loading (2s) --> Ekran za karticu --> Klik "Plati" --> Loading (1s) --> Success ili Payment Error
+## 5. Integracija s postojećim flow-om
 
-**Credit check negativan:**
-- Loading (2s) --> Error ekran ("Nije moguce obraditi narudzbu u trenutnoj konfiguraciji")
-- Gumb "Prilagodi ponudu" vraca korisnika na korak Sazet tak gdje moze mijenjati uredaje, rate itd.
+**Bez duplikacije logike:**
+- AuthModal, OIBModal, Step7OrderProcessing — sve se reusa
+- `verify_oib` tool koristi isti `validateOIB()` helper
+- Katalog dolazi iz `src/data/catalog.ts` (single source of truth)
+- Konačna narudžba ide kroz isti `OrderProcessingState` flow (credit check → payment → success)
 
-**Payment error:**
-- Error ekran s opcijama "Pokusaj ponovo" (vraca na karticu) ili "Prilagodi ponudu" (vraca u flow)
+**Custom eventovi za bridge:**
+- `snjezana:open-auth` → otvara AuthModal
+- `snjezana:auth-result` → AI dobiva rezultat
+- `snjezana:finalize-order` → mounta Step7 s pred-popunjenim podacima
 
-### Tehnicki detalji
+---
 
-**Nove datoteke:**
-1. `src/components/steps/Step7OrderProcessing.tsx` -- komponenta s svim stanjima (credit-check, credit-denied, card-payment, payment-error, success)
+## 6. Tehnički detalji
 
-**Izmjene u postojecim datotekama:**
+```text
+Stack:
+- AI SDK (ai, @ai-sdk/openai-compatible) za chat + tools
+- Lovable AI Gateway provider helper
+- AI Elements (conversation, message, prompt-input, tool, shimmer)
+- @elevenlabs/react za STT (i opcionalno TTS)
+- Zustand za order draft state
+- Lovable Cloud edge funkcije (chat, stt-token)
+- Tajne: LOVABLE_API_KEY (auto), ELEVENLABS_API_KEY (treba dodati)
+```
 
-1. **`src/pages/Index.tsx`**:
-   - Dodati novo stanje `orderProcessingState` za pracenje stanja obrade
-   - `handleDeliveryNext` pokrece credit check (setTimeout simulacija)
-   - Dodati renderiranje Step7 komponente
-   - Funkcija `handleAdjustOffer` vraca korisnika na korak Sazetak
-   - Funkcija `handleRetryPayment` vraca na card-payment stanje
+```text
+Novi fajlovi:
+- src/components/snjezana/SnjezanaFab.tsx
+- src/components/snjezana/SnjezanaModal.tsx
+- src/components/snjezana/SnjezanaAvatar.tsx
+- src/components/snjezana/LiveOrderPanel.tsx
+- src/components/snjezana/VoiceInput.tsx
+- src/stores/useOrderDraft.ts
+- src/lib/snjezana-tools.ts (frontend event bridge)
+- supabase/functions/chat-with-snjezana/index.ts
+- supabase/functions/elevenlabs-stt-token/index.ts
+- supabase/functions/_shared/ai-gateway.ts
+- src/assets/snjezana-avatar.png (generirano)
+```
 
-2. **`src/types/index.ts`**:
-   - Dodati tip `OrderProcessingState = "credit-check" | "credit-denied" | "card-payment" | "payment-error" | "success"`
+```text
+Izmjene:
+- src/App.tsx → mount <SnjezanaFab /> globalno
+- src/components/steps/Step7OrderProcessing.tsx → prihvati pred-popunjene podatke iz storea
+```
 
-**Komponenta Step7OrderProcessing:**
-- `credit-check`: Animirani spinner (framer-motion) s tekstom "Provjeravamo..."
-- `credit-denied`: Crvena kartica s ikonom AlertTriangle, opis problema, gumb "Prilagodi ponudu"
-- `card-payment`: Dummy forma (broj kartice, datum, CVV) s gumbom "Plati"
-- `payment-error`: Crvena kartica s opisom greske, dva gumba
-- `success`: Zelena kartica s CheckCircle ikonom, broj narudzbe, poruka potvrde
+---
 
-**Simulacija credit checka:**
-- Random rezultat (npr. 70% prolazi, 30% ne) za demo svrhe
-- setTimeout od 2 sekunde za simulaciju API poziva
+## 7. Što ću pitati prije implementacije
 
+1. **Glasovni izlaz (TTS):** treba li Snježana i govoriti, ili samo slušati korisnika i odgovarati tekstom? (TTS ima dodatne troškove)
+2. **Persistencija razgovora:** treba li čuvati povijest razgovora po korisniku u bazi, ili samo u sessionu (localStorage)?
+3. **Avatar:** statična slika ili animirani avatar (npr. lottie ili D-ID-style — puno kompleksnije)?
+
+---
+
+## 8. Faze isporuke
+
+| Faza | Sadržaj |
+|---|---|
+| **MVP** | FAB, modal, chat (samo tekst), tools za OIB/tarife/uređaje, live order panel, mock submit |
+| **V2** | ElevenLabs STT (glasovni unos), integracija s postojećim AuthModal, pravi `submit_order` kroz Step7 |
+| **V3** | TTS, predaja ljudskom agentu (mock), perzistencija razgovora, analytics |
+
+MVP fokus: dokazati da AI može voditi korisnika kroz cijeli flow tekstom i kreirati validnu narudžbu. Glas i TTS dolaze u V2.
