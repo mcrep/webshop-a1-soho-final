@@ -129,6 +129,21 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                     alt={`${device.name} ${selectedImageIndex + 1}`}
                     className="w-full h-full object-contain"
                   />
+                  {device.energyClass && (
+                    <a
+                      href="https://sc.a1.hr/sc/energetska-naljepnica.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute top-3 right-3 z-10"
+                      title={`Energetski razred: ${device.energyClass}`}
+                    >
+                      <img
+                        src="https://sc.a1.hr/sc/b.png"
+                        alt={`Energetski razred ${device.energyClass}`}
+                        className="h-12 w-auto object-contain hover:opacity-80 transition-opacity"
+                      />
+                    </a>
+                  )}
                   {discount > 0 && (
                     <div className="absolute bottom-4 right-4 bg-primary text-primary-foreground font-bold text-base px-4 py-2 rounded-lg shadow-md">
                       -{discount} EUR
