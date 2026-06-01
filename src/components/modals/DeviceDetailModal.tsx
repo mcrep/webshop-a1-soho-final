@@ -129,6 +129,21 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                     alt={`${device.name} ${selectedImageIndex + 1}`}
                     className="w-full h-full object-contain"
                   />
+                  {device.energyClass && (
+                    <a
+                      href="https://sc.a1.hr/sc/energetska-naljepnica.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute top-3 right-3 z-10"
+                      title={`Energetski razred: ${device.energyClass}`}
+                    >
+                      <img
+                        src="https://sc.a1.hr/sc/b.png"
+                        alt={`Energetski razred ${device.energyClass}`}
+                        className="h-12 w-auto object-contain hover:opacity-80 transition-opacity"
+                      />
+                    </a>
+                  )}
                   {discount > 0 && (
                     <div className="absolute bottom-4 right-4 bg-primary text-primary-foreground font-bold text-base px-4 py-2 rounded-lg shadow-md">
                       -{discount} EUR
@@ -171,34 +186,6 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                   </div>
                 )}
 
-                {/* EU Energetska naljepnica */}
-                {device.energyClass && (
-                  <div className="flex flex-col items-center pt-4 mt-2 border-t border-border">
-                    <a
-                      href="https://sc.a1.hr/sc/energetska-naljepnica.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block"
-                    >
-                      <img
-                        src="https://sc.a1.hr/sc/b.png"
-                        alt={`Energetski razred ${device.energyClass}`}
-                        className="h-32 w-auto object-contain hover:opacity-80 transition-opacity"
-                      />
-                    </a>
-                    <span className="text-xs text-muted-foreground mt-2">
-                      Energetski razred: {device.energyClass}
-                    </span>
-                    <a
-                      href="https://sc.a1.hr/sc/energetska-naljepnica.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-primary underline mt-1"
-                    >
-                      Pogledaj energetsku naljepnicu
-                    </a>
-                  </div>
-                )}
               </div>
 
               {/* Right Column - Configuration */}
