@@ -171,6 +171,36 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                   </div>
                 )}
 
+                {/* Energy label */}
+                {device.energyClass && (
+                  <div className="flex items-center gap-3 pt-2">
+                    <img
+                      src="https://sc.a1.hr/sc/b.png"
+                      alt={`Energetski razred ${device.energyClass}`}
+                      className="h-10 w-auto object-contain"
+                    />
+                    <div className="flex flex-col gap-0.5">
+                      <a
+                        href="https://sc.a1.hr/sc/energetska-naljepnica.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary underline hover:opacity-80 transition-opacity"
+                      >
+                        Energetska naljepnica
+                      </a>
+                      <a
+                        href="https://sc.a1.hr/sc/informacijski-list.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary underline hover:opacity-80 transition-opacity"
+                      >
+                        Informacijski list
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+
               </div>
 
               {/* Right Column - Configuration */}
