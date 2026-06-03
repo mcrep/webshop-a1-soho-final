@@ -7,13 +7,6 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Line } from "@/types";
@@ -26,21 +19,12 @@ type NumberPortingModalProps = {
 
 export function NumberPortingModal({ current, onClose, onSave }: NumberPortingModalProps) {
   const [portingNumber, setPortingNumber] = useState(current.portingNumber || "");
-  const [portingNumberType, setPortingNumberType] = useState<"prepaid" | "postpaid">(
-    current.portingNumberType || "prepaid"
-  );
-  const [portingCustomerType, setPortingCustomerType] = useState<"business" | "private">(
-    current.portingCustomerType || "private"
-  );
   const [portingCustomerName, setPortingCustomerName] = useState(current.portingCustomerName || "");
   const [portingOib, setPortingOib] = useState(current.portingOib || "");
   const [portingAddress, setPortingAddress] = useState(current.portingAddress || "");
   const [portingContactNumber, setPortingContactNumber] = useState(current.portingContactNumber || "");
   const [portingStartDate, setPortingStartDate] = useState<Date | undefined>(
     current.portingStartDate
-  );
-  const [portingFromNetwork, setPortingFromNetwork] = useState<"ht" | "telemach" | "">(
-    current.portingFromNetwork || ""
   );
   const [portingTime, setPortingTime] = useState<"morning" | "afternoon">(
     current.portingTime || "morning"
@@ -61,20 +45,19 @@ export function NumberPortingModal({ current, onClose, onSave }: NumberPortingMo
   const handleSave = () => {
     onSave({
       portingNumber,
-      portingNumberType,
-      portingCustomerType,
+      portingNumberType: "postpaid",
+      portingCustomerType: "business",
       portingCustomerName,
       portingOib,
       portingAddress,
       portingContactNumber,
       portingStartDate,
-      portingFromNetwork: portingFromNetwork as "ht" | "telemach",
       portingTime,
     });
     onClose();
   };
 
-  const isValid = portingNumber.length >= 8 && portingFromNetwork !== "";
+  const isValid = portingNumber.length >= 8;
 
   return (
     <motion.div
@@ -130,111 +113,6 @@ export function NumberPortingModal({ current, onClose, onSave }: NumberPortingMo
             </div>
           </div>
 
-          {/* Two columns for desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Vrsta broja */}
-            <div className="space-y-2">
-              <Label>Vrsta broja</Label>
-              <Select value={portingNumberType} onValueChange={(v) => setPortingNumberType(v as "prepaid" | "postpaid")}>
-                <SelectTrigger className="rounded-xl">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="prepaid">Prepaid (bonovi)</SelectItem>
-                  <SelectItem value="postpaid">Postpaid (pretplata)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* S koje mreže */}
-            <div className="space-y-2">
-              <Label>S koje mreže *</Label>
-              <Select value={portingFromNetwork} onValueChange={(v) => setPortingFromNetwork(v as "ht" | "telemach")}>
-                <SelectTrigger className="rounded-xl">
-                  <SelectValue placeholder="Odaberite mrežu" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ht">Hrvatski Telekom</SelectItem>
-                  <SelectItem value="telemach">Telemach</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Tip korisnika */}
-          <div className="space-y-2">
-            <Label>Tip korisnika kod postojećeg operatora</Label>
-            <RadioGroup 
-              value={portingCustomerType} 
-              onValueChange={(v) => setPortingCustomerType(v as "business" | "private")}
-              className="flex gap-4"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="private" id="private" />
-                <Label htmlFor="private" className="cursor-pointer font-normal">Privatni</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="business" id="business" />
-                <Label htmlFor="business" className="cursor-pointer font-normal">Poslovni</Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {/* Naziv korisnika */}
-          <div className="space-y-2">
-            <Label htmlFor="customerName">
-              {portingCustomerType === "business" ? "Naziv tvrtke" : "Ime i prezime"}
-            </Label>
-            <Input
-              id="customerName"
-              value={portingCustomerName}
-              onChange={(e) => setPortingCustomerName(e.target.value)}
-              placeholder={portingCustomerType === "business" ? "Naziv tvrtke d.o.o." : "Ime Prezime"}
-              className="rounded-xl"
-            />
-          </div>
-
-          {/* OIB */}
-          <div className="space-y-2">
-            <Label htmlFor="oib">OIB korisnika</Label>
-            <Input
-              id="oib"
-              value={portingOib}
-              onChange={(e) => setPortingOib(e.target.value.replace(/\D/g, "").slice(0, 11))}
-              placeholder="12345678901"
-              className="rounded-xl"
-              maxLength={11}
-            />
-          </div>
-
-          {/* Adresa */}
-          <div className="space-y-2">
-            <Label htmlFor="address">Adresa</Label>
-            <Input
-              id="address"
-              value={portingAddress}
-              onChange={(e) => setPortingAddress(e.target.value)}
-              placeholder="Ulica i kućni broj, Poštanski broj Grad"
-              className="rounded-xl"
-            />
-          </div>
-
-          {/* Kontakt broj */}
-          <div className="space-y-2">
-            <Label htmlFor="contactNumber">Kontakt broj</Label>
-            <div className="flex items-center rounded-xl border border-border bg-card focus-within:ring-2 focus-within:ring-primary">
-              <span className="pl-3 pr-1 text-muted-foreground select-none">+385</span>
-              <input
-                id="contactNumber"
-                value={formatPhoneDisplay(portingContactNumber)}
-                onChange={handlePhoneChange(setPortingContactNumber)}
-                inputMode="tel"
-                className="flex-1 p-3 pl-1 bg-transparent outline-none"
-                placeholder="9X XXX XXXX"
-              />
-            </div>
-          </div>
-
           {/* Datum i vrijeme prijenosa */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="space-y-2">
@@ -281,6 +159,59 @@ export function NumberPortingModal({ current, onClose, onSave }: NumberPortingMo
                 </div>
               </RadioGroup>
             </div>
+          </div>
+
+          {/* Kontakt broj */}
+          <div className="space-y-2">
+            <Label htmlFor="contactNumber">Kontakt broj</Label>
+            <div className="flex items-center rounded-xl border border-border bg-card focus-within:ring-2 focus-within:ring-primary">
+              <span className="pl-3 pr-1 text-muted-foreground select-none">+385</span>
+              <input
+                id="contactNumber"
+                value={formatPhoneDisplay(portingContactNumber)}
+                onChange={handlePhoneChange(setPortingContactNumber)}
+                inputMode="tel"
+                className="flex-1 p-3 pl-1 bg-transparent outline-none"
+                placeholder="9X XXX XXXX"
+              />
+            </div>
+          </div>
+
+          {/* Naziv tvrtke */}
+          <div className="space-y-2">
+            <Label htmlFor="customerName">Naziv tvrtke</Label>
+            <Input
+              id="customerName"
+              value={portingCustomerName}
+              onChange={(e) => setPortingCustomerName(e.target.value)}
+              placeholder="Naziv tvrtke d.o.o."
+              className="rounded-xl"
+            />
+          </div>
+
+          {/* OIB */}
+          <div className="space-y-2">
+            <Label htmlFor="oib">OIB korisnika</Label>
+            <Input
+              id="oib"
+              value={portingOib}
+              onChange={(e) => setPortingOib(e.target.value.replace(/\D/g, "").slice(0, 11))}
+              placeholder="12345678901"
+              className="rounded-xl"
+              maxLength={11}
+            />
+          </div>
+
+          {/* Adresa */}
+          <div className="space-y-2">
+            <Label htmlFor="address">Adresa</Label>
+            <Input
+              id="address"
+              value={portingAddress}
+              onChange={(e) => setPortingAddress(e.target.value)}
+              placeholder="Ulica i kućni broj, Poštanski broj Grad"
+              className="rounded-xl"
+            />
           </div>
         </div>
 
