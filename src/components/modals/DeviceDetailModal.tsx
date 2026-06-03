@@ -346,6 +346,31 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                     </div>
                   </div>
                 )}
+
+                {/* Ostale karakteristike */}
+                <div className="space-y-3">
+                  <Label className="text-base font-semibold">Ostale karakteristike</Label>
+                  <div className="divide-y divide-border">
+                    <a
+                      href="https://sc.a1.hr/sc/energetska-naljepnica.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="py-2 flex justify-between items-center group"
+                    >
+                      <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">Energetska naljepnica</span>
+                      <span className="text-sm font-medium text-primary underline group-hover:opacity-80 transition-opacity">Otvori</span>
+                    </a>
+                    <a
+                      href="#"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="py-2 flex justify-between items-center group"
+                    >
+                      <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">Informacijski list</span>
+                      <span className="text-sm font-medium text-primary underline group-hover:opacity-80 transition-opacity">Otvori</span>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
