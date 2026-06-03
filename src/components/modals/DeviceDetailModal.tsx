@@ -129,6 +129,21 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                     alt={`${device.name} ${selectedImageIndex + 1}`}
                     className="w-full h-full object-contain"
                   />
+                  {device.energyClass && (
+                    <a
+                      href="https://sc.a1.hr/sc/energetska-naljepnica.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute top-3 right-3 z-10"
+                      title={`Energetski razred: ${device.energyClass}`}
+                    >
+                      <img
+                        src="https://sc.a1.hr/sc/b.png"
+                        alt={`Energetski razred ${device.energyClass}`}
+                        className="h-12 w-auto object-contain hover:opacity-80 transition-opacity"
+                      />
+                    </a>
+                  )}
                   {discount > 0 && (
                     <div className="absolute bottom-4 right-4 bg-primary text-primary-foreground font-bold text-base px-4 py-2 rounded-lg shadow-md">
                       -{discount} EUR
@@ -170,36 +185,6 @@ export function DeviceDetailModal({ device, onClose, onSelectDevice }: DeviceDet
                     ))}
                   </div>
                 )}
-
-                {/* Energy label */}
-                {device.energyClass && (
-                  <div className="flex items-center gap-3 pt-2">
-                    <img
-                      src="https://sc.a1.hr/sc/b.png"
-                      alt={`Energetski razred ${device.energyClass}`}
-                      className="h-10 w-auto object-contain"
-                    />
-                    <div className="flex flex-col gap-0.5">
-                      <a
-                        href="https://sc.a1.hr/sc/energetska-naljepnica.pdf"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-primary underline hover:opacity-80 transition-opacity"
-                      >
-                        Energetska naljepnica
-                      </a>
-                      <a
-                        href="https://sc.a1.hr/sc/informacijski-list.pdf"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-primary underline hover:opacity-80 transition-opacity"
-                      >
-                        Informacijski list
-                      </a>
-                    </div>
-                  </div>
-                )}
-
 
               </div>
 
