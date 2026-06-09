@@ -209,6 +209,7 @@ const Index = () => {
         lineType: slot.isExtension ? "renew" : null,
         walletUse: slot.walletUse,
         screenInsurance: slot.screenInsurance,
+        deviceInsurance: slot.deviceInsurance,
         isExtension: slot.isExtension,
         extensionLabel: slot.isExtension ? slot.label : undefined,
         simType: getDefaultSimType(effectiveDeviceId),
