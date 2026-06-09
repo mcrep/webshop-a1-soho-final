@@ -74,6 +74,7 @@ export function Step3DeviceSelection({
   onUpdatePaymentMethod,
   onUpdateWalletUse,
   onUpdateInsurance,
+  onUpdateDeviceInsurance,
   onUpdateMonthlyInstallment,
   onNext,
   onBack,
