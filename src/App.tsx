@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Devices from "./pages/Devices";
 import NotFound from "./pages/NotFound";
-import { SnjezanaFab } from "./components/snjezana/SnjezanaFab";
+// import { SnjezanaFab } from "./components/snjezana/SnjezanaFab";
 
 const queryClient = new QueryClient();
 
@@ -20,7 +20,7 @@ const App = () => (
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <SnjezanaFab />
+      {/* <SnjezanaFab /> */}
     </BrowserRouter>
   </QueryClientProvider>
 );
