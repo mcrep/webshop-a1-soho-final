@@ -297,7 +297,8 @@ const Index = () => {
           devMonthly = l.deviceMonthly ?? 0;
         }
         const screenInsuranceCost = device && device.id !== "no-dev" && l.screenInsurance ? 4.99 : 0;
-        return s + t + devMonthly + screenInsuranceCost;
+        const deviceInsuranceCost = device && device.id !== "no-dev" && l.deviceInsurance ? 29.99 : 0;
+        return s + t + devMonthly + screenInsuranceCost + deviceInsuranceCost;
       }, 0),
     [lines]
   );
