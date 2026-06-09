@@ -19,6 +19,7 @@ export type Line = {
   lineType: string | null;
   walletUse?: number;
   screenInsurance?: boolean;
+  deviceInsurance?: boolean;
   completed?: boolean;
   isExtension?: boolean;
   extensionLabel?: string;
