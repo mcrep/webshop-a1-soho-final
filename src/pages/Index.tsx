@@ -180,6 +180,11 @@ const Index = () => {
     setDeviceSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, screenInsurance: insurance } : s)));
   };
 
+  const handleUpdateDeviceInsurance = (slotId: string, insurance: boolean) => {
+    setDeviceSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, deviceInsurance: insurance } : s)));
+  };
+
+
   const handleUpdateMonthlyInstallment = (slotId: string, amount: number) => {
     setDeviceSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, monthlyInstallment: amount } : s)));
   };
