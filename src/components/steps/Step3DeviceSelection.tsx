@@ -298,22 +298,67 @@ export function Step3DeviceSelection({
                       </div>
                     )}
 
-                    {/* Screen insurance */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between gap-4 rounded-lg p-3 border border-border">
-                        <Label htmlFor={`insurance-${slot.id}`} className="text-sm font-medium flex-1">
-                          Osiguranje ekrana
-                        </Label>
-                        <Switch
-                          id={`insurance-${slot.id}`}
-                          checked={slot.screenInsurance}
-                          onCheckedChange={(checked) => onUpdateInsurance(slot.id, checked)}
-                        />
-                      </div>
-                      <p className={`text-xs text-muted-foreground pl-3 transition-opacity ${slot.screenInsurance ? 'opacity-100' : 'opacity-0'}`}>
-                        Uz uređaj je aktivirano osiguranje ekrana s mjesečnom naknadom 4,19€
-                      </p>
-                    </div>
+                    {/* Insurance options */}
+                    {(() => {
+                      const screenAvailable = device.screenInsuranceAvailable !== false;
+                      const deviceAvailable = device.deviceInsuranceAvailable !== false;
+                      if (!screenAvailable && !deviceAvailable) return null;
+
+                      const insuranceOptions = [
+                        screenAvailable && {
+                          key: "screen",
+                          icon: ShieldCheck,
+                          label: "Osiguranje ekrana",
+                          price: "4,99 €/mj",
+                          active: slot.screenInsurance,
+                          toggle: () => onUpdateInsurance(slot.id, !slot.screenInsurance),
+                        },
+                        deviceAvailable && {
+                          key: "device",
+                          icon: PhoneIcon,
+                          label: "Osiguranje uređaja",
+                          price: "29,99 €/mj",
+                          active: slot.deviceInsurance,
+                          toggle: () => onUpdateDeviceInsurance(slot.id, !slot.deviceInsurance),
+                        },
+                      ].filter(Boolean) as {
+                        key: string;
+                        icon: typeof ShieldCheck;
+                        label: string;
+                        price: string;
+                        active: boolean;
+                        toggle: () => void;
+                      }[];
+
+                      return (
+                        <div className={`grid gap-2 ${insuranceOptions.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+                          {insuranceOptions.map((opt) => {
+                            const Icon = opt.icon;
+                            return (
+                              <button
+                                key={opt.key}
+                                type="button"
+                                onClick={opt.toggle}
+                                className={`relative flex flex-col items-start gap-1 rounded-xl border-2 p-3 text-left transition-all ${
+                                  opt.active
+                                    ? "border-primary bg-primary/5"
+                                    : "border-border hover:border-foreground"
+                                }`}
+                              >
+                                {opt.active && (
+                                  <span className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                                    <Check className="h-3 w-3" />
+                                  </span>
+                                )}
+                                <Icon className={`h-5 w-5 ${opt.active ? "text-primary" : "text-muted-foreground"}`} />
+                                <span className="text-sm font-medium leading-tight pr-5">{opt.label}</span>
+                                <span className="text-xs text-muted-foreground">{opt.price}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
               </motion.div>
