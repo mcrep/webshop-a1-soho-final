@@ -346,6 +346,7 @@ const Index = () => {
         lineType: slot.isExtension ? "renew" : null,
         walletUse: 0,
         screenInsurance: false,
+        deviceInsurance: false,
         isExtension: slot.isExtension,
         extensionLabel: slot.isExtension ? slot.label : undefined,
         simType: "esim",
