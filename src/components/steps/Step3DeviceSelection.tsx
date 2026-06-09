@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { Slider } from "@/components/ui/slider";
 import { Smartphone, Plus, Gift, Wallet, X, RefreshCw, ShieldCheck, Smartphone as PhoneIcon, Check } from "lucide-react";
 import { devices, tariffs } from "@/data/catalog";
 import { findExistingLineNumber } from "@/data/mock-existing-lines";
