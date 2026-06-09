@@ -76,6 +76,8 @@ export type Device = {
   energyClass?: string;
   availability?: "available" | "on-request" | "unavailable";
   mpcOverride?: number;
+  screenInsuranceAvailable?: boolean;
+  deviceInsuranceAvailable?: boolean;
 };
 
 export type Addon = {
