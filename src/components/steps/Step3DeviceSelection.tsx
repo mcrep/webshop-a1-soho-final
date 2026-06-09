@@ -5,7 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { Smartphone, Plus, Gift, Wallet, X, RefreshCw, ShieldCheck, Smartphone as PhoneIcon, Check } from "lucide-react";
 import { devices, tariffs } from "@/data/catalog";
 import { findExistingLineNumber } from "@/data/mock-existing-lines";
-import { Label } from "@/components/ui/label";
+
 import { motion, LayoutGroup } from "framer-motion";
 import { StatusNotification } from "@/components/StatusNotification";
 import type { Line } from "@/types";
