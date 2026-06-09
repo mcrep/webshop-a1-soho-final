@@ -255,6 +255,14 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
                       </div>
                     )}
 
+                    {line.deviceInsurance && (
+                      <div className="flex items-center justify-between pl-4">
+                        <span className="text-muted-foreground text-xs">Osiguranje uređaja</span>
+                        <span className="text-xs">€{deviceInsuranceCost.toFixed(2)}/mj</span>
+                      </div>
+                    )}
+
+
                     {/* Wallet */}
                     {appliedWallet > 0 && (
                       <div className="flex items-center justify-between pl-4">
