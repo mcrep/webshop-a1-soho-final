@@ -59,13 +59,15 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
           const appliedWallet = line.walletUse ?? 0;
           
           const screenInsuranceCost = device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0;
+          const deviceInsuranceCost = device && device.id !== "no-dev" && line.deviceInsurance ? 29.99 : 0;
           
           const totalMonthly = Math.max(
             0,
             (tariff?.monthly ?? 0) +
               deviceMonthly +
               lineAddons.reduce((sum, addon) => sum + (addon?.monthly ?? 0), 0) +
-              screenInsuranceCost -
+              screenInsuranceCost +
+              deviceInsuranceCost -
               mozaikDiscountPerLine
           );
           
