@@ -168,7 +168,8 @@ export function Step4Summary({
             deviceMonthly = line.deviceMonthly ?? 0;
           }
           const screenInsuranceCost = device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0;
-          const lineMonthly = tariffMonthly + deviceMonthly + screenInsuranceCost;
+          const deviceInsuranceCost = device && device.id !== "no-dev" && line.deviceInsurance ? 29.99 : 0;
+          const lineMonthly = tariffMonthly + deviceMonthly + screenInsuranceCost + deviceInsuranceCost;
 
           let lineOnetime = 0;
           if (device && device.id !== "no-dev") {
