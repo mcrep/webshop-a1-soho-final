@@ -36,6 +36,7 @@ type Step3Props = {
   onUpdatePaymentMethod: (slotId: string, method: "upfront" | "installments") => void;
   onUpdateWalletUse: (slotId: string, amount: number) => void;
   onUpdateInsurance: (slotId: string, insurance: boolean) => void;
+  onUpdateDeviceInsurance: (slotId: string, insurance: boolean) => void;
   onUpdateMonthlyInstallment: (slotId: string, amount: number) => void;
   onNext: () => void;
   onBack: () => void;
