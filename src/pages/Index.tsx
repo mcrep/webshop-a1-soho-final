@@ -39,6 +39,7 @@ type DeviceSlot = {
   isActive: boolean;
   paymentMethod: "upfront" | "installments";
   screenInsurance: boolean;
+  deviceInsurance: boolean;
   monthlyInstallment: number;
   label: string; // "Linija 1", "Linija 2", or MSISDN for extension lines
   isExtension: boolean; // true for extension lines
