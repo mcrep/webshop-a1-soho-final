@@ -150,6 +150,12 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
                               <span>€{screenInsuranceCost.toFixed(2)}</span>
                             </div>
                           )}
+                          {deviceInsuranceCost > 0 && (
+                            <div className="flex justify-between">
+                              <span>Osiguranje uređaja</span>
+                              <span>€{deviceInsuranceCost.toFixed(2)}</span>
+                            </div>
+                          )}
                           {lineAddons.map((addon) => (
                             <div key={addon!.id} className="flex justify-between">
                               <span>{addon!.name}</span>
