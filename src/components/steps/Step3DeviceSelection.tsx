@@ -340,9 +340,10 @@ export function Step3DeviceSelection({
                                 onClick={opt.toggle}
                                 className={`relative flex flex-col items-start gap-1 rounded-xl border-2 p-3 text-left transition-all ${
                                   opt.active
-                                    ? "border-primary bg-primary/5"
+                                    ? "border-transparent"
                                     : "border-border hover:border-foreground"
                                 }`}
+                                style={{ backgroundColor: opt.active ? "#F2F2F2" : undefined }}
                               >
                                 {opt.active && (
                                   <span className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
