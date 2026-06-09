@@ -592,6 +592,7 @@ const Index = () => {
               onUpdatePaymentMethod={handleUpdatePaymentMethod}
               onUpdateWalletUse={handleUpdateWalletUse}
               onUpdateInsurance={handleUpdateInsurance}
+              onUpdateDeviceInsurance={handleUpdateDeviceInsurance}
               onUpdateMonthlyInstallment={handleUpdateMonthlyInstallment}
               onNext={handleDeviceNext}
               onBack={() => setCurrentStep(getStepNumberForScreen("Tarife"))}
