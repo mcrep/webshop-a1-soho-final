@@ -376,6 +376,14 @@ export function Step4Summary({
                               <span>4.99€/mj</span>
                             </div>
                           )}
+
+                          {/* Red 5: Osiguranje uređaja (ako je uključeno) */}
+                          {line.deviceInsurance && (
+                            <div className="flex justify-between">
+                              <span>Osiguranje uređaja</span>
+                              <span>29.99€/mj</span>
+                            </div>
+                          )}
                         </div>
                       )}
 
