@@ -39,6 +39,7 @@ type DeviceSlot = {
   isActive: boolean;
   paymentMethod: "upfront" | "installments";
   screenInsurance: boolean;
+  deviceInsurance: boolean;
   monthlyInstallment: number;
   label: string; // "Linija 1", "Linija 2", or MSISDN for extension lines
   isExtension: boolean; // true for extension lines
@@ -114,6 +115,7 @@ const Index = () => {
             isActive: shouldAutoActivate,
             paymentMethod: "installments",
             screenInsurance: true,
+            deviceInsurance: false,
             monthlyInstallment: 1,
             label: `Nova linija ${newLineIndex}`,
             isExtension: false,
@@ -138,6 +140,7 @@ const Index = () => {
               isActive: shouldAutoActivate,
               paymentMethod: "installments",
               screenInsurance: true,
+              deviceInsurance: false,
               monthlyInstallment: 1,
               label: extLine.msisdn,
               isExtension: true,
@@ -177,6 +180,11 @@ const Index = () => {
     setDeviceSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, screenInsurance: insurance } : s)));
   };
 
+  const handleUpdateDeviceInsurance = (slotId: string, insurance: boolean) => {
+    setDeviceSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, deviceInsurance: insurance } : s)));
+  };
+
+
   const handleUpdateMonthlyInstallment = (slotId: string, amount: number) => {
     setDeviceSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, monthlyInstallment: amount } : s)));
   };
@@ -201,6 +209,7 @@ const Index = () => {
         lineType: slot.isExtension ? "renew" : null,
         walletUse: slot.walletUse,
         screenInsurance: slot.screenInsurance,
+        deviceInsurance: slot.deviceInsurance,
         isExtension: slot.isExtension,
         extensionLabel: slot.isExtension ? slot.label : undefined,
         simType: getDefaultSimType(effectiveDeviceId),
@@ -288,7 +297,8 @@ const Index = () => {
           devMonthly = l.deviceMonthly ?? 0;
         }
         const screenInsuranceCost = device && device.id !== "no-dev" && l.screenInsurance ? 4.99 : 0;
-        return s + t + devMonthly + screenInsuranceCost;
+        const deviceInsuranceCost = device && device.id !== "no-dev" && l.deviceInsurance ? 29.99 : 0;
+        return s + t + devMonthly + screenInsuranceCost + deviceInsuranceCost;
       }, 0),
     [lines]
   );
@@ -336,6 +346,7 @@ const Index = () => {
         lineType: slot.isExtension ? "renew" : null,
         walletUse: 0,
         screenInsurance: false,
+        deviceInsurance: false,
         isExtension: slot.isExtension,
         extensionLabel: slot.isExtension ? slot.label : undefined,
         simType: "esim",
@@ -581,6 +592,7 @@ const Index = () => {
               onUpdatePaymentMethod={handleUpdatePaymentMethod}
               onUpdateWalletUse={handleUpdateWalletUse}
               onUpdateInsurance={handleUpdateInsurance}
+              onUpdateDeviceInsurance={handleUpdateDeviceInsurance}
               onUpdateMonthlyInstallment={handleUpdateMonthlyInstallment}
               onNext={handleDeviceNext}
               onBack={() => setCurrentStep(getStepNumberForScreen("Tarife"))}

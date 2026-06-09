@@ -19,6 +19,7 @@ export type Line = {
   lineType: string | null;
   walletUse?: number;
   screenInsurance?: boolean;
+  deviceInsurance?: boolean;
   completed?: boolean;
   isExtension?: boolean;
   extensionLabel?: string;
@@ -75,6 +76,8 @@ export type Device = {
   energyClass?: string;
   availability?: "available" | "on-request" | "unavailable";
   mpcOverride?: number;
+  screenInsuranceAvailable?: boolean;
+  deviceInsuranceAvailable?: boolean;
 };
 
 export type Addon = {

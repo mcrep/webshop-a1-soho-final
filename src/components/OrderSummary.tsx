@@ -59,13 +59,15 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
           const appliedWallet = line.walletUse ?? 0;
           
           const screenInsuranceCost = device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0;
+          const deviceInsuranceCost = device && device.id !== "no-dev" && line.deviceInsurance ? 29.99 : 0;
           
           const totalMonthly = Math.max(
             0,
             (tariff?.monthly ?? 0) +
               deviceMonthly +
               lineAddons.reduce((sum, addon) => sum + (addon?.monthly ?? 0), 0) +
-              screenInsuranceCost -
+              screenInsuranceCost +
+              deviceInsuranceCost -
               mozaikDiscountPerLine
           );
           
@@ -146,6 +148,12 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
                             <div className="flex justify-between">
                               <span>Osiguranje ekrana</span>
                               <span>€{screenInsuranceCost.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {deviceInsuranceCost > 0 && (
+                            <div className="flex justify-between">
+                              <span>Osiguranje uređaja</span>
+                              <span>€{deviceInsuranceCost.toFixed(2)}</span>
                             </div>
                           )}
                           {lineAddons.map((addon) => (
@@ -246,6 +254,14 @@ export function OrderSummary({ lines, getLineLabel }: OrderSummaryProps) {
                         <span className="text-xs">€{screenInsuranceCost.toFixed(2)}/mj</span>
                       </div>
                     )}
+
+                    {line.deviceInsurance && (
+                      <div className="flex items-center justify-between pl-4">
+                        <span className="text-muted-foreground text-xs">Osiguranje uređaja</span>
+                        <span className="text-xs">€{deviceInsuranceCost.toFixed(2)}/mj</span>
+                      </div>
+                    )}
+
 
                     {/* Wallet */}
                     {appliedWallet > 0 && (

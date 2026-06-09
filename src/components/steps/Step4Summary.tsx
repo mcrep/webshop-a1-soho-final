@@ -168,7 +168,8 @@ export function Step4Summary({
             deviceMonthly = line.deviceMonthly ?? 0;
           }
           const screenInsuranceCost = device && device.id !== "no-dev" && line.screenInsurance ? 4.99 : 0;
-          const lineMonthly = tariffMonthly + deviceMonthly + screenInsuranceCost;
+          const deviceInsuranceCost = device && device.id !== "no-dev" && line.deviceInsurance ? 29.99 : 0;
+          const lineMonthly = tariffMonthly + deviceMonthly + screenInsuranceCost + deviceInsuranceCost;
 
           let lineOnetime = 0;
           if (device && device.id !== "no-dev") {
@@ -373,6 +374,14 @@ export function Step4Summary({
                             <div className="flex justify-between">
                               <span>Osiguranje ekrana</span>
                               <span>4.99€/mj</span>
+                            </div>
+                          )}
+
+                          {/* Red 5: Osiguranje uređaja (ako je uključeno) */}
+                          {line.deviceInsurance && (
+                            <div className="flex justify-between">
+                              <span>Osiguranje uređaja</span>
+                              <span>29.99€/mj</span>
                             </div>
                           )}
                         </div>
