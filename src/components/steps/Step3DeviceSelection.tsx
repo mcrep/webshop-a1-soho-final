@@ -20,6 +20,7 @@ type DeviceSlot = {
   isActive: boolean;
   paymentMethod: "upfront" | "installments";
   screenInsurance: boolean;
+  deviceInsurance: boolean;
   monthlyInstallment: number;
   label: string;
   isExtension: boolean;
