@@ -520,6 +520,17 @@ const Index = () => {
     setUserIdentifier(identifier);
   };
 
+  // Admin override impersonation: pick up MSISDN set on /admovrd
+  useEffect(() => {
+    const msisdn = sessionStorage.getItem("adminImpersonateMsisdn");
+    if (msisdn) {
+      sessionStorage.removeItem("adminImpersonateMsisdn");
+      setIsLoggedIn(true);
+      setUserIdentifier(msisdn);
+      setCustomerType("existing");
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground pb-24">
       <Header
