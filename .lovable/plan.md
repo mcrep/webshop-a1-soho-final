@@ -1,49 +1,42 @@
-## Cilj
+# Admin override stranica (/admovrd)
 
-Uz postojeće "Osiguranje ekrana" dodati i "Osiguranje uređaja" na istom mjestu u kartici uređaja (Korak 3). Umjesto trenutnog toggle reda, prikazati dvije odabir-kartice jedna pored druge. Obje se mogu uključiti neovisno. Ako uređaj ne podržava neku opciju, ta kartica se sakriva (zasad svi uređaji podržavaju oboje).
+Nova ruta `/admovrd` koja otvara login modal sa sistemskim podacima (admin / admin). Nakon prijave admin upisuje MSISDN bilo kojeg korisnika i ulazi u glavni tok narudžbe kao taj (postojeći) korisnik.
 
-## UX prikaz
-
-Dvije kartice u gridu unutar konfiguracije uređaja:
+## Tok
 
 ```text
-┌──────────────────────┐  ┌──────────────────────┐
-│ ✓  Osiguranje ekrana │  │ ✓  Osiguranje uređaja│
-│    4,99 €/mj         │  │    29,99 €/mj        │
-└──────────────────────┘  └──────────────────────┘
+/admovrd  ->  Login modal (admin / admin)
+                     |  uspjeh
+                     v
+              Unos MSISDN-a (bilo koji broj)
+                     |  potvrda
+                     v
+              Preusmjeravanje na /  (prijavljen kao taj MSISDN,
+                                      postojeći korisnik)
 ```
 
-- Klik na karticu uključuje/isključuje tu opciju (kvačica u kutu + istaknuti obrub kad je aktivna).
-- Aktivna kartica: obrub/pozadina u naglasku (A1 stil), neaktivna: neutralni obrub.
-- Kad uređaj podržava samo jednu opciju → prikazuje se samo ta kartica (puna širina ako je sama).
-- Kad uređaj ne podržava nijednu → cijela sekcija se sakrije (prazno).
-- Zadržavamo postojeću napomenu ispod (mali tekst) koja se prilagođava odabranim osiguranjima.
+## Što se gradi
 
-## Cijene
+1. **Nova stranica `src/pages/Admovrd.tsx`**
+   - Na učitavanju odmah prikazuje modal (isti vizualni stil kao postojeći modali: bijela `bg-card`, `z-50`, gradient header, `AnimatePresence`).
+   - Korak 1 — prijava: polja korisničko ime i lozinka. Provjera isključivo lokalno protiv fiksnih vrijednosti `admin` / `admin`. Kod pogrešnih podataka prikazuje grešku.
+   - Korak 2 — impersonacija: polje za unos MSISDN-a (formatiranje kroz postojeću MSISDN logiku, +385 9X XXX XXXX). Prihvaća bilo koji ispravno formatiran broj (bez provjere prema mock listi). Gumb "Nastavi".
+   - Na potvrdu sprema MSISDN u `sessionStorage` (npr. ključ `adminImpersonateMsisdn`) i preusmjerava na `/`.
 
-- Osiguranje ekrana: 4,99 €/mj (postojeće)
-- Osiguranje uređaja: 29,99 €/mj (novo)
+2. **Registracija rute** u `src/App.tsx`
+   - Dodati `<Route path="/admovrd" element={<Admovrd />} />` iznad catch-all rute.
 
-## Tehničke izmjene
+3. **Prihvat impersonacije u `src/pages/Index.tsx`**
+   - Na mountu provjeriti `sessionStorage` ključ; ako postoji MSISDN: postaviti `isLoggedIn = true`, `userIdentifier = MSISDN`, `customerType = "existing"`, te očistiti ključ (jednokratno).
+   - Time korisnik ulazi u isti tok kao i normalno prijavljeni postojeći korisnik.
 
-**Model podataka**
-- `src/types/index.ts`: dodati `deviceInsurance?: boolean` na `Line`. Po želji dodati zastave dostupnosti na `Device` (`screenInsuranceAvailable?`, `deviceInsuranceAvailable?`) — zasad defaultaju na `true` za sve uređaje.
-- DeviceSlot tip (Step3 + Index): dodati `deviceInsurance: boolean`.
+## Napomene
 
-**Stanje i handleri (`src/pages/Index.tsx`)**
-- Inicijalizirati `deviceInsurance` u slotovima (default `false`, osim gdje se trenutno postavlja `screenInsurance: true`).
-- Dodati handler `handleUpdateDeviceInsurance` analogno `handleUpdateInsurance`.
-- Uključiti trošak osiguranja uređaja (29,99) u sve mjesečne kalkulacije gdje se već računa `screenInsuranceCost`.
+- Nema vidljive oznake/trake da je u tijeku admin override (po dogovoru).
+- Nema backend/auth promjena — sve je lokalno (mock), u skladu s ostatkom aplikacije. Vjerodajnice `admin/admin` su namjerno fiksne za demo svrhu.
+- Poštuju se memorijska pravila: stil modala, MSISDN formatiranje, bez logiranja osjetljivih podataka.
 
-**UI (`src/components/steps/Step3DeviceSelection.tsx`)**
-- Zamijeniti postojeći toggle red s dvije odabir-kartice (grid).
-- Dodati prop `onUpdateDeviceInsurance` i koristiti zastave dostupnosti za uvjetni prikaz kartica.
+## Tehnički detalji
 
-**Sažeci / cijene (gdje se pojavljuje `screenInsuranceCost`)**
-- `src/components/OrderSummary.tsx`, `src/components/steps/Step4Summary.tsx`: dodati red "Osiguranje uređaja" i uračunati 29,99 u zbroj kad je uključeno.
-
-**Prosljeđivanje kroz modale**
-- `DeviceDetailModal.tsx` i `DeviceListModal.tsx`: proširiti `onSelectDevice` potpis da nosi i `deviceInsurance` (ili ostaviti `screenInsurance` netaknut i samo dodati novi flag) kako bi se zadržala dosljednost s `Index.tsx`.
-
-## Napomena
-U kodu je trošak osiguranja ekrana 4,99 €, dok stara tekstualna napomena spominje 4,19 €. Uskladit ću napomenu na 4,99 € radi dosljednosti.
+- `sessionStorage` se koristi jer je stanje prijave lokalni state u `Index` (nije globalni store); ključ se čita jednom na mountu i briše.
+- MSISDN formatiranje koristi postojeću util logiku (`mem://features/msisdn-formatting-logic`).
