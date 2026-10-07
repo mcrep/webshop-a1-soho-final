@@ -4,9 +4,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { UserPlus, Users, Smartphone, Minus, Plus, Check, RefreshCw } from "lucide-react";
 import { AuthModal } from "@/components/modals/AuthModal";
 import { ExtensionLinesModal } from "@/components/modals/ExtensionLinesModal";
+import { DeviceLinesModal } from "@/components/modals/DeviceLinesModal";
 import { OIBModal } from "@/components/modals/OIBModal";
 import { motion, AnimatePresence } from "framer-motion";
-import type { ExtensionLineWithTariff } from "@/types";
+import { FileText } from "lucide-react";
+import type { ExtensionLineWithTariff, ProcessType, DevicePurchaseLine } from "@/types";
 
 // Croatian pluralization helper
 const getLinePlural = (n: number) => {
@@ -67,12 +69,16 @@ type Step1Props = {
   isLoggedIn: boolean;
   extensionLines: ExtensionLineWithTariff[];
   companyOIB: string;
+  processType: ProcessType;
+  devicePurchaseLines: DevicePurchaseLine[];
   onUpdateCustomerType: (type: "new" | "existing" | null) => void;
   onUpdateNumberOfLines: (num: number) => void;
   onUpdateNumberOfDevices: (num: number) => void;
   onLoginSuccess: (identifier: string, type: "email" | "phone") => void;
   onUpdateExtensionLines: (lines: ExtensionLineWithTariff[]) => void;
   onUpdateCompanyOIB: (oib: string) => void;
+  onUpdateProcessType: (type: ProcessType) => void;
+  onUpdateDevicePurchaseLines: (lines: DevicePurchaseLine[]) => void;
   onNext: () => void;
 };
 
