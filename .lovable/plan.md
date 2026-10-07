@@ -1,42 +1,65 @@
-# Admin override stranica (/admovrd)
+# Drugi flow: Naknadno uzimanje uređaja
 
-Nova ruta `/admovrd` koja otvara login modal sa sistemskim podacima (admin / admin). Nakon prijave admin upisuje MSISDN bilo kojeg korisnika i ulazi u glavni tok narudžbe kao taj (postojeći) korisnik.
+## Pregled
 
-## Tok
+Za ulogirane korisnike na prvom ekranu dodajemo izbor procesa:
+
+1. **Aktivacija / produljenje ugovora** — postojeći flow (nove linije + produljenje + uređaji)
+2. **Naknadno uzimanje uređaja** — novi flow gdje korisnik samo kupuje uređaje za postojeće linije, bez promjene tarife
+
+## Predloženi UX na prvom ekranu (ulogiran korisnik)
+
+Nakon prijave, iznad rečenice prikazuju se dvije odabir-kartice (isti stil kao "Novi/Postojeći korisnik"):
 
 ```text
-/admovrd  ->  Login modal (admin / admin)
-                     |  uspjeh
-                     v
-              Unos MSISDN-a (bilo koji broj)
-                     |  potvrda
-                     v
-              Preusmjeravanje na /  (prijavljen kao taj MSISDN,
-                                      postojeći korisnik)
+┌─────────────────────────┐  ┌─────────────────────────┐
+│   📄 Aktivacija i       │  │   📱 Naknadno uzimanje  │
+│   produljenje ugovora   │  │   uređaja               │
+└─────────────────────────┘  └─────────────────────────┘
 ```
 
-## Što se gradi
+- **Aktivacija/produljenje** (default): prikazuje se postojeća rečenica
+  "Želim aktivirati X novih linija i produljiti Y linija, a uz to želim kupiti Z uređaja"
+- **Naknadno uzimanje uređaja**: prikazuje se nova, jednostavnija rečenica:
 
-1. **Nova stranica `src/pages/Admovrd.tsx`**
-   - Na učitavanju odmah prikazuje modal (isti vizualni stil kao postojeći modali: bijela `bg-card`, `z-50`, gradient header, `AnimatePresence`).
-   - Korak 1 — prijava: polja korisničko ime i lozinka. Provjera isključivo lokalno protiv fiksnih vrijednosti `admin` / `admin`. Kod pogrešnih podataka prikazuje grešku.
-   - Korak 2 — impersonacija: polje za unos MSISDN-a (formatiranje kroz postojeću MSISDN logiku, +385 9X XXX XXXX). Prihvaća bilo koji ispravno formatiran broj (bez provjere prema mock listi). Gumb "Nastavi".
-   - Na potvrdu sprema MSISDN u `sessionStorage` (npr. ključ `adminImpersonateMsisdn`) i preusmjerava na `/`.
+```text
+Želim kupiti  ( X )  mobilnih uređaja
+```
 
-2. **Registracija rute** u `src/App.tsx`
-   - Dodati `<Route path="/admovrd" element={<Admovrd />} />` iznad catch-all rute.
+gdje je **X klikabilan broj** (isti stil kao broj produljenja — veliki crveni broj u zaobljenom gumbu) koji otvara modal s popisom linija.
 
-3. **Prihvat impersonacije u `src/pages/Index.tsx`**
-   - Na mountu provjeriti `sessionStorage` ključ; ako postoji MSISDN: postaviti `isLoggedIn = true`, `userIdentifier = MSISDN`, `customerType = "existing"`, te očistiti ključ (jednokratno).
-   - Time korisnik ulazi u isti tok kao i normalno prijavljeni postojeći korisnik.
+## Modal za odabir linija (DeviceLinesModal)
 
-## Napomene
+- Novi modal, vizualno identičan `ExtensionLinesModal` (isti header s gradientom, kartice linija s kvačicom, footer s "Spremi (n)")
+- Naslov: "Odaberite linije za koje kupujete uređaj"
+- Popis postojećih linija korisnika (mock podaci, isti kao u produljenju) — svaka linija prikazuje broj, trenutnu tarifu i datum isteka
+- Korisnik označi jednu ili više linija; svaka označena linija = jedan uređaj
+- Spremi → rečenica prikazuje broj označenih linija
 
-- Nema vidljive oznake/trake da je u tijeku admin override (po dogovoru).
-- Nema backend/auth promjena — sve je lokalno (mock), u skladu s ostatkom aplikacije. Vjerodajnice `admin/admin` su namjerno fiksne za demo svrhu.
-- Poštuju se memorijska pravila: stil modala, MSISDN formatiranje, bez logiranja osjetljivih podataka.
+## Promjene u flow-u koraka
+
+Za proces "Naknadno uzimanje uređaja" stepper postaje:
+
+```text
+Početak → Uređaji → Sažetak → Isporuka
+```
+
+- **Preskače se korak Tarife** — linije već imaju svoje tarife, ne mijenjaju se
+- **Uređaji**: device slotovi se generiraju iz odabranih linija, označeni MSISDN-om (kao extension linije danas), bez opcije "Bez uređaja"
+- **Sažetak**: prikazuje samo uređaje s njihovim linijama; bez wallet bonusa po liniji (nema novih/produljenih linija), wallet se puni samo kroz kupnju uređaja ako je primjenjivo
+- **Verifikacija se preskače** (korisnik je postojeći)
+- **Isporuka i plaćanje**: nepromijenjeno, uključujući postojeći Step7 credit check / payment flow
 
 ## Tehnički detalji
 
-- `sessionStorage` se koristi jer je stanje prijave lokalni state u `Index` (nije globalni store); ključ se čita jednom na mountu i briše.
-- MSISDN formatiranje koristi postojeću util logiku (`mem://features/msisdn-formatting-logic`).
+- `src/types/index.ts`: novi tip `processType: "activation" | "device-purchase"` i `DevicePurchaseLine { lineId, msisdn, currentTariff }`
+- `src/pages/Index.tsx`: novo stanje `processType` i `devicePurchaseLines`; `steps` useMemo gradi korake ovisno o procesu (bez Tarife/Verifikacije za device-purchase); `generateDeviceSlots` gradi slotove iz `devicePurchaseLines` kada je aktivan taj proces; reset i logout čiste novo stanje
+- `src/components/steps/Step1CustomerInfo.tsx`: izbor procesa (dvije kartice, vidljivo samo ulogiranima) + uvjetni prikaz rečenice; klikabilni X otvara novi modal
+- `src/components/modals/DeviceLinesModal.tsx`: nova komponenta, kopira strukturu `ExtensionLinesModal`
+- `src/components/steps/Step4Summary.tsx`: za device-purchase proces prikazuje samo uređaje (bez tarifnih badgeova po liniji — tarifa se prikazuje informativno iz postojeće linije)
+- Mock podaci: privremeno koristimo iste mock linije kao `mockExistingLines`; kasnije će doći iz API-ja
+
+## Otvorena pitanja (pretpostavke u planu)
+
+- Wallet bonus: pretpostavka da nema wallet kredita po liniji u ovom procesu (nema ugovorne obaveze na liniju); uređaji se plaćaju punom cijenom ili na rate
+- Uređaj se veže uz točno jednu liniju (1 linija = 1 uređaj)
