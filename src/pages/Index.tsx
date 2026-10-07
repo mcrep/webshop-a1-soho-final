@@ -306,8 +306,9 @@ const Index = () => {
   );
 
   const walletTotal = useMemo(
-    () => noDeviceWalletBonus + tariffCredit,
-    [noDeviceWalletBonus, tariffCredit]
+    // Device purchase flow: no new wallet credit — user can only spend existing balance
+    () => processType === "device-purchase" ? 0 : noDeviceWalletBonus + tariffCredit,
+    [noDeviceWalletBonus, tariffCredit, processType]
   );
 
   const walletUsed = useMemo(
@@ -484,7 +485,9 @@ const Index = () => {
     const allLinesAssigned = lineAssignments.length === totalLines;
     const hasAtLeastOneLine = totalLines > 0;
     const canProceed = {
-      "Početak": customerType !== null && hasAtLeastOneLine && numberOfDevices >= 0 && numberOfDevices <= totalLines && (customerType === "new" || isLoggedIn),
+      "Početak": processType === "device-purchase"
+        ? isLoggedIn && devicePurchaseLines.length > 0
+        : customerType !== null && hasAtLeastOneLine && numberOfDevices >= 0 && numberOfDevices <= totalLines && (customerType === "new" || isLoggedIn),
       "Tarife": allLinesAssigned,
       "Uređaji": (() => {
         const activeSlots = deviceSlots.filter((slot) => slot.isActive);
