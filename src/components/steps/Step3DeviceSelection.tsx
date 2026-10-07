@@ -23,6 +23,7 @@ type DeviceSlot = {
   monthlyInstallment: number;
   label: string;
   isExtension: boolean;
+  existingTariffName?: string;
 };
 
 type Step3Props = {
@@ -178,7 +179,7 @@ export function Step3DeviceSelection({
                   <div className="font-bold text-lg mb-2">{displayLabel}</div>
                   <div className="flex flex-wrap gap-2">
                     <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-muted text-sm font-medium">
-                      {tariff?.name || "Unknown"}
+                      {tariff?.name || slot.existingTariffName || "Unknown"}
                     </span>
                     {device && (
                       <button
@@ -407,7 +408,7 @@ export function Step3DeviceSelection({
                       </div>
                       <div>
                         <div className="font-medium text-sm">{displayLabel}</div>
-                        <div className="text-xs text-muted-foreground">{tariff?.name || "Unknown"}</div>
+                        <div className="text-xs text-muted-foreground">{tariff?.name || slot.existingTariffName || "Unknown"}</div>
                       </div>
                     </div>
 
