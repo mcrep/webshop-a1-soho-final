@@ -43,6 +43,7 @@ type DeviceSlot = {
   monthlyInstallment: number;
   label: string; // "Linija 1", "Linija 2", or MSISDN for extension lines
   isExtension: boolean; // true for extension lines
+  existingTariffName?: string; // current tariff name for device-purchase lines
 };
 
 const Index = () => {
