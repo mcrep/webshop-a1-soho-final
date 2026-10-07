@@ -18,7 +18,7 @@ import { PrepaidToPostpaidModal } from "@/components/modals/PrepaidToPostpaidMod
 import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExtensionModal";
 import { AuthModal } from "@/components/modals/AuthModal";
 import { tariffs, devices } from "@/data/catalog";
-import type { Line, VerificationData, DeliveryData, PaymentData, ExtensionLineWithTariff, OrderProcessingState } from "@/types";
+import type { Line, VerificationData, DeliveryData, PaymentData, ExtensionLineWithTariff, OrderProcessingState, ProcessType, DevicePurchaseLine } from "@/types";
 import { toast } from "@/hooks/use-toast";
 
 function rid() {
@@ -67,10 +67,21 @@ const Index = () => {
   const [orderProcessingState, setOrderProcessingState] = useState<OrderProcessingState | null>(null);
   const [cardAttempts, setCardAttempts] = useState(0);
   const [contractDownloaded, setContractDownloaded] = useState(false);
+  const [processType, setProcessType] = useState<ProcessType>("activation");
+  const [devicePurchaseLines, setDevicePurchaseLines] = useState<DevicePurchaseLine[]>([]);
 
   const steps = useMemo(() => {
     const dynamicSteps = [{ number: 1, name: "Početak" }];
     let stepNumber = 2;
+    // Device purchase flow: no tariff selection, no verification
+    if (processType === "device-purchase") {
+      dynamicSteps.push({ number: stepNumber, name: "Uređaji" });
+      stepNumber++;
+      dynamicSteps.push({ number: stepNumber, name: "Sažetak" });
+      stepNumber++;
+      dynamicSteps.push({ number: stepNumber, name: "Isporuka" });
+      return dynamicSteps;
+    }
     // Removed login step - login is now handled on first screen
     dynamicSteps.push({ number: stepNumber, name: "Tarife" });
     stepNumber++;
@@ -86,7 +97,7 @@ const Index = () => {
     }
     dynamicSteps.push({ number: stepNumber, name: "Isporuka" });
     return dynamicSteps;
-  }, [customerType, numberOfDevices]);
+  }, [customerType, numberOfDevices, processType]);
 
   const updateLineAssignments = (assignments: LineAssignment[]) => {
     setLineAssignments(assignments);
