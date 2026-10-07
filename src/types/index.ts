@@ -132,4 +132,12 @@ export type ExtensionLineWithTariff = {
   newTariffId: string | null;
 };
 
+export type ProcessType = "activation" | "device-purchase";
+
+export type DevicePurchaseLine = {
+  lineId: string;
+  msisdn: string;
+  currentTariff: string;
+};
+
 export type OrderProcessingState = "credit-check" | "credit-denied" | "card-payment" | "payment-error" | "success";
