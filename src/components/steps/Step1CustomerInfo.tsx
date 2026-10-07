@@ -30,6 +30,30 @@ const getDevicePlural = (n: number) => {
   return "mobilnih uređaja";
 };
 
+// Process options shown as a compact segmented control for logged-in users
+const PROCESS_OPTIONS: {
+  id: ProcessType;
+  short: string;
+  extra: string;
+  hint: string;
+  icon: typeof FileText;
+}[] = [
+  {
+    id: "activation",
+    short: "Aktivacija",
+    extra: " i produljenje ugovora",
+    hint: "Nove linije, produljenje postojećih linija i kupnja uređaja",
+    icon: FileText,
+  },
+  {
+    id: "device-purchase",
+    short: "Naknadno uzimanje",
+    extra: " uređaja",
+    hint: "Kupnja uređaja za postojeće linije bez promjene tarife",
+    icon: Smartphone,
+  },
+];
+
 // Animated number component
 const AnimatedNumber = ({ value, className }: { value: number; className?: string }) => (
   <AnimatePresence mode="popLayout">
@@ -213,48 +237,43 @@ export function Step1CustomerInfo({
           </CardContent>
         </Card>
 
-        {/* Process Type Selection - Only for logged in users */}
+        {/* Process Type Selection - compact segmented control */}
         {isLoggedIn && (
-          <Card className="border-0 shadow-none">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <FileText className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="text-lg font-semibold">Želim</h3>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  onClick={() => onUpdateProcessType("activation")}
-                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                    processType === "activation"
-                      ? "border-transparent bg-[#F2F2F2]"
-                      : "border-border hover:border-black"
-                  }`}
-                >
-                  <FileText className={`h-8 w-8 mx-auto mb-3 ${processType === "activation" ? "text-primary" : "text-muted-foreground"}`} />
-                  <p className={`font-semibold ${processType === "activation" ? "text-primary" : "text-foreground"}`}>
-                    Aktivacija i produljenje ugovora
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">Nove linije, produljenje postojećih linija i kupnja uređaja</p>
-                </button>
-                <button
-                  onClick={() => onUpdateProcessType("device-purchase")}
-                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                    processType === "device-purchase"
-                      ? "border-transparent bg-[#F2F2F2]"
-                      : "border-border hover:border-black"
-                  }`}
-                >
-                  <Smartphone className={`h-8 w-8 mx-auto mb-3 ${processType === "device-purchase" ? "text-primary" : "text-muted-foreground"}`} />
-                  <p className={`font-semibold ${processType === "device-purchase" ? "text-primary" : "text-foreground"}`}>
-                    Naknadno uzimanje uređaja
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">Kupnja uređaja za postojeće linije bez promjene tarife</p>
-                </button>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="flex flex-col items-center gap-2">
+            <div className="inline-flex w-full sm:w-auto items-center gap-1 p-1 rounded-full bg-[#F2F2F2] border border-border">
+              {PROCESS_OPTIONS.map((opt) => {
+                const active = processType === opt.id;
+                const Icon = opt.icon;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => onUpdateProcessType(opt.id)}
+                    className={`relative inline-flex flex-1 sm:flex-none items-center justify-center gap-2 h-9 px-3 sm:px-5 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 ${
+                      active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {active && (
+                      <motion.span
+                        layoutId="process-type-pill"
+                        className="absolute inset-0 rounded-full bg-card shadow-sm"
+                        transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                      />
+                    )}
+                    <Icon className="relative h-4 w-4 shrink-0" />
+                    <span className="relative whitespace-nowrap">
+                      {opt.short}
+                      <span className="hidden sm:inline">{opt.extra}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground text-center max-w-md px-2">
+              {PROCESS_OPTIONS.find((opt) => opt.id === processType)?.hint}
+            </p>
+          </div>
         )}
 
         {/* Combined Lines & Devices Configuration - Single container, no border */}
