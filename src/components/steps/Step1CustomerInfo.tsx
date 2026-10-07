@@ -4,9 +4,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { UserPlus, Users, Smartphone, Minus, Plus, Check, RefreshCw } from "lucide-react";
 import { AuthModal } from "@/components/modals/AuthModal";
 import { ExtensionLinesModal } from "@/components/modals/ExtensionLinesModal";
+import { DeviceLinesModal } from "@/components/modals/DeviceLinesModal";
 import { OIBModal } from "@/components/modals/OIBModal";
 import { motion, AnimatePresence } from "framer-motion";
-import type { ExtensionLineWithTariff } from "@/types";
+import { FileText } from "lucide-react";
+import type { ExtensionLineWithTariff, ProcessType, DevicePurchaseLine } from "@/types";
 
 // Croatian pluralization helper
 const getLinePlural = (n: number) => {
@@ -67,12 +69,16 @@ type Step1Props = {
   isLoggedIn: boolean;
   extensionLines: ExtensionLineWithTariff[];
   companyOIB: string;
+  processType: ProcessType;
+  devicePurchaseLines: DevicePurchaseLine[];
   onUpdateCustomerType: (type: "new" | "existing" | null) => void;
   onUpdateNumberOfLines: (num: number) => void;
   onUpdateNumberOfDevices: (num: number) => void;
   onLoginSuccess: (identifier: string, type: "email" | "phone") => void;
   onUpdateExtensionLines: (lines: ExtensionLineWithTariff[]) => void;
   onUpdateCompanyOIB: (oib: string) => void;
+  onUpdateProcessType: (type: ProcessType) => void;
+  onUpdateDevicePurchaseLines: (lines: DevicePurchaseLine[]) => void;
   onNext: () => void;
 };
 
@@ -83,12 +89,16 @@ export function Step1CustomerInfo({
   isLoggedIn,
   extensionLines,
   companyOIB,
+  processType,
+  devicePurchaseLines,
   onUpdateCustomerType,
   onUpdateNumberOfLines,
   onUpdateNumberOfDevices,
   onLoginSuccess,
   onUpdateExtensionLines,
   onUpdateCompanyOIB,
+  onUpdateProcessType,
+  onUpdateDevicePurchaseLines,
   onNext,
 }: Step1Props) {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -96,11 +106,15 @@ export function Step1CustomerInfo({
   // calls onLoginSuccess() and onClose() synchronously in the same tick.
   const authModalLoginCompletedRef = useRef(false);
   const [showExtensionModal, setShowExtensionModal] = useState(false);
+  const [showDeviceLinesModal, setShowDeviceLinesModal] = useState(false);
   const [showOIBModal, setShowOIBModal] = useState(false);
   
   // Max devices = new lines + extension lines (for logged in users)
   const maxDevices = isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines;
-  const canProceed = customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= maxDevices && (customerType === "new" || isLoggedIn);
+  const isDevicePurchase = isLoggedIn && processType === "device-purchase";
+  const canProceed = isDevicePurchase
+    ? devicePurchaseLines.length > 0
+    : customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= maxDevices && (customerType === "new" || isLoggedIn);
 
   // Auto-adjust numberOfDevices if it exceeds maxDevices
   useEffect(() => {
@@ -199,10 +213,75 @@ export function Step1CustomerInfo({
           </CardContent>
         </Card>
 
+        {/* Process Type Selection - Only for logged in users */}
+        {isLoggedIn && (
+          <Card className="border-0 shadow-none">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <FileText className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold">Želim</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  onClick={() => onUpdateProcessType("activation")}
+                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                    processType === "activation"
+                      ? "border-transparent bg-[#F2F2F2]"
+                      : "border-border hover:border-black"
+                  }`}
+                >
+                  <FileText className={`h-8 w-8 mx-auto mb-3 ${processType === "activation" ? "text-primary" : "text-muted-foreground"}`} />
+                  <p className={`font-semibold ${processType === "activation" ? "text-primary" : "text-foreground"}`}>
+                    Aktivacija i produljenje ugovora
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">Nove linije, produljenje postojećih linija i kupnja uređaja</p>
+                </button>
+                <button
+                  onClick={() => onUpdateProcessType("device-purchase")}
+                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                    processType === "device-purchase"
+                      ? "border-transparent bg-[#F2F2F2]"
+                      : "border-border hover:border-black"
+                  }`}
+                >
+                  <Smartphone className={`h-8 w-8 mx-auto mb-3 ${processType === "device-purchase" ? "text-primary" : "text-muted-foreground"}`} />
+                  <p className={`font-semibold ${processType === "device-purchase" ? "text-primary" : "text-foreground"}`}>
+                    Naknadno uzimanje uređaja
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">Kupnja uređaja za postojeće linije bez promjene tarife</p>
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Combined Lines & Devices Configuration - Single container, no border */}
         <Card className="border-0 shadow-none">
           <CardContent className="p-6 space-y-6">
-            {/* Grid layout for consistent alignment */}
+            {isDevicePurchase ? (
+              /* Device Purchase Flow - single sentence */
+              <div className="flex flex-col items-center gap-6">
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 w-full max-w-2xl">
+                  <div className="flex items-center justify-end">
+                    <h3 className="text-lg font-semibold whitespace-nowrap">Želim kupiti</h3>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowDeviceLinesModal(true)}
+                    className="h-16 w-[80px] rounded-full text-5xl font-bold text-primary hover:bg-muted"
+                  >
+                    <AnimatedNumber value={devicePurchaseLines.length} className="text-5xl font-bold text-primary" />
+                  </Button>
+                  <h3 className="text-lg font-semibold"><AnimatedText text={getDevicePlural(devicePurchaseLines.length)} /></h3>
+                </div>
+                <p className="text-sm text-muted-foreground text-center max-w-md">
+                  Kliknite na broj za odabir linija za koje kupujete uređaje. Svaka linija može dobiti jedan uređaj.
+                </p>
+              </div>
+            ) : (
+            /* Grid layout for consistent alignment */
             <div className="flex flex-col items-center gap-6">
               {/* Number of Lines */}
               <div className="grid grid-cols-[1fr_auto_auto_auto_1fr] items-center gap-3 w-full max-w-2xl">
