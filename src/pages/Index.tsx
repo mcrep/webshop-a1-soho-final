@@ -624,12 +624,16 @@ const Index = () => {
               isLoggedIn={isLoggedIn}
               extensionLines={extensionLines}
               companyOIB={companyOIB}
+              processType={processType}
+              devicePurchaseLines={devicePurchaseLines}
               onUpdateCustomerType={setCustomerType}
               onUpdateNumberOfLines={setNumberOfLines}
               onUpdateNumberOfDevices={setNumberOfDevices}
               onLoginSuccess={handleLoginSuccess}
               onUpdateExtensionLines={setExtensionLines}
               onUpdateCompanyOIB={setCompanyOIB}
+              onUpdateProcessType={setProcessType}
+              onUpdateDevicePurchaseLines={setDevicePurchaseLines}
               onNext={handleStep1Next}
             />
           )}
@@ -657,7 +661,7 @@ const Index = () => {
               onUpdateDeviceInsurance={handleUpdateDeviceInsurance}
               onUpdateMonthlyInstallment={handleUpdateMonthlyInstallment}
               onNext={handleDeviceNext}
-              onBack={() => setCurrentStep(getStepNumberForScreen("Tarife"))}
+              onBack={() => setCurrentStep(processType === "device-purchase" ? 1 : getStepNumberForScreen("Tarife"))}
             />
           )}
           {currentScreen === "Sažetak" && (
@@ -666,8 +670,11 @@ const Index = () => {
               totalMonthly={totalMonthly}
               totalOnetime={totalOnetime}
               onUpdateLine={updateLine}
+              processType={processType}
               onBack={() => {
-                const prevStep = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
+                const prevStep = processType === "device-purchase"
+                  ? getStepNumberForScreen("Uređaji")
+                  : numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
                 setCurrentStep(prevStep);
               }}
               onFinish={handleFinish}
