@@ -59,7 +59,7 @@ Početak → Uređaji → Sažetak → Isporuka
 - `src/components/steps/Step4Summary.tsx`: za device-purchase proces prikazuje samo uređaje (bez tarifnih badgeova po liniji — tarifa se prikazuje informativno iz postojeće linije)
 - Mock podaci: privremeno koristimo iste mock linije kao `mockExistingLines`; kasnije će doći iz API-ja
 
-## Otvorena pitanja (pretpostavke u planu)
+## Pravila (potvrđeno)
 
-- Wallet bonus: pretpostavka da nema wallet kredita po liniji u ovom procesu (nema ugovorne obaveze na liniju); uređaji se plaćaju punom cijenom ili na rate
-- Uređaj se veže uz točno jednu liniju (1 linija = 1 uređaj)
+- **Wallet**: korisnik NE dobiva nikakav novi wallet iznos u ovom procesu — može trošiti samo već dostupni wallet iznos na uređaje
+- **Veza uređaja i linije**: 1 uređaj se veže uz točno 1 liniju (1 linija = 1 uređaj)
