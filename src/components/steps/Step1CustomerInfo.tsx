@@ -213,10 +213,75 @@ export function Step1CustomerInfo({
           </CardContent>
         </Card>
 
+        {/* Process Type Selection - Only for logged in users */}
+        {isLoggedIn && (
+          <Card className="border-0 shadow-none">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <FileText className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold">Želim</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  onClick={() => onUpdateProcessType("activation")}
+                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                    processType === "activation"
+                      ? "border-transparent bg-[#F2F2F2]"
+                      : "border-border hover:border-black"
+                  }`}
+                >
+                  <FileText className={`h-8 w-8 mx-auto mb-3 ${processType === "activation" ? "text-primary" : "text-muted-foreground"}`} />
+                  <p className={`font-semibold ${processType === "activation" ? "text-primary" : "text-foreground"}`}>
+                    Aktivacija i produljenje ugovora
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">Nove linije, produljenje postojećih linija i kupnja uređaja</p>
+                </button>
+                <button
+                  onClick={() => onUpdateProcessType("device-purchase")}
+                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                    processType === "device-purchase"
+                      ? "border-transparent bg-[#F2F2F2]"
+                      : "border-border hover:border-black"
+                  }`}
+                >
+                  <Smartphone className={`h-8 w-8 mx-auto mb-3 ${processType === "device-purchase" ? "text-primary" : "text-muted-foreground"}`} />
+                  <p className={`font-semibold ${processType === "device-purchase" ? "text-primary" : "text-foreground"}`}>
+                    Naknadno uzimanje uređaja
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">Kupnja uređaja za postojeće linije bez promjene tarife</p>
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Combined Lines & Devices Configuration - Single container, no border */}
         <Card className="border-0 shadow-none">
           <CardContent className="p-6 space-y-6">
-            {/* Grid layout for consistent alignment */}
+            {isDevicePurchase ? (
+              /* Device Purchase Flow - single sentence */
+              <div className="flex flex-col items-center gap-6">
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 w-full max-w-2xl">
+                  <div className="flex items-center justify-end">
+                    <h3 className="text-lg font-semibold whitespace-nowrap">Želim kupiti</h3>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowDeviceLinesModal(true)}
+                    className="h-16 w-[80px] rounded-full text-5xl font-bold text-primary hover:bg-muted"
+                  >
+                    <AnimatedNumber value={devicePurchaseLines.length} className="text-5xl font-bold text-primary" />
+                  </Button>
+                  <h3 className="text-lg font-semibold"><AnimatedText text={getDevicePlural(devicePurchaseLines.length)} /></h3>
+                </div>
+                <p className="text-sm text-muted-foreground text-center max-w-md">
+                  Kliknite na broj za odabir linija za koje kupujete uređaje. Svaka linija može dobiti jedan uređaj.
+                </p>
+              </div>
+            ) : (
+            /* Grid layout for consistent alignment */
             <div className="flex flex-col items-center gap-6">
               {/* Number of Lines */}
               <div className="grid grid-cols-[1fr_auto_auto_auto_1fr] items-center gap-3 w-full max-w-2xl">
