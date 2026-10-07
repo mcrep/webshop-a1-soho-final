@@ -30,6 +30,30 @@ const getDevicePlural = (n: number) => {
   return "mobilnih uređaja";
 };
 
+// Process options shown as a compact segmented control for logged-in users
+const PROCESS_OPTIONS: {
+  id: ProcessType;
+  short: string;
+  extra: string;
+  hint: string;
+  icon: typeof FileText;
+}[] = [
+  {
+    id: "activation",
+    short: "Aktivacija",
+    extra: " i produljenje ugovora",
+    hint: "Nove linije, produljenje postojećih linija i kupnja uređaja",
+    icon: FileText,
+  },
+  {
+    id: "device-purchase",
+    short: "Naknadno uzimanje",
+    extra: " uređaja",
+    hint: "Kupnja uređaja za postojeće linije bez promjene tarife",
+    icon: Smartphone,
+  },
+];
+
 // Animated number component
 const AnimatedNumber = ({ value, className }: { value: number; className?: string }) => (
   <AnimatePresence mode="popLayout">
