@@ -467,6 +467,9 @@ const Index = () => {
     setCardAttempts(0);
     setExtensionLines([]);
     setCompanyOIB("");
+    setProcessType("activation");
+    setDevicePurchaseLines([]);
+    setContractDownloaded(false);
   };
 
   const handleFinish = () => {
@@ -517,12 +520,14 @@ const Index = () => {
       },
       "Uređaji": { 
         onNext: handleDeviceNext, 
-        onBack: () => setCurrentStep(getStepNumberForScreen("Tarife"))
+        onBack: () => setCurrentStep(processType === "device-purchase" ? 1 : getStepNumberForScreen("Tarife"))
       },
       "Sažetak": { 
         onNext: handleSummaryNext, 
         onBack: () => {
-          const prevStep = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
+          const prevStep = processType === "device-purchase"
+            ? getStepNumberForScreen("Uređaji")
+            : numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
           setCurrentStep(prevStep);
         }
       },
@@ -554,6 +559,8 @@ const Index = () => {
     setUserIdentifier("");
     setExtensionLines([]);
     setCustomerType(null);
+    setProcessType("activation");
+    setDevicePurchaseLines([]);
   };
 
   const handleLoginSuccess = (identifier: string, type: "email" | "phone") => {
