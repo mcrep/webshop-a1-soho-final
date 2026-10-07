@@ -89,12 +89,16 @@ export function Step1CustomerInfo({
   isLoggedIn,
   extensionLines,
   companyOIB,
+  processType,
+  devicePurchaseLines,
   onUpdateCustomerType,
   onUpdateNumberOfLines,
   onUpdateNumberOfDevices,
   onLoginSuccess,
   onUpdateExtensionLines,
   onUpdateCompanyOIB,
+  onUpdateProcessType,
+  onUpdateDevicePurchaseLines,
   onNext,
 }: Step1Props) {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -102,11 +106,15 @@ export function Step1CustomerInfo({
   // calls onLoginSuccess() and onClose() synchronously in the same tick.
   const authModalLoginCompletedRef = useRef(false);
   const [showExtensionModal, setShowExtensionModal] = useState(false);
+  const [showDeviceLinesModal, setShowDeviceLinesModal] = useState(false);
   const [showOIBModal, setShowOIBModal] = useState(false);
   
   // Max devices = new lines + extension lines (for logged in users)
   const maxDevices = isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines;
-  const canProceed = customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= maxDevices && (customerType === "new" || isLoggedIn);
+  const isDevicePurchase = isLoggedIn && processType === "device-purchase";
+  const canProceed = isDevicePurchase
+    ? devicePurchaseLines.length > 0
+    : customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= maxDevices && (customerType === "new" || isLoggedIn);
 
   // Auto-adjust numberOfDevices if it exceeds maxDevices
   useEffect(() => {
