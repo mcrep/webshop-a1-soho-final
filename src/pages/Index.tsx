@@ -107,6 +107,27 @@ const Index = () => {
     const slots: DeviceSlot[] = [];
     let newLineIndex = 1;
     
+    // Device purchase flow: one active slot per selected line, labeled by MSISDN
+    if (processType === "device-purchase") {
+      devicePurchaseLines.forEach((line) => {
+        slots.push({
+          id: rid(),
+          deviceId: null,
+          walletUse: 0,
+          tariffId: "",
+          isActive: true,
+          paymentMethod: "installments",
+          screenInsurance: false,
+          deviceInsurance: false,
+          monthlyInstallment: 1,
+          label: line.msisdn,
+          isExtension: true,
+        });
+      });
+      setDeviceSlots(slots);
+      return slots;
+    }
+    
     // Calculate total lines to determine auto-activation
     const totalLines = lineAssignments.length;
     // Auto-activate all slots when number of devices equals total lines
@@ -336,6 +357,12 @@ const Index = () => {
   };
 
   const handleStep1Next = () => {
+    if (processType === "device-purchase") {
+      setNumberOfDevices(devicePurchaseLines.length);
+      generateDeviceSlots();
+      setCurrentStep(getStepNumberForScreen("Uređaji"));
+      return;
+    }
     setCurrentStep(getStepNumberForScreen("Tarife"));
   };
 
