@@ -18,7 +18,7 @@ import { PrepaidToPostpaidModal } from "@/components/modals/PrepaidToPostpaidMod
 import { ExistingLineExtensionModal } from "@/components/modals/ExistingLineExtensionModal";
 import { AuthModal } from "@/components/modals/AuthModal";
 import { tariffs, devices } from "@/data/catalog";
-import type { Line, VerificationData, DeliveryData, PaymentData, ExtensionLineWithTariff, OrderProcessingState } from "@/types";
+import type { Line, VerificationData, DeliveryData, PaymentData, ExtensionLineWithTariff, OrderProcessingState, ProcessType, DevicePurchaseLine } from "@/types";
 import { toast } from "@/hooks/use-toast";
 
 function rid() {
@@ -43,6 +43,7 @@ type DeviceSlot = {
   monthlyInstallment: number;
   label: string; // "Linija 1", "Linija 2", or MSISDN for extension lines
   isExtension: boolean; // true for extension lines
+  existingTariffName?: string; // current tariff name for device-purchase lines
 };
 
 const Index = () => {
@@ -67,10 +68,21 @@ const Index = () => {
   const [orderProcessingState, setOrderProcessingState] = useState<OrderProcessingState | null>(null);
   const [cardAttempts, setCardAttempts] = useState(0);
   const [contractDownloaded, setContractDownloaded] = useState(false);
+  const [processType, setProcessType] = useState<ProcessType>("activation");
+  const [devicePurchaseLines, setDevicePurchaseLines] = useState<DevicePurchaseLine[]>([]);
 
   const steps = useMemo(() => {
     const dynamicSteps = [{ number: 1, name: "Početak" }];
     let stepNumber = 2;
+    // Device purchase flow: no tariff selection, no verification
+    if (processType === "device-purchase") {
+      dynamicSteps.push({ number: stepNumber, name: "Uređaji" });
+      stepNumber++;
+      dynamicSteps.push({ number: stepNumber, name: "Sažetak" });
+      stepNumber++;
+      dynamicSteps.push({ number: stepNumber, name: "Isporuka" });
+      return dynamicSteps;
+    }
     // Removed login step - login is now handled on first screen
     dynamicSteps.push({ number: stepNumber, name: "Tarife" });
     stepNumber++;
@@ -86,7 +98,7 @@ const Index = () => {
     }
     dynamicSteps.push({ number: stepNumber, name: "Isporuka" });
     return dynamicSteps;
-  }, [customerType, numberOfDevices]);
+  }, [customerType, numberOfDevices, processType]);
 
   const updateLineAssignments = (assignments: LineAssignment[]) => {
     setLineAssignments(assignments);
@@ -95,6 +107,28 @@ const Index = () => {
   const generateDeviceSlots = () => {
     const slots: DeviceSlot[] = [];
     let newLineIndex = 1;
+    
+    // Device purchase flow: one active slot per selected line, labeled by MSISDN
+    if (processType === "device-purchase") {
+      devicePurchaseLines.forEach((line) => {
+        slots.push({
+          id: rid(),
+          deviceId: null,
+          walletUse: 0,
+          tariffId: "",
+          isActive: true,
+          paymentMethod: "installments",
+          screenInsurance: false,
+          deviceInsurance: false,
+          monthlyInstallment: 1,
+          label: line.msisdn,
+          isExtension: true,
+          existingTariffName: line.currentTariff,
+        });
+      });
+      setDeviceSlots(slots);
+      return slots;
+    }
     
     // Calculate total lines to determine auto-activation
     const totalLines = lineAssignments.length;
@@ -212,6 +246,7 @@ const Index = () => {
         deviceInsurance: slot.deviceInsurance,
         isExtension: slot.isExtension,
         extensionLabel: slot.isExtension ? slot.label : undefined,
+        existingTariffName: slot.existingTariffName,
         simType: getDefaultSimType(effectiveDeviceId),
       };
     });
@@ -274,8 +309,9 @@ const Index = () => {
   );
 
   const walletTotal = useMemo(
-    () => noDeviceWalletBonus + tariffCredit,
-    [noDeviceWalletBonus, tariffCredit]
+    // Device purchase flow: no new wallet credit — user can only spend existing balance
+    () => processType === "device-purchase" ? 0 : noDeviceWalletBonus + tariffCredit,
+    [noDeviceWalletBonus, tariffCredit, processType]
   );
 
   const walletUsed = useMemo(
@@ -325,6 +361,12 @@ const Index = () => {
   };
 
   const handleStep1Next = () => {
+    if (processType === "device-purchase") {
+      setNumberOfDevices(devicePurchaseLines.length);
+      generateDeviceSlots();
+      setCurrentStep(getStepNumberForScreen("Uređaji"));
+      return;
+    }
     setCurrentStep(getStepNumberForScreen("Tarife"));
   };
 
@@ -428,6 +470,9 @@ const Index = () => {
     setCardAttempts(0);
     setExtensionLines([]);
     setCompanyOIB("");
+    setProcessType("activation");
+    setDevicePurchaseLines([]);
+    setContractDownloaded(false);
   };
 
   const handleFinish = () => {
@@ -446,7 +491,9 @@ const Index = () => {
     const allLinesAssigned = lineAssignments.length === totalLines;
     const hasAtLeastOneLine = totalLines > 0;
     const canProceed = {
-      "Početak": customerType !== null && hasAtLeastOneLine && numberOfDevices >= 0 && numberOfDevices <= totalLines && (customerType === "new" || isLoggedIn),
+      "Početak": processType === "device-purchase"
+        ? isLoggedIn && devicePurchaseLines.length > 0
+        : customerType !== null && hasAtLeastOneLine && numberOfDevices >= 0 && numberOfDevices <= totalLines && (customerType === "new" || isLoggedIn),
       "Tarife": allLinesAssigned,
       "Uređaji": (() => {
         const activeSlots = deviceSlots.filter((slot) => slot.isActive);
@@ -476,12 +523,14 @@ const Index = () => {
       },
       "Uređaji": { 
         onNext: handleDeviceNext, 
-        onBack: () => setCurrentStep(getStepNumberForScreen("Tarife"))
+        onBack: () => setCurrentStep(processType === "device-purchase" ? 1 : getStepNumberForScreen("Tarife"))
       },
       "Sažetak": { 
         onNext: handleSummaryNext, 
         onBack: () => {
-          const prevStep = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
+          const prevStep = processType === "device-purchase"
+            ? getStepNumberForScreen("Uređaji")
+            : numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
           setCurrentStep(prevStep);
         }
       },
@@ -513,6 +562,8 @@ const Index = () => {
     setUserIdentifier("");
     setExtensionLines([]);
     setCustomerType(null);
+    setProcessType("activation");
+    setDevicePurchaseLines([]);
   };
 
   const handleLoginSuccess = (identifier: string, type: "email" | "phone") => {
@@ -573,12 +624,16 @@ const Index = () => {
               isLoggedIn={isLoggedIn}
               extensionLines={extensionLines}
               companyOIB={companyOIB}
+              processType={processType}
+              devicePurchaseLines={devicePurchaseLines}
               onUpdateCustomerType={setCustomerType}
               onUpdateNumberOfLines={setNumberOfLines}
               onUpdateNumberOfDevices={setNumberOfDevices}
               onLoginSuccess={handleLoginSuccess}
               onUpdateExtensionLines={setExtensionLines}
               onUpdateCompanyOIB={setCompanyOIB}
+              onUpdateProcessType={setProcessType}
+              onUpdateDevicePurchaseLines={setDevicePurchaseLines}
               onNext={handleStep1Next}
             />
           )}
@@ -606,7 +661,7 @@ const Index = () => {
               onUpdateDeviceInsurance={handleUpdateDeviceInsurance}
               onUpdateMonthlyInstallment={handleUpdateMonthlyInstallment}
               onNext={handleDeviceNext}
-              onBack={() => setCurrentStep(getStepNumberForScreen("Tarife"))}
+              onBack={() => setCurrentStep(processType === "device-purchase" ? 1 : getStepNumberForScreen("Tarife"))}
             />
           )}
           {currentScreen === "Sažetak" && (
@@ -615,8 +670,11 @@ const Index = () => {
               totalMonthly={totalMonthly}
               totalOnetime={totalOnetime}
               onUpdateLine={updateLine}
+              processType={processType}
               onBack={() => {
-                const prevStep = numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
+                const prevStep = processType === "device-purchase"
+                  ? getStepNumberForScreen("Uređaji")
+                  : numberOfDevices > 0 ? getStepNumberForScreen("Uređaji") : getStepNumberForScreen("Tarife");
                 setCurrentStep(prevStep);
               }}
               onFinish={handleFinish}

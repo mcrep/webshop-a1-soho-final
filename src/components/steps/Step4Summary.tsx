@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, X, RefreshCw, Download, CheckCircle } from "lucide-react";
 import { tariffs, devices } from "@/data/catalog";
 import { findExistingLineNumber } from "@/data/mock-existing-lines";
-import type { Line } from "@/types";
+import type { Line, ProcessType } from "@/types";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { SimTypeModal } from "@/components/modals/SimTypeModal";
@@ -32,6 +32,7 @@ type Step4Props = {
   onOpenLineTypeModal: (lineId: string) => void;
   contractDownloaded: boolean;
   onContractDownload: () => void;
+  processType?: ProcessType;
 };
 
 export function Step4Summary({
@@ -44,6 +45,7 @@ export function Step4Summary({
   onOpenLineTypeModal,
   contractDownloaded,
   onContractDownload,
+  processType,
 }: Step4Props) {
   // Find unconfigured non-extension lines
   const unconfiguredLineIds = useMemo(() => {
@@ -102,7 +104,7 @@ export function Step4Summary({
       doc.text(`Linija ${index + 1}`, 20, y);
       y += 8;
       doc.setFontSize(10);
-      doc.text(`Tarifa: ${tariff?.name ?? "-"}`, 25, y); y += 6;
+      doc.text(`Tarifa: ${tariff?.name ?? line.existingTariffName ?? "-"}`, 25, y); y += 6;
       if (device && device.id !== "no-dev") {
         doc.text(`Uredaj: ${device.brand} ${device.name}${variant ? ` - ${variant.color} ${variant.memory}` : ""}`, 25, y); y += 6;
       }
@@ -231,7 +233,7 @@ export function Step4Summary({
                       {/* Badge row: Tariff, Device, Line Type */}
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
-                          {tariff?.name}
+                          {tariff?.name ?? line.existingTariffName}
                         </span>
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
                           {device?.id !== "no-dev" ? `${device?.brand} ${device?.name}` : "Bez uređaja"}
@@ -321,8 +323,10 @@ export function Step4Summary({
                         </div>
                         {/* Red 1: Naziv tarife + puna cijena */}
                         <div className="flex justify-between items-center">
-                          <span className="font-semibold">{tariff?.name}</span>
-                          <span>{tariff?.originalMonthly ? tariff.originalMonthly.toFixed(2) : tariffMonthly.toFixed(2)}€/mj</span>
+                          <span className="font-semibold">{tariff?.name ?? line.existingTariffName}</span>
+                          {tariff && (
+                            <span>{tariff.originalMonthly ? tariff.originalMonthly.toFixed(2) : tariffMonthly.toFixed(2)}€/mj</span>
+                          )}
                         </div>
                         
                         {/* Red 2: Popust na tarifu (ako postoji) */}

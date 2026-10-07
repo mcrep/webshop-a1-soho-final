@@ -365,6 +365,7 @@ export function Step1CustomerInfo({
                 <h3 className="text-lg font-semibold"><AnimatedText text={getDevicePlural(numberOfDevices)} /></h3>
               </div>
             </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -399,6 +400,17 @@ export function Step1CustomerInfo({
             onClose={() => setShowExtensionModal(false)}
             onSave={onUpdateExtensionLines}
             selectedLines={extensionLines}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Device Lines Modal (naknadno uzimanje uređaja) */}
+      <AnimatePresence>
+        {showDeviceLinesModal && (
+          <DeviceLinesModal
+            onClose={() => setShowDeviceLinesModal(false)}
+            onSave={onUpdateDevicePurchaseLines}
+            selectedLines={devicePurchaseLines}
           />
         )}
       </AnimatePresence>

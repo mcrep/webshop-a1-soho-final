@@ -23,6 +23,7 @@ export type Line = {
   completed?: boolean;
   isExtension?: boolean;
   extensionLabel?: string;
+  existingTariffName?: string;
   simType?: "esim" | "physical";
   // Number porting data (mnp)
   portingNumber?: string;
