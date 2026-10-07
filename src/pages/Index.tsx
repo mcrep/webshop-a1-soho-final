@@ -123,6 +123,7 @@ const Index = () => {
           monthlyInstallment: 1,
           label: line.msisdn,
           isExtension: true,
+          existingTariffName: line.currentTariff,
         });
       });
       setDeviceSlots(slots);
@@ -245,6 +246,7 @@ const Index = () => {
         deviceInsurance: slot.deviceInsurance,
         isExtension: slot.isExtension,
         extensionLabel: slot.isExtension ? slot.label : undefined,
+        existingTariffName: slot.existingTariffName,
         simType: getDefaultSimType(effectiveDeviceId),
       };
     });
