@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, X, RefreshCw, Download, CheckCircle } from "lucide-react";
 import { tariffs, devices } from "@/data/catalog";
 import { findExistingLineNumber } from "@/data/mock-existing-lines";
-import type { Line } from "@/types";
+import type { Line, ProcessType } from "@/types";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { SimTypeModal } from "@/components/modals/SimTypeModal";
@@ -32,6 +32,7 @@ type Step4Props = {
   onOpenLineTypeModal: (lineId: string) => void;
   contractDownloaded: boolean;
   onContractDownload: () => void;
+  processType?: ProcessType;
 };
 
 export function Step4Summary({
@@ -44,6 +45,7 @@ export function Step4Summary({
   onOpenLineTypeModal,
   contractDownloaded,
   onContractDownload,
+  processType,
 }: Step4Props) {
   // Find unconfigured non-extension lines
   const unconfiguredLineIds = useMemo(() => {
