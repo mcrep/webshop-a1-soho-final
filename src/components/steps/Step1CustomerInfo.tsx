@@ -132,6 +132,20 @@ export function Step1CustomerInfo({
   const [showExtensionModal, setShowExtensionModal] = useState(false);
   const [showDeviceLinesModal, setShowDeviceLinesModal] = useState(false);
   const [showOIBModal, setShowOIBModal] = useState(false);
+
+  // Sliding pill for the process switch: measure the active button and slide horizontally
+  const processButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [pillRect, setPillRect] = useState<{ left: number; width: number } | null>(null);
+  useLayoutEffect(() => {
+    if (!isLoggedIn || processType === null) return;
+    const measure = () => {
+      const el = processButtonRefs.current[processType];
+      if (el) setPillRect({ left: el.offsetLeft, width: el.offsetWidth });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [isLoggedIn, processType]);
   
   // Max devices = new lines + extension lines (for logged in users)
   const maxDevices = isLoggedIn ? numberOfLines + extensionLines.length : numberOfLines;
