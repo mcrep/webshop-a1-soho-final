@@ -613,7 +613,7 @@ const Index = () => {
             />
           )}
           <div className={currentScreen === "Početak" 
-            ? "flex items-center min-h-[calc(100vh-73px-96px)]" 
+            ? `flex min-h-[calc(100vh-73px-96px)] ${isLoggedIn ? "items-start" : "items-center"}` 
             : "pb-8"
           }>
             {currentScreen === "Početak" && (
