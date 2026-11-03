@@ -42,14 +42,14 @@ const PROCESS_OPTIONS: {
     id: "activation",
     short: "Aktivacija",
     extra: " i produljenje ugovora",
-    hint: "Nove linije, produljenje postojećih linija i kupnja uređaja",
+    hint: "Nove linije, produljenje i uređaji uz tarifu",
     icon: FileText,
   },
   {
     id: "device-purchase",
     short: "Naknadno uzimanje",
     extra: " uređaja",
-    hint: "Kupnja uređaja za postojeće linije bez promjene tarife",
+    hint: "Uređaj za postojeću liniju, tarifa ostaje ista",
     icon: Smartphone,
   },
 ];
@@ -93,7 +93,7 @@ type Step1Props = {
   isLoggedIn: boolean;
   extensionLines: ExtensionLineWithTariff[];
   companyOIB: string;
-  processType: ProcessType;
+  processType: ProcessType | null;
   devicePurchaseLines: DevicePurchaseLine[];
   onUpdateCustomerType: (type: "new" | "existing" | null) => void;
   onUpdateNumberOfLines: (num: number) => void;
@@ -138,6 +138,8 @@ export function Step1CustomerInfo({
   const isDevicePurchase = isLoggedIn && processType === "device-purchase";
   const canProceed = isDevicePurchase
     ? devicePurchaseLines.length > 0
+    : isLoggedIn && processType === null
+    ? false
     : customerType !== null && numberOfLines > 0 && numberOfDevices >= 0 && numberOfDevices <= maxDevices && (customerType === "new" || isLoggedIn);
 
   // Auto-adjust numberOfDevices if it exceeds maxDevices
@@ -238,7 +240,32 @@ export function Step1CustomerInfo({
         </Card>
 
         {/* Process Type Selection - compact segmented control */}
-        {isLoggedIn && (
+        {isLoggedIn && processType === null && (
+          <Card className="border-0 shadow-none">
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Što želite napraviti?</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {PROCESS_OPTIONS.map((opt) => {
+                  const Icon = opt.icon;
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => onUpdateProcessType(opt.id)}
+                      className="p-6 rounded-xl border-2 border-border bg-card hover:border-foreground transition-all duration-300"
+                    >
+                      <Icon className="h-8 w-8 mx-auto mb-3 text-muted-foreground" />
+                      <p className="font-semibold text-foreground">{opt.short}{opt.extra}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{opt.hint}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {isLoggedIn && processType !== null && (
           <div className="flex flex-col items-center gap-2">
             <div className="inline-flex w-full sm:w-auto items-center gap-1 p-1 rounded-full bg-[#F2F2F2] border border-border">
               {PROCESS_OPTIONS.map((opt) => {
@@ -277,6 +304,8 @@ export function Step1CustomerInfo({
         )}
 
         {/* Combined Lines & Devices Configuration - Single container, no border */}
+        {(!isLoggedIn || processType !== null) && (
+        <motion.div key={processType ?? "none"} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2, ease: "easeOut" }}>
         <Card className="border-0 shadow-none">
           <CardContent className="p-6 space-y-6">
             {isDevicePurchase ? (
@@ -387,6 +416,8 @@ export function Step1CustomerInfo({
             )}
           </CardContent>
         </Card>
+        </motion.div>
+        )}
       </div>
 
       {/* Auth Modal */}
