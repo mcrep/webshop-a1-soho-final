@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useLayoutEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserPlus, Users, Smartphone, Minus, Plus, Check, RefreshCw } from "lucide-react";
@@ -267,13 +267,23 @@ export function Step1CustomerInfo({
 
         {isLoggedIn && processType !== null && (
           <div className="flex flex-col items-center gap-2">
-            <div className="inline-flex w-full sm:w-auto items-center gap-1 p-1 rounded-full bg-[#F2F2F2] border border-border">
+            <div className="relative inline-flex w-full sm:w-auto items-center gap-1 p-1 rounded-full bg-[#F2F2F2] border border-border">
+              {pillRect && (
+                <motion.span
+                  aria-hidden
+                  className="absolute top-1 bottom-1 left-0 rounded-full bg-card shadow-sm"
+                  initial={false}
+                  animate={{ x: pillRect.left, width: pillRect.width }}
+                  transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                />
+              )}
               {PROCESS_OPTIONS.map((opt) => {
                 const active = processType === opt.id;
                 const Icon = opt.icon;
                 return (
                   <button
                     key={opt.id}
+                    ref={(el) => { processButtonRefs.current[opt.id] = el; }}
                     type="button"
                     aria-pressed={active}
                     onClick={() => onUpdateProcessType(opt.id)}
@@ -281,13 +291,6 @@ export function Step1CustomerInfo({
                       active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    {active && (
-                      <motion.span
-                        layoutId="process-type-pill"
-                        className="absolute inset-0 rounded-full bg-card shadow-sm"
-                        transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                      />
-                    )}
                     <Icon className="relative h-4 w-4 shrink-0" />
                     <span className="relative whitespace-nowrap">
                       {opt.short}
