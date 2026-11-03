@@ -1,42 +1,34 @@
-# Razlog umjesto naziva procesa
+# Prvo odabir procesa, zatim rečenice
 
-## Problem današnjeg prekidača
+## Ideja
 
-Dvije oznake ("Aktivacija i produljenje ugovora", "Naknadno uzimanje uređaja") su A1-žargon. Korisnik mora prvo razumjeti razliku, a ne dobiva nikakav signal vrijedi li opcija za njega — tek nakon klikova sazna je li pogriješio.
-
-## Prijedlog
-
-Prekidač ostaje mali i u jednom redu, ali svaka opcija nosi **korisnikove vlastite podatke** pa sama objašnjava za koga je:
+Kada se postojeći korisnik prijavi, ispod "Ja sam" se ne prikazuju odmah rečenice za aktivaciju. Umjesto toga pojavljuje se pitanje **"Što želite napraviti?"** s dvije jednako važne kartice. Rečenice se pokazuju tek nakon odabira.
 
 ```text
-        [ Aktivacija i produljenje ugovora | 3 za produljenje ]   [ Naknadno uzimanje uređaja | 2 bez uređaja ]
-                          Nove linije, tarife i produljenje postojećih linija
+Što želite napraviti?
+
+[ (dokument)  Aktivacija i produljenje ugovora ]   [ (mobitel)  Naknadno uzimanje uređaja ]
+  Nove linije, produljenje i uređaji uz tarifu       Uređaj za postojeću liniju, tarifa ostaje ista
 ```
 
-- Lijeva opcija dobiva oznaku s brojem linija kojima ugovor ističe (ili je već istekao) — "3 za produljenje".
-- Desna opcija dobiva broj linija koje danas nemaju uređaj — "2 bez uređaja".
-- Ako je neki broj nula, oznaka se ne prikazuje (prazno, bez "0").
-- Na mobitelu ostaje skraćena labela ("Aktivacija", "Naknadno uzimanje") i samo brojčana oznaka.
-- Linija s objašnjenjem ispod se preformulira iz definicije u posljedicu:
-  - Aktivacija: "Biraš linije i tarife; uređaji su opcija."
-  - Naknadno uzimanje: "Tarife se ne mijenjaju — samo kupnja uređaja."
+Nakon klika:
+- Kartice se smanje u mali klizni prekidač (današnji dizajn) na vrhu, da se izbor može promijeniti u jedan klik.
+- Ispod se blago pojavi (fade-in, 200 ms) samo odgovarajući sadržaj:
+  - Aktivacija: "Želim aktivirati X novih mobilnih linija / i produljiti X / a uz to želim kupiti X uređaja"
+  - Naknadno uzimanje: "Želim kupiti (X) mobilnih uređaja"
+- Dok ništa nije odabrano, gumb "Nastavi" je onemogućen (uz shake pri kliku, kao drugdje).
 
-Time korisnik ne mora znati što znači "naknadno uzimanje" — vidi "2 bez uređaja" i zna da je to njegova opcija.
+Za novog korisnika ništa se ne mijenja — on nema izbor procesa pa odmah vidi rečenicu "Želim aktivirati...".
 
-## Pametan zadani izbor
+## Ponašanje
 
-Umjesto fiksnog zadanog "Aktivacija", zadanje se izvodi iz podataka: ako nijedna linija ne može na produljenje, a barem jedna nema uređaj, otvara se "Naknadno uzimanje uređaja". Prekidač ostaje vidljiv i u jedan klik vraća na drugu opciju.
-
-## Što se namjerno ne radi
-
-- Odvojeni prekidač se ne uklanja iz ekrana (varijanta "prekidač u rečenici" sakriva izbor).
-- Ne dodaje se vođeni "Nisam siguran" korak — dodatni klik za sve korisnike.
-- Ne prelazi se na popis namjera bez izbora procesa — to diruje sve korake flow-a.
+- Zadano stanje nakon prijave: ništa odabrano (nema više automatskog "Aktivacija").
+- Promjena procesa zadržava već upisane brojeve za svaki proces posebno.
+- Odjava i "Kreni ispočetka" vraćaju na neodabrano stanje.
 
 ## Tehnički detalji
 
-- `src/data/mock-existing-lines.ts`: tip `MockExistingLine` dobiva `hasDevice: boolean`; postojeći `expires` datumi (15.12.2025, 20.01.2026, 05.03.2026) svi su u prošlosti, pa se pomiču u budućnost da se oznake mogu demonstrirati.
-- `src/components/steps/Step1CustomerInfo.tsx`: `PROCESS_OPTIONS` umjesto statičnog `hint` dobiva izračun oznake iz `mockExistingLines`; chip se renderira unutar segmenta (`rounded-full`, `bg-primary/10`, `text-primary`, mala tipografija), na mobitelu samo broj.
-- Dodaje se pomoćna funkcija za hrvatsku množinu (1 "linija", 2–4 "linije", 5+ "linija") i brojanje linija s istekom unutar 12 mjeseci te linija bez uređaja.
-- `src/pages/Index.tsx`: početni `processType` se izvodi iz gornjih kriterija umjesto da bude stalno "activation".
-- Nema test runnera u projektu, pa se provjera radi typecheck-om i u pregledniku: slika prvog ekrana u obje opcije i na mobitelu.
+- `ProcessType` dobiva stanje `null` u `Index.tsx` (početno `null`, reset u `handleLogout`/`handleStartOver`; admin impersonacija također počinje s `null`).
+- `Step1CustomerInfo.tsx`: ako je `isLoggedIn && processType === null` → prikaz dvije veće kartice (stil odabira kao "Ja sam", bijela `bg-card`, odabrano `#F2F2F2`); inače postojeći segmentirani prekidač. Kartica s rečenicama renderira se samo kad je `!isLoggedIn || processType !== null`, s `motion.div` fade-in (opacity 0→1, 200ms easeOut, bez exit animacije).
+- `canProceed` vraća `false` kad je ulogiran i `processType === null`; `steps` useMemo tretira `null` kao aktivacijski tok za prikaz indikatora koraka.
+- Provjera: typecheck i Playwright (prijava preko `/admovrd`, oba izbora, promjena izbora).
