@@ -68,7 +68,7 @@ const Index = () => {
   const [orderProcessingState, setOrderProcessingState] = useState<OrderProcessingState | null>(null);
   const [cardAttempts, setCardAttempts] = useState(0);
   const [contractDownloaded, setContractDownloaded] = useState(false);
-  const [processType, setProcessType] = useState<ProcessType>("activation");
+  const [processType, setProcessType] = useState<ProcessType | null>(null);
   const [devicePurchaseLines, setDevicePurchaseLines] = useState<DevicePurchaseLine[]>([]);
 
   const steps = useMemo(() => {
@@ -470,7 +470,7 @@ const Index = () => {
     setCardAttempts(0);
     setExtensionLines([]);
     setCompanyOIB("");
-    setProcessType("activation");
+    setProcessType(null);
     setDevicePurchaseLines([]);
     setContractDownloaded(false);
   };
@@ -493,7 +493,7 @@ const Index = () => {
     const canProceed = {
       "Početak": processType === "device-purchase"
         ? isLoggedIn && devicePurchaseLines.length > 0
-        : customerType !== null && hasAtLeastOneLine && numberOfDevices >= 0 && numberOfDevices <= totalLines && (customerType === "new" || isLoggedIn),
+        : (isLoggedIn && processType === null) ? false : customerType !== null && hasAtLeastOneLine && numberOfDevices >= 0 && numberOfDevices <= totalLines && (customerType === "new" || isLoggedIn),
       "Tarife": allLinesAssigned,
       "Uređaji": (() => {
         const activeSlots = deviceSlots.filter((slot) => slot.isActive);
@@ -562,7 +562,7 @@ const Index = () => {
     setUserIdentifier("");
     setExtensionLines([]);
     setCustomerType(null);
-    setProcessType("activation");
+    setProcessType(null);
     setDevicePurchaseLines([]);
   };
 
