@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { DeviceDetailModal } from "./DeviceDetailModal";
+import { DeviceHeroBadge, heroFirst, isHeroDevice } from "@/components/devices/DeviceHeroBadge";
 import type { Device } from "@/types";
 
 type DeviceListModalProps = {
@@ -47,6 +48,8 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
       const priceB = b.upfront;
       return priceSort === "asc" ? priceA - priceB : priceB - priceA;
     });
+  } else {
+    filteredDevices = heroFirst(filteredDevices);
   }
 
   const handleDeviceClick = (device: Device) => {
@@ -226,7 +229,9 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
                         <button
                           key={device.id}
                           onClick={() => handleDeviceClick(device)}
-                          className="group p-4 rounded-xl border border-border bg-card hover:border-foreground transition-all text-left"
+                          className={`group p-4 rounded-xl border-2 bg-card hover:border-foreground transition-all text-left ${
+                            isHeroDevice(device) ? "border-primary/40 shadow-md" : "border-border"
+                          }`}
                         >
                           <div className="relative aspect-square rounded-lg overflow-hidden mb-3 bg-muted/30">
                             <img
@@ -234,6 +239,7 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
                               alt={device.name}
                               className="w-full h-full object-contain group-hover:scale-105 transition-transform"
                             />
+                            <DeviceHeroBadge device={device} className="absolute top-3 left-3" />
                             {device.mpcOverride && device.mpcOverride > 0 && (
                               <div className="absolute bottom-3 right-3 bg-primary text-primary-foreground font-bold text-sm px-3 py-1.5 rounded-lg shadow-md">
                                 -{device.mpcOverride} EUR
@@ -243,6 +249,9 @@ export function DeviceListModal({ onClose, onSelectDevice }: DeviceListModalProp
                           <div className="space-y-1">
                             <div className="text-xs text-muted-foreground">{device.brand}</div>
                             <div className="font-semibold">{device.name}</div>
+                            {device.hero && device.heroReason && (
+                              <div className="text-xs font-medium text-foreground">{device.heroReason}</div>
+                            )}
                             <div className="flex items-baseline gap-2">
                               {device.mpcOverride && device.mpcOverride > 0 ? (
                                 <>

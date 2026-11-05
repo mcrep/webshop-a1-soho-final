@@ -79,6 +79,12 @@ export type Device = {
   mpcOverride?: number;
   screenInsuranceAvailable?: boolean;
   deviceInsuranceAvailable?: boolean;
+  /** Highlighted ("hero") device: shown with a badge and sorted to the top. */
+  hero?: boolean;
+  /** Badge text, e.g. "Najprodavanije". Defaults to "Istaknuto". */
+  heroLabel?: string;
+  /** Short benefit line shown under the device name. */
+  heroReason?: string;
 };
 
 export type Addon = {
