@@ -66,6 +66,7 @@ function DeviceDetailView({ device, onClose }: { device: Device; onClose: () => 
             <div>
               <h2 className="text-xl font-bold flex items-center gap-3 flex-wrap">
                 {device.brand} {device.name}
+                <DeviceHeroBadge device={device} tone="light" />
                 {device.energyClass && (
                   <Badge variant="secondary" className="text-xs font-normal bg-white/20 text-primary-foreground border-0">
                     Energetski razred: {device.energyClass}
