@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Smartphone, Search, ChevronLeft, ChevronRight, X, SlidersHorizontal } from "lucide-react";
 import type { Device, DeviceVariant } from "@/types";
+import { DeviceHeroBadge, heroFirst, isHeroDevice } from "@/components/devices/DeviceHeroBadge";
 import a1Logo from "@/assets/a1-logo.png";
 
 function DeviceDetailView({ device, onClose }: { device: Device; onClose: () => void }) {
@@ -230,6 +231,8 @@ export default function DevicesPage() {
 
   if (priceSort !== "none") {
     filtered = [...filtered].sort((a, b) => priceSort === "asc" ? a.upfront - b.upfront : b.upfront - a.upfront);
+  } else {
+    filtered = heroFirst(filtered);
   }
 
   return (
@@ -306,10 +309,13 @@ export default function DevicesPage() {
                   key={device.id}
                   whileHover={{ y: -4 }}
                   onClick={() => setSelectedDevice(device)}
-                  className="group p-5 rounded-2xl border-2 border-border bg-card hover:border-foreground transition-all text-left shadow-sm hover:shadow-md"
+                  className={`group p-5 rounded-2xl border-2 bg-card hover:border-foreground transition-all text-left shadow-sm hover:shadow-md ${
+                    isHeroDevice(device) ? "border-primary/40 shadow-md" : "border-border"
+                  }`}
                 >
                   <div className="relative aspect-square rounded-xl overflow-hidden mb-4 bg-muted/20">
                     <img src={device.image} alt={device.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" />
+                    <DeviceHeroBadge device={device} className="absolute top-3 left-3" />
                     {discount > 0 && (
                       <div className="absolute bottom-3 right-3 bg-primary text-primary-foreground font-bold text-sm px-3 py-1.5 rounded-lg shadow-md">
                         -{discount} EUR
@@ -319,6 +325,9 @@ export default function DevicesPage() {
                   <div className="space-y-1.5">
                     <div className="text-xs text-muted-foreground font-medium">{device.brand}</div>
                     <div className="font-bold text-lg">{device.name}</div>
+                    {device.hero && device.heroReason && (
+                      <div className="text-xs font-medium text-foreground">{device.heroReason}</div>
+                    )}
                     <div className="flex items-baseline gap-2">
                       {discount > 0 ? (
                         <>
