@@ -87,7 +87,7 @@ export const devices: Device[] = [
     installment: 25,
     mpcOverride: 124,
     hero: true,
-    heroLabel: "Najprodavanije",
+    heroLabel: "Posebna ponuda",
     heroReason: "Najbolji omjer cijene i značajki",
     emoji: "📱",
     image: iphone15,
