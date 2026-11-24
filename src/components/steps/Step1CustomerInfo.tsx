@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useLayoutEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { UserPlus, Users, Smartphone, Minus, Plus, Check, RefreshCw } from "lucide-react";
+import { UserPlus, Users, Smartphone, Minus, Plus, Check, RefreshCw, ListChecks } from "lucide-react";
 import { AuthModal } from "@/components/modals/AuthModal";
 import { ExtensionLinesModal } from "@/components/modals/ExtensionLinesModal";
 import { DeviceLinesModal } from "@/components/modals/DeviceLinesModal";
@@ -35,6 +35,7 @@ const PROCESS_OPTIONS: {
   id: ProcessType;
   short: string;
   extra: string;
+  card: string;
   hint: string;
   icon: typeof FileText;
 }[] = [
@@ -42,6 +43,7 @@ const PROCESS_OPTIONS: {
     id: "activation",
     short: "Aktivacija",
     extra: " i produljenje ugovora",
+    card: "Aktivaciju i/ili produljenje ugovora",
     hint: "Nove linije, produljenje i uređaji uz tarifu",
     icon: FileText,
   },
@@ -49,6 +51,7 @@ const PROCESS_OPTIONS: {
     id: "device-purchase",
     short: "Naknadno uzimanje",
     extra: " uređaja",
+    card: "Naknadno uzimanje uređaja",
     hint: "Uređaj za postojeću liniju, tarifa ostaje ista",
     icon: Smartphone,
   },
@@ -257,7 +260,12 @@ export function Step1CustomerInfo({
         {isLoggedIn && processType === null && (
           <Card className="border-0 shadow-none">
             <CardContent className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Što želite napraviti?</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <ListChecks className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold">Želim napraviti</h3>
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 {PROCESS_OPTIONS.map((opt) => {
                   const Icon = opt.icon;
@@ -269,7 +277,7 @@ export function Step1CustomerInfo({
                       className="p-6 rounded-xl border-2 border-border bg-card hover:border-foreground transition-all duration-300"
                     >
                       <Icon className="h-8 w-8 mx-auto mb-3 text-muted-foreground" />
-                      <p className="font-semibold text-foreground">{opt.short}{opt.extra}</p>
+                      <p className="font-semibold text-foreground">{opt.card}</p>
                       <p className="text-sm text-muted-foreground mt-1">{opt.hint}</p>
                     </button>
                   );
